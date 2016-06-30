@@ -21,6 +21,7 @@ enum SkipListDataType {
     TYPE_LONG,
     TYPE_DOUBLE,
     TYPE_STRING,
+    /* Insert new enumerated values above this comment. */
     TYPE_OVERFLOW
 };
 
@@ -31,51 +32,11 @@ typedef std::string TYPE_TYPE_STRING;
 
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
 
-#define CAST_CALL_RETURN(fn_name, ...)                                                          \
-ASSERT_TYPE_IN_RANGE;                                                                           \
-switch (self->_data_type) {                                                                     \
-    case TYPE_LONG:                                                                             \
-        return static_cast<ManAHL::SkipList::HeadNode<long>*>(self->pSl)->fn_name(__VA_ARGS__);         \
-        break;                                                                                  \
-    case TYPE_DOUBLE:                                                                           \
-        return static_cast<ManAHL::SkipList::HeadNode<double>*>(self->pSl)->fn_name(__VA_ARGS__);       \
-        break;                                                                                  \
-    case TYPE_STRING:                                                                           \
-        return static_cast<ManAHL::SkipList::HeadNode<std::string>*>(self->pSl)->fn_name(__VA_ARGS__);  \
-        break;                                                                                  \
-    default:                                                                                    \
-        PyErr_BadInternalCall();                                                                \
-        break;                                                                                  \
-}
-
 typedef struct {
     PyObject_HEAD
     enum SkipListDataType _data_type;
     void *pSl;
 } PySkipList;
-
-static void
-PySkipList_dealloc(PySkipList* self)
-{
-    std::cout << "PySkipList_dealloc " << self->_data_type << " " << self->pSl << std::endl;
-    if (self && self->pSl) {
-        switch (self->_data_type) {
-            case TYPE_LONG:
-                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl);
-                break;
-            case TYPE_DOUBLE:
-                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl);
-                break;
-            case TYPE_STRING:
-                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl);
-                break;
-            default:
-                PyErr_BadInternalCall();
-                break;
-        }
-        Py_TYPE(self)->tp_free((PyObject*)self);
-    }
-}
 
 static PyObject *
 PySkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
@@ -85,7 +46,6 @@ PySkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */)
     if (self != NULL) {
         self->_data_type = TYPE_ZERO;
         self->pSl = NULL;
-//        std::cout << "PySkipList_new " << self->_data_type << " " << self->pSl << std::endl;
     }
     std::cout << "PySkipList_new " << self << std::endl;
     return (PyObject *)self;
@@ -135,6 +95,29 @@ except:
     ret_val = -1;
 finally:
     return ret_val;
+}
+
+static void
+PySkipList_dealloc(PySkipList* self)
+{
+    std::cout << "PySkipList_dealloc " << self->_data_type << " " << self->pSl << std::endl;
+    if (self && self->pSl) {
+        switch (self->_data_type) {
+            case TYPE_LONG:
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl);
+                break;
+            case TYPE_DOUBLE:
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl);
+                break;
+            case TYPE_STRING:
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl);
+                break;
+            default:
+                PyErr_BadInternalCall();
+                break;
+        }
+        Py_TYPE(self)->tp_free((PyObject*)self);
+    }
 }
 
 static PyMemberDef PySkipList_members[] = {
