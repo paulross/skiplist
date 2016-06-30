@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include "SkipList.h"
 
+namespace ManAHL {
 namespace SkipList {
     
 bool tossCoin() {
@@ -33,3 +34,4 @@ void _throw_exceeds_size(size_t size) {
 }
 
 } // namespace SkipList
+} // namespace ManAHL

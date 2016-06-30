@@ -320,6 +320,7 @@
 #include <sstream>
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
 
+namespace ManAHL {
 namespace SkipList {
 
 #define nullptr NULL
@@ -360,5 +361,6 @@ void seedRand(unsigned seed);
 #include "HeadNode.h"
 
 } // namespace SkipList
+} // namespace ManAHL
 
 #endif /* defined(__SkipList__SkipList__) */

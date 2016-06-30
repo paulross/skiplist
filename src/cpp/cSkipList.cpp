@@ -35,13 +35,13 @@ typedef std::string TYPE_TYPE_STRING;
 ASSERT_TYPE_IN_RANGE;                                                                           \
 switch (self->_data_type) {                                                                     \
     case TYPE_LONG:                                                                             \
-        return static_cast<SkipList::HeadNode<long>*>(self->pSl)->fn_name(__VA_ARGS__);         \
+        return static_cast<ManAHL::SkipList::HeadNode<long>*>(self->pSl)->fn_name(__VA_ARGS__);         \
         break;                                                                                  \
     case TYPE_DOUBLE:                                                                           \
-        return static_cast<SkipList::HeadNode<double>*>(self->pSl)->fn_name(__VA_ARGS__);       \
+        return static_cast<ManAHL::SkipList::HeadNode<double>*>(self->pSl)->fn_name(__VA_ARGS__);       \
         break;                                                                                  \
     case TYPE_STRING:                                                                           \
-        return static_cast<SkipList::HeadNode<std::string>*>(self->pSl)->fn_name(__VA_ARGS__);  \
+        return static_cast<ManAHL::SkipList::HeadNode<std::string>*>(self->pSl)->fn_name(__VA_ARGS__);  \
         break;                                                                                  \
     default:                                                                                    \
         PyErr_BadInternalCall();                                                                \
@@ -61,13 +61,13 @@ PySkipList_dealloc(PySkipList* self)
     if (self && self->pSl) {
         switch (self->_data_type) {
             case TYPE_LONG:
-                delete static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl);
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl);
                 break;
             case TYPE_DOUBLE:
-                delete static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl);
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl);
                 break;
             case TYPE_STRING:
-                delete static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl);
+                delete static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl);
                 break;
             default:
                 PyErr_BadInternalCall();
@@ -111,13 +111,13 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
     }
     if ((PyTypeObject *)value_type == &PyLong_Type) {
         self->_data_type = TYPE_LONG;
-        self->pSl = static_cast<void *>(new SkipList::HeadNode<TYPE_TYPE_LONG>());
+        self->pSl = static_cast<void *>(new ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>());
     } else if ((PyTypeObject *)value_type == &PyFloat_Type) {
         self->_data_type = TYPE_DOUBLE;
-        self->pSl = static_cast<void *>(new SkipList::HeadNode<TYPE_TYPE_DOUBLE>());
+        self->pSl = static_cast<void *>(new ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>());
     } else if ((PyTypeObject *)value_type == &PyString_Type) {
         self->_data_type = TYPE_STRING;
-        self->pSl = static_cast<void *>(new SkipList::HeadNode<TYPE_TYPE_STRING>());
+        self->pSl = static_cast<void *>(new ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>());
     } else {
         PyErr_Format(PyExc_ValueError,
                      "Argument to __init__ must be long, float or str, not \"%s\"",
@@ -153,14 +153,14 @@ PySkipList_has(PySkipList* self, PyObject *arg)
                 PyErr_Format(PyExc_TypeError, "Argument to has() must be long not \"%s\" type", Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            ret_val = PyBool_FromLong(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->has(PyLong_AsLong(arg)));
+            ret_val = PyBool_FromLong(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->has(PyLong_AsLong(arg)));
             break;
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
                 PyErr_Format(PyExc_TypeError, "Argument to has() must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            ret_val = PyBool_FromLong(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->has(PyFloat_AS_DOUBLE(arg)));
+            ret_val = PyBool_FromLong(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->has(PyFloat_AS_DOUBLE(arg)));
             break;
         case TYPE_STRING:
             if (! PyString_Check(arg)) {
@@ -168,7 +168,7 @@ PySkipList_has(PySkipList* self, PyObject *arg)
                 goto except;
             }
             str = std::string(PyString_AS_STRING(arg));
-            ret_val = PyBool_FromLong(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->has(str));
+            ret_val = PyBool_FromLong(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->has(str));
             break;
         default:
             PyErr_BadInternalCall();
@@ -193,13 +193,13 @@ _size(PySkipList* self, Py_ssize_t &value) {
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            value = static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->size();
+            value = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->size();
             break;
         case TYPE_DOUBLE:
-            value = static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->size();
+            value = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->size();
             break;
         case TYPE_STRING:
-            value = static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->size();
+            value = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->size();
             break;
         default:
             err_code = -1;
@@ -265,13 +265,13 @@ PySkipList_at(PySkipList *self, PyObject *arg)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyLong_FromLong(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->at(index));
+            ret_val = PyLong_FromLong(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->at(index));
             break;
         case TYPE_DOUBLE:
-            ret_val = PyFloat_FromDouble(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->at(index));
+            ret_val = PyFloat_FromDouble(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->at(index));
             break;
         case TYPE_STRING:
-            ret_val = PyString_FromString(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->at(index).c_str());
+            ret_val = PyString_FromString(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->at(index).c_str());
             break;
         default:
             PyErr_BadInternalCall();
@@ -303,8 +303,8 @@ _at_sequence_long(PySkipList *self, int index, Py_ssize_t count) {
         return NULL;
     }
     try {
-        static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->at(index, count, dest);
-    } catch (SkipList::IndexError &err) {
+        static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->at(index, count, dest);
+    } catch (ManAHL::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -327,8 +327,8 @@ _at_sequence_double(PySkipList *self, int index, Py_ssize_t count) {
         return NULL;
     }
     try {
-        static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->at(index, count, dest);
-    } catch (SkipList::IndexError &err) {
+        static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->at(index, count, dest);
+    } catch (ManAHL::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -351,8 +351,8 @@ _at_sequence_string(PySkipList *self, int index, Py_ssize_t count) {
         return NULL;
     }
     try {
-        static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->at(index, count, dest);
-    } catch (SkipList::IndexError &err) {
+        static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->at(index, count, dest);
+    } catch (ManAHL::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -444,13 +444,13 @@ PySkipList_size(PySkipList* self)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->size());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->size());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->size());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->size());
             break;
         case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->size());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->size());
             break;
         default:
             PyErr_BadInternalCall();
@@ -466,13 +466,13 @@ PySkipList_height(PySkipList* self)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height());
             break;
         case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height());
             break;
         default:
             PyErr_BadInternalCall();
@@ -491,21 +491,21 @@ PySkipList_insert(PySkipList* self, PyObject *arg)
                 PyErr_Format(PyExc_TypeError, "Type must be long not \"%s\" type", Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->insert(PyLong_AsLong(arg));
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->insert(PyLong_AsLong(arg));
             break;
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
                 PyErr_Format(PyExc_TypeError, "Type must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->insert(PyFloat_AS_DOUBLE(arg));
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->insert(PyFloat_AS_DOUBLE(arg));
             break;
         case TYPE_STRING:
             if (! PyString_Check(arg)) {
                 PyErr_Format(PyExc_TypeError, "Type must be str not \"%s\" type", Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->insert(PyString_AsString(arg));
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->insert(PyString_AsString(arg));
             break;
         default:
             PyErr_BadInternalCall();
@@ -525,8 +525,8 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             try {
-                static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->remove(PyLong_AsLong(arg));
-            } catch (SkipList::ValueError &err) {
+                static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->remove(PyLong_AsLong(arg));
+            } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
             }
@@ -537,8 +537,8 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             try {
-                static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->remove(PyFloat_AS_DOUBLE(arg));
-            } catch (SkipList::ValueError &err) {
+                static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->remove(PyFloat_AS_DOUBLE(arg));
+            } catch (ManAHL::SkipList::ValueError &err) {
                 // For whatever reason PyErr_Format does not support doubles
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -550,8 +550,8 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             try {
-                static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->remove(PyString_AsString(arg));
-            } catch (SkipList::ValueError &err) {
+                static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->remove(PyString_AsString(arg));
+            } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
             }
@@ -571,16 +571,16 @@ PySkipList_dot_file(PySkipList* self)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->dotFile(ostr);
-            static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->dotFileFinalise(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->dotFile(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->dotFileFinalise(ostr);
             break;
         case TYPE_DOUBLE:
-            static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->dotFile(ostr);
-            static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->dotFileFinalise(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->dotFile(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->dotFileFinalise(ostr);
             break;
         case TYPE_STRING:
-            static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->dotFile(ostr);
-            static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->dotFileFinalise(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->dotFile(ostr);
+            static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->dotFileFinalise(ostr);
             break;
         default:
             PyErr_BadInternalCall();
@@ -596,13 +596,13 @@ PySkipList_lacks_integrity(PySkipList* self)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->lacksIntegrity());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->lacksIntegrity());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->lacksIntegrity());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->lacksIntegrity());
             break;
         case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->lacksIntegrity());
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->lacksIntegrity());
             break;
         default:
             PyErr_BadInternalCall();
@@ -638,13 +638,13 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
     }
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height(index));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height(index));
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height(index));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height(index));
             break;
         case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height(index));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height(index));
             break;
         default:
             PyErr_BadInternalCall();
@@ -693,13 +693,13 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
     /* Check level in limits. */
     switch (self->_data_type) {
         case TYPE_LONG:
-            height = static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height(index);
+            height = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->height(index);
             break;
         case TYPE_DOUBLE:
-            height = static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height(index);
+            height = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->height(index);
             break;
         case TYPE_STRING:
-            height = static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height(index);
+            height = static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->height(index);
             break;
         default:
             PyErr_BadInternalCall();
@@ -712,13 +712,13 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
     /* Get width. */
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->width(index, level));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>*>(self->pSl)->width(index, level));
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->width(index, level));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>*>(self->pSl)->width(index, level));
             break;
         case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(static_cast<SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->width(index, level));
+            ret_val = PyInt_FromSsize_t(static_cast<ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>*>(self->pSl)->width(index, level));
             break;
         default:
             PyErr_BadInternalCall();
@@ -836,7 +836,7 @@ static char _toss_coin_docs[] =
 
 static PyObject *_toss_coin(PyObject */* mod */)
 {
-    return PyBool_FromLong(SkipList::tossCoin());
+    return PyBool_FromLong(ManAHL::SkipList::tossCoin());
 }
 
 static char _seed_rand_docs[] =
@@ -852,10 +852,10 @@ static PyObject *_seed_rand(PyObject */* mod */, PyObject *arg)
     }
     if (PyLong_Check(arg)) {
         // TODO: Check for overflow
-        SkipList::seedRand((unsigned) PyLong_AsLong(arg));
+        ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
     } else if (PyInt_Check(arg)) {
         // TODO: Check for overflow
-        SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
+        ManAHL::SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
     }
     Py_RETURN_NONE;
 }
