@@ -5,8 +5,8 @@
 # make all
 # make release
 # make debug
-PROGRAM_RELEASE = SkipList_R
-PROGRAM_DEBUG = SkipList_D
+PROGRAM_RELEASE = SkipList_R.exe
+PROGRAM_DEBUG = SkipList_D.exe
 
 CPP_FILES := main.cpp SkipList.cpp
 

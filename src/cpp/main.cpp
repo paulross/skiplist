@@ -18,13 +18,13 @@ const int FUNCTION_WIDTH = 40;
 
 /******************* Functional Tests **************************/
 
-SkipList::IntegrityCheck test_very_simple_insert() {
-    SkipList::IntegrityCheck result;
+ManAHL::SkipList::IntegrityCheck test_very_simple_insert() {
+    ManAHL::SkipList::IntegrityCheck result;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result = sl.lacksIntegrity();
     sl.dotFile(ostr);
@@ -35,14 +35,14 @@ SkipList::IntegrityCheck test_very_simple_insert() {
     return result;
 }
 
-// Need int as SkipList::IntegrityCheck can not use |=
+// Need int as ManAHL::SkipList::IntegrityCheck can not use |=
 int test_simple_insert() {
     int result = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
@@ -72,7 +72,7 @@ int test_insert_and_remove_same() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
@@ -92,7 +92,7 @@ int test_insert_remove_multiple() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
@@ -142,7 +142,7 @@ int test_ins_rem_rand() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        SkipList::HeadNode<unsigned int> sl;
+        ManAHL::SkipList::HeadNode<unsigned int> sl;
         std::vector<unsigned int> values;
         unsigned int value;
         for (int i = 0; i < LENGTH; ++i) {
@@ -185,7 +185,7 @@ int test_insert_n_numbers_same(int n, double value) {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     for (int i = 0; i < n; ++i) {
         sl.insert(value);
         result |= sl.lacksIntegrity();
@@ -211,7 +211,7 @@ int test_at() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
     sl.insert(42.0);
@@ -247,7 +247,7 @@ int test_at_fails() {
     int result = 0;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
@@ -262,15 +262,15 @@ int test_at_fails() {
     try {
         sl.at(-1);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     try {
         sl.at(5);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     try {
         sl.at(6);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     return result;
 }
 
@@ -281,7 +281,7 @@ int test_at_dest() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
     result |= sl.lacksIntegrity();
@@ -307,7 +307,7 @@ int test_at_dest_fails() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
     result |= sl.lacksIntegrity();
@@ -319,19 +319,19 @@ int test_at_dest_fails() {
     try {
         sl.at(0, 3, dest);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     try {
         sl.at(1, 2, dest);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     try {
         sl.at(2, 1, dest);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     try {
         sl.at(3, 0, dest);
         result |= 1;
-    } catch (SkipList::IndexError &err) {}
+    } catch (ManAHL::SkipList::IndexError &err) {}
     
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << " FAIL" << std::endl;
@@ -345,7 +345,7 @@ int test_has() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
     sl.insert(42.0);
@@ -384,7 +384,7 @@ int test_has_not() {
     int result = 0;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.has(-1);
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
@@ -403,7 +403,7 @@ int test_has_not() {
 
 int test_remove_fails() {
     int result = 0;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -411,11 +411,11 @@ int test_remove_fails() {
     try {
         sl.remove(84.0);
         result |= 1;
-    } catch (SkipList::ValueError &err) {}
+    } catch (ManAHL::SkipList::ValueError &err) {}
     try {
         sl.remove(21.0);
         result |= 1;
-    } catch (SkipList::ValueError &err) {}
+    } catch (ManAHL::SkipList::ValueError &err) {}
     return result;
 }
 
@@ -428,7 +428,7 @@ int test_at_large() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        SkipList::HeadNode<int> sl;
+        ManAHL::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
             result |= sl.lacksIntegrity();
@@ -453,7 +453,7 @@ int test_ins_at_rem_with_srand() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        SkipList::HeadNode<int> sl;
+        ManAHL::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
             result |= sl.lacksIntegrity();
@@ -477,7 +477,7 @@ int test_ins_at_rem_with_srand() {
 int test_single_insert_remove() {
     int num = 1000 * 1000;
     int result = 0;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -495,7 +495,7 @@ int test_single_ins_rem_middle() {
     size_t SIZE = 1000;//24;
     int result = 0;
     double val = SIZE / 2;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -517,7 +517,7 @@ int test_single_ins_rem_middle() {
 int test_insert_one_million() {
     int num = 1024 * 1024;
     int result = 0;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     std::string in;
@@ -541,20 +541,20 @@ int test_roll_med_simple() {
     const int WIN_LENGTH = 5;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[RollingMedian::dest_size(COUNT,
-                                                       WIN_LENGTH,
-                                                       DEST_STRIDE)];
+    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+            WIN_LENGTH,
+            DEST_STRIDE)];
     int result = 0;
     
     for (int i = 0; i < COUNT; ++i) {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= RollingMedian::odd_index(src, 1, COUNT,
-                                       WIN_LENGTH, dest, DEST_STRIDE);
+    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+                                               WIN_LENGTH, dest, DEST_STRIDE);
     // Test
     for (size_t i = 0;
-         i < RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 4. + 2.0 * i;
@@ -568,20 +568,20 @@ int test_roll_med_even_win() {
     const int WIN_LENGTH = 4;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[RollingMedian::dest_size(COUNT,
-                                                       WIN_LENGTH,
-                                                       DEST_STRIDE)];
+    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+                                                               WIN_LENGTH,
+                                                               DEST_STRIDE)];
     int result = 0;
     
     for (int i = 0; i < COUNT; ++i) {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= RollingMedian::odd_index(src, 1, COUNT,
-                                       WIN_LENGTH, dest, DEST_STRIDE);
+    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+                                               WIN_LENGTH, dest, DEST_STRIDE);
     // Test
     for (size_t i = 0;
-         i < RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 4. + 2.0 * i;
@@ -595,19 +595,19 @@ int test_roll_med_even_mean() {
     const int WIN_LENGTH = 4;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[RollingMedian::dest_size(COUNT,
-                                                       WIN_LENGTH,
-                                                       DEST_STRIDE)];
+    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+                                                               WIN_LENGTH,
+                                                               DEST_STRIDE)];
     int result = 0;
     
     for (int i = 0; i < COUNT; ++i) {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= RollingMedian::even_odd_index(src, 1, COUNT,
-                                            WIN_LENGTH, dest, DEST_STRIDE);
+    result |= ManAHL::RollingMedian::even_odd_index(src, 1, COUNT,
+                                                    WIN_LENGTH, dest, DEST_STRIDE);
     for (size_t i = 0;
-         i < RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 3. + 2.0 * i;
@@ -632,7 +632,7 @@ int doc_height_trend(size_t level) {
     
     srand(1);
     for (size_t i = 0; i < level; ++i) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         int num = 1 << i;
         for (int j = 0; j < num; ++j) {
             sl.insert(42.0);
@@ -651,7 +651,7 @@ int doc_simple_dot() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
@@ -676,7 +676,7 @@ int doc_insert() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<int> sl;
+    ManAHL::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr, dot_count++);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
@@ -696,7 +696,7 @@ int doc_insert_remove() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<int> sl;
+    ManAHL::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr, dot_count++);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
@@ -722,7 +722,7 @@ int doc_insert_remove_repeat() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    SkipList::HeadNode<int> sl;
+    ManAHL::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr, dot_count++);
     for (int c = 0; c < REPEAT_COUNT; ++c) {
         for (int i = 0; i < NUM; ++i) {
@@ -752,7 +752,7 @@ int doc_insert_remove_repeat() {
 
 int perf_single_insert_remove() {
     int num = 1000 * 1000;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
@@ -776,12 +776,12 @@ int perf_single_insert_remove() {
 int perf_large_skiplist_ins_only() {
     size_t SIZE = 1000 * 1000;
     int COUNT = 1;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
     for (int c = 0; c < COUNT; ++c) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         assert(! sl.lacksIntegrity());
         for (size_t i = 0; i < SIZE; ++i) {
             sl.insert(i);
@@ -806,12 +806,12 @@ int perf_large_skiplist_ins_only() {
 int perf_large_skiplist_ins_rem() {
     size_t SIZE = 1024 * 1024;
     int COUNT = 1;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
     for (int c = 0; c < COUNT; ++c) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         assert(! sl.lacksIntegrity());
         for (size_t i = 0; i < SIZE; ++i) {
             sl.insert(i);
@@ -843,7 +843,7 @@ int perf_single_ins_rem_middle() {
     int REPEAT_COUNT = 1000 * 1000;
     int result = 0;
     double val = SKIPLIST_SIZE / 2;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     std::stringstream ostr;
     
     srand(1);
@@ -878,7 +878,7 @@ int perf_single_ins_at_rem_middle() {
     int REPEAT_COUNT = 1000 * 1000;
     int result = 0;
     double value = SKIPLIST_SIZE / 2;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     std::stringstream ostr;
     
     srand(1);
@@ -918,7 +918,7 @@ int perf_median_sliding_window() {
     for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
         data.push_back(rand());
     }
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     time_t start = clock();
     std::vector<double> medians;
     for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
@@ -953,7 +953,7 @@ int perf_1m_median_values() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -989,7 +989,7 @@ int perf_1m_medians_1000_vectors() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -1025,7 +1025,7 @@ int perf_simulate_real_use() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -1051,7 +1051,7 @@ int perf_at_in_one_million() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {
@@ -1074,7 +1074,7 @@ int perf_has_in_one_million() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    SkipList::HeadNode<double> sl;
+    ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {
@@ -1098,9 +1098,9 @@ int perf_roll_med_odd_index() {
     const int WIN_LENGTH = 101;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[RollingMedian::dest_size(COUNT,
-                                                       WIN_LENGTH,
-                                                       DEST_STRIDE)];
+    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+                                                               WIN_LENGTH,
+                                                               DEST_STRIDE)];
     int result = 0;
     
     for (int i = 0; i < COUNT; ++i) {
@@ -1108,8 +1108,8 @@ int perf_roll_med_odd_index() {
     }
     srand(1);
     time_t start = clock();
-    result |= RollingMedian::odd_index(src, 1, COUNT,
-                                       WIN_LENGTH, dest, DEST_STRIDE);
+    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+                                               WIN_LENGTH, dest, DEST_STRIDE);
     double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
     std::cout << " vectors length: " << std::setw(8) << COUNT;
@@ -1135,12 +1135,12 @@ int perf_roll_med_odd_index_wins() {
     }
     // Loop over this data for various window sizes from 1 to 524288
     for (size_t win = 1; win < COUNT; win *= 2) {
-        size_t dest_size = RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
+        size_t dest_size = ManAHL::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
         double *dest = new double[dest_size];
         srand(1);
         time_t start = clock();
-        result |= RollingMedian::odd_index(src, 1, COUNT,
-                                           win, dest, DEST_STRIDE);
+        result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+                                                   win, dest, DEST_STRIDE);
         double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
         std::cout << " vectors length: " << std::setw(8) << COUNT;
