@@ -1,0 +1,169 @@
+# doc_insert_remove
+digraph SkipList {
+label = "SkipList, read bottom upwards."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+"HeadNode" [
+label = "Empty HeadNode"
+shape = "record"
+];
+"HeadNode1" [
+label = "{ 1 | <f0> 0x100507460} | { 1 | <f1> 0x100507460} | { 1 | <f2> 0x100507460}"
+shape = "record"
+];
+"node10x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode1":f0 -> "node10x100507460":w1 [];
+"HeadNode1":f1 -> "node10x100507460":w2 [];
+"HeadNode1":f2 -> "node10x100507460":w3 [];
+"node10x100507460" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+shape = "record"
+];
+"node10x100507460":f1 -> "node10x0":w1 [];
+"node10x100507460":f2 -> "node10x0":w2 [];
+"node10x100507460":f3 -> "node10x0":w3 [];
+"HeadNode2" [
+label = "{ 1 | <f0> 0x100507460} | { 1 | <f1> 0x100507460} | { 1 | <f2> 0x100507460}"
+shape = "record"
+];
+"node20x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode2":f0 -> "node20x100507460":w1 [];
+"HeadNode2":f1 -> "node20x100507460":w2 [];
+"HeadNode2":f2 -> "node20x100507460":w3 [];
+"node20x100507460" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100507540 } | { <w2> 1 | <f2> 0x100507540 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node20x100507460":f1 -> "node20x100507540":w1 [];
+"node20x100507460":f2 -> "node20x100507540":w2 [];
+"node20x100507460":f3 -> "node20x0":w3 [];
+"node20x100507540" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+shape = "record"
+];
+"node20x100507540":f1 -> "node20x0":w1 [];
+"node20x100507540":f2 -> "node20x0":w2 [];
+"HeadNode3" [
+label = "{ 1 | <f0> 0x100507460} | { 1 | <f1> 0x100507460} | { 1 | <f2> 0x100507460}"
+shape = "record"
+];
+"node30x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode3":f0 -> "node30x100507460":w1 [];
+"HeadNode3":f1 -> "node30x100507460":w2 [];
+"HeadNode3":f2 -> "node30x100507460":w3 [];
+"node30x100507460" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100507540 } | { <w2> 1 | <f2> 0x100507540 } | { <w3> 2 | <f3> 0x100507570 }"
+shape = "record"
+];
+"node30x100507460":f1 -> "node30x100507540":w1 [];
+"node30x100507460":f2 -> "node30x100507540":w2 [];
+"node30x100507460":f3 -> "node30x100507570":w3 [];
+"node30x100507540" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100507570 } | { <w2> 1 | <f2> 0x100507570 }"
+shape = "record"
+];
+"node30x100507540":f1 -> "node30x100507570":w1 [];
+"node30x100507540":f2 -> "node30x100507570":w2 [];
+"node30x100507570" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+shape = "record"
+];
+"node30x100507570":f1 -> "node30x0":w1 [];
+"node30x100507570":f2 -> "node30x0":w2 [];
+"node30x100507570":f3 -> "node30x0":w3 [];
+"HeadNode4" [
+label = "{ 1 | <f0> 0x100507460} | { 1 | <f1> 0x100507460} | { 1 | <f2> 0x100507460}"
+shape = "record"
+];
+"node40x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode4":f0 -> "node40x100507460":w1 [];
+"HeadNode4":f1 -> "node40x100507460":w2 [];
+"HeadNode4":f2 -> "node40x100507460":w3 [];
+"node40x100507460" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100507540 } | { <w2> 1 | <f2> 0x100507540 } | { <w3> 2 | <f3> 0x100507570 }"
+shape = "record"
+];
+"node40x100507460":f1 -> "node40x100507540":w1 [];
+"node40x100507460":f2 -> "node40x100507540":w2 [];
+"node40x100507460":f3 -> "node40x100507570":w3 [];
+"node40x100507540" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100507570 } | { <w2> 1 | <f2> 0x100507570 }"
+shape = "record"
+];
+"node40x100507540":f1 -> "node40x100507570":w1 [];
+"node40x100507540":f2 -> "node40x100507570":w2 [];
+"node40x100507570" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100507630 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node40x100507570":f1 -> "node40x100507630":w1 [];
+"node40x100507570":f2 -> "node40x0":w2 [];
+"node40x100507570":f3 -> "node40x0":w3 [];
+"node40x100507630" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node40x100507630":f1 -> "node40x0":w1 [];
+"HeadNode5" [
+label = "{ 1 | <f0> 0x100507540} | { 1 | <f1> 0x100507540} | { 2 | <f2> 0x100507570}"
+shape = "record"
+];
+"node50x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode5":f0 -> "node50x100507540":w1 [];
+"HeadNode5":f1 -> "node50x100507540":w2 [];
+"HeadNode5":f2 -> "node50x100507570":w3 [];
+"node50x100507540" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100507570 } | { <w2> 1 | <f2> 0x100507570 }"
+shape = "record"
+];
+"node50x100507540":f1 -> "node50x100507570":w1 [];
+"node50x100507540":f2 -> "node50x100507570":w2 [];
+"node50x100507570" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100507630 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node50x100507570":f1 -> "node50x100507630":w1 [];
+"node50x100507570":f2 -> "node50x0":w2 [];
+"node50x100507570":f3 -> "node50x0":w3 [];
+"node50x100507630" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node50x100507630":f1 -> "node50x0":w1 [];
+"HeadNode6" [
+label = "{ 1 | <f0> 0x100507570} | { 1 | <f1> 0x100507570} | { 1 | <f2> 0x100507570}"
+shape = "record"
+];
+"node60x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode6":f0 -> "node60x100507570":w1 [];
+"HeadNode6":f1 -> "node60x100507570":w2 [];
+"HeadNode6":f2 -> "node60x100507570":w3 [];
+"node60x100507570" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100507630 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node60x100507570":f1 -> "node60x100507630":w1 [];
+"node60x100507570":f2 -> "node60x0":w2 [];
+"node60x100507570":f3 -> "node60x0":w3 [];
+"node60x100507630" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node60x100507630":f1 -> "node60x0":w1 [];
+"HeadNode7" [
+label = "{ 1 | <f0> 0x100507630}"
+shape = "record"
+];
+"node70x0" [label = "<w1> NULL" shape = "record"];
+"HeadNode7":f0 -> "node70x100507630":w1 [];
+"node70x100507630" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node70x100507630":f1 -> "node70x0":w1 [];
+"HeadNode8" [
+label = "Empty HeadNode"
+shape = "record"
+];
+}

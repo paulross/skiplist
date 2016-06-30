@@ -1,0 +1,281 @@
+# doc_insert
+digraph SkipList {
+label = "SkipList, read bottom upwards."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+"HeadNode" [
+label = "Empty HeadNode"
+shape = "record"
+];
+"HeadNode1" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node10x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode1":f0 -> "node10x100401b10":w1 [];
+"HeadNode1":f1 -> "node10x100401b10":w2 [];
+"HeadNode1":f2 -> "node10x100401b10":w3 [];
+"node10x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+shape = "record"
+];
+"node10x100401b10":f1 -> "node10x0":w1 [];
+"node10x100401b10":f2 -> "node10x0":w2 [];
+"node10x100401b10":f3 -> "node10x0":w3 [];
+"HeadNode2" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node20x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode2":f0 -> "node20x100401b10":w1 [];
+"HeadNode2":f1 -> "node20x100401b10":w2 [];
+"HeadNode2":f2 -> "node20x100401b10":w3 [];
+"node20x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node20x100401b10":f1 -> "node20x100401bf0":w1 [];
+"node20x100401b10":f2 -> "node20x0":w2 [];
+"node20x100401b10":f3 -> "node20x0":w3 [];
+"node20x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node20x100401bf0":f1 -> "node20x0":w1 [];
+"HeadNode3" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node30x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode3":f0 -> "node30x100401b10":w1 [];
+"HeadNode3":f1 -> "node30x100401b10":w2 [];
+"HeadNode3":f2 -> "node30x100401b10":w3 [];
+"node30x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x0 } | { <w3> 3 | <f3> 0x0 }"
+shape = "record"
+];
+"node30x100401b10":f1 -> "node30x100401bf0":w1 [];
+"node30x100401b10":f2 -> "node30x0":w2 [];
+"node30x100401b10":f3 -> "node30x0":w3 [];
+"node30x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node30x100401bf0":f1 -> "node30x100401c20":w1 [];
+"node30x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node30x100401c20":f1 -> "node30x0":w1 [];
+"HeadNode4" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node40x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode4":f0 -> "node40x100401b10":w1 [];
+"HeadNode4":f1 -> "node40x100401b10":w2 [];
+"HeadNode4":f2 -> "node40x100401b10":w3 [];
+"node40x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x100401c80 } | { <w3> 3 | <f3> 0x100401c80 }"
+shape = "record"
+];
+"node40x100401b10":f1 -> "node40x100401bf0":w1 [];
+"node40x100401b10":f2 -> "node40x100401c80":w2 [];
+"node40x100401b10":f3 -> "node40x100401c80":w3 [];
+"node40x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node40x100401bf0":f1 -> "node40x100401c20":w1 [];
+"node40x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100401c80 }"
+shape = "record"
+];
+"node40x100401c20":f1 -> "node40x100401c80":w1 [];
+"node40x100401c80" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+shape = "record"
+];
+"node40x100401c80":f1 -> "node40x0":w1 [];
+"node40x100401c80":f2 -> "node40x0":w2 [];
+"node40x100401c80":f3 -> "node40x0":w3 [];
+"HeadNode5" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node50x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode5":f0 -> "node50x100401b10":w1 [];
+"HeadNode5":f1 -> "node50x100401b10":w2 [];
+"HeadNode5":f2 -> "node50x100401b10":w3 [];
+"node50x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x100401c80 } | { <w3> 3 | <f3> 0x100401c80 }"
+shape = "record"
+];
+"node50x100401b10":f1 -> "node50x100401bf0":w1 [];
+"node50x100401b10":f2 -> "node50x100401c80":w2 [];
+"node50x100401b10":f3 -> "node50x100401c80":w3 [];
+"node50x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node50x100401bf0":f1 -> "node50x100401c20":w1 [];
+"node50x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100401c80 }"
+shape = "record"
+];
+"node50x100401c20":f1 -> "node50x100401c80":w1 [];
+"node50x100401c80" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x100401d20 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+shape = "record"
+];
+"node50x100401c80":f1 -> "node50x100401d20":w1 [];
+"node50x100401c80":f2 -> "node50x0":w2 [];
+"node50x100401c80":f3 -> "node50x0":w3 [];
+"node50x100401d20" [
+label = "<f0> 4 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node50x100401d20":f1 -> "node50x0":w1 [];
+"HeadNode6" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node60x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode6":f0 -> "node60x100401b10":w1 [];
+"HeadNode6":f1 -> "node60x100401b10":w2 [];
+"HeadNode6":f2 -> "node60x100401b10":w3 [];
+"node60x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x100401c80 } | { <w3> 3 | <f3> 0x100401c80 }"
+shape = "record"
+];
+"node60x100401b10":f1 -> "node60x100401bf0":w1 [];
+"node60x100401b10":f2 -> "node60x100401c80":w2 [];
+"node60x100401b10":f3 -> "node60x100401c80":w3 [];
+"node60x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node60x100401bf0":f1 -> "node60x100401c20":w1 [];
+"node60x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100401c80 }"
+shape = "record"
+];
+"node60x100401c20":f1 -> "node60x100401c80":w1 [];
+"node60x100401c80" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x100401d20 } | { <w2> 3 | <f2> 0x0 } | { <w3> 3 | <f3> 0x0 }"
+shape = "record"
+];
+"node60x100401c80":f1 -> "node60x100401d20":w1 [];
+"node60x100401c80":f2 -> "node60x0":w2 [];
+"node60x100401c80":f3 -> "node60x0":w3 [];
+"node60x100401d20" [
+label = "<f0> 4 | { <w1> 1 | <f1> 0x100401c50 }"
+shape = "record"
+];
+"node60x100401d20":f1 -> "node60x100401c50":w1 [];
+"node60x100401c50" [
+label = "<f0> 5 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node60x100401c50":f1 -> "node60x0":w1 [];
+"HeadNode7" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node70x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode7":f0 -> "node70x100401b10":w1 [];
+"HeadNode7":f1 -> "node70x100401b10":w2 [];
+"HeadNode7":f2 -> "node70x100401b10":w3 [];
+"node70x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x100401c80 } | { <w3> 3 | <f3> 0x100401c80 }"
+shape = "record"
+];
+"node70x100401b10":f1 -> "node70x100401bf0":w1 [];
+"node70x100401b10":f2 -> "node70x100401c80":w2 [];
+"node70x100401b10":f3 -> "node70x100401c80":w3 [];
+"node70x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node70x100401bf0":f1 -> "node70x100401c20":w1 [];
+"node70x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100401c80 }"
+shape = "record"
+];
+"node70x100401c20":f1 -> "node70x100401c80":w1 [];
+"node70x100401c80" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x100401d20 } | { <w2> 4 | <f2> 0x0 } | { <w3> 4 | <f3> 0x0 }"
+shape = "record"
+];
+"node70x100401c80":f1 -> "node70x100401d20":w1 [];
+"node70x100401c80":f2 -> "node70x0":w2 [];
+"node70x100401c80":f3 -> "node70x0":w3 [];
+"node70x100401d20" [
+label = "<f0> 4 | { <w1> 1 | <f1> 0x100401c50 }"
+shape = "record"
+];
+"node70x100401d20":f1 -> "node70x100401c50":w1 [];
+"node70x100401c50" [
+label = "<f0> 5 | { <w1> 1 | <f1> 0x100401d80 }"
+shape = "record"
+];
+"node70x100401c50":f1 -> "node70x100401d80":w1 [];
+"node70x100401d80" [
+label = "<f0> 6 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node70x100401d80":f1 -> "node70x0":w1 [];
+"HeadNode8" [
+label = "{ 1 | <f0> 0x100401b10} | { 1 | <f1> 0x100401b10} | { 1 | <f2> 0x100401b10}"
+shape = "record"
+];
+"node80x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
+"HeadNode8":f0 -> "node80x100401b10":w1 [];
+"HeadNode8":f1 -> "node80x100401b10":w2 [];
+"HeadNode8":f2 -> "node80x100401b10":w3 [];
+"node80x100401b10" [
+label = "<f0> 0 | { <w1> 1 | <f1> 0x100401bf0 } | { <w2> 3 | <f2> 0x100401c80 } | { <w3> 3 | <f3> 0x100401c80 }"
+shape = "record"
+];
+"node80x100401b10":f1 -> "node80x100401bf0":w1 [];
+"node80x100401b10":f2 -> "node80x100401c80":w2 [];
+"node80x100401b10":f3 -> "node80x100401c80":w3 [];
+"node80x100401bf0" [
+label = "<f0> 1 | { <w1> 1 | <f1> 0x100401c20 }"
+shape = "record"
+];
+"node80x100401bf0":f1 -> "node80x100401c20":w1 [];
+"node80x100401c20" [
+label = "<f0> 2 | { <w1> 1 | <f1> 0x100401c80 }"
+shape = "record"
+];
+"node80x100401c20":f1 -> "node80x100401c80":w1 [];
+"node80x100401c80" [
+label = "<f0> 3 | { <w1> 1 | <f1> 0x100401d20 } | { <w2> 5 | <f2> 0x0 } | { <w3> 5 | <f3> 0x0 }"
+shape = "record"
+];
+"node80x100401c80":f1 -> "node80x100401d20":w1 [];
+"node80x100401c80":f2 -> "node80x0":w2 [];
+"node80x100401c80":f3 -> "node80x0":w3 [];
+"node80x100401d20" [
+label = "<f0> 4 | { <w1> 1 | <f1> 0x100401c50 }"
+shape = "record"
+];
+"node80x100401d20":f1 -> "node80x100401c50":w1 [];
+"node80x100401c50" [
+label = "<f0> 5 | { <w1> 1 | <f1> 0x100401d80 }"
+shape = "record"
+];
+"node80x100401c50":f1 -> "node80x100401d80":w1 [];
+"node80x100401d80" [
+label = "<f0> 6 | { <w1> 1 | <f1> 0x100401db0 }"
+shape = "record"
+];
+"node80x100401d80":f1 -> "node80x100401db0":w1 [];
+"node80x100401db0" [
+label = "<f0> 7 | { <w1> 1 | <f1> 0x0 }"
+shape = "record"
+];
+"node80x100401db0":f1 -> "node80x0":w1 [];
+}

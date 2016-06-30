@@ -27,3 +27,16 @@
 *.exe
 *.out
 *.app
+
+doc/sphinx/build/*
+skiplist.xcodeproj/*
+build/*
+
+# Python
+__pycache__
+.cache
+*.pyc
+
+.project
+.pydevproject
+
