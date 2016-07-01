@@ -27,8 +27,8 @@ ManAHL::SkipList::IntegrityCheck test_very_simple_insert() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result = sl.lacksIntegrity();
-    sl.dotFile(ostr);
-    sl.dotFileFinalise(ostr);
+    sl.dotFile(ostr, 0);
+    sl.dotFileFinalise(ostr, 1);
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << std::endl;
     }
@@ -59,7 +59,7 @@ int test_simple_insert() {
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 4);
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 5);
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << std::endl;
     }
@@ -79,7 +79,7 @@ int test_insert_and_remove_same() {
     sl.remove(42.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 1);
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 2);
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << std::endl;
     }
@@ -123,7 +123,7 @@ int test_insert_remove_multiple() {
     sl.remove(100.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 9);
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 10);
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << std::endl;
     }
@@ -151,8 +151,8 @@ int test_ins_rem_rand() {
             sl.insert(value);
             result |= sl.lacksIntegrity();
             if (result) {
-                sl.dotFile(ostr, 1);
-                sl.dotFileFinalise(ostr);
+                sl.dotFile(ostr, 0);
+                sl.dotFileFinalise(ostr, 1);
                 break;
             }
         }
@@ -164,8 +164,8 @@ int test_ins_rem_rand() {
             values.pop_back();
             result |= sl.lacksIntegrity();
             if (result) {
-                sl.dotFile(ostr, 1);
-                sl.dotFileFinalise(ostr);
+                sl.dotFile(ostr, 0);
+                sl.dotFileFinalise(ostr, 1);
                 break;
             }
         }
@@ -198,7 +198,7 @@ int test_insert_n_numbers_same(int n, double value) {
         sl.dotFile(ostr, i + n);
     }
     
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 2 * n);
     if (result && DUMP_DOT_ON_FAILURE) {
         std::cout << ostr.str() << std::endl;
     }
@@ -229,7 +229,7 @@ int test_at() {
     sl.insert(12.0);
     sl.dotFile(ostr, 5);
     result |= sl.lacksIntegrity();
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 6);
     // Test at()
     result |= sl.at(0) != 12.0;
     result |= sl.at(1) != 21.0;
@@ -363,7 +363,7 @@ int test_has() {
     sl.insert(12.0);
     sl.dotFile(ostr, 5);
     result |= sl.lacksIntegrity();
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 6);
     // Test at()
     result |= ! sl.has(12.0);
     result |= ! sl.has(21.0);
@@ -663,7 +663,7 @@ int doc_simple_dot() {
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
     sl.dotFile(ostr, 0);
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, 1);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -683,7 +683,7 @@ int doc_insert() {
         result |= sl.lacksIntegrity();
         sl.dotFile(ostr, dot_count++);
     }
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, dot_count);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -708,7 +708,7 @@ int doc_insert_remove() {
         result |= sl.lacksIntegrity();
         sl.dotFile(ostr, dot_count++);
     }
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, dot_count);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -736,7 +736,7 @@ int doc_insert_remove_repeat() {
             sl.dotFile(ostr, dot_count++);
         }
     }
-    sl.dotFileFinalise(ostr);
+    sl.dotFileFinalise(ostr, dot_count);
     std::cout << ostr.str() << std::endl;
     return result;
 }

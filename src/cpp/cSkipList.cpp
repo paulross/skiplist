@@ -603,16 +603,16 @@ PySkipList_dot_file(PySkipList* self)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            self->pSl_long->dotFile(ostr);
-            self->pSl_long->dotFileFinalise(ostr);
+            self->pSl_long->dotFile(ostr, 0);
+            self->pSl_long->dotFileFinalise(ostr, 0);
             break;
         case TYPE_DOUBLE:
             self->pSl_long->dotFile(ostr);
-            self->pSl_double->dotFileFinalise(ostr);
+            self->pSl_double->dotFileFinalise(ostr, 0);
             break;
         case TYPE_BYTES:
-            self->pSl_bytes->dotFile(ostr);
-            self->pSl_bytes->dotFileFinalise(ostr);
+            self->pSl_bytes->dotFile(ostr, 0);
+            self->pSl_bytes->dotFileFinalise(ostr, 0);
             break;
         default:
             PyErr_BadInternalCall();

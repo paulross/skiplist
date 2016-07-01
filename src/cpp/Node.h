@@ -44,8 +44,8 @@ public:
     Node<T> *remove(size_t call_level, const T &value);
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    void dotFile(std::ostream &os, int suffix = 0);
-    void writeNode(std::ostream &os, int suffix = 0);
+    void dotFile(std::ostream &os, size_t suffix = 0);
+    void writeNode(std::ostream &os, size_t suffix = 0);
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
     
     // Integrity checks, returns non-zero on failure
@@ -340,16 +340,14 @@ IntegrityCheck Node<T>::lacksIntegrityRefsInSet(const std::set<const Node<T>*> &
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
 template <typename T>
-void Node<T>::writeNode(std::ostream &os, int suffix) {
+void Node<T>::writeNode(std::ostream &os, size_t suffix) {
     os << "\"node";
-    if (suffix) {
-        os << suffix;
-    }
+    os << suffix;
     os << std::hex << this << std::dec << "\"";
 }
 
 template <typename T>
-void Node<T>::dotFile(std::ostream &os, int suffix) {
+void Node<T>::dotFile(std::ostream &os, size_t suffix) {
     assert(_nodeRefs.height());
     writeNode(os, suffix);
     os << " [" << std::endl;

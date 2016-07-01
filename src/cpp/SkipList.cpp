@@ -11,8 +11,11 @@
 
 namespace ManAHL {
 namespace SkipList {
-    
+
 bool tossCoin() {
+    // A fair coin is / 2.
+    // For a 25% coin (lower nodes) use rand() < RAND_MAX / 4
+    // For a 75% coin (taller nodes) use rand() < RAND_MAX  - RAND_MAX / 4
     return rand() < RAND_MAX / 2;
 }
 
