@@ -907,7 +907,7 @@ static PyObject *_seed_rand(PyObject */* mod */, PyObject *arg)
 }
 
 
-static PyMethodDef cSkipList_methods[] = {
+static PyMethodDef cSkipListmodule_methods[] = {
     {"toss_coin", (PyCFunction)_toss_coin, METH_NOARGS, _toss_coin_docs },
     {"seed_rand", (PyCFunction)_seed_rand, METH_O, _seed_rand_docs},
     {NULL, NULL, 0, NULL}  /* Sentinel */
@@ -947,7 +947,7 @@ static struct PyModuleDef cSkipList_moduledef = {
     "cSkipList",
     _c_skip_list_docs,
     sizeof(struct module_state),
-    cSkipList_methods,
+    cSkipListmodule_methods,
     NULL,
     cSkipList_traverse,
     cSkipList_clear,
@@ -962,7 +962,7 @@ PyInit_cSkipList(void)
 #else
 #define INITERROR return
 
-void
+PyMODINIT_FUNC
 initcSkipList(void)
 #endif
 {
@@ -975,7 +975,7 @@ initcSkipList(void)
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&cSkipList_moduledef);
 #else
-    module = Py_InitModule3("cSkipList", cSkipList_methods, _c_skip_list_docs);
+    module = Py_InitModule3("cSkipList", cSkipListmodule_methods, _c_skip_list_docs);
 #endif
     if (module == NULL) {
         INITERROR;
@@ -995,5 +995,4 @@ initcSkipList(void)
 #if PY_MAJOR_VERSION >= 3
     return module;
 #endif
-
 }
