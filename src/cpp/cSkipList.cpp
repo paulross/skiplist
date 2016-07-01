@@ -20,7 +20,7 @@ enum SkipListDataType {
     TYPE_ZERO = 0,
     TYPE_LONG,
     TYPE_DOUBLE,
-    TYPE_STRING,
+    TYPE_BYTES,
     /* Insert new enumerated values above this comment. */
     TYPE_OVERFLOW
 };
@@ -28,7 +28,7 @@ enum SkipListDataType {
 /* Define these as an attempt to reduce C&P errors in very similar code. */
 typedef long        TYPE_TYPE_LONG;
 typedef double      TYPE_TYPE_DOUBLE;
-typedef std::string TYPE_TYPE_STRING;
+typedef std::string TYPE_TYPE_BYTES;
 
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
 
@@ -36,10 +36,11 @@ typedef struct {
     PyObject_HEAD
     enum SkipListDataType _data_type;
     union {
-        ManAHL::SkipList::HeadNode<void>             *pSl_void; /* General purpose pointer, not to be de-referrenced. */
+        /* NULL/non-NULL pointer, not to be de-referrenced. */
+        ManAHL::SkipList::HeadNode<void>             *pSl_void;
         ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>   *pSl_long;
         ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE> *pSl_double;
-        ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING> *pSl_string;
+        ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
     };
 } PySkipList;
 
@@ -60,7 +61,7 @@ static int
 PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
     int ret_val = -1;
     PyObject *value_type = NULL;
-    static char *kwlist[] = { "value_type", NULL};
+    static char *kwlist[] = { (char *)"value_type", NULL};
 
 //    std::cout << "PySkipList_init " << self->_data_type << " " << self->pSl_void << std::endl;
     assert(self);
@@ -80,18 +81,18 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
     } else if ((PyTypeObject *)value_type == &PyFloat_Type) {
         self->_data_type = TYPE_DOUBLE;
         self->pSl_double = new ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>();
-    } else if ((PyTypeObject *)value_type == &PyString_Type) {
-        self->_data_type = TYPE_STRING;
-        self->pSl_string = new ManAHL::SkipList::HeadNode<TYPE_TYPE_STRING>();
+    } else if ((PyTypeObject *)value_type == &PyBytes_Type) {
+        self->_data_type = TYPE_BYTES;
+        self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
     } else {
         PyErr_Format(PyExc_ValueError,
-                     "Argument to __init__ must be long, float or str, not \"%s\"",
+                     "Argument to __init__ must be long, float or bytes, not \"%s\"",
                      Py_TYPE(value_type)->tp_name);
         goto except;
     }
     assert(! PyErr_Occurred());
     assert(self);
-    assert(self->pSl);
+    assert(self->pSl_void);
     ret_val = 0;
     goto finally;
 except:
@@ -114,8 +115,8 @@ PySkipList_dealloc(PySkipList* self)
             case TYPE_DOUBLE:
                 delete self->pSl_double;
                 break;
-            case TYPE_STRING:
-                delete self->pSl_string;
+            case TYPE_BYTES:
+                delete self->pSl_bytes;
                 break;
             default:
                 PyErr_BadInternalCall();
@@ -135,6 +136,8 @@ PySkipList_has(PySkipList* self, PyObject *arg)
     PyObject *ret_val = NULL;
     ASSERT_TYPE_IN_RANGE;
     std::string str;
+    
+    assert(self && self->pSl_void);
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -150,13 +153,13 @@ PySkipList_has(PySkipList* self, PyObject *arg)
             }
             ret_val = PyBool_FromLong(self->pSl_double->has(PyFloat_AS_DOUBLE(arg)));
             break;
-        case TYPE_STRING:
-            if (! PyString_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Argument to has() must be str not \"%s\" type", Py_TYPE(arg)->tp_name);
+        case TYPE_BYTES:
+            if (! PyBytes_Check(arg)) {
+                PyErr_Format(PyExc_TypeError, "Argument to has() must be bytes not \"%s\" type", Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            str = std::string(PyString_AS_STRING(arg));
-            ret_val = PyBool_FromLong(self->pSl_string->has(str));
+            str = std::string(PyBytes_AS_STRING(arg));
+            ret_val = PyBool_FromLong(self->pSl_bytes->has(str));
             break;
         default:
             PyErr_BadInternalCall();
@@ -178,7 +181,9 @@ finally:
 static size_t
 _size(PySkipList* self, Py_ssize_t &value) {
     int err_code = 0;
+
     ASSERT_TYPE_IN_RANGE;
+    assert(self && self->pSl_void);
     switch (self->_data_type) {
         case TYPE_LONG:
             value = self->pSl_long->size();
@@ -186,8 +191,8 @@ _size(PySkipList* self, Py_ssize_t &value) {
         case TYPE_DOUBLE:
             value = self->pSl_double->size();
             break;
-        case TYPE_STRING:
-            value = self->pSl_string->size();
+        case TYPE_BYTES:
+            value = self->pSl_bytes->size();
             break;
         default:
             err_code = -1;
@@ -219,6 +224,21 @@ PySkipList_at(PySkipList *self, PyObject *arg)
     Py_ssize_t size;
     long index = 0;
 
+    assert(self && self->pSl_void);
+#if PY_MAJOR_VERSION == 3
+    if (! PyLong_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "Type must be long type not \"%s\" type",
+                     arg->ob_type->tp_name);
+        goto except;
+    }
+    assert(! PyErr_Occurred());
+    index = PyLong_AsLong(arg);
+    // Check for failure
+    if (index == -1 && PyErr_Occurred()) {
+        goto except;
+    }
+#else
     if (! PyLong_Check(arg) && ! PyInt_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be integer or long type not \"%s\" type",
@@ -239,6 +259,7 @@ PySkipList_at(PySkipList *self, PyObject *arg)
             goto except;
         }
     }
+#endif
     if (_size(self, size)) {
         PyErr_BadInternalCall();
         goto except;
@@ -258,8 +279,8 @@ PySkipList_at(PySkipList *self, PyObject *arg)
         case TYPE_DOUBLE:
             ret_val = PyFloat_FromDouble(self->pSl_double->at(index));
             break;
-        case TYPE_STRING:
-            ret_val = PyString_FromString(self->pSl_string->at(index).c_str());
+        case TYPE_BYTES:
+            ret_val = PyBytes_FromString(self->pSl_bytes->at(index).c_str());
             break;
         default:
             PyErr_BadInternalCall();
@@ -280,10 +301,11 @@ finally:
 }
 
 static PyObject*
-_at_sequence_long(PySkipList *self, int index, Py_ssize_t count) {
+_at_sequence_long(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_LONG> dest;
 
+    assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_LONG);
     ret_val = PyTuple_New(count);
     if (! ret_val) {
@@ -304,10 +326,11 @@ _at_sequence_long(PySkipList *self, int index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_double(PySkipList *self, int index, Py_ssize_t count) {
+_at_sequence_double(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_DOUBLE> dest;
 
+    assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_DOUBLE);
     ret_val = PyTuple_New(count);
     if (! ret_val) {
@@ -328,25 +351,26 @@ _at_sequence_double(PySkipList *self, int index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_string(PySkipList *self, int index, Py_ssize_t count) {
+_at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
-    std::vector<TYPE_TYPE_STRING> dest;
+    std::vector<TYPE_TYPE_BYTES> dest;
 
-    assert(self->_data_type == TYPE_STRING);
+    assert(self && self->pSl_void);
+    assert(self->_data_type == TYPE_BYTES);
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
         return NULL;
     }
     try {
-        self->pSl_string->at(index, count, dest);
+        self->pSl_bytes->at(index, count, dest);
     } catch (ManAHL::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
     assert(dest.size() == count);
     for (Py_ssize_t i = 0; i < count; ++i) {
-        PyTuple_SET_ITEM(ret_val, i, PyString_FromString(dest[i].c_str()));
+        PyTuple_SET_ITEM(ret_val, i, PyBytes_FromString(dest[i].c_str()));
     }
     return ret_val;
 }
@@ -365,6 +389,7 @@ PySkipList_at_sequence(PySkipList *self, PyObject *args, PyObject *kwargs)
         NULL
     };
 
+    assert(self && self->pSl_void);
     /* Check input and compute real index. */
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "nn:at_seq",
                                       kwlist, &index, &count)) {
@@ -404,8 +429,8 @@ PySkipList_at_sequence(PySkipList *self, PyObject *args, PyObject *kwargs)
                 goto except;
             }
             break;
-        case TYPE_STRING:
-            ret = _at_sequence_string(self, index, count);
+        case TYPE_BYTES:
+            ret = _at_sequence_bytes(self, index, count);
             if (! ret) {
                 goto except;
             }
@@ -429,16 +454,18 @@ static PyObject *
 PySkipList_size(PySkipList* self)
 {
     PyObject *ret_val = NULL;
+
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(self->pSl_long->size());
+            ret_val = PyLong_FromSsize_t(self->pSl_long->size());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(self->pSl_double->size());
+            ret_val = PyLong_FromSsize_t(self->pSl_double->size());
             break;
-        case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(self->pSl_string->size());
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->size());
             break;
         default:
             PyErr_BadInternalCall();
@@ -451,16 +478,18 @@ static PyObject *
 PySkipList_height(PySkipList* self)
 {
     PyObject *ret_val = NULL;
+
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(self->pSl_long->height());
+            ret_val = PyLong_FromSsize_t(self->pSl_long->height());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(self->pSl_double->height());
+            ret_val = PyLong_FromSsize_t(self->pSl_double->height());
             break;
-        case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(self->pSl_string->height());
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->height());
             break;
         default:
             PyErr_BadInternalCall();
@@ -472,28 +501,35 @@ PySkipList_height(PySkipList* self)
 static PyObject *
 PySkipList_insert(PySkipList* self, PyObject *arg)
 {
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be long not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be long not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
             self->pSl_long->insert(PyLong_AsLong(arg));
             break;
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be float not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
             self->pSl_double->insert(PyFloat_AS_DOUBLE(arg));
             break;
-        case TYPE_STRING:
-            if (! PyString_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be str not \"%s\" type", Py_TYPE(arg)->tp_name);
+        case TYPE_BYTES:
+            if (! PyBytes_Check(arg)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be bytes not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            self->pSl_string->insert(PyString_AsString(arg));
+            self->pSl_bytes->insert(PyBytes_AsString(arg));
             break;
         default:
             PyErr_BadInternalCall();
@@ -505,11 +541,14 @@ PySkipList_insert(PySkipList* self, PyObject *arg)
 static PyObject *
 PySkipList_remove(PySkipList* self, PyObject *arg)
 {
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be long not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be long not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
             try {
@@ -521,7 +560,9 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
             break;
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be float not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
             try {
@@ -532,13 +573,15 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             break;
-        case TYPE_STRING:
-            if (! PyString_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Type must be str not \"%s\" type", Py_TYPE(arg)->tp_name);
+        case TYPE_BYTES:
+            if (! PyBytes_Check(arg)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be bytes not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 return NULL;
             }
             try {
-                self->pSl_string->remove(PyString_AsString(arg));
+                self->pSl_bytes->remove(PyBytes_AsString(arg));
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -556,6 +599,7 @@ PySkipList_dot_file(PySkipList* self)
 {
     std::stringstream ostr;
 
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
@@ -566,9 +610,9 @@ PySkipList_dot_file(PySkipList* self)
             self->pSl_long->dotFile(ostr);
             self->pSl_double->dotFileFinalise(ostr);
             break;
-        case TYPE_STRING:
-            self->pSl_string->dotFile(ostr);
-            self->pSl_string->dotFileFinalise(ostr);
+        case TYPE_BYTES:
+            self->pSl_bytes->dotFile(ostr);
+            self->pSl_bytes->dotFileFinalise(ostr);
             break;
         default:
             PyErr_BadInternalCall();
@@ -581,16 +625,18 @@ static PyObject *
 PySkipList_lacks_integrity(PySkipList* self)
 {
     PyObject *ret_val = NULL;
+
+    assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(self->pSl_long->lacksIntegrity());
+            ret_val = PyLong_FromSsize_t(self->pSl_long->lacksIntegrity());
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(self->pSl_double->lacksIntegrity());
+            ret_val = PyLong_FromSsize_t(self->pSl_double->lacksIntegrity());
             break;
-        case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(self->pSl_string->lacksIntegrity());
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->lacksIntegrity());
             break;
         default:
             PyErr_BadInternalCall();
@@ -610,6 +656,7 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
         NULL
     };
     
+    assert(self && self->pSl_void);
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "i:node_height", kwlist, &index)) {
         assert(PyErr_Occurred());
         goto except;
@@ -626,13 +673,13 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
     }
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(self->pSl_long->height(index));
+            ret_val = PyLong_FromSsize_t(self->pSl_long->height(index));
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(self->pSl_double->height(index));
+            ret_val = PyLong_FromSsize_t(self->pSl_double->height(index));
             break;
-        case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(self->pSl_string->height(index));
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->height(index));
             break;
         default:
             PyErr_BadInternalCall();
@@ -640,7 +687,7 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
             break;
     }
     assert(! PyErr_Occurred());
-    assert(ret);
+    assert(ret_val);
     goto finally;
 except:
     Py_XDECREF(ret_val);
@@ -656,12 +703,13 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
     int index;
     int level;
     Py_ssize_t size;
-
     static char *kwlist[] = {
         (char *) "index", /* Integer, negative values are from the end. */
         (char *) "level", /* Integer, negative values are from the end. */
         NULL
     };
+
+    assert(self && self->pSl_void);
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "ii:node_width",
                                       kwlist, &index, &level)) {
         assert(PyErr_Occurred());
@@ -686,8 +734,8 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
         case TYPE_DOUBLE:
             height = self->pSl_double->height(index);
             break;
-        case TYPE_STRING:
-            height = self->pSl_string->height(index);
+        case TYPE_BYTES:
+            height = self->pSl_bytes->height(index);
             break;
         default:
             PyErr_BadInternalCall();
@@ -700,13 +748,13 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
     /* Get width. */
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = PyInt_FromSsize_t(self->pSl_long->width(index, level));
+            ret_val = PyLong_FromSsize_t(self->pSl_long->width(index, level));
             break;
         case TYPE_DOUBLE:
-            ret_val = PyInt_FromSsize_t(self->pSl_double->width(index, level));
+            ret_val = PyLong_FromSsize_t(self->pSl_double->width(index, level));
             break;
-        case TYPE_STRING:
-            ret_val = PyInt_FromSsize_t(self->pSl_string->width(index, level));
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->width(index, level));
             break;
         default:
             PyErr_BadInternalCall();
@@ -832,6 +880,15 @@ static char _seed_rand_docs[] =
 
 static PyObject *_seed_rand(PyObject */* mod */, PyObject *arg)
 {
+#if PY_MAJOR_VERSION == 3
+    if (! PyLong_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "Type must be long type not \"%s\" type",
+                     arg->ob_type->tp_name);
+        return NULL;
+    }
+    ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
+#else
     if (! PyLong_Check(arg) && ! PyInt_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be integer or long type not \"%s\" type",
@@ -845,11 +902,12 @@ static PyObject *_seed_rand(PyObject */* mod */, PyObject *arg)
         // TODO: Check for overflow
         ManAHL::SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
     }
+#endif
     Py_RETURN_NONE;
 }
 
 
-static PyMethodDef cSkipListmodule_methods[] = {
+static PyMethodDef cSkipList_methods[] = {
     {"toss_coin", (PyCFunction)_toss_coin, METH_NOARGS, _toss_coin_docs },
     {"seed_rand", (PyCFunction)_seed_rand, METH_O, _seed_rand_docs},
     {NULL, NULL, 0, NULL}  /* Sentinel */
@@ -861,21 +919,81 @@ static char _c_skip_list_docs[] =
     "\nseed_rand(int) - seed the random number generator."
     "\ntoss_coin() - Toss a coin using the random number generator and return True/False.";
 
+struct module_state {
+    PyObject *error;
+};
+
+#if PY_MAJOR_VERSION == 3
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+#else
+#define GETSTATE(m) (&_state)
+static struct module_state _state;
+#endif
+
+#if PY_MAJOR_VERSION >= 3
+
+static int cSkipList_traverse(PyObject *m, visitproc visit, void *arg) {
+    Py_VISIT(GETSTATE(m)->error);
+    return 0;
+}
+
+static int cSkipList_clear(PyObject *m) {
+    Py_CLEAR(GETSTATE(m)->error);
+    return 0;
+}
+
+static struct PyModuleDef cSkipList_moduledef = {
+    PyModuleDef_HEAD_INIT,
+    "cSkipList",
+    _c_skip_list_docs,
+    sizeof(struct module_state),
+    cSkipList_methods,
+    NULL,
+    cSkipList_traverse,
+    cSkipList_clear,
+    NULL
+};
+
+#define INITERROR return NULL
+
 PyMODINIT_FUNC
+PyInit_cSkipList(void)
+
+#else
+#define INITERROR return
+
+void
 initcSkipList(void)
+#endif
 {
-    PyObject* m = NULL;
+    PyObject* module = NULL;
 
     PySkipListType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PySkipListType) < 0) {
-        return;
+        INITERROR;
     }
-    m = Py_InitModule3("cSkipList", cSkipListmodule_methods, _c_skip_list_docs);
-    if (m == NULL) {
-        return;
+#if PY_MAJOR_VERSION >= 3
+    module = PyModule_Create(&cSkipList_moduledef);
+#else
+    module = Py_InitModule3("cSkipList", cSkipList_methods, _c_skip_list_docs);
+#endif
+    if (module == NULL) {
+        INITERROR;
     }
     Py_INCREF(&PySkipListType);
-    if (PyModule_AddObject(m, "PySkipList", (PyObject *)&PySkipListType)) {
-        return;
+    if (PyModule_AddObject(module, "PySkipList", (PyObject *)&PySkipListType)) {
+        INITERROR;
     }
+
+    struct module_state *st = GETSTATE(module);
+    
+    st->error = PyErr_NewException("cSkipList.Error", NULL, NULL);
+    if (st->error == NULL) {
+        Py_DECREF(module);
+        INITERROR;
+    }
+#if PY_MAJOR_VERSION >= 3
+    return module;
+#endif
+
 }

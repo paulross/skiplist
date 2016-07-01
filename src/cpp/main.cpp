@@ -1243,7 +1243,7 @@ int test_rolling_median_all() {
 }
 
 
-int main(int /* argc */, const char * /* argv[] */) {
+int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
     time_t start = clock();
     
