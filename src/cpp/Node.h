@@ -42,6 +42,8 @@ public:
     Node<T> *insert(const T &value);
     // Remove a node
     Node<T> *remove(size_t call_level, const T &value);
+    // Estimate of the number of bytes used by this node
+    size_t size_of() const;
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
     void dotFile(std::ostream &os, size_t suffix = 0);
@@ -336,6 +338,16 @@ IntegrityCheck Node<T>::lacksIntegrityRefsInSet(const std::set<const Node<T>*> &
     }
     return INTEGRITY_SUCCESS;
 }
+
+
+// Returns the estimate of the memory usage of an instance
+template <typename T>
+size_t Node<T>::size_of() const {
+    return sizeof(*this) \
+    + sizeof(T) /* value */ \
+    + _nodeRefs.size_of();
+}
+
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 

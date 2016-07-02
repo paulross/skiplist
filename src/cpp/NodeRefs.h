@@ -64,10 +64,11 @@ public:
     void swap(SwappableNodeRefStack<T> &val);
     // Reset the swap level (for example before starting a remove).
     void resetSwapLevel() { _swapLevel = 0; }
-//    void incWidth(size_t level, size_t val) { _nodes[level].width += val; }
-//    void decWidth(size_t level, size_t val) { _nodes[level].width -= val; }
 
     IntegrityCheck lacksIntegrity() const;
+    
+    // Returns the estimate of the memory usage of an instance
+    size_t size_of() const;
     
 protected:
     std::vector<struct NodeRef<T> > _nodes;
@@ -146,6 +147,15 @@ IntegrityCheck SwappableNodeRefStack<T>::lacksIntegrity() const {
         }
     }
     return INTEGRITY_SUCCESS;
+}
+
+// Returns the estimate of the memory usage of an instance
+template <typename T>
+size_t SwappableNodeRefStack<T>::size_of() const {
+    return sizeof(*this) \
+        + sizeof(std::vector<struct NodeRef<T> >) \
+        + _nodes.capacity() * sizeof(struct NodeRef<T>) \
+        + sizeof(size_t) /* _swapLevel */;
 }
 
 /********************* END: SwappableNodeRefStack ****************************/

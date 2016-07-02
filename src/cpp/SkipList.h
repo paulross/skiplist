@@ -323,7 +323,7 @@
 namespace ManAHL {
 namespace SkipList {
 
-#define nullptr NULL
+//#define nullptr NULL
 
 /************************ Exceptions ****************************/
 class Exception : public std::exception {

@@ -75,7 +75,8 @@ public:
     // Returns non-zero if the integrity of this data structure is compromised
     // This is a thorough but expensive check!
     IntegrityCheck lacksIntegrity() const;
-
+    // Estimate of the number of bytes used by the skip list
+    size_t size_of() const;
     virtual ~HeadNode();
     
 protected:
@@ -433,6 +434,20 @@ IntegrityCheck HeadNode<T>::lacksIntegrity() const {
         }
     }
     return INTEGRITY_SUCCESS;
+}
+
+// Returns the estimate of the memory usage of an instance
+template <typename T>
+size_t HeadNode<T>::size_of() const {
+    size_t ret_val = sizeof(*this) + sizeof(_count) + _nodeRefs.size_of();
+    if (_nodeRefs.height()) {
+        const Node<T> *node = _nodeRefs[0].pNode;
+        while (node) {
+            ret_val += node->size_of();
+            node = node->next();
+        }
+    }
+    return ret_val;
 }
 
 template <typename T>

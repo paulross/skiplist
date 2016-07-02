@@ -1155,6 +1155,25 @@ int perf_roll_med_odd_index_wins() {
     return result;
 }
 
+int perf_size_of() {
+    size_t NUM = 1024 * 1024;
+    int result = 0;
+    
+    srand(1);
+    for (size_t i = 1; i <= NUM; i *= 2) {
+        ManAHL::SkipList::HeadNode<double> sl;
+        for (size_t j = 0; j < i; ++j) {
+            sl.insert(j);
+        }
+        size_t size_of = sl.size_of();
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
+        std::cout << "size_of(" << std::setw(8) << i << "): ";
+        std::cout << std::setw(8) << size_of << " bytes";
+        std::cout << " ratio: " << static_cast<double>(size_of) / i << std::endl;
+    }
+    return result;
+}
+
 /******************* END: Performance Tests **************************/
 
 int print_result(const char *fn_name, int result) {
@@ -1223,12 +1242,14 @@ int perf_all() {
     result |= perf_median_sliding_window();
     result |= perf_1m_median_values();
     result |= perf_1m_medians_1000_vectors();
-    result |= perf_simulate_real_use();
+//    result |= perf_simulate_real_use();
     result |= perf_at_in_one_million();
     result |= perf_has_in_one_million();
 
     result |= perf_roll_med_odd_index();
     result |= perf_roll_med_odd_index_wins();
+    
+    result |= perf_size_of();
     
     return result;
 }
