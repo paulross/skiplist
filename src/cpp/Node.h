@@ -42,7 +42,7 @@ public:
     Node<T> *insert(const T &value);
     // Remove a node
     Node<T> *remove(size_t call_level, const T &value);
-    // Estimate of the number of bytes used by this node
+    // An estimate of the number of bytes used by this node
     size_t size_of() const;
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
@@ -339,13 +339,12 @@ IntegrityCheck Node<T>::lacksIntegrityRefsInSet(const std::set<const Node<T>*> &
     return INTEGRITY_SUCCESS;
 }
 
-
-// Returns the estimate of the memory usage of an instance
+// Returns an estimate of the memory usage of an instance
 template <typename T>
 size_t Node<T>::size_of() const {
-    return sizeof(*this) \
-    + sizeof(T) /* value */ \
-    + _nodeRefs.size_of();
+    // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
+    // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
+    return sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
 }
 
 

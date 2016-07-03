@@ -436,10 +436,12 @@ IntegrityCheck HeadNode<T>::lacksIntegrity() const {
     return INTEGRITY_SUCCESS;
 }
 
-// Returns the estimate of the memory usage of an instance
+// Returns an estimate of the memory usage of an instance
 template <typename T>
 size_t HeadNode<T>::size_of() const {
-    size_t ret_val = sizeof(*this) + sizeof(_count) + _nodeRefs.size_of();
+    // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
+    // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
+    size_t ret_val = sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
     if (_nodeRefs.height()) {
         const Node<T> *node = _nodeRefs[0].pNode;
         while (node) {

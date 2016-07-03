@@ -12,10 +12,26 @@
 namespace ManAHL {
 namespace SkipList {
 
+/* Tosses a virtual coin, returns true if 'heads'.
+ *
+ * No heads:
+ * return false;
+ * 6.25% heads:
+ * return rand() < RAND_MAX / 16;
+ * 12.5% heads:
+ * return rand() < RAND_MAX / 8;
+ * 25% heads:
+ * return rand() < RAND_MAX / 4;
+ * Fair coin:
+ * return rand() < RAND_MAX / 2;
+ * 75% heads:
+ * return rand() < RAND_MAX - RAND_MAX / 4;
+ * 87.5% heads:
+ * return rand() < RAND_MAX - RAND_MAX / 8;
+ * 93.75% heads:
+ * return rand() < RAND_MAX - RAND_MAX / 16;
+ */
 bool tossCoin() {
-    // A fair coin is / 2.
-    // For a 25% coin (lower nodes) use rand() < RAND_MAX / 4
-    // For a 75% coin (taller nodes) use rand() < RAND_MAX  - RAND_MAX / 4
     return rand() < RAND_MAX / 2;
 }
 

@@ -67,7 +67,7 @@ public:
 
     IntegrityCheck lacksIntegrity() const;
     
-    // Returns the estimate of the memory usage of an instance
+    // Returns an estimate of the memory usage of an instance
     size_t size_of() const;
     
 protected:
@@ -149,13 +149,10 @@ IntegrityCheck SwappableNodeRefStack<T>::lacksIntegrity() const {
     return INTEGRITY_SUCCESS;
 }
 
-// Returns the estimate of the memory usage of an instance
+// Returns an estimate of the memory usage of an instance
 template <typename T>
 size_t SwappableNodeRefStack<T>::size_of() const {
-    return sizeof(*this) \
-        + sizeof(std::vector<struct NodeRef<T> >) \
-        + _nodes.capacity() * sizeof(struct NodeRef<T>) \
-        + sizeof(size_t) /* _swapLevel */;
+    return sizeof(*this) + _nodes.capacity() * sizeof(struct NodeRef<T>);
 }
 
 /********************* END: SwappableNodeRefStack ****************************/

@@ -873,6 +873,79 @@ int perf_single_ins_rem_middle() {
     return result;
 }
 
+/* Performance of calling at() on the middle value of a 1M long skip list. */
+int perf_single_at_middle() {
+    size_t SKIPLIST_SIZE = 1024 * 1024;
+    int REPEAT_COUNT = 1000 * 1000;
+    int result = 0;
+    double value = SKIPLIST_SIZE / 2;
+    ManAHL::SkipList::HeadNode<double> sl;
+    std::stringstream ostr;
+    
+    srand(1);
+    assert(! sl.lacksIntegrity());
+    for (size_t i = 0; i < SKIPLIST_SIZE; ++i) {
+        sl.insert(i);
+        assert(! sl.lacksIntegrity());
+    }
+    time_t start = clock();
+    assert(! sl.lacksIntegrity());
+    for (int i = 0; i < REPEAT_COUNT; ++i) {
+        assert(! sl.lacksIntegrity());
+        result |= sl.at(SKIPLIST_SIZE / 2) != value;
+        assert(! sl.lacksIntegrity());
+    }
+    assert(! sl.lacksIntegrity());
+    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+    std::cout << " SkiplistSize: " << SKIPLIST_SIZE;
+    std::cout << " repeat count: " << REPEAT_COUNT;
+    std::cout << " time: ";
+    std::cout << exec;
+    std::cout << " (us)";
+    std::cout << " rate " << 1e6 * REPEAT_COUNT / exec << " /s";
+    std::cout << std::endl;
+    return result;
+}
+
+/* Performance of calling has() on the middle value of a 1M long skip list. */
+int perf_single_has_middle() {
+    size_t SKIPLIST_SIZE = 1024 * 1024;
+    int REPEAT_COUNT = 1000 * 1000;
+    int result = 0;
+    int value;
+    ManAHL::SkipList::HeadNode<double> sl;
+    std::stringstream ostr;
+    
+    srand(1);
+    assert(! sl.lacksIntegrity());
+    for (size_t i = 0; i < SKIPLIST_SIZE; ++i) {
+        sl.insert(i);
+        assert(! sl.lacksIntegrity());
+    }
+    time_t start = clock();
+    assert(! sl.lacksIntegrity());
+    for (int i = 0; i < REPEAT_COUNT; ++i) {
+        assert(! sl.lacksIntegrity());
+        value = sl.has(SKIPLIST_SIZE / 2);
+        result |= value != 0;
+        assert(! sl.lacksIntegrity());
+    }
+    assert(! sl.lacksIntegrity());
+    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+    std::cout << " SkiplistSize: " << SKIPLIST_SIZE;
+    std::cout << " repeat count: " << REPEAT_COUNT;
+    std::cout << " time: ";
+    std::cout << exec;
+    std::cout << " (us)";
+    std::cout << " rate " << 1e6 * REPEAT_COUNT / exec << " /s";
+    std::cout << std::endl;
+    return result;
+}
+
+/* Performance of calling insert(), at(), remove() on the middle value
+ * of a 1M long skip list. */
 int perf_single_ins_at_rem_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = 1000 * 1000;
@@ -1155,13 +1228,15 @@ int perf_roll_med_odd_index_wins() {
     return result;
 }
 
+/* Tests the size_of() function on a skip list of length up to 1M. */
 int perf_size_of() {
     size_t NUM = 1024 * 1024;
     int result = 0;
+    typedef double tValue;
     
     srand(1);
     for (size_t i = 1; i <= NUM; i *= 2) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        ManAHL::SkipList::HeadNode<tValue> sl;
         for (size_t j = 0; j < i; ++j) {
             sl.insert(j);
         }
@@ -1169,7 +1244,13 @@ int perf_size_of() {
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
         std::cout << "size_of(" << std::setw(8) << i << "): ";
         std::cout << std::setw(8) << size_of << " bytes";
-        std::cout << " ratio: " << static_cast<double>(size_of) / i << std::endl;
+        std::cout << " ratio: ";
+        std::cout << std::setw(8) << std::setprecision(4);
+        std::cout << 1.0 * size_of / i;
+        std::cout << " /sizeof(T): ";
+        std::cout << std::setw(8) << std::setprecision(4);
+        std::cout << 1.0 * size_of / (i * sizeof(tValue));
+        std::cout << std::endl;
     }
     return result;
 }
@@ -1238,11 +1319,13 @@ int perf_all() {
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
     result |= perf_single_ins_rem_middle();
+    result |= perf_single_at_middle();
+    result |= perf_single_has_middle();
     result |= perf_single_ins_at_rem_middle();
     result |= perf_median_sliding_window();
     result |= perf_1m_median_values();
     result |= perf_1m_medians_1000_vectors();
-//    result |= perf_simulate_real_use();
+    result |= perf_simulate_real_use();
     result |= perf_at_in_one_million();
     result |= perf_has_in_one_million();
 
