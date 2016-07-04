@@ -50,7 +50,7 @@
  * Python
  * ------
  * from ahl.numpy import cSkipList
- * sl = cSkipList.PySkipList()
+ * sl = cSkipList.PySkipList(float)
  * sl.insert(42.0)
  * sl.insert(21.0)
  * sl.insert(84.0)
@@ -94,6 +94,13 @@
  * The first two operations are done by a recursive search.
  * This creates the chain HED[1], A[1], C[1], C[0], D[0] thus E will be created at level 0 and inserted after D.
  *
+ * Node Creation
+ * -------------
+ * Node E is created with a stack containing a single pointer to the next node F.
+ * Then a virtual coin is tossed, for each 'head' and extra NULL reference is added to the stack.
+ * If a 'tail' is thrown the stack is complete.
+ * In the example above when creating Node E we have encountered tosses of 'head', 'head', 'tail'.
+ *
  * Recursive Unwinding
  * -------------------
  * The remaining operations are done as recursion unwinds.
@@ -108,19 +115,19 @@
  * ==========
  * There doesn't seem to be much literature that I could find about the algorithms used for a skip list so these have all been invented here.
  * In these descriptions:
- 'right' is used to mean move to a higher ordinal node.
- 'left' means to move to a lower ordinal node.
- 'up' means to move to a coarser grained list, 'top' is the highest.
- 'down' means to move to a finer grained list, 'bottom' is the level 0.
+ * 'right' is used to mean move to a higher ordinal node.
+ * 'left' means to move to a lower ordinal node.
+ * 'up' means to move to a coarser grained list, 'top' is the highest.
+ * 'down' means to move to a finer grained list, 'bottom' is the level 0.
  *
- * has(T &val)
- * -----------
+ * has(T &val) const;
+ * ------------------
  * This returns true/false is the skip list has the value val.
  * Starting at the highest possible level search rightwards until a larger value is encountered, then drop down. At level 0 return true if the Node value is the supplied value.
  * This is O(log(N)) for well formed skip lists.
  *
- * at(size_t index)
- * ----------------
+ * at(size_t index) const;
+ * -----------------------
  * This returns the value of type T at the given index.
  * The algorithm is similar to has(T &val) but the search moves rightwards if the width is less than the index and decrementing the index by the width.
  * If progress can not be made to the right, drop down a level.
@@ -150,25 +157,25 @@
  *
  * The classes are:
  *
- * SwappableNodeRefStack<T> - A simple bookkeeping class that has a vector of {skip_width, Node<T>*}.
+ * SwappableNodeRefStack<T> - A simple bookkeeping class that has a vector of [{skip_width, Node<T>*}, ...]
     This vector can be expanded or contracted at will.
-    Both HeadNode and Node have one of these to manage their references.
+    Both HeadNode and Node classes have one of these to manage their references.
  *
  * Node<T> - This represents a single value in the skip list.
     The height of a Node is determined at construction by tossing a virtual coin, this determines how many coarser lists this node participates in.
     A Node has a SwappableNodeRefStack object and a value of type T.
  *
- * HeadNode<T> - There is one of these per skip list and this provides the API to the skip list.
-    The height of the HeadNode expands and contracts as required when Nodes are inserted or removed.
-    A HeadNode has a SwappableNodeRefStack object and an independently maintained count of Node objects in the skip list.
+ * HeadNode<T> - There is one of these per skip list and this provides the API to the entire skip list.
+    The height of the HeadNode expands and contracts as required when Nodes are inserted or removed (it is the height of the highest Node).
+    A HeadNode has a SwappableNodeRefStack object and an independently maintained count of the number of Node objects in the skip list.
  *
  * A Node and HeadNode have specialised methods such as has(), at(), insert(), remove() that traverse the skip list recursively.
-
+ *
  * Other Files of Significance
  * ---------------------------
  * SkipList.cpp exposes the random number generator (rand()) and seeder (srand()) so that they can be accessed by CPython for deterministic testing.
  *
- * cSkipList.h/.cpp contains a CPython module with a SkipList<double> implementation.
+ * cSkipList.h/.cpp contains a CPython module with a SkipList implementation for a number of builtin Python types.
  *
  * IntegrityEnums.h has definitions of error codes that can be created by the skip list integrity checking functions.
  *
@@ -178,8 +185,7 @@
  * Prevent Copying
  * ---------------
  * Copying operations are (mostly) prohibited for performance reasons.
- * The only class that allows copying is struct NodeRef that contains fundamental
- * types.
+ * The only class that allows copying is struct NodeRef that contains fundamental types.
  * All other classes declare their copying operation private and unimplemented (rather than using C++11 delete) for compatibility with older compilers.
  *
  * Reverse Loop of Unsigned int
@@ -228,6 +234,16 @@
  * Optimisation: Reuse removed nodes for insert()
  * ----------------------------------------------
  * TODO:
+ *
+ * Reference Counting
+ * ------------------
+ * Some time (and particularly space) improvement could be obtained by reference counting nodes so that duplicate values could be eliminated.
+ * Since the primary use case for this skip list is for computing the rolling median of doubles the chances of duplicates are slim.
+ * For int, long and string there is a higher probability so reference counting might be implemented in the future if these types become commonly used.
+ *
+ * Use and Array of {skip_width, Node<T>*} rather than a vector
+ * ------------------------------------------------------------
+ * Less space would be used for each Node if the SwappableNodeRefStack used a dynamically allocated array of [{skip_width, Node<T>*}, ...] rather than a vector.
  *
  * Performance
  * ===========

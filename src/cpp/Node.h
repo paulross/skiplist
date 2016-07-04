@@ -11,6 +11,10 @@
 
 #include "IntegrityEnums.h"
 
+#if __cplusplus < 201103L
+#define nullptr NULL
+#endif
+
 /**************************** Node *********************************/
 template <typename T> class Node {
 public:

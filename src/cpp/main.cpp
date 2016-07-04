@@ -928,7 +928,7 @@ int perf_single_has_middle() {
     for (int i = 0; i < REPEAT_COUNT; ++i) {
         assert(! sl.lacksIntegrity());
         value = sl.has(SKIPLIST_SIZE / 2);
-        result |= value != 0;
+        result |= value != 1;
         assert(! sl.lacksIntegrity());
     }
     assert(! sl.lacksIntegrity());
@@ -1138,7 +1138,7 @@ int perf_at_in_one_million() {
         double exec = 1e9 * (clock() - start) / (double) CLOCKS_PER_SEC / REPEAT;
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
         std::cout << "at(" << std::setw(8) << i << "): ";
-        std::cout << std::setw(8) << exec << " ns" << std::endl;
+        std::cout << std::setw(8) << exec << " ns" << "ticks " << clock() - start << std::endl;
     }
     return result;
 }
@@ -1346,6 +1346,21 @@ int test_rolling_median_all() {
     return result;
 }
 
+void test_clock_resolution() {
+    int count = 10;
+    double average_ticks = 0;
+    for (int i = 0; i < count; ++i) {
+        time_t start = clock();
+        while (clock() == start) {}
+        time_t diff = clock() - start;
+        average_ticks += diff;
+//        std::cout << "Ticks[" << i << "]: "<< diff << " " << static_cast<double>(diff) / CLOCKS_PER_SEC << " (s)" << std::endl;
+    }
+    std::cout << "Average ticks (" << count << " tests) for change in clock(): " << average_ticks / count;
+    std::cout << " which is every " << average_ticks / count / CLOCKS_PER_SEC << " (s)" << std::endl;
+    std::cout << "CLOCKS_PER_SEC: " << CLOCKS_PER_SEC << std::endl;
+}
+
 
 int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
@@ -1359,10 +1374,11 @@ int main(int /* argc */, const char *[] /* argv[] */) {
 #ifndef DEBUG
     result |= perf_all();
 #endif
-    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+    double exec = (clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << "Final result: ";
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
-    std::cout << "Exec time: " << exec / 1e6 << " (s)" << std::endl;
+    std::cout << "Exec time: " << exec << " (s)" << std::endl;
+    test_clock_resolution();
     std::cout << "Bye, bye!\n";
     return 0;
 }
