@@ -28,6 +28,8 @@
 *.out
 *.app
 
+*.dSYM
+
 doc/sphinx/build/*
 skiplist.xcodeproj/*
 build/*

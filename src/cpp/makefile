@@ -13,7 +13,7 @@ CPP_FILES := main.cpp SkipList.cpp
 OBJS := $(patsubst %.c, %.o, $(CPP_FILES))
 INCLUDES = 
 CC = g++
-CFLAGS = -Wall -Wextra -Werror -Wfatal-errors
+CFLAGS = -Wall -Wextra -Werror -Wfatal-errors -std=c++11
 CFLAGS_RELEASE = $(CFLAGS) -O3 -DNDEBUG
 CFLAGS_DEBUG = $(CFLAGS) -g3 -O0 -DDEBUG=1
 LDFLAGS = 

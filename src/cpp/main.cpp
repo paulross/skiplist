@@ -1350,14 +1350,16 @@ void test_clock_resolution() {
     int count = 10;
     double average_ticks = 0;
     for (int i = 0; i < count; ++i) {
-        time_t start = clock();
+        clock_t start = clock();
         while (clock() == start) {}
-        time_t diff = clock() - start;
+        clock_t diff = clock() - start;
         average_ticks += diff;
 //        std::cout << "Ticks[" << i << "]: "<< diff << " " << static_cast<double>(diff) / CLOCKS_PER_SEC << " (s)" << std::endl;
     }
-    std::cout << "Average ticks (" << count << " tests) for change in clock(): " << average_ticks / count;
-    std::cout << " which is every " << average_ticks / count / CLOCKS_PER_SEC << " (s)" << std::endl;
+    std::cout << "Average ticks (" << count;
+    std::cout << " tests) for change in clock(): " << average_ticks / count;
+    std::cout << " which is every " << average_ticks / count / CLOCKS_PER_SEC;
+    std::cout << " (s)" << std::endl;
     std::cout << "CLOCKS_PER_SEC: " << CLOCKS_PER_SEC << std::endl;
 }
 
@@ -1379,6 +1381,6 @@ int main(int /* argc */, const char *[] /* argv[] */) {
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     std::cout << "Exec time: " << exec << " (s)" << std::endl;
     test_clock_resolution();
-    std::cout << "Bye, bye!\n";
+    std::cout << __cplusplus << " Bye, bye!\n";
     return 0;
 }
