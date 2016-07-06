@@ -8,773 +8,872 @@ edge [];
 subgraph cluster0 {
 style=dashed
 label="Skip list iteration 0"
+
 "HeadNode0" [
 label = "Empty HeadNode"
 shape = "record"
 ];
+
+
 }
 
 subgraph cluster1 {
 style=dashed
 label="Skip list iteration 1"
+
 "HeadNode1" [
-label = "{ 1 | <f0> 0x105a00000} | { 1 | <f1> 0x105a00000} | { 1 | <f2> 0x105a00000}"
+label = "{ 1 | <f3> 0x104000000} | { 1 | <f2> 0x104000000} | { 1 | <f1> 0x104000000}"
 shape = "record"
 ];
-"node10x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode1":f0 -> "node10x105a00000":w1 [];
-"HeadNode1":f1 -> "node10x105a00000":w2 [];
-"HeadNode1":f2 -> "node10x105a00000":w3 [];
-"node10x105a00000" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"HeadNode1":f1 -> "node10x104000000":w1 [];
+"HeadNode1":f2 -> "node10x104000000":w2 [];
+"HeadNode1":f3 -> "node10x104000000":w3 [];
+
+"node10x104000000" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 0"
 shape = "record"
 ];
-"node10x105a00000":f1 -> "node10x0":w1 [];
-"node10x105a00000":f2 -> "node10x0":w2 [];
-"node10x105a00000":f3 -> "node10x0":w3 [];
+"node10x104000000":f1 -> "node10x0":w1 [];
+"node10x104000000":f2 -> "node10x0":w2 [];
+"node10x104000000":f3 -> "node10x0":w3 [];
+
+"node10x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster2 {
 style=dashed
 label="Skip list iteration 2"
+
 "HeadNode2" [
-label = "{ 1 | <f0> 0x105a00000} | { 1 | <f1> 0x105a00000} | { 1 | <f2> 0x105a00000}"
+label = "{ 1 | <f3> 0x104000000} | { 1 | <f2> 0x104000000} | { 1 | <f1> 0x104000000}"
 shape = "record"
 ];
-"node20x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode2":f0 -> "node20x105a00000":w1 [];
-"HeadNode2":f1 -> "node20x105a00000":w2 [];
-"HeadNode2":f2 -> "node20x105a00000":w3 [];
-"node20x105a00000" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 1 | <f2> 0x105a000e0 } | { <w3> 2 | <f3> 0x0 }"
+"HeadNode2":f1 -> "node20x104000000":w1 [];
+"HeadNode2":f2 -> "node20x104000000":w2 [];
+"HeadNode2":f3 -> "node20x104000000":w3 [];
+
+"node20x104000000" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 1 | <f2> 0x104000230 } | { <w1> 1 | <f1> 0x104000230 } | <f0> 0"
 shape = "record"
 ];
-"node20x105a00000":f1 -> "node20x105a000e0":w1 [];
-"node20x105a00000":f2 -> "node20x105a000e0":w2 [];
-"node20x105a00000":f3 -> "node20x0":w3 [];
-"node20x105a000e0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node20x104000000":f1 -> "node20x104000230":w1 [];
+"node20x104000000":f2 -> "node20x104000230":w2 [];
+"node20x104000000":f3 -> "node20x0":w3 [];
+"node20x104000230" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
 shape = "record"
 ];
-"node20x105a000e0":f1 -> "node20x0":w1 [];
-"node20x105a000e0":f2 -> "node20x0":w2 [];
+"node20x104000230":f1 -> "node20x0":w1 [];
+"node20x104000230":f2 -> "node20x0":w2 [];
+
+"node20x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster3 {
 style=dashed
 label="Skip list iteration 3"
+
 "HeadNode3" [
-label = "{ 1 | <f0> 0x105a00000} | { 1 | <f1> 0x105a00000} | { 1 | <f2> 0x105a00000}"
+label = "{ 1 | <f3> 0x104000000} | { 1 | <f2> 0x104000000} | { 1 | <f1> 0x104000000}"
 shape = "record"
 ];
-"node30x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode3":f0 -> "node30x105a00000":w1 [];
-"HeadNode3":f1 -> "node30x105a00000":w2 [];
-"HeadNode3":f2 -> "node30x105a00000":w3 [];
-"node30x105a00000" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 1 | <f2> 0x105a000e0 } | { <w3> 2 | <f3> 0x105a00110 }"
+"HeadNode3":f1 -> "node30x104000000":w1 [];
+"HeadNode3":f2 -> "node30x104000000":w2 [];
+"HeadNode3":f3 -> "node30x104000000":w3 [];
+
+"node30x104000000" [
+label = " { <w3> 2 | <f3> 0x1040000a0 } | { <w2> 1 | <f2> 0x104000230 } | { <w1> 1 | <f1> 0x104000230 } | <f0> 0"
 shape = "record"
 ];
-"node30x105a00000":f1 -> "node30x105a000e0":w1 [];
-"node30x105a00000":f2 -> "node30x105a000e0":w2 [];
-"node30x105a00000":f3 -> "node30x105a00110":w3 [];
-"node30x105a000e0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00110 } | { <w2> 1 | <f2> 0x105a00110 }"
+"node30x104000000":f1 -> "node30x104000230":w1 [];
+"node30x104000000":f2 -> "node30x104000230":w2 [];
+"node30x104000000":f3 -> "node30x1040000a0":w3 [];
+"node30x104000230" [
+label = " { <w2> 1 | <f2> 0x1040000a0 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node30x105a000e0":f1 -> "node30x105a00110":w1 [];
-"node30x105a000e0":f2 -> "node30x105a00110":w2 [];
-"node30x105a00110" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"node30x104000230":f1 -> "node30x1040000a0":w1 [];
+"node30x104000230":f2 -> "node30x1040000a0":w2 [];
+"node30x1040000a0" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
 shape = "record"
 ];
-"node30x105a00110":f1 -> "node30x0":w1 [];
-"node30x105a00110":f2 -> "node30x0":w2 [];
-"node30x105a00110":f3 -> "node30x0":w3 [];
+"node30x1040000a0":f1 -> "node30x0":w1 [];
+"node30x1040000a0":f2 -> "node30x0":w2 [];
+"node30x1040000a0":f3 -> "node30x0":w3 [];
+
+"node30x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster4 {
 style=dashed
 label="Skip list iteration 4"
+
 "HeadNode4" [
-label = "{ 1 | <f0> 0x105a00000} | { 1 | <f1> 0x105a00000} | { 1 | <f2> 0x105a00000}"
+label = "{ 1 | <f3> 0x104000000} | { 1 | <f2> 0x104000000} | { 1 | <f1> 0x104000000}"
 shape = "record"
 ];
-"node40x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode4":f0 -> "node40x105a00000":w1 [];
-"HeadNode4":f1 -> "node40x105a00000":w2 [];
-"HeadNode4":f2 -> "node40x105a00000":w3 [];
-"node40x105a00000" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 1 | <f2> 0x105a000e0 } | { <w3> 2 | <f3> 0x105a00110 }"
+"HeadNode4":f1 -> "node40x104000000":w1 [];
+"HeadNode4":f2 -> "node40x104000000":w2 [];
+"HeadNode4":f3 -> "node40x104000000":w3 [];
+
+"node40x104000000" [
+label = " { <w3> 2 | <f3> 0x1040000a0 } | { <w2> 1 | <f2> 0x104000230 } | { <w1> 1 | <f1> 0x104000230 } | <f0> 0"
 shape = "record"
 ];
-"node40x105a00000":f1 -> "node40x105a000e0":w1 [];
-"node40x105a00000":f2 -> "node40x105a000e0":w2 [];
-"node40x105a00000":f3 -> "node40x105a00110":w3 [];
-"node40x105a000e0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00110 } | { <w2> 1 | <f2> 0x105a00110 }"
+"node40x104000000":f1 -> "node40x104000230":w1 [];
+"node40x104000000":f2 -> "node40x104000230":w2 [];
+"node40x104000000":f3 -> "node40x1040000a0":w3 [];
+"node40x104000230" [
+label = " { <w2> 1 | <f2> 0x1040000a0 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node40x105a000e0":f1 -> "node40x105a00110":w1 [];
-"node40x105a000e0":f2 -> "node40x105a00110":w2 [];
-"node40x105a00110" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a001d0 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+"node40x104000230":f1 -> "node40x1040000a0":w1 [];
+"node40x104000230":f2 -> "node40x1040000a0":w2 [];
+"node40x1040000a0" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node40x105a00110":f1 -> "node40x105a001d0":w1 [];
-"node40x105a00110":f2 -> "node40x0":w2 [];
-"node40x105a00110":f3 -> "node40x0":w3 [];
-"node40x105a001d0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+"node40x1040000a0":f1 -> "node40x1040002b0":w1 [];
+"node40x1040000a0":f2 -> "node40x0":w2 [];
+"node40x1040000a0":f3 -> "node40x0":w3 [];
+"node40x1040002b0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node40x105a001d0":f1 -> "node40x0":w1 [];
+"node40x1040002b0":f1 -> "node40x0":w1 [];
+
+"node40x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster5 {
 style=dashed
 label="Skip list iteration 5"
+
 "HeadNode5" [
-label = "{ 1 | <f0> 0x105a000e0} | { 1 | <f1> 0x105a000e0} | { 2 | <f2> 0x105a00110}"
+label = "{ 2 | <f3> 0x1040000a0} | { 1 | <f2> 0x104000230} | { 1 | <f1> 0x104000230}"
 shape = "record"
 ];
-"node50x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode5":f0 -> "node50x105a000e0":w1 [];
-"HeadNode5":f1 -> "node50x105a000e0":w2 [];
-"HeadNode5":f2 -> "node50x105a00110":w3 [];
-"node50x105a000e0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00110 } | { <w2> 1 | <f2> 0x105a00110 }"
+"HeadNode5":f1 -> "node50x104000230":w1 [];
+"HeadNode5":f2 -> "node50x104000230":w2 [];
+"HeadNode5":f3 -> "node50x1040000a0":w3 [];
+
+"node50x104000230" [
+label = " { <w2> 1 | <f2> 0x1040000a0 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node50x105a000e0":f1 -> "node50x105a00110":w1 [];
-"node50x105a000e0":f2 -> "node50x105a00110":w2 [];
-"node50x105a00110" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a001d0 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+"node50x104000230":f1 -> "node50x1040000a0":w1 [];
+"node50x104000230":f2 -> "node50x1040000a0":w2 [];
+"node50x1040000a0" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node50x105a00110":f1 -> "node50x105a001d0":w1 [];
-"node50x105a00110":f2 -> "node50x0":w2 [];
-"node50x105a00110":f3 -> "node50x0":w3 [];
-"node50x105a001d0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+"node50x1040000a0":f1 -> "node50x1040002b0":w1 [];
+"node50x1040000a0":f2 -> "node50x0":w2 [];
+"node50x1040000a0":f3 -> "node50x0":w3 [];
+"node50x1040002b0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node50x105a001d0":f1 -> "node50x0":w1 [];
+"node50x1040002b0":f1 -> "node50x0":w1 [];
+
+"node50x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster6 {
 style=dashed
 label="Skip list iteration 6"
+
 "HeadNode6" [
-label = "{ 1 | <f0> 0x105a00110} | { 1 | <f1> 0x105a00110} | { 1 | <f2> 0x105a00110}"
+label = "{ 1 | <f3> 0x1040000a0} | { 1 | <f2> 0x1040000a0} | { 1 | <f1> 0x1040000a0}"
 shape = "record"
 ];
-"node60x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode6":f0 -> "node60x105a00110":w1 [];
-"HeadNode6":f1 -> "node60x105a00110":w2 [];
-"HeadNode6":f2 -> "node60x105a00110":w3 [];
-"node60x105a00110" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a001d0 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 }"
+"HeadNode6":f1 -> "node60x1040000a0":w1 [];
+"HeadNode6":f2 -> "node60x1040000a0":w2 [];
+"HeadNode6":f3 -> "node60x1040000a0":w3 [];
+
+"node60x1040000a0" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node60x105a00110":f1 -> "node60x105a001d0":w1 [];
-"node60x105a00110":f2 -> "node60x0":w2 [];
-"node60x105a00110":f3 -> "node60x0":w3 [];
-"node60x105a001d0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+"node60x1040000a0":f1 -> "node60x1040002b0":w1 [];
+"node60x1040000a0":f2 -> "node60x0":w2 [];
+"node60x1040000a0":f3 -> "node60x0":w3 [];
+"node60x1040002b0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node60x105a001d0":f1 -> "node60x0":w1 [];
+"node60x1040002b0":f1 -> "node60x0":w1 [];
+
+"node60x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster7 {
 style=dashed
 label="Skip list iteration 7"
+
 "HeadNode7" [
-label = "{ 1 | <f0> 0x105a001d0}"
+label = "{ 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
+"HeadNode7":f1 -> "node70x1040002b0":w1 [];
+
+"node70x1040002b0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node70x1040002b0":f1 -> "node70x0":w1 [];
+
 "node70x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode7":f0 -> "node70x105a001d0":w1 [];
-"node70x105a001d0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node70x105a001d0":f1 -> "node70x0":w1 [];
 }
 
 subgraph cluster8 {
 style=dashed
 label="Skip list iteration 8"
+
 "HeadNode8" [
 label = "Empty HeadNode"
 shape = "record"
 ];
+
+
 }
 
 subgraph cluster9 {
 style=dashed
 label="Skip list iteration 9"
+
 "HeadNode9" [
-label = "{ 1 | <f0> 0x105a001d0}"
+label = "{ 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
+"HeadNode9":f1 -> "node90x1040002b0":w1 [];
+
+"node90x1040002b0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node90x1040002b0":f1 -> "node90x0":w1 [];
+
 "node90x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode9":f0 -> "node90x105a001d0":w1 [];
-"node90x105a001d0" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node90x105a001d0":f1 -> "node90x0":w1 [];
 }
 
 subgraph cluster10 {
 style=dashed
 label="Skip list iteration 10"
+
 "HeadNode10" [
-label = "{ 1 | <f0> 0x105a001d0} | { 2 | <f1> 0x105a00010}"
+label = "{ 2 | <f2> 0x104000010} | { 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
-"node100x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode10":f0 -> "node100x105a001d0":w1 [];
-"HeadNode10":f1 -> "node100x105a00010":w2 [];
-"node100x105a001d0" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
+"HeadNode10":f1 -> "node100x1040002b0":w1 [];
+"HeadNode10":f2 -> "node100x104000010":w2 [];
+
+"node100x1040002b0" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
 shape = "record"
 ];
-"node100x105a001d0":f1 -> "node100x105a00010":w1 [];
-"node100x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node100x1040002b0":f1 -> "node100x104000010":w1 [];
+"node100x104000010" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
 shape = "record"
 ];
-"node100x105a00010":f1 -> "node100x0":w1 [];
-"node100x105a00010":f2 -> "node100x0":w2 [];
+"node100x104000010":f1 -> "node100x0":w1 [];
+"node100x104000010":f2 -> "node100x0":w2 [];
+
+"node100x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster11 {
 style=dashed
 label="Skip list iteration 11"
+
 "HeadNode11" [
-label = "{ 1 | <f0> 0x105a001d0} | { 2 | <f1> 0x105a00010}"
+label = "{ 2 | <f2> 0x104000010} | { 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
-"node110x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode11":f0 -> "node110x105a001d0":w1 [];
-"HeadNode11":f1 -> "node110x105a00010":w2 [];
-"node110x105a001d0" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
+"HeadNode11":f1 -> "node110x1040002b0":w1 [];
+"HeadNode11":f2 -> "node110x104000010":w2 [];
+
+"node110x1040002b0" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
 shape = "record"
 ];
-"node110x105a001d0":f1 -> "node110x105a00010":w1 [];
-"node110x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 2 | <f2> 0x0 }"
+"node110x1040002b0":f1 -> "node110x104000010":w1 [];
+"node110x104000010" [
+label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node110x105a00010":f1 -> "node110x105a000e0":w1 [];
-"node110x105a00010":f2 -> "node110x0":w2 [];
-"node110x105a000e0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x0 }"
+"node110x104000010":f1 -> "node110x1040000a0":w1 [];
+"node110x104000010":f2 -> "node110x0":w2 [];
+"node110x1040000a0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 2"
 shape = "record"
 ];
-"node110x105a000e0":f1 -> "node110x0":w1 [];
+"node110x1040000a0":f1 -> "node110x0":w1 [];
+
+"node110x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster12 {
 style=dashed
 label="Skip list iteration 12"
+
 "HeadNode12" [
-label = "{ 1 | <f0> 0x105a001d0} | { 2 | <f1> 0x105a00010} | { 4 | <f2> 0x105a00140}"
+label = "{ 4 | <f3> 0x104000100} | { 2 | <f2> 0x104000010} | { 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
-"node120x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode12":f0 -> "node120x105a001d0":w1 [];
-"HeadNode12":f1 -> "node120x105a00010":w2 [];
-"HeadNode12":f2 -> "node120x105a00140":w3 [];
-"node120x105a001d0" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
+"HeadNode12":f1 -> "node120x1040002b0":w1 [];
+"HeadNode12":f2 -> "node120x104000010":w2 [];
+"HeadNode12":f3 -> "node120x104000100":w3 [];
+
+"node120x1040002b0" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
 shape = "record"
 ];
-"node120x105a001d0":f1 -> "node120x105a00010":w1 [];
-"node120x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 2 | <f2> 0x105a00140 }"
+"node120x1040002b0":f1 -> "node120x104000010":w1 [];
+"node120x104000010" [
+label = " { <w2> 2 | <f2> 0x104000100 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node120x105a00010":f1 -> "node120x105a000e0":w1 [];
-"node120x105a00010":f2 -> "node120x105a00140":w2 [];
-"node120x105a000e0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00140 }"
+"node120x104000010":f1 -> "node120x1040000a0":w1 [];
+"node120x104000010":f2 -> "node120x104000100":w2 [];
+"node120x1040000a0" [
+label = " { <w1> 1 | <f1> 0x104000100 } | <f0> 2"
 shape = "record"
 ];
-"node120x105a000e0":f1 -> "node120x105a00140":w1 [];
-"node120x105a00140" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"node120x1040000a0":f1 -> "node120x104000100":w1 [];
+"node120x104000100" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node120x105a00140":f1 -> "node120x0":w1 [];
-"node120x105a00140":f2 -> "node120x0":w2 [];
-"node120x105a00140":f3 -> "node120x0":w3 [];
+"node120x104000100":f1 -> "node120x0":w1 [];
+"node120x104000100":f2 -> "node120x0":w2 [];
+"node120x104000100":f3 -> "node120x0":w3 [];
+
+"node120x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster13 {
 style=dashed
 label="Skip list iteration 13"
+
 "HeadNode13" [
-label = "{ 1 | <f0> 0x105a00010} | { 1 | <f1> 0x105a00010} | { 3 | <f2> 0x105a00140}"
+label = "{ 3 | <f3> 0x104000100} | { 1 | <f2> 0x104000010} | { 1 | <f1> 0x104000010}"
 shape = "record"
 ];
-"node130x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode13":f0 -> "node130x105a00010":w1 [];
-"HeadNode13":f1 -> "node130x105a00010":w2 [];
-"HeadNode13":f2 -> "node130x105a00140":w3 [];
-"node130x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000e0 } | { <w2> 2 | <f2> 0x105a00140 }"
+"HeadNode13":f1 -> "node130x104000010":w1 [];
+"HeadNode13":f2 -> "node130x104000010":w2 [];
+"HeadNode13":f3 -> "node130x104000100":w3 [];
+
+"node130x104000010" [
+label = " { <w2> 2 | <f2> 0x104000100 } | { <w1> 1 | <f1> 0x1040000a0 } | <f0> 1"
 shape = "record"
 ];
-"node130x105a00010":f1 -> "node130x105a000e0":w1 [];
-"node130x105a00010":f2 -> "node130x105a00140":w2 [];
-"node130x105a000e0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00140 }"
+"node130x104000010":f1 -> "node130x1040000a0":w1 [];
+"node130x104000010":f2 -> "node130x104000100":w2 [];
+"node130x1040000a0" [
+label = " { <w1> 1 | <f1> 0x104000100 } | <f0> 2"
 shape = "record"
 ];
-"node130x105a000e0":f1 -> "node130x105a00140":w1 [];
-"node130x105a00140" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"node130x1040000a0":f1 -> "node130x104000100":w1 [];
+"node130x104000100" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node130x105a00140":f1 -> "node130x0":w1 [];
-"node130x105a00140":f2 -> "node130x0":w2 [];
-"node130x105a00140":f3 -> "node130x0":w3 [];
+"node130x104000100":f1 -> "node130x0":w1 [];
+"node130x104000100":f2 -> "node130x0":w2 [];
+"node130x104000100":f3 -> "node130x0":w3 [];
+
+"node130x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster14 {
 style=dashed
 label="Skip list iteration 14"
+
 "HeadNode14" [
-label = "{ 1 | <f0> 0x105a000e0} | { 2 | <f1> 0x105a00140} | { 2 | <f2> 0x105a00140}"
+label = "{ 2 | <f3> 0x104000100} | { 2 | <f2> 0x104000100} | { 1 | <f1> 0x1040000a0}"
 shape = "record"
 ];
-"node140x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode14":f0 -> "node140x105a000e0":w1 [];
-"HeadNode14":f1 -> "node140x105a00140":w2 [];
-"HeadNode14":f2 -> "node140x105a00140":w3 [];
-"node140x105a000e0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00140 }"
+"HeadNode14":f1 -> "node140x1040000a0":w1 [];
+"HeadNode14":f2 -> "node140x104000100":w2 [];
+"HeadNode14":f3 -> "node140x104000100":w3 [];
+
+"node140x1040000a0" [
+label = " { <w1> 1 | <f1> 0x104000100 } | <f0> 2"
 shape = "record"
 ];
-"node140x105a000e0":f1 -> "node140x105a00140":w1 [];
-"node140x105a00140" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"node140x1040000a0":f1 -> "node140x104000100":w1 [];
+"node140x104000100" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node140x105a00140":f1 -> "node140x0":w1 [];
-"node140x105a00140":f2 -> "node140x0":w2 [];
-"node140x105a00140":f3 -> "node140x0":w3 [];
+"node140x104000100":f1 -> "node140x0":w1 [];
+"node140x104000100":f2 -> "node140x0":w2 [];
+"node140x104000100":f3 -> "node140x0":w3 [];
+
+"node140x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster15 {
 style=dashed
 label="Skip list iteration 15"
+
 "HeadNode15" [
-label = "{ 1 | <f0> 0x105a00140} | { 1 | <f1> 0x105a00140} | { 1 | <f2> 0x105a00140}"
+label = "{ 1 | <f3> 0x104000100} | { 1 | <f2> 0x104000100} | { 1 | <f1> 0x104000100}"
 shape = "record"
 ];
-"node150x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL" shape = "record"];
-"HeadNode15":f0 -> "node150x105a00140":w1 [];
-"HeadNode15":f1 -> "node150x105a00140":w2 [];
-"HeadNode15":f2 -> "node150x105a00140":w3 [];
-"node150x105a00140" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 }"
+"HeadNode15":f1 -> "node150x104000100":w1 [];
+"HeadNode15":f2 -> "node150x104000100":w2 [];
+"HeadNode15":f3 -> "node150x104000100":w3 [];
+
+"node150x104000100" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node150x105a00140":f1 -> "node150x0":w1 [];
-"node150x105a00140":f2 -> "node150x0":w2 [];
-"node150x105a00140":f3 -> "node150x0":w3 [];
+"node150x104000100":f1 -> "node150x0":w1 [];
+"node150x104000100":f2 -> "node150x0":w2 [];
+"node150x104000100":f3 -> "node150x0":w3 [];
+
+"node150x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster16 {
 style=dashed
 label="Skip list iteration 16"
+
 "HeadNode16" [
 label = "Empty HeadNode"
 shape = "record"
 ];
+
+
 }
 
 subgraph cluster17 {
 style=dashed
 label="Skip list iteration 17"
+
 "HeadNode17" [
-label = "{ 1 | <f0> 0x105a00140}"
+label = "{ 1 | <f1> 0x104000100}"
 shape = "record"
 ];
+"HeadNode17":f1 -> "node170x104000100":w1 [];
+
+"node170x104000100" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node170x104000100":f1 -> "node170x0":w1 [];
+
 "node170x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode17":f0 -> "node170x105a00140":w1 [];
-"node170x105a00140" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node170x105a00140":f1 -> "node170x0":w1 [];
 }
 
 subgraph cluster18 {
 style=dashed
 label="Skip list iteration 18"
+
 "HeadNode18" [
-label = "{ 1 | <f0> 0x105a00140} | { 2 | <f1> 0x105a000f0} | { 2 | <f2> 0x105a000f0} | { 2 | <f3> 0x105a000f0} | { 2 | <f4> 0x105a000f0}"
+label = "{ 2 | <f5> 0x1040000b0} | { 2 | <f4> 0x1040000b0} | { 2 | <f3> 0x1040000b0} | { 2 | <f2> 0x1040000b0} | { 1 | <f1> 0x104000100}"
 shape = "record"
 ];
-"node180x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL | <w4> NULL | <w5> NULL" shape = "record"];
-"HeadNode18":f0 -> "node180x105a00140":w1 [];
-"HeadNode18":f1 -> "node180x105a000f0":w2 [];
-"HeadNode18":f2 -> "node180x105a000f0":w3 [];
-"HeadNode18":f3 -> "node180x105a000f0":w4 [];
-"HeadNode18":f4 -> "node180x105a000f0":w5 [];
-"node180x105a00140" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000f0 }"
+"HeadNode18":f1 -> "node180x104000100":w1 [];
+"HeadNode18":f2 -> "node180x1040000b0":w2 [];
+"HeadNode18":f3 -> "node180x1040000b0":w3 [];
+"HeadNode18":f4 -> "node180x1040000b0":w4 [];
+"HeadNode18":f5 -> "node180x1040000b0":w5 [];
+
+"node180x104000100" [
+label = " { <w1> 1 | <f1> 0x1040000b0 } | <f0> 0"
 shape = "record"
 ];
-"node180x105a00140":f1 -> "node180x105a000f0":w1 [];
-"node180x105a000f0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w3> 1 | <f3> 0x0 } | { <w4> 1 | <f4> 0x0 } | { <w5> 1 | <f5> 0x0 }"
+"node180x104000100":f1 -> "node180x1040000b0":w1 [];
+"node180x1040000b0" [
+label = " { <w5> 1 | <f5> 0x0 } | { <w4> 1 | <f4> 0x0 } | { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
 shape = "record"
 ];
-"node180x105a000f0":f1 -> "node180x0":w1 [];
-"node180x105a000f0":f2 -> "node180x0":w2 [];
-"node180x105a000f0":f3 -> "node180x0":w3 [];
-"node180x105a000f0":f4 -> "node180x0":w4 [];
-"node180x105a000f0":f5 -> "node180x0":w5 [];
+"node180x1040000b0":f1 -> "node180x0":w1 [];
+"node180x1040000b0":f2 -> "node180x0":w2 [];
+"node180x1040000b0":f3 -> "node180x0":w3 [];
+"node180x1040000b0":f4 -> "node180x0":w4 [];
+"node180x1040000b0":f5 -> "node180x0":w5 [];
+
+"node180x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster19 {
 style=dashed
 label="Skip list iteration 19"
+
 "HeadNode19" [
-label = "{ 1 | <f0> 0x105a00140} | { 2 | <f1> 0x105a000f0} | { 2 | <f2> 0x105a000f0} | { 2 | <f3> 0x105a000f0} | { 2 | <f4> 0x105a000f0}"
+label = "{ 2 | <f5> 0x1040000b0} | { 2 | <f4> 0x1040000b0} | { 2 | <f3> 0x1040000b0} | { 2 | <f2> 0x1040000b0} | { 1 | <f1> 0x104000100}"
 shape = "record"
 ];
-"node190x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL | <w4> NULL | <w5> NULL" shape = "record"];
-"HeadNode19":f0 -> "node190x105a00140":w1 [];
-"HeadNode19":f1 -> "node190x105a000f0":w2 [];
-"HeadNode19":f2 -> "node190x105a000f0":w3 [];
-"HeadNode19":f3 -> "node190x105a000f0":w4 [];
-"HeadNode19":f4 -> "node190x105a000f0":w5 [];
-"node190x105a00140" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000f0 }"
+"HeadNode19":f1 -> "node190x104000100":w1 [];
+"HeadNode19":f2 -> "node190x1040000b0":w2 [];
+"HeadNode19":f3 -> "node190x1040000b0":w3 [];
+"HeadNode19":f4 -> "node190x1040000b0":w4 [];
+"HeadNode19":f5 -> "node190x1040000b0":w5 [];
+
+"node190x104000100" [
+label = " { <w1> 1 | <f1> 0x1040000b0 } | <f0> 0"
 shape = "record"
 ];
-"node190x105a00140":f1 -> "node190x105a000f0":w1 [];
-"node190x105a000f0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00030 } | { <w2> 2 | <f2> 0x0 } | { <w3> 2 | <f3> 0x0 } | { <w4> 2 | <f4> 0x0 } | { <w5> 2 | <f5> 0x0 }"
+"node190x104000100":f1 -> "node190x1040000b0":w1 [];
+"node190x1040000b0" [
+label = " { <w5> 2 | <f5> 0x0 } | { <w4> 2 | <f4> 0x0 } | { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x104000030 } | <f0> 1"
 shape = "record"
 ];
-"node190x105a000f0":f1 -> "node190x105a00030":w1 [];
-"node190x105a000f0":f2 -> "node190x0":w2 [];
-"node190x105a000f0":f3 -> "node190x0":w3 [];
-"node190x105a000f0":f4 -> "node190x0":w4 [];
-"node190x105a000f0":f5 -> "node190x0":w5 [];
-"node190x105a00030" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x0 }"
+"node190x1040000b0":f1 -> "node190x104000030":w1 [];
+"node190x1040000b0":f2 -> "node190x0":w2 [];
+"node190x1040000b0":f3 -> "node190x0":w3 [];
+"node190x1040000b0":f4 -> "node190x0":w4 [];
+"node190x1040000b0":f5 -> "node190x0":w5 [];
+"node190x104000030" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 2"
 shape = "record"
 ];
-"node190x105a00030":f1 -> "node190x0":w1 [];
+"node190x104000030":f1 -> "node190x0":w1 [];
+
+"node190x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster20 {
 style=dashed
 label="Skip list iteration 20"
+
 "HeadNode20" [
-label = "{ 1 | <f0> 0x105a00140} | { 2 | <f1> 0x105a000f0} | { 2 | <f2> 0x105a000f0} | { 2 | <f3> 0x105a000f0} | { 2 | <f4> 0x105a000f0}"
+label = "{ 2 | <f5> 0x1040000b0} | { 2 | <f4> 0x1040000b0} | { 2 | <f3> 0x1040000b0} | { 2 | <f2> 0x1040000b0} | { 1 | <f1> 0x104000100}"
 shape = "record"
 ];
-"node200x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL | <w4> NULL | <w5> NULL" shape = "record"];
-"HeadNode20":f0 -> "node200x105a00140":w1 [];
-"HeadNode20":f1 -> "node200x105a000f0":w2 [];
-"HeadNode20":f2 -> "node200x105a000f0":w3 [];
-"HeadNode20":f3 -> "node200x105a000f0":w4 [];
-"HeadNode20":f4 -> "node200x105a000f0":w5 [];
-"node200x105a00140" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a000f0 }"
+"HeadNode20":f1 -> "node200x104000100":w1 [];
+"HeadNode20":f2 -> "node200x1040000b0":w2 [];
+"HeadNode20":f3 -> "node200x1040000b0":w3 [];
+"HeadNode20":f4 -> "node200x1040000b0":w4 [];
+"HeadNode20":f5 -> "node200x1040000b0":w5 [];
+
+"node200x104000100" [
+label = " { <w1> 1 | <f1> 0x1040000b0 } | <f0> 0"
 shape = "record"
 ];
-"node200x105a00140":f1 -> "node200x105a000f0":w1 [];
-"node200x105a000f0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00030 } | { <w2> 3 | <f2> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w5> 3 | <f5> 0x0 }"
+"node200x104000100":f1 -> "node200x1040000b0":w1 [];
+"node200x1040000b0" [
+label = " { <w5> 3 | <f5> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w2> 3 | <f2> 0x0 } | { <w1> 1 | <f1> 0x104000030 } | <f0> 1"
 shape = "record"
 ];
-"node200x105a000f0":f1 -> "node200x105a00030":w1 [];
-"node200x105a000f0":f2 -> "node200x0":w2 [];
-"node200x105a000f0":f3 -> "node200x0":w3 [];
-"node200x105a000f0":f4 -> "node200x0":w4 [];
-"node200x105a000f0":f5 -> "node200x0":w5 [];
-"node200x105a00030" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00060 }"
+"node200x1040000b0":f1 -> "node200x104000030":w1 [];
+"node200x1040000b0":f2 -> "node200x0":w2 [];
+"node200x1040000b0":f3 -> "node200x0":w3 [];
+"node200x1040000b0":f4 -> "node200x0":w4 [];
+"node200x1040000b0":f5 -> "node200x0":w5 [];
+"node200x104000030" [
+label = " { <w1> 1 | <f1> 0x104000060 } | <f0> 2"
 shape = "record"
 ];
-"node200x105a00030":f1 -> "node200x105a00060":w1 [];
-"node200x105a00060" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+"node200x104000030":f1 -> "node200x104000060":w1 [];
+"node200x104000060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node200x105a00060":f1 -> "node200x0":w1 [];
+"node200x104000060":f1 -> "node200x0":w1 [];
+
+"node200x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster21 {
 style=dashed
 label="Skip list iteration 21"
+
 "HeadNode21" [
-label = "{ 1 | <f0> 0x105a000f0} | { 1 | <f1> 0x105a000f0} | { 1 | <f2> 0x105a000f0} | { 1 | <f3> 0x105a000f0} | { 1 | <f4> 0x105a000f0}"
+label = "{ 1 | <f5> 0x1040000b0} | { 1 | <f4> 0x1040000b0} | { 1 | <f3> 0x1040000b0} | { 1 | <f2> 0x1040000b0} | { 1 | <f1> 0x1040000b0}"
 shape = "record"
 ];
-"node210x0" [label = "<w1> NULL | <w2> NULL | <w3> NULL | <w4> NULL | <w5> NULL" shape = "record"];
-"HeadNode21":f0 -> "node210x105a000f0":w1 [];
-"HeadNode21":f1 -> "node210x105a000f0":w2 [];
-"HeadNode21":f2 -> "node210x105a000f0":w3 [];
-"HeadNode21":f3 -> "node210x105a000f0":w4 [];
-"HeadNode21":f4 -> "node210x105a000f0":w5 [];
-"node210x105a000f0" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a00030 } | { <w2> 3 | <f2> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w5> 3 | <f5> 0x0 }"
+"HeadNode21":f1 -> "node210x1040000b0":w1 [];
+"HeadNode21":f2 -> "node210x1040000b0":w2 [];
+"HeadNode21":f3 -> "node210x1040000b0":w3 [];
+"HeadNode21":f4 -> "node210x1040000b0":w4 [];
+"HeadNode21":f5 -> "node210x1040000b0":w5 [];
+
+"node210x1040000b0" [
+label = " { <w5> 3 | <f5> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w2> 3 | <f2> 0x0 } | { <w1> 1 | <f1> 0x104000030 } | <f0> 1"
 shape = "record"
 ];
-"node210x105a000f0":f1 -> "node210x105a00030":w1 [];
-"node210x105a000f0":f2 -> "node210x0":w2 [];
-"node210x105a000f0":f3 -> "node210x0":w3 [];
-"node210x105a000f0":f4 -> "node210x0":w4 [];
-"node210x105a000f0":f5 -> "node210x0":w5 [];
-"node210x105a00030" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00060 }"
+"node210x1040000b0":f1 -> "node210x104000030":w1 [];
+"node210x1040000b0":f2 -> "node210x0":w2 [];
+"node210x1040000b0":f3 -> "node210x0":w3 [];
+"node210x1040000b0":f4 -> "node210x0":w4 [];
+"node210x1040000b0":f5 -> "node210x0":w5 [];
+"node210x104000030" [
+label = " { <w1> 1 | <f1> 0x104000060 } | <f0> 2"
 shape = "record"
 ];
-"node210x105a00030":f1 -> "node210x105a00060":w1 [];
-"node210x105a00060" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
+"node210x104000030":f1 -> "node210x104000060":w1 [];
+"node210x104000060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node210x105a00060":f1 -> "node210x0":w1 [];
+"node210x104000060":f1 -> "node210x0":w1 [];
+
+"node210x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster22 {
 style=dashed
 label="Skip list iteration 22"
+
 "HeadNode22" [
-label = "{ 1 | <f0> 0x105a00030}"
+label = "{ 1 | <f1> 0x104000030}"
 shape = "record"
 ];
+"HeadNode22":f1 -> "node220x104000030":w1 [];
+
+"node220x104000030" [
+label = " { <w1> 1 | <f1> 0x104000060 } | <f0> 2"
+shape = "record"
+];
+"node220x104000030":f1 -> "node220x104000060":w1 [];
+"node220x104000060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node220x104000060":f1 -> "node220x0":w1 [];
+
 "node220x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode22":f0 -> "node220x105a00030":w1 [];
-"node220x105a00030" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a00060 }"
-shape = "record"
-];
-"node220x105a00030":f1 -> "node220x105a00060":w1 [];
-"node220x105a00060" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node220x105a00060":f1 -> "node220x0":w1 [];
 }
 
 subgraph cluster23 {
 style=dashed
 label="Skip list iteration 23"
+
 "HeadNode23" [
-label = "{ 1 | <f0> 0x105a00060}"
+label = "{ 1 | <f1> 0x104000060}"
 shape = "record"
 ];
+"HeadNode23":f1 -> "node230x104000060":w1 [];
+
+"node230x104000060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node230x104000060":f1 -> "node230x0":w1 [];
+
 "node230x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode23":f0 -> "node230x105a00060":w1 [];
-"node230x105a00060" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node230x105a00060":f1 -> "node230x0":w1 [];
 }
 
 subgraph cluster24 {
 style=dashed
 label="Skip list iteration 24"
+
 "HeadNode24" [
 label = "Empty HeadNode"
 shape = "record"
 ];
+
+
 }
 
 subgraph cluster25 {
 style=dashed
 label="Skip list iteration 25"
+
 "HeadNode25" [
-label = "{ 1 | <f0> 0x105a00060}"
+label = "{ 1 | <f1> 0x104000060}"
 shape = "record"
 ];
+"HeadNode25":f1 -> "node250x104000060":w1 [];
+
+"node250x104000060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node250x104000060":f1 -> "node250x0":w1 [];
+
 "node250x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode25":f0 -> "node250x105a00060":w1 [];
-"node250x105a00060" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node250x105a00060":f1 -> "node250x0":w1 [];
 }
 
 subgraph cluster26 {
 style=dashed
 label="Skip list iteration 26"
+
 "HeadNode26" [
-label = "{ 1 | <f0> 0x105a00060}"
+label = "{ 1 | <f1> 0x104000060}"
 shape = "record"
 ];
+"HeadNode26":f1 -> "node260x104000060":w1 [];
+
+"node260x104000060" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
+shape = "record"
+];
+"node260x104000060":f1 -> "node260x104000010":w1 [];
+"node260x104000010" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node260x104000010":f1 -> "node260x0":w1 [];
+
 "node260x0" [label = "<w1> NULL" shape = "record"];
-"HeadNode26":f0 -> "node260x105a00060":w1 [];
-"node260x105a00060" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
-shape = "record"
-];
-"node260x105a00060":f1 -> "node260x105a00010":w1 [];
-"node260x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x0 }"
-shape = "record"
-];
-"node260x105a00010":f1 -> "node260x0":w1 [];
 }
 
 subgraph cluster27 {
 style=dashed
 label="Skip list iteration 27"
+
 "HeadNode27" [
-label = "{ 1 | <f0> 0x105a00060} | { 3 | <f1> 0x105a000c0}"
+label = "{ 3 | <f2> 0x104000220} | { 1 | <f1> 0x104000060}"
 shape = "record"
 ];
-"node270x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode27":f0 -> "node270x105a00060":w1 [];
-"HeadNode27":f1 -> "node270x105a000c0":w2 [];
-"node270x105a00060" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
+"HeadNode27":f1 -> "node270x104000060":w1 [];
+"HeadNode27":f2 -> "node270x104000220":w2 [];
+
+"node270x104000060" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
 shape = "record"
 ];
-"node270x105a00060":f1 -> "node270x105a00010":w1 [];
-"node270x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000c0 }"
+"node270x104000060":f1 -> "node270x104000010":w1 [];
+"node270x104000010" [
+label = " { <w1> 1 | <f1> 0x104000220 } | <f0> 1"
 shape = "record"
 ];
-"node270x105a00010":f1 -> "node270x105a000c0":w1 [];
-"node270x105a000c0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node270x104000010":f1 -> "node270x104000220":w1 [];
+"node270x104000220" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
 shape = "record"
 ];
-"node270x105a000c0":f1 -> "node270x0":w1 [];
-"node270x105a000c0":f2 -> "node270x0":w2 [];
+"node270x104000220":f1 -> "node270x0":w1 [];
+"node270x104000220":f2 -> "node270x0":w2 [];
+
+"node270x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster28 {
 style=dashed
 label="Skip list iteration 28"
+
 "HeadNode28" [
-label = "{ 1 | <f0> 0x105a00060} | { 3 | <f1> 0x105a000c0}"
+label = "{ 3 | <f2> 0x104000220} | { 1 | <f1> 0x104000060}"
 shape = "record"
 ];
-"node280x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode28":f0 -> "node280x105a00060":w1 [];
-"HeadNode28":f1 -> "node280x105a000c0":w2 [];
-"node280x105a00060" [
-label = "<f0> 0 | { <w1> 1 | <f1> 0x105a00010 }"
+"HeadNode28":f1 -> "node280x104000060":w1 [];
+"HeadNode28":f2 -> "node280x104000220":w2 [];
+
+"node280x104000060" [
+label = " { <w1> 1 | <f1> 0x104000010 } | <f0> 0"
 shape = "record"
 ];
-"node280x105a00060":f1 -> "node280x105a00010":w1 [];
-"node280x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000c0 }"
+"node280x104000060":f1 -> "node280x104000010":w1 [];
+"node280x104000010" [
+label = " { <w1> 1 | <f1> 0x104000220 } | <f0> 1"
 shape = "record"
 ];
-"node280x105a00010":f1 -> "node280x105a000c0":w1 [];
-"node280x105a000c0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a000f0 } | { <w2> 1 | <f2> 0x105a000f0 }"
+"node280x104000010":f1 -> "node280x104000220":w1 [];
+"node280x104000220" [
+label = " { <w2> 1 | <f2> 0x1040002b0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node280x105a000c0":f1 -> "node280x105a000f0":w1 [];
-"node280x105a000c0":f2 -> "node280x105a000f0":w2 [];
-"node280x105a000f0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node280x104000220":f1 -> "node280x1040002b0":w1 [];
+"node280x104000220":f2 -> "node280x1040002b0":w2 [];
+"node280x1040002b0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node280x105a000f0":f1 -> "node280x0":w1 [];
-"node280x105a000f0":f2 -> "node280x0":w2 [];
+"node280x1040002b0":f1 -> "node280x0":w1 [];
+"node280x1040002b0":f2 -> "node280x0":w2 [];
+
+"node280x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster29 {
 style=dashed
 label="Skip list iteration 29"
+
 "HeadNode29" [
-label = "{ 1 | <f0> 0x105a00010} | { 2 | <f1> 0x105a000c0}"
+label = "{ 2 | <f2> 0x104000220} | { 1 | <f1> 0x104000010}"
 shape = "record"
 ];
-"node290x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode29":f0 -> "node290x105a00010":w1 [];
-"HeadNode29":f1 -> "node290x105a000c0":w2 [];
-"node290x105a00010" [
-label = "<f0> 1 | { <w1> 1 | <f1> 0x105a000c0 }"
+"HeadNode29":f1 -> "node290x104000010":w1 [];
+"HeadNode29":f2 -> "node290x104000220":w2 [];
+
+"node290x104000010" [
+label = " { <w1> 1 | <f1> 0x104000220 } | <f0> 1"
 shape = "record"
 ];
-"node290x105a00010":f1 -> "node290x105a000c0":w1 [];
-"node290x105a000c0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a000f0 } | { <w2> 1 | <f2> 0x105a000f0 }"
+"node290x104000010":f1 -> "node290x104000220":w1 [];
+"node290x104000220" [
+label = " { <w2> 1 | <f2> 0x1040002b0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node290x105a000c0":f1 -> "node290x105a000f0":w1 [];
-"node290x105a000c0":f2 -> "node290x105a000f0":w2 [];
-"node290x105a000f0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node290x104000220":f1 -> "node290x1040002b0":w1 [];
+"node290x104000220":f2 -> "node290x1040002b0":w2 [];
+"node290x1040002b0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node290x105a000f0":f1 -> "node290x0":w1 [];
-"node290x105a000f0":f2 -> "node290x0":w2 [];
+"node290x1040002b0":f1 -> "node290x0":w1 [];
+"node290x1040002b0":f2 -> "node290x0":w2 [];
+
+"node290x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster30 {
 style=dashed
 label="Skip list iteration 30"
+
 "HeadNode30" [
-label = "{ 1 | <f0> 0x105a000c0} | { 1 | <f1> 0x105a000c0}"
+label = "{ 1 | <f2> 0x104000220} | { 1 | <f1> 0x104000220}"
 shape = "record"
 ];
-"node300x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode30":f0 -> "node300x105a000c0":w1 [];
-"HeadNode30":f1 -> "node300x105a000c0":w2 [];
-"node300x105a000c0" [
-label = "<f0> 2 | { <w1> 1 | <f1> 0x105a000f0 } | { <w2> 1 | <f2> 0x105a000f0 }"
+"HeadNode30":f1 -> "node300x104000220":w1 [];
+"HeadNode30":f2 -> "node300x104000220":w2 [];
+
+"node300x104000220" [
+label = " { <w2> 1 | <f2> 0x1040002b0 } | { <w1> 1 | <f1> 0x1040002b0 } | <f0> 2"
 shape = "record"
 ];
-"node300x105a000c0":f1 -> "node300x105a000f0":w1 [];
-"node300x105a000c0":f2 -> "node300x105a000f0":w2 [];
-"node300x105a000f0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"node300x104000220":f1 -> "node300x1040002b0":w1 [];
+"node300x104000220":f2 -> "node300x1040002b0":w2 [];
+"node300x1040002b0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node300x105a000f0":f1 -> "node300x0":w1 [];
-"node300x105a000f0":f2 -> "node300x0":w2 [];
+"node300x1040002b0":f1 -> "node300x0":w1 [];
+"node300x1040002b0":f2 -> "node300x0":w2 [];
+
+"node300x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster31 {
 style=dashed
 label="Skip list iteration 31"
+
 "HeadNode31" [
-label = "{ 1 | <f0> 0x105a000f0} | { 1 | <f1> 0x105a000f0}"
+label = "{ 1 | <f2> 0x1040002b0} | { 1 | <f1> 0x1040002b0}"
 shape = "record"
 ];
-"node310x0" [label = "<w1> NULL | <w2> NULL" shape = "record"];
-"HeadNode31":f0 -> "node310x105a000f0":w1 [];
-"HeadNode31":f1 -> "node310x105a000f0":w2 [];
-"node310x105a000f0" [
-label = "<f0> 3 | { <w1> 1 | <f1> 0x0 } | { <w2> 1 | <f2> 0x0 }"
+"HeadNode31":f1 -> "node310x1040002b0":w1 [];
+"HeadNode31":f2 -> "node310x1040002b0":w2 [];
+
+"node310x1040002b0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
 shape = "record"
 ];
-"node310x105a000f0":f1 -> "node310x0":w1 [];
-"node310x105a000f0":f2 -> "node310x0":w2 [];
+"node310x1040002b0":f1 -> "node310x0":w1 [];
+"node310x1040002b0":f2 -> "node310x0":w2 [];
+
+"node310x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
 }
 
 subgraph cluster32 {
 style=dashed
 label="Skip list iteration 32"
+
 "HeadNode32" [
 label = "Empty HeadNode"
 shape = "record"
 ];
+
+
 }
 
 node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | <f9> | <f10> | <f11> | <f12> | <f13> | <f14> | <f15> | <f16> | <f17> | <f18> | <f19> | <f20> | <f21> | <f22> | <f23> | <f24> | <f25> | <f26> | <f27> | <f28> | <f29> | <f30> | <f31> | <f32> | ", style=invis, width=0.01];
