@@ -14,6 +14,10 @@
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="48,-1887 48,-1964 171,-1964 171,-1887 48,-1887"/>
 <text text-anchor="middle" x="109.5" y="-1948.8" font-family="Times,serif" font-size="14.00">Skip list iteration 0</text>
 </g>
+<g id="clust9" class="cluster"><title>cluster8</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="48,-31 48,-108 171,-108 171,-31 48,-31"/>
+<text text-anchor="middle" x="109.5" y="-92.8" font-family="Times,serif" font-size="14.00">Skip list iteration 8</text>
+</g>
 <g id="clust2" class="cluster"><title>cluster1</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="48,-1754 48,-1879 430,-1879 430,-1754 48,-1754"/>
 <text text-anchor="middle" x="239" y="-1863.8" font-family="Times,serif" font-size="14.00">Skip list iteration 1</text>
@@ -41,10 +45,6 @@
 <g id="clust8" class="cluster"><title>cluster7</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="48,-116 48,-409 430,-409 430,-116 48,-116"/>
 <text text-anchor="middle" x="239" y="-393.8" font-family="Times,serif" font-size="14.00">Skip list iteration 7</text>
-</g>
-<g id="clust9" class="cluster"><title>cluster8</title>
-<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="48,-31 48,-108 171,-108 171,-31 48,-31"/>
-<text text-anchor="middle" x="109.5" y="-92.8" font-family="Times,serif" font-size="14.00">Skip list iteration 8</text>
 </g>
 <!-- HeadNode0 -->
 <g id="node1" class="node"><title>HeadNode0</title>

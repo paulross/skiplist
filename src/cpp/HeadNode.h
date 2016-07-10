@@ -483,19 +483,20 @@ template <typename T> void HeadNode<T>::dotFile(std::ostream &os, size_t suffix)
     os << "subgraph cluster" << suffix << " {" << std::endl;
     os << "style=dashed" << std::endl;
     os << "label=\"Skip list iteration " << suffix << "\"" << std::endl;
+    os << std::endl;
     os << "\"HeadNode" << suffix;
     os << "\" [" << std::endl;
     os << "label = \"";
     // Write out the fields
     if (_nodeRefs.height()) {
-        for (size_t i = 0; i < _nodeRefs.height(); ++i) {
-            if (i > 0) {
+        for (size_t level = _nodeRefs.height(); level-- > 0;) {
+            os << "{ " << _nodeRefs[level].width << " | ";
+            os << "<f" << level + 1 << "> ";
+            os << std::hex << _nodeRefs[level].pNode << std::dec;
+            os << "}";
+            if (level > 0) {
                 os << " | ";
             }
-            os << "{ " << _nodeRefs[i].width << " | ";
-            os << "<f" << i << "> ";
-            os << std::hex << _nodeRefs[i].pNode << std::dec;
-            os << "}";
         }
     } else {
         os << "Empty HeadNode";
@@ -503,31 +504,33 @@ template <typename T> void HeadNode<T>::dotFile(std::ostream &os, size_t suffix)
     os << "\"" << std::endl;
     os << "shape = \"record\"" << std::endl;
     os << "];" << std::endl;
-    if (_nodeRefs.height()) {
-        // NULL, the sentinal node
-        os << "\"node";
-        os << suffix;
-        os << "0x0\" [label = \"";
-        for (size_t level = 0; level < _nodeRefs.height(); ++level) {
-            if (level) {
-                os << " | ";
-            }
-            os << "<w" << level + 1 << "> NULL";
-        }
-        os << "\" shape = \"record\"];" << std::endl;
-    }
     // Edges for head node
     for (size_t level = 0; level < _nodeRefs.height(); ++level) {
         os << "\"HeadNode";
         os << suffix;
-        os << "\":f" << level << " -> ";
+        os << "\":f" << level + 1 << " -> ";
         _nodeRefs[level].pNode->writeNode(os, suffix);
         os << ":w" << level + 1 << " [];" << std::endl;
     }
+    os << std::endl;
     // Now all nodes via level 0, if non-empty
     if (_nodeRefs.height()) {
         Node<T> *pNode = this->_nodeRefs[0].pNode;
         pNode->dotFile(os, suffix);
+    }
+    os << std::endl;
+    // NULL, the sentinal node
+    if (_nodeRefs.height()) {
+        os << "\"node";
+        os << suffix;
+        os << "0x0\" [label = \"";
+        for (size_t level = _nodeRefs.height(); level-- > 0;) {
+            os << "<w" << level + 1 << "> NULL";
+            if (level) {
+                os << " | ";
+            }
+        }
+        os << "\" shape = \"record\"];" << std::endl;
     }
     // End: "subgraph cluster1 {"
     os << "}" << std::endl;

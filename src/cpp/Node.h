@@ -366,15 +366,15 @@ void Node<T>::dotFile(std::ostream &os, size_t suffix) {
     assert(_nodeRefs.height());
     writeNode(os, suffix);
     os << " [" << std::endl;
-    os << "label = \"<f0> " << _value;
-    for (size_t i = 0; i < _nodeRefs.height(); ++i) {
-        os << " |";
-        os << " { <w" << i + 1 << "> " << _nodeRefs[i].width;
-        os << " | <f" << i + 1 << "> ";
-        os << std::hex << _nodeRefs[i].pNode << std::dec;
+    os << "label = \"";
+    for (size_t level = _nodeRefs.height(); level-- > 0;) {
+        os << " { <w" << level + 1 << "> " << _nodeRefs[level].width;
+        os << " | <f" << level + 1 << "> ";
+        os << std::hex << _nodeRefs[level].pNode << std::dec;
         os << " }";
+        os << " |";
     }
-    os << "\"" << std::endl;
+    os << " <f0> " << _value << "\"" << std::endl;
     os << "shape = \"record\"" << std::endl;
     os << "];" << std::endl;
     // Now edges

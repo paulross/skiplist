@@ -3,14 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Skip List's documentation!
+SkipList documentation
 =====================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   
+   introduction
+   design
+   performance
+   visualisations
+   biased_coins
+   
 Indices and tables
 ==================
 
