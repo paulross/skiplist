@@ -1368,6 +1368,7 @@ int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
     time_t start = clock();
     
+    std::cout << "Running skip list tests..." << std::endl;
     result |= test_all();
     result |= test_rolling_median_all();
     result |= doc_all();
@@ -1377,10 +1378,11 @@ int main(int /* argc */, const char *[] /* argv[] */) {
     result |= perf_all();
 #endif
     double exec = (clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "__cplusplus: \""<< __cplusplus << "\"" << std::endl;
     std::cout << "Final result: ";
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     std::cout << "Exec time: " << exec << " (s)" << std::endl;
-    test_clock_resolution();
-    std::cout << __cplusplus << " Bye, bye!\n";
+//    test_clock_resolution();
+    std::cout << "Bye, bye!\n";
     return 0;
 }
