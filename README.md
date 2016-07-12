@@ -12,4 +12,6 @@ This project contains a Skip List implementation in C++ with Python bindings.
 * The skip list can generate DOT files that provide a visualisation of its internal state.
 * Extensive documentation. 
 
-Credits: Wilfred Hughes (AHL), Luke Sewell (AHL), Terry Tsantagoeds (AHL), Paul Ross (AHL).
+Credits:
+Original author: Paul Ross (AHL).
+Contributors: Wilfred Hughes (AHL), Luke Sewell (AHL), Terry Santegoeds (AHL).
