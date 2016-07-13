@@ -43,3 +43,6 @@ __pycache__
 .project
 .pydevproject
 
+# Temporary stuff
+tmp/
+
