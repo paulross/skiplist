@@ -9,10 +9,11 @@ SkipList documentation
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    
    introduction
    design
+   api
    performance
    visualisations
    biased_coins

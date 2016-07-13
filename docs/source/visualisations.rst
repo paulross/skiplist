@@ -43,9 +43,8 @@ This takes a single snapshot of the skip list. Create a skip list and insert 5 v
         sl.insert(100);
         sl.insert(12);
         
-        // Now write the DOT file to stdout as a single snapshot
-        sl.dotFile(std::cout, 0);
-        sl.dotFileFinalise(std::cout, 1);
+        sl.dotFile(std::cout);
+        sl.dotFileFinalise(std::cout);
     }
 
 Saving stdout to a text file, say *doc_simple.dot* then running this on the command line::
@@ -55,7 +54,7 @@ Saving stdout to a text file, say *doc_simple.dot* then running this on the comm
 Will produce something like this SVG diagram:
 
 .. image:: visualisations/doc_simple.svg
-    :width: 1024
+    :width: 800
 
 
 ----------------------------
@@ -69,18 +68,17 @@ Multiple snapshots can also be created showing how the skiplist grows and shrink
     #include "SkipList.h"
 
     void doc_insert() {
-        int snapshot = 0;
         ManAHL::SkipList::HeadNode<int> sl;
         
         // Write out the empty head node
-        sl.dotFile(std::cout, dot_count++);
+        sl.dotFile(std::cout);
         // Now insert a value and add the current representation to the DOT file
         for (int i = 0; i < 8; ++i) {
             sl.insert(i);
-            sl.dotFile(std::cout, snapshot++);
+            sl.dotFile(std::cout);
         }
         // Finalise the dot file with the number of snapshots, this updates internal references
-        sl.dotFileFinalise(std::cout, snapshot);
+        sl.dotFileFinalise(std::cout);
     }
 
 Saving this output to a text file, say *doc_insert.dot* then running this on the command line::
@@ -90,7 +88,7 @@ Saving this output to a text file, say *doc_insert.dot* then running this on the
 Will produce this [*doc_insert.svg*]:
 
 .. image:: visualisations/doc_insert.svg
-    :width: 1024
+    :width: 800
 
 .. doc_insert_remove.
 .. 
@@ -101,6 +99,8 @@ Will produce this [*doc_insert.svg*]:
 Inserting the Values 0 to 3 and Removing them Multiple Times
 ---------------------------------------------------------------
 
+This visualisation is produced by this code:
+
 .. code-block:: cpp
 
     #include "SkipList.h"
@@ -108,22 +108,21 @@ Inserting the Values 0 to 3 and Removing them Multiple Times
     void doc_insert_remove_repeat() {
         int NUM = 4;
         int REPEAT_COUNT = 4;
-        int dot_count = 0;
     
         ManAHL::SkipList::HeadNode<int> sl;
 
-        sl.dotFile(std::cout, dot_count++);
+        sl.dotFile(std::cout);
         for (int c = 0; c < REPEAT_COUNT; ++c) {
             for (int i = 0; i < NUM; ++i) {
                 sl.insert(i);
-                sl.dotFile(std::cout, dot_count++);
+                sl.dotFile(std::cout);
             }
             for (int i = 0; i < NUM; ++i) {
                 sl.remove(i);
-                sl.dotFile(std::cout, dot_count++);
+                sl.dotFile(std::cout);
             }
         }
-        sl.dotFileFinalise(std::cout, dot_count);
+        sl.dotFileFinalise(std::cout);
     }
 
 Produces this image, note how the shape of the skip list nodes changes with repeated inserts.

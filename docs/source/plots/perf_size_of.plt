@@ -3,7 +3,8 @@ set grid
 set title "Size complexity of a skip list of double."
 set xlabel "Index"
 
-set ylabel "Factor"
+# set logscale y
+set ylabel "Bytes/Node"
 # set yrange [8:35]
 # set ytics 8,35,3
 
@@ -12,7 +13,7 @@ set ylabel "Factor"
 # set y2range [1:1e9]
 # set y2tics
 
-set pointsize 2
+set pointsize 1
 set datafile separator "\t"
 # Curve fit
 #cost(x) = a + (b / (x/1024))
@@ -21,7 +22,8 @@ set datafile separator "\t"
 set terminal svg size 750,500           # choose the file format
 set output "perf_size_of.svg"   # choose the output device
 
-plot "perf_size_of.dat" using 1:2 t "Factor * sizeof(double)" with linespoints axes x1y1 pt 1 lw 2#, \
-    "perf_size_of.dat" using 1:3 t "Memory usage (bytes)" with linespoints axes x1y2 pt 2 lw 2
+plot "perf_size_of.dat" using 1:3 t "Bytes/Node <double>" with linespoints axes x1y1 pt 5 lw 2#, \
+    "perf_size_of.dat" using 1:5 t "Factor * sizeof(char)" with linespoints axes x1y1 pt 12 lw 2#,
+    # "perf_size_of.dat" using 1:3 t "Memory usage (bytes)" with linespoints axes x1y2 pt 15 lw 2
     
 reset

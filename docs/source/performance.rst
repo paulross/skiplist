@@ -4,9 +4,6 @@
 .. highlight:: c
     :linenothreshold: 10
 
-.. toctree::
-    :maxdepth: 3
-
 .. _performance-label:
 
 **************************************
@@ -14,13 +11,13 @@ Skip List Performance
 **************************************
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
 ====================================
-Running the C++ Performance Tests
+C++ Performance Tests
 ====================================
 
-The time perfromance tests are run as follows:
+The time performance tests are run as follows:
 
 .. code-block:: sh
 
@@ -50,7 +47,15 @@ The performance test mostly work on a skip list of type ``double`` that has 1 mi
 Mutating operations: ``insert()``, ``remove()``
 -------------------------------------------------
 
-These operations on a skip list containing 1 million doubles is typically 450 ns (2.2 million operations per second).
+These operations depend on the size of the skip list. For one containing 1 million doubles each operation is typically 450 ns (2.2 million operations per second).
+
+Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in the middle of the list, both as time in (ns) and rate per second.
+The test functions ``perf_single_ins_rem_middle_vary_length()``.
+
+.. image:: plots/perf_ins_rem_mid.svg
+    :width: 640
+
+This shows good O(log(n)) behaviour where n is the skip list size.
 
 -------------------------------------------------
 Indexing operations: ``at()``, ``has()``
@@ -58,72 +63,142 @@ Indexing operations: ``at()``, ``has()``
 
 These operations on a skip list containing 1 million doubles is typically 220 ns (4.6 million operations per second).
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vs Location
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
--------------------------------------------------
+Here is plot of the time taken to execute ``at()`` or ``has()`` on a skip list of 1 million doubles where the X-axis is the position in the skip list of the found double.
+The test functions are respectively ``perf_at_in_one_million()`` and ``perf_has_in_one_million()``.
+
+
+.. image:: plots/perf_at_has.svg
+    :width: 640
+
+This shows fairly decent O(log(n))'ish type behaviour.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Rolling Median
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes. The number of results is 1e6 - window size. This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``. A window size of 1000 and 1m values (the size of the skip list) takes around 1 second or 1000 ns /value.
+
+.. image:: plots/perf_roll_med_odd_index_wins.svg
+    :width: 640
+
+The test function is ``perf_roll_med_odd_index_wins()``.
+
+====================================
+Space Performance
+====================================
+
+Space usage is a weakness of skip lists. There is a large amount of bookkeeping involved with multiple node pointers and width arithmetic for each node. A skip list has a ``size_of()`` function that estimates the current memory usage of the skip list. This function uses ``sizeof(T)`` which will not account for any dynamically allocated content, for example if ``T`` was a ``std::string``.
+
+Total memory allocation is a function of a number of factors:
+
+* Alignment issues with the members of ``class Node`` which has members ``T _value;`` and ``SwappableNodeRefStack<T> _nodeRefs;``. If ``T`` was a ``char`` type then alignment issues on 64 bit machines may mean the ``char`` takes eight bytes, not one. 
+* The size of the skip lists, very small skip lists carry the overhead of the ``HeadNode``.
+* The coin probability ``p()``. Unfair coins can change the overhead of the additional coarser linked lists. More about this later.
+
+The following graph shows the ``size_of()`` a skip list of doubles of varying lengths. The Y axis is the ``size_of()`` divided by the length of the skip list in bytes per node. Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double. The test name is ``perf_size_of()``.
+
+.. image:: plots/perf_size_of.svg
+    :width: 640
+
+
+---------------------------------------------
+Height Distribution
+---------------------------------------------
+
+This graph shows the height growth of the skip list where the height is the number of additional coarse linked lists. It should grow in a log(n) fashion and it does. It is not monotonic as this skip list is a probabilistic data structure.
+
+.. image:: plots/perf_height_size.svg
+    :width: 640
+
+
+.. _performance-biased-coins-label:
+
+====================================
+Effect of a Biased Coin
+====================================
+
+The default compilation of the skip list uses a fair coin. The coin toss is determined by ``tossCoin()`` in *SkipList.cpp* which has the following implementation:
+
+.. code-block:: c
+
+    bool tossCoin() {
+        return rand() < RAND_MAX / 2;
+    }
+
+The following biases can be introduced with these return statements:
+
+=================================== ================================================================
+p()                                 Return statement
+=================================== ================================================================
+6.25%                               ``return rand() < RAND_MAX / 16;``
+12.5%                               ``return rand() < RAND_MAX / 8;``
+25%                                 ``return rand() < RAND_MAX / 4;``
+50%                                 ``return rand() < RAND_MAX / 2;``
+75%                                 ``return rand() < RAND_MAX - RAND_MAX / 4;``
+87.5%                               ``return rand() < RAND_MAX - RAND_MAX / 8;``
+=================================== ================================================================
+
+For visualising what a skip list looks like with a biased coin see :ref:`biased-coins-label`
+
+------------------------------------
+Time Performance
+------------------------------------
+
+The following graph plots the time cost of ``at(middle)``, ``has(middle_value)``, ``insert(), at(), remove()`` and the rolling median (window size 101) all on a 1 million long skip list of doubles against ``p()`` the probability of the coin toss being heads. The time cost is normalised to ``p(0.5)``.
+
+.. image:: plots/biased_coin_effect.svg
+    :width: 640
+
+Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the performance would deteriorate. If ``p()`` was zero the skip list would be, effectively, a singly linked list with O(n) search performance. I do not understand why the rolling median performance appears to improve slightly when the rolling median is really just an ``insert(), at(), remove()`` operation.
+
+Increasing ``p()`` increases the number of coarser linked lists that might be expected to speed up the search. This does not do so in practice, possible explanations are:
+
+* The increased cost of creating a node
+* The increased memory usage (see next section)
+* Poor locality of reference of the nodes.
+
+------------------------------------
+Space Performance
+------------------------------------
+
+The result of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists created. In practice a reduction of ``p()`` provides some small space improvement.
+
+.. image:: plots/biased_coin_effect_size_of.svg
+    :width: 640
+
+If the skip list was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)`` or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case, to use anything but ``p(0.5)``.
+
+
+===============================
 Detailed Performance
--------------------------------------------------
+===============================
 
 The performance test function names all start with ``perf_...`` and are as follows. The skip list type is ``<double>``. In the table below 1M means mega, i.e. 2**20 or 1024*1024 or 1048576:
 
-.. =================================== ================================================================
-.. Test Name                           Description
-.. =================================== ================================================================
-.. ``perf_single_insert_remove()``     With an empty skip list add one item and remove it.
-.. ``perf_large_skiplist_ins_only()``  Starting with an empty skiplist append 1 million values.
-.. ``perf_large_skiplist_ins_rem()``   Starting with an empty skiplist append 1 million values then
-..                                     remove the first (lowest) value until the skip list is empty.
-.. ``perf_single_ins_rem_middle()``    With a skiplist of 1 million values insert the
-..                                     middle value (i.e. 500,000.0) and remove it. 
-.. ``perf_single_at_middle()``         With a skiplist of 1 million values find the middle value.
-.. ``perf_single_has_middle()``        With a skiplist of 1 million values test for the middle value.
-.. ``perf_single_ins_at_rem_middle()`` With a skiplist of 1 million values call ``insert(v)``,
-..                                     ``at(500000)`` and ``remove(v)`` where ``v`` corresponds to
-..                                     the middle value. This simulates the actions of a rolling
-..                                     median.
-.. ``perf_median_sliding_window()``    Simulate a rolling median of 100 values. Create an
-..                                     initially empty skip list. For each of 10,000 random values
-..                                     insert the value into the skip list. For indecies > 100 extract
-..                                     the middle value from the skip list as the median then remove
-..                                     the i-100 value from the skip list.
-.. ``perf_1m_median_values()``         Simulate a rolling median of 101 values. Similar to
-..                                     ``perf_median_sliding_window()`` but uses 1 million values.
-.. ``perf_1m_medians_1000_vectors()``  Simulate a rolling median of 101 values. Similar to
-..                                     ``perf_1m_median_values()`` but uses 1000 values repeated
-..                                     1000 times.
-.. ``perf_simulate_real_use()``        Simulate a rolling median of 200 values. Similar to
-..                                     ``perf_1m_medians_1000_vectors()`` but uses 8000 values repeated
-..                                     8000 times i.e. the rolling median of 8000x8000 array.
-.. ``perf_at_in_one_million()``        For 1M values call ``at(i)`` where i ranges from 2**1 to 2**19.
-..                                     This explores the time complexity of ``at()``.
-.. ``perf_has_in_one_million()``       For 1M values call ``has(i)`` where i ranges from 2**1 to 2**19.
-..                                     This explores the time complexity of ``has()``.
-.. ``perf_roll_med_odd_index()``       Tests the time cost of ``ManAHL::RollingMedian::odd_index`` for
-..                                     1 million values and a window size of 101.
-.. ``perf_roll_med_odd_index_wins()``  As ``perf_roll_med_odd_index()`` but explores various window
-..                                     sizes from 1 to 524288.
-.. ``perf_size_of()``                  Explores the space usage of a skip list of various lengths from
-..                                     0 to 1M.
-.. =================================== ================================================================
 
 =================================== =========================================== =========== ========
 Test Name                           Measure                                     Time/value  Rate
 =================================== =========================================== =========== ========
 ``perf_single_insert_remove()``     With an empty skip list                     240 ns      4.1 M/s
                                     add one item and remove it.
-``perf_large_skiplist_ins_only()``  Starting with an empty skiplist append 1    740 ns      1.3 M/s
+``perf_large_skiplist_ins_only()``  Starting with an empty skip list append 1   740 ns      1.3 M/s
                                     million values.
-``perf_large_skiplist_ins_rem()``   Starting with an empty skiplist append 1    900 ns      1.1 M/s
+``perf_large_skiplist_ins_rem()``   Starting with an empty skip list append 1   900 ns      1.1 M/s
                                     million values then remove the first
                                     (lowest) value until the skip list is
                                     empty.
-``perf_single_ins_rem_middle()``    With a skiplist of 1 million values insert  1200 ns     0.85 M/s
+``perf_single_ins_rem_middle()``    With a skip list of 1 million values insert 1200 ns     0.85 M/s
                                     the middle value (i.e. 500,000.0) and
                                     remove it. 
-``perf_single_at_middle()``         With a skiplist of 1 million values find    220 ns      4.6 M/s
+``perf_single_at_middle()``         With a skip list of 1 million values find   220 ns      4.6 M/s
                                     the middle value.
-``perf_single_has_middle()``        With a skiplist of 1 million values test    210 ns      4.8 M/s
+``perf_single_has_middle()``        With a skip list of 1 million values test   210 ns      4.8 M/s
                                     for the middle value.
-``perf_single_ins_at_rem_middle()`` With a skiplist of 1 million values call    1400 ns     0.7 M/s
+``perf_single_ins_at_rem_middle()`` With a skip list of 1 million values call   1400 ns     0.7 M/s
                                     ``insert(v)``, ``at(500000)`` and
                                     ``remove(v)`` where ``v`` corresponds to
                                     the middle value. This simulates the
@@ -171,55 +246,3 @@ Test Name                           Description
 ``perf_roll_med_odd_index_wins()``  As ``perf_roll_med_odd_index()`` but explores various window
                                     sizes from 1 to 524288.
 =================================== ================================================================
-
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``perf_at_in_one_million()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``perf_has_in_one_million()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``perf_roll_med_odd_index_wins()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
-
-
-====================================
-Space Performance
-====================================
-
-=================================== ================================================================
-Test Name                           Description
-=================================== ================================================================
-``perf_size_of()``                  Explores the space usage of a skip list of various lengths from
-                                    0 to 1M.
-=================================== ================================================================
-
-
-====================================
-Effect of a Biased Coin
-====================================
-
-
-
-p()	perf_single_at_middle()	perf_single_has_middle()	perf_single_ins_at_rem_middle()	perf_size_of()
-0.0625	481.0	729.0	2917.7	7.14
-0.125	490.9	669.0	2851.8	7.31
-0.25	238.5	338.1	1591.0	7.78
-0.5	94.8	179.5	1182.0	9.56
-0.75	114.7	301.8	1617.7	15.21
-0.875	197.1	653.4	2748.4	26.76
-
-index = [0.0625, 0.125, 0.25, 0.5, 0.75, 0.875,]
-data = {
-'at()' : [481.0, 490.9, 238.5, 94.8, 114.7, 197.1],
-'has()' : [729.0, 669.0, 338.1, 179.5, 301.8, 653.4],
-'insert(), at(), remove()' : [2917.7, 2851.8, 1591.0, 1182.0, 1617.7, 2748.4],
-'size_of()' : [7.14, 7.31, 7.78, 9.56, 15.21, 26.76],
-}
-pdf = pd.DataFrame(data, index)

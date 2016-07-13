@@ -7,10 +7,14 @@
 .. toctree::
     :maxdepth: 3
 
+***********************************************
+Design and Implementation of the C++ Skip List
+***********************************************
+
 .. _skiplist-design-implementation-label:
 
 ===============================================
-Design and Implementation of the C++ Skip List
+Design of the C++ Skip List
 ===============================================
 
 ----------------
@@ -38,43 +42,7 @@ The disadvantages of skip lists are:
 The advantages claimed for skip lists are:
     - The insert() and remove() logic is simpler (I do not subscribe to this).
 
-Examples of Usage
-=================
-
-C++
----
-
-.. code-block:: cpp
-
-    #include "SkipList.h"
-    
-    SkipList::HeadNode<double> sl;
-    
-    sl.insert(42.0);
-    sl.insert(21.0);
-    sl.insert(84.0);
-    
-    sl.has(42.0) // true
-    sl.size()    // 3
-    sl.at(1)     // 42.0
-
-Python
-------
-
-.. code-block:: python
-
-    import cSkipList
-    
-    sl = cSkipList.PySkipList(float)
-    
-    sl.insert(42.0)
-    sl.insert(21.0)
-    sl.insert(84.0)
-    
-    sl.has(42.0) # True
-    sl.size()    # 3
-    sl.at(1)     # 42.0
-
+======
 Design
 ======
 
@@ -115,11 +83,14 @@ After inserting node E the skip list looks like this::
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |  |  H  |
 
+
+--------------------------------------
 Recursive Search for the Node Position
 --------------------------------------
 The first two operations are done by a recursive search.
 This creates the chain ``HED[1] -> A[1] -> C[1] -> C[0] -> D[0]`` thus ``E`` will be created at level 0 and inserted after ``D``.
 
+-------------
 Node Creation
 -------------
 Node E is created with a stack containing a single pointer to the next node F.
@@ -127,6 +98,7 @@ Then a virtual coin is tossed, for each 'head' an extra NULL reference is added 
 If a 'tail' is thrown the stack is complete.
 In the example above when creating ``E`` we have encountered tosses of 'head', 'head', 'tail'.
 
+-------------------
 Recursive Unwinding
 -------------------
 The remaining operations are done as recursion unwinds.
@@ -137,6 +109,7 @@ And so on until HED is reached, in this case a new level is added and HED[2] swa
 
 A similar procedure will be followed, in reverse, when removing E to restore the state of the skip list to the picture above.
 
+==========
 Algorithms
 ==========
 There doesn't seem to be much literature that I could find about the algorithms used for a skip list so these have all been invented here.
@@ -148,22 +121,28 @@ In these descriptions:
 * 'up' means to move to a coarser grained list, 'top' is the highest.
 * 'down' means to move to a finer grained list, 'bottom' is the level 0.
 
+------------------
 has(T &val) const;
 ------------------
+
 This returns true/false is the skip list has the value val.
 Starting at the highest possible level search rightwards until a larger value is encountered, then drop down. At level 0 return true if the Node value is the supplied value.
 This is O(log(N)) for well formed skip lists.
 
+-----------------------
 at(size_t index) const;
 -----------------------
+
 This returns the value of type T at the given index.
 The algorithm is similar to has(T &val) but the search moves rightwards if the width is less than the index and decrementing the index by the width.
 If progress can not be made to the right, drop down a level.
 If the index is 0 return the node value.
 This is O(log(N)) for well formed skip lists.
 
+--------------
 insert(T &val)
 --------------
+
 Finding the place to insert a node follows the has(T &val) algorithm to find the place in the skip list to create a new node.
 Inserts of duplicate values are made after any existing duplicate values.
 All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
@@ -173,6 +152,7 @@ This node initially has all node references to be to itself (this), and the widt
 On recursion ('left') each node adds its width to the new node at the level above the current level.
 On moving up a level the current node swaps its width and node pointer with the new node at that new level.
 
+--------------
 remove(T &val)
 --------------
 

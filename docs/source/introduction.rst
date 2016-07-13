@@ -9,9 +9,9 @@
 
 .. _introduction-label:
 
-**************************************
+======================================
 Introduction
-**************************************
+======================================
 
 A skip list is a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists. These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list. A skip list is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in.
 
@@ -29,7 +29,7 @@ This project contains a Skip List implementation in C++ with Python bindings.
 * Works with any C++ type <T> that has comparison operators.
 * No capacity restrictions apart from available memory.
 * Heavily performance tested.
-* Aimed at performing fast rolling median but can do rolling percentile equally well.
+* Aimed at performing fast rolling median but can do any rolling fraction.
 * Functional tests at both the C++ and Python level.
 * Deterministic tests of a probablistic data structure.
 * The C++ skip list has exhaustive internal integrity checks.
