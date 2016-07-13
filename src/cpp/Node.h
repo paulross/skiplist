@@ -16,7 +16,8 @@
 #endif
 
 /**************************** Node *********************************/
-template <typename T> class Node {
+template <typename T>
+class Node {
 public:
     Node(const T &value);
     // Const methods
@@ -50,8 +51,8 @@ public:
     size_t size_of() const;
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    void dotFile(std::ostream &os, size_t suffix = 0);
-    void writeNode(std::ostream &os, size_t suffix = 0);
+    void dotFile(std::ostream &os, size_t suffix = 0) const;
+    void writeNode(std::ostream &os, size_t suffix = 0) const;
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
     
     // Integrity checks, returns non-zero on failure
@@ -355,14 +356,14 @@ size_t Node<T>::size_of() const {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
 template <typename T>
-void Node<T>::writeNode(std::ostream &os, size_t suffix) {
+void Node<T>::writeNode(std::ostream &os, size_t suffix) const {
     os << "\"node";
     os << suffix;
     os << std::hex << this << std::dec << "\"";
 }
 
 template <typename T>
-void Node<T>::dotFile(std::ostream &os, size_t suffix) {
+void Node<T>::dotFile(std::ostream &os, size_t suffix) const {
     assert(_nodeRefs.height());
     writeNode(os, suffix);
     os << " [" << std::endl;

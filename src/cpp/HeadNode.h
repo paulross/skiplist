@@ -53,7 +53,7 @@ public:
     //
     // Insert a value.
     void insert(const T &value);
-    // Remove a value. Will throw a SkipList::IndexError is value not present.
+    // Remove a value. Will throw a ValueError is value not present.
     void remove(const T &value);
     
     // Const methods that are mostly used for debugging and visualisation.
@@ -68,8 +68,8 @@ public:
     size_t width(size_t idx, size_t level) const;
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    void dotFile(std::ostream &os, size_t suffix = 0);
-    void dotFileFinalise(std::ostream &os, size_t suffix);
+    void dotFile(std::ostream &os, size_t suffix = 0) const;
+    void dotFileFinalise(std::ostream &os, size_t suffix) const;
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
     
     // Returns non-zero if the integrity of this data structure is compromised
@@ -471,7 +471,8 @@ HeadNode<T>::~HeadNode() {
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
-template <typename T> void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) {
+template <typename T>
+void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) const {
     if (suffix == 0) {
         os << "digraph SkipList {" << std::endl;
         os << "label = \"SkipList.\"" << std::endl;
@@ -537,8 +538,9 @@ template <typename T> void HeadNode<T>::dotFile(std::ostream &os, size_t suffix)
     os << std::endl;
 }
 
-template <typename T> void HeadNode<T>::dotFileFinalise(std::ostream &os,
-                                                        size_t suffix) {
+template <typename T>
+void HeadNode<T>::dotFileFinalise(std::ostream &os,
+                                  size_t suffix) const {
     if (suffix > 0) {
         // Link the nodes together with an invisible node.
         //    node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | ",
