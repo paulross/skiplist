@@ -8,7 +8,7 @@
 PROGRAM_RELEASE = SkipList_R.exe
 PROGRAM_DEBUG = SkipList_D.exe
 
-CPP_FILES := main.cpp SkipList.cpp
+CPP_FILES := main.cpp SkipList.cpp test/test_documentation.cpp test/test_functional.cpp test/test_performance.cpp test/test_print.cpp test/test_rolling_median.cpp
 
 OBJS := $(patsubst %.c, %.o, $(CPP_FILES))
 INCLUDES = 
@@ -56,4 +56,3 @@ clean:
 	rm -f .depend *.o src/*.o $(PROGRAM_RELEASE) $(PROGRAM_DEBUG)
 
 .PHONY: clean depend
-
