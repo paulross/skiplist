@@ -315,13 +315,16 @@
 // Defined if you want the SkipList to have methods that can output
 // to stream (for debugging for example).
 // Defining this will mean that classes grow methods that use streams.
-// Undef this if you want a smaller binary in production however you may loose
-// useful information such as formatted exception messages with extra data.
+// Undef this if you want a smaller binary in production as using streams
+// adds typically around 30kb to the binary.
+// However you may loose useful information such as formatted
+// exception messages with extra data.
 #define INCLUDE_METHODS_THAT_USE_STREAMS
 //#undef INCLUDE_METHODS_THAT_USE_STREAMS
 
 #include <vector>
 #include <set> // Used for HeadNode::_lacksIntegrityNodeReferencesNotInList()
+#include <string> // Used for class Exception
 
 #ifdef DEBUG
 #include <cassert>
@@ -338,8 +341,6 @@
 
 namespace ManAHL {
 namespace SkipList {
-
-//#define nullptr NULL
 
 /************************ Exceptions ****************************/
 class Exception : public std::exception {

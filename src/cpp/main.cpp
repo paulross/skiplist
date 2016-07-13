@@ -8,12 +8,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <ctime>
 
 #include "SkipList.h"
 #include "RollingMedian.h"
 
-#define DUMP_DOT_ON_FAILURE 1
 const int FUNCTION_WIDTH = 40;
 
 /******************* Functional Tests **************************/
@@ -27,11 +27,6 @@ ManAHL::SkipList::IntegrityCheck test_very_simple_insert() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result = sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
-    sl.dotFileFinalise(ostr, 1);
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << std::endl;
-    }
     return result;
 }
 
@@ -45,24 +40,15 @@ int test_simple_insert() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
     sl.insert(84.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 1);
     sl.insert(21.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 2);
     sl.insert(100.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 3);
     result |= sl.lacksIntegrity();
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 4);
-    sl.dotFileFinalise(ostr, 5);
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << std::endl;
-    }
     return result;
 }
 
@@ -75,14 +61,8 @@ int test_insert_and_remove_same() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
     sl.remove(42.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 1);
-    sl.dotFileFinalise(ostr, 2);
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << std::endl;
-    }
     return result;
 }
 
@@ -95,38 +75,24 @@ int test_insert_remove_multiple() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
     sl.insert(84.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 1);
     sl.remove(42.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 2);
     sl.insert(21.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 3);
     sl.remove(84.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 4);
     sl.insert(100.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 5);
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 6);
     sl.remove(21.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 7);
     sl.remove(12.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 8);
     sl.remove(100.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 9);
-    sl.dotFileFinalise(ostr, 10);
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << std::endl;
-    }
     return result;
 }
 
@@ -151,12 +117,9 @@ int test_ins_rem_rand() {
             sl.insert(value);
             result |= sl.lacksIntegrity();
             if (result) {
-                sl.dotFile(ostr, 0);
-                sl.dotFileFinalise(ostr, 1);
                 break;
             }
         }
-        sl.dotFile(ostr, 0);
         while (values.size()) {
             value = values.back();
             ostr << "# Removing value " << value << std::endl;
@@ -164,8 +127,6 @@ int test_ins_rem_rand() {
             values.pop_back();
             result |= sl.lacksIntegrity();
             if (result) {
-                sl.dotFile(ostr, 0);
-                sl.dotFileFinalise(ostr, 1);
                 break;
             }
         }
@@ -173,7 +134,7 @@ int test_ins_rem_rand() {
             break;
         }
     }
-    if (result && DUMP_DOT_ON_FAILURE) {
+    if (result) {
         std::cout << ostr.str() << " FAIL" << std::endl;
     }
     return result;
@@ -189,18 +150,10 @@ int test_insert_n_numbers_same(int n, double value) {
     for (int i = 0; i < n; ++i) {
         sl.insert(value);
         result |= sl.lacksIntegrity();
-        sl.dotFile(ostr, i);
-//        assert(! sl.lacksIntegrity());
     }
     for (int i = 0; i < n; ++i) {
         sl.remove(value);
         result |= sl.lacksIntegrity();
-        sl.dotFile(ostr, i + n);
-    }
-    
-    sl.dotFileFinalise(ostr, 2 * n);
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << std::endl;
     }
     return result;
 }
@@ -213,33 +166,22 @@ int test_at() {
     srand(1);
     ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
     sl.insert(42.0);
-    sl.dotFile(ostr, 1);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
-    sl.dotFile(ostr, 2);
     result |= sl.lacksIntegrity();
     sl.insert(21.0);
-    sl.dotFile(ostr, 3);
     result |= sl.lacksIntegrity();
     sl.insert(100.0);
-    sl.dotFile(ostr, 4);
     result |= sl.lacksIntegrity();
     sl.insert(12.0);
-    sl.dotFile(ostr, 5);
     result |= sl.lacksIntegrity();
-    sl.dotFileFinalise(ostr, 6);
     // Test at()
     result |= sl.at(0) != 12.0;
     result |= sl.at(1) != 21.0;
     result |= sl.at(2) != 42.0;
     result |= sl.at(3) != 84.0;
     result |= sl.at(4) != 100.0;
-    
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
-    }
     return result;
 }
 
@@ -277,8 +219,6 @@ int test_at_fails() {
 // Test at(size_t index, size_t count, T *dest)
 int test_at_dest() {
     int result = 0;
-    std::stringstream ostr;
-    ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
     ManAHL::SkipList::HeadNode<double> sl;
@@ -294,17 +234,12 @@ int test_at_dest() {
     result |= dest.size() != 2;
     result |= dest[0] != 4.0;
     result |= dest[1] != 8.0;
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
-    }
     return result;
 }
 
 // Test at(size_t index, size_t count, T *dest)
 int test_at_dest_fails() {
     int result = 0;
-    std::stringstream ostr;
-    ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
     ManAHL::SkipList::HeadNode<double> sl;
@@ -332,10 +267,6 @@ int test_at_dest_fails() {
         sl.at(3, 0, dest);
         result |= 1;
     } catch (ManAHL::SkipList::IndexError &err) {}
-    
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
-    }
     return result;
 }
 
@@ -347,36 +278,22 @@ int test_has() {
     srand(1);
     ManAHL::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
     sl.insert(42.0);
-    sl.dotFile(ostr, 1);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
-    sl.dotFile(ostr, 2);
     result |= sl.lacksIntegrity();
     sl.insert(21.0);
-    sl.dotFile(ostr, 3);
     result |= sl.lacksIntegrity();
     sl.insert(100.0);
-    sl.dotFile(ostr, 4);
     result |= sl.lacksIntegrity();
     sl.insert(12.0);
-    sl.dotFile(ostr, 5);
     result |= sl.lacksIntegrity();
-    sl.dotFileFinalise(ostr, 6);
     // Test at()
     result |= ! sl.has(12.0);
     result |= ! sl.has(21.0);
     result |= ! sl.has(42.0);
     result |= ! sl.has(84.0);
     result |= ! sl.has(100.0);
-    
-    //    for (size_t i = 0; i < sl.size(); ++i) {
-    //        std::cout << i << " " << sl.at(i) << std::endl;
-    //    }
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
-    }
     return result;
 }
 
@@ -421,8 +338,6 @@ int test_remove_fails() {
 
 int test_at_large() {
     int result = 0;
-    std::stringstream ostr;
-    ostr << "# " << __FUNCTION__ << std::endl;
     int SEED  = 128 + 1;
     int LENGTH = 128;
     
@@ -438,16 +353,11 @@ int test_at_large() {
             result |= val != i * 2;
         }
     }
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
-    }
     return result;
 }
 
 int test_ins_at_rem_with_srand() {
     int result = 0;
-    std::stringstream ostr;
-    ostr << "# " << __FUNCTION__ << std::endl;
     int SEED  = 128 + 1;
     int LENGTH = 128;
     
@@ -466,9 +376,6 @@ int test_ins_at_rem_with_srand() {
             sl.remove(i * 2);
             result |= sl.lacksIntegrity();
         }
-    }
-    if (result && DUMP_DOT_ON_FAILURE) {
-        std::cout << ostr.str() << " FAIL" << std::endl;
     }
     return result;
 }
@@ -645,6 +552,8 @@ int doc_height_trend(size_t level) {
     return 0;
 }
 
+#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+
 int doc_simple_dot() {
     int result = 0;
     std::stringstream ostr;
@@ -662,8 +571,8 @@ int doc_simple_dot() {
     result |= sl.lacksIntegrity();
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
-    sl.dotFile(ostr, 0);
-    sl.dotFileFinalise(ostr, 1);
+    sl.dotFile(ostr);
+    sl.dotFileFinalise(ostr);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -671,19 +580,18 @@ int doc_simple_dot() {
 int doc_insert() {
     int result = 0;
     int NUM = 8;
-    int dot_count = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
     ManAHL::SkipList::HeadNode<int> sl;
-    sl.dotFile(ostr, dot_count++);
+    sl.dotFile(ostr);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
         result |= sl.lacksIntegrity();
-        sl.dotFile(ostr, dot_count++);
+        sl.dotFile(ostr);
     }
-    sl.dotFileFinalise(ostr, dot_count);
+    sl.dotFileFinalise(ostr);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -691,24 +599,23 @@ int doc_insert() {
 int doc_insert_remove() {
     int result = 0;
     int NUM = 4;
-    int dot_count = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
     ManAHL::SkipList::HeadNode<int> sl;
-    sl.dotFile(ostr, dot_count++);
+    sl.dotFile(ostr);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
         result |= sl.lacksIntegrity();
-        sl.dotFile(ostr, dot_count++);
+        sl.dotFile(ostr);
     }
     for (int i = 0; i < NUM; ++i) {
         sl.remove(i);
         result |= sl.lacksIntegrity();
-        sl.dotFile(ostr, dot_count++);
+        sl.dotFile(ostr);
     }
-    sl.dotFileFinalise(ostr, dot_count);
+    sl.dotFileFinalise(ostr);
     std::cout << ostr.str() << std::endl;
     return result;
 }
@@ -717,29 +624,30 @@ int doc_insert_remove_repeat() {
     int result = 0;
     int NUM = 4;
     int REPEAT_COUNT = 4;
-    int dot_count = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
     ManAHL::SkipList::HeadNode<int> sl;
-    sl.dotFile(ostr, dot_count++);
+    sl.dotFile(ostr);
     for (int c = 0; c < REPEAT_COUNT; ++c) {
         for (int i = 0; i < NUM; ++i) {
             sl.insert(i);
             result |= sl.lacksIntegrity();
-            sl.dotFile(ostr, dot_count++);
+            sl.dotFile(ostr);
         }
         for (int i = 0; i < NUM; ++i) {
             sl.remove(i);
             result |= sl.lacksIntegrity();
-            sl.dotFile(ostr, dot_count++);
+            sl.dotFile(ostr);
         }
     }
-    sl.dotFileFinalise(ostr, dot_count);
+    sl.dotFileFinalise(ostr);
     std::cout << ostr.str() << std::endl;
     return result;
 }
+
+#endif
 
 /******************* END: Documentation *************************/
 
@@ -1370,11 +1278,13 @@ int doc_all() {
     int result = 0;
     
     result |= print_result("doc_height_trend", doc_height_trend(20));
+#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
     result |= print_result("doc_simple_dot", doc_simple_dot());
     result |= print_result("doc_insert", doc_insert());
     result |= print_result("doc_insert_remove", doc_insert_remove());
     result |= print_result("doc_insert_remove_repeat",
                            doc_insert_remove_repeat());
+#endif
     return result;
 }
 
@@ -1445,7 +1355,6 @@ void test_clock_resolution() {
         while (clock() == start) {}
         clock_t diff = clock() - start;
         average_ticks += diff;
-//        std::cout << "Ticks[" << i << "]: "<< diff << " " << static_cast<double>(diff) / CLOCKS_PER_SEC << " (s)" << std::endl;
     }
     std::cout << "Average ticks (" << count;
     std::cout << " tests) for change in clock(): " << average_ticks / count;
@@ -1473,7 +1382,7 @@ int main(int /* argc */, const char *[] /* argv[] */) {
     std::cout << "Final result: ";
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     std::cout << "Exec time: " << exec << " (s)" << std::endl;
-//    test_clock_resolution();
+    test_clock_resolution();
     std::cout << "Bye, bye!\n";
     return 0;
 }

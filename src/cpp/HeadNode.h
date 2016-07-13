@@ -32,7 +32,11 @@
 template <typename T>
 class HeadNode {
 public:
-    HeadNode() : _count(0) {}
+    HeadNode() : _count(0) {
+#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+        _dot_file_subgraph = 0;
+#endif
+    }
     // Const methods
     //
     // Returns true if the value is present in the skip list.
@@ -68,8 +72,8 @@ public:
     size_t width(size_t idx, size_t level) const;
     
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    void dotFile(std::ostream &os, size_t suffix = 0) const;
-    void dotFileFinalise(std::ostream &os, size_t suffix) const;
+    void dotFile(std::ostream &os) const;
+    void dotFileFinalise(std::ostream &os) const;
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
     
     // Returns non-zero if the integrity of this data structure is compromised
@@ -94,7 +98,11 @@ protected:
     size_t _count;
     // My node references, the size of this is the largest height in the list
     SwappableNodeRefStack<T> _nodeRefs;
-    
+#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+    // Used to count how many sub-graphs have been plotted
+    mutable size_t _dot_file_subgraph;
+#endif
+
 private:
     // Prevent cctor and operator=
     HeadNode(const HeadNode &that);
@@ -472,8 +480,8 @@ HeadNode<T>::~HeadNode() {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
 template <typename T>
-void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) const {
-    if (suffix == 0) {
+void HeadNode<T>::dotFile(std::ostream &os) const {
+    if (_dot_file_subgraph == 0) {
         os << "digraph SkipList {" << std::endl;
         os << "label = \"SkipList.\"" << std::endl;
         os << "graph [rankdir = \"LR\"];" << std::endl;
@@ -481,11 +489,11 @@ void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) const {
         os << "edge [];" << std::endl;
         os << std::endl;
     }
-    os << "subgraph cluster" << suffix << " {" << std::endl;
+    os << "subgraph cluster" << _dot_file_subgraph << " {" << std::endl;
     os << "style=dashed" << std::endl;
-    os << "label=\"Skip list iteration " << suffix << "\"" << std::endl;
+    os << "label=\"Skip list iteration " << _dot_file_subgraph << "\"" << std::endl;
     os << std::endl;
-    os << "\"HeadNode" << suffix;
+    os << "\"HeadNode" << _dot_file_subgraph;
     os << "\" [" << std::endl;
     os << "label = \"";
     // Write out the fields
@@ -508,22 +516,22 @@ void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) const {
     // Edges for head node
     for (size_t level = 0; level < _nodeRefs.height(); ++level) {
         os << "\"HeadNode";
-        os << suffix;
+        os << _dot_file_subgraph;
         os << "\":f" << level + 1 << " -> ";
-        _nodeRefs[level].pNode->writeNode(os, suffix);
+        _nodeRefs[level].pNode->writeNode(os, _dot_file_subgraph);
         os << ":w" << level + 1 << " [];" << std::endl;
     }
     os << std::endl;
     // Now all nodes via level 0, if non-empty
     if (_nodeRefs.height()) {
         Node<T> *pNode = this->_nodeRefs[0].pNode;
-        pNode->dotFile(os, suffix);
+        pNode->dotFile(os, _dot_file_subgraph);
     }
     os << std::endl;
     // NULL, the sentinal node
     if (_nodeRefs.height()) {
         os << "\"node";
-        os << suffix;
+        os << _dot_file_subgraph;
         os << "0x0\" [label = \"";
         for (size_t level = _nodeRefs.height(); level-- > 0;) {
             os << "<w" << level + 1 << "> NULL";
@@ -536,28 +544,29 @@ void HeadNode<T>::dotFile(std::ostream &os, size_t suffix) const {
     // End: "subgraph cluster1 {"
     os << "}" << std::endl;
     os << std::endl;
+    _dot_file_subgraph += 1;
 }
 
 template <typename T>
-void HeadNode<T>::dotFileFinalise(std::ostream &os,
-                                  size_t suffix) const {
-    if (suffix > 0) {
+void HeadNode<T>::dotFileFinalise(std::ostream &os) const {
+    if (_dot_file_subgraph > 0) {
         // Link the nodes together with an invisible node.
         //    node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | ",
         //           style=invis,
         //           width=0.01];
         os << "node0 [shape=record, label = \"";
-        for (size_t i = 0; i < suffix; ++i) {
+        for (size_t i = 0; i < _dot_file_subgraph; ++i) {
             os << "<f" << i << "> | ";
         }
         os << "\", style=invis, width=0.01];" << std::endl;
         // Now:
         //    node0:f0 -> HeadNode [style=invis];
         //    node0:f1 -> HeadNode1 [style=invis];
-        for (size_t i = 0; i < suffix; ++i) {
+        for (size_t i = 0; i < _dot_file_subgraph; ++i) {
             os << "node0:f" << i << " -> HeadNode" << i;
             os << " [style=invis];" << std::endl;
         }
+        _dot_file_subgraph = 0;
     }
     os << "}" << std::endl;
 }

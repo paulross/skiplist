@@ -7,6 +7,7 @@
 //
 
 #include <cstdlib>
+#include <string>
 #include "SkipList.h"
 
 namespace ManAHL {
@@ -41,12 +42,13 @@ void seedRand(unsigned seed) {
 
 // This throws an IndexError when the index value >= size.
 // If possible the error will have an informative message.
-void _throw_exceeds_size(size_t size) {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+void _throw_exceeds_size(size_t size) {
     std::ostringstream oss;
     oss << "Index out of range 0 <= index < " << size;
     std::string err_msg = oss.str();
 #else
+void _throw_exceeds_size(size_t /* size */) {
     std::string err_msg = "Index out of range.";
 #endif
     throw IndexError(err_msg);
