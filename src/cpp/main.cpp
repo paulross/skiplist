@@ -837,14 +837,13 @@ int perf_large_skiplist_ins_rem() {
 }
 
 /* Create a large skip list then time how long it takes to insert and remove
- * a vaue at the mod point. */
+ * a value at the mid point. */
 int perf_single_ins_rem_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = 1000 * 1000;
     int result = 0;
     double val = SKIPLIST_SIZE / 2;
     ManAHL::SkipList::HeadNode<double> sl;
-    std::stringstream ostr;
     
     srand(1);
     assert(! sl.lacksIntegrity());
@@ -870,6 +869,45 @@ int perf_single_ins_rem_middle() {
     std::cout << " (us)";
     std::cout << " rate " << 1e6 * REPEAT_COUNT / exec << " /s";
     std::cout << std::endl;
+    return result;
+}
+
+/* Create a large skip list then time how long it takes to insert and remove
+ * a value at the mid point for various length skip lists. */
+int perf_single_ins_rem_middle_vary_length() {
+    int REPEAT_COUNT = 1000 * 1000;
+    int result = 0;
+
+    for (size_t siz = 1; siz < 1024 * 1024 + 1; siz *= 2) {
+        ManAHL::SkipList::HeadNode<double> sl;
+
+        srand(1);
+        assert(! sl.lacksIntegrity());
+        // Populate skip list
+        for (size_t i = 0; i < siz + 1; ++i) {
+            sl.insert(i);
+            assert(! sl.lacksIntegrity());
+        }
+        double value = sl.size() / 2;
+        time_t start = clock();
+        for (int i = 0; i < REPEAT_COUNT; ++i) {
+            sl.insert(value);
+            assert(! sl.lacksIntegrity());
+            sl.remove(value);
+            assert(! sl.lacksIntegrity());
+        }
+        assert(! sl.lacksIntegrity());
+        double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+        std::cout << " SkiplistSize: " << std::setw(10) << sl.size();
+        std::cout << " repeat count: " << REPEAT_COUNT;
+        std::cout << " time: ";
+        std::cout << std::setw(10) << exec / 1e3;
+        std::cout << " (ms)";
+        std::cout << " rate ";
+        std::cout << std::setw(12) << 1e6 * REPEAT_COUNT / exec << " /s";
+        std::cout << std::endl;
+    }
     return result;
 }
 
@@ -1138,7 +1176,8 @@ int perf_at_in_one_million() {
         double exec = 1e9 * (clock() - start) / (double) CLOCKS_PER_SEC / REPEAT;
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
         std::cout << "at(" << std::setw(8) << i << "): ";
-        std::cout << std::setw(8) << exec << " ns" << "ticks " << clock() - start << std::endl;
+        std::cout << std::setw(8) << exec << " ns";
+        std::cout << " ticks " << clock() - start << std::endl;
     }
     return result;
 }
@@ -1201,7 +1240,7 @@ int perf_roll_med_odd_index_wins() {
     const int DEST_STRIDE = 1;
     double *src = new double[COUNT];
     int result = 0;
-    
+
     // Create source data
     for (size_t i = 0; i < COUNT; ++i) {
         src[i] = 2.0 * i;
@@ -1229,7 +1268,7 @@ int perf_roll_med_odd_index_wins() {
 }
 
 /* Tests the size_of() function on a skip list of length up to 1M. */
-int perf_size_of() {
+int perf_size_of_double() {
     size_t NUM = 1024 * 1024;
     int result = 0;
     typedef double tValue;
@@ -1239,6 +1278,33 @@ int perf_size_of() {
         ManAHL::SkipList::HeadNode<tValue> sl;
         for (size_t j = 0; j < i; ++j) {
             sl.insert(j);
+        }
+        size_t size_of = sl.size_of();
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
+        std::cout << "size_of(" << std::setw(8) << i << "): ";
+        std::cout << std::setw(8) << size_of << " bytes";
+        std::cout << " ratio: ";
+        std::cout << std::setw(8) << std::setprecision(4);
+        std::cout << 1.0 * size_of / i;
+        std::cout << " /sizeof(T): ";
+        std::cout << std::setw(8) << std::setprecision(4);
+        std::cout << 1.0 * size_of / (i * sizeof(tValue));
+        std::cout << std::endl;
+    }
+    return result;
+}
+
+/* Tests the size_of() function on a skip list of length up to 1M. */
+int perf_size_of_char() {
+    size_t NUM = 1024 * 1024;
+    int result = 0;
+    typedef char tValue;
+    
+    srand(1);
+    for (size_t i = 1; i <= NUM; i *= 2) {
+        ManAHL::SkipList::HeadNode<tValue> sl;
+        for (size_t j = 0; j < i; ++j) {
+            sl.insert(j & 0xFF);
         }
         size_t size_of = sl.size_of();
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
@@ -1312,13 +1378,14 @@ int doc_all() {
     return result;
 }
 
-int perf_all() {
+int perf_skiplist() {
     int result = 0;
     
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
     result |= perf_single_ins_rem_middle();
+    result |= perf_single_ins_rem_middle_vary_length();
     result |= perf_single_at_middle();
     result |= perf_single_has_middle();
     result |= perf_single_ins_at_rem_middle();
@@ -1329,17 +1396,41 @@ int perf_all() {
     result |= perf_at_in_one_million();
     result |= perf_has_in_one_million();
 
+    return result;
+}
+
+int perf_roll_med() {
+    int result = 0;
+
     result |= perf_roll_med_odd_index();
     result |= perf_roll_med_odd_index_wins();
-    
-    result |= perf_size_of();
-    
+
+    return result;
+}
+
+int perf_size() {
+    int result = 0;
+
+    result |= perf_size_of_double();
+    result |= perf_size_of_char();
+
+    return result;
+}
+
+
+int perf_all() {
+    int result = 0;
+
+    result |= perf_skiplist();
+    result |= perf_roll_med();
+    result |= perf_size();
+
     return result;
 }
 
 int test_rolling_median_all() {
     int result = 0;
-    
+
     result |= print_result("test_roll_med_simple", test_roll_med_simple());
     result |= print_result("test_roll_med_even_win", test_roll_med_even_win());
     result |= print_result("test_roll_med_even_mean", test_roll_med_even_mean());
@@ -1367,7 +1458,7 @@ void test_clock_resolution() {
 int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
     time_t start = clock();
-    
+
     std::cout << "Running skip list tests..." << std::endl;
     result |= test_all();
     result |= test_rolling_median_all();
