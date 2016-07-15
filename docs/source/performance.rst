@@ -87,11 +87,38 @@ Here is a plot of the time taken to compute a rolling median on one million valu
 
 The test function is ``perf_roll_med_odd_index_wins()``.
 
+
+.. _performance-space-complexity-label:
+
 ====================================
-Space Performance
+Space Complexity
 ====================================
 
-Space usage is a weakness of skip lists. There is a large amount of bookkeeping involved with multiple node pointers and width arithmetic for each node. A skip list has a ``size_of()`` function that estimates the current memory usage of the skip list. This function uses ``sizeof(T)`` which will not account for any dynamically allocated content, for example if ``T`` was a ``std::string``.
+Space usage is a weakness of skip lists. There is a large amount of bookkeeping involved with multiple node pointers plus the width values for each node for an indexed skip list.
+
+-------------------------------------------
+Theoretical Memory Usage for ``double``
+-------------------------------------------
+
+The space requirements for a skip list of doubles can be estimated as follows.
+
+``t = sizeof(T)`` ~ typ. 8 bytes for a double. ``v = sizeof(std::vector<struct NodeRef<T>>)`` ~ typ. 32 bytes. ``p = sizeof(Node<T>*)`` ~ typ. 8 bytes. ``e = sizeof(struct NodeRef<T>)`` ~ typ. 8 + p = 16 bytes. Then each node: is ``t + v`` bytes.
+
+Linked list at level 0 is ``e`` bytes per node and at level 1 is, typically, ``e / 2`` bytes per node (given ``p()`` as a fair coin) and so on. So the totality of linked lists is about ``2 * e`` bytes per node.
+
+Then the total is ``N (t + v + 2 e)`` which for ``T`` as a double is typically 72 bytes per item.
+
+Memory usage can be gauged by any of the following methods:
+
+* Theoretical calculation such as above which gives ~72 bytes per node for doubles.
+* Observing a process that creates a skip list using OS tools, this typically gives ~86 bytes per node for doubles.
+* Calling the ``size_of()`` method that can make use of its knowledge of the internal structure of a skip list to estimate memory usage. For ``double`` this is shown to be about 76 bytes per node. Any ``size_of()`` estimate will be an underestimate if the skip list type uses dynamic memory allocation such as ``std::string``.
+
+-------------------------------------------
+Estimate Memory Usage With ``size_of()``
+-------------------------------------------
+
+This implementation of a skip list has a ``size_of()`` function that estimates the current memory usage of the skip list. This function uses ``sizeof(T)`` which will not account for any dynamically allocated content, for example if ``T`` was a ``std::string``.
 
 Total memory allocation is a function of a number of factors:
 
@@ -165,7 +192,7 @@ Increasing ``p()`` increases the number of coarser linked lists that might be ex
 Space Performance
 ------------------------------------
 
-The result of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists created. In practice a reduction of ``p()`` provides some small space improvement.
+Different values of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists created. In practice a reduction of ``p()`` provides some small space improvement.
 
 .. image:: plots/biased_coin_effect_size_of.svg
     :width: 640

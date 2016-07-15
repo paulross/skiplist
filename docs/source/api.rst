@@ -17,6 +17,20 @@ Skip List API
 C++ API
 ===============================================
 
+This describes the C++ API to a skip list with some algorithmic details of their implementation. Here is a visualisation of a skip list::
+
+    | 5 E |------------------------------------->| 4 0 |---------------------------->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |---------->| NULL |
+    | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
+    | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |  |  H  |
+
+In these descriptions:
+
+* 'right' is used to mean move to a higher ordinal node.
+* 'left' means to move to a lower ordinal node.
+* 'up' means to move to a coarser grained list, 'top' is the highest.
+* 'down' means to move to a finer grained list, 'bottom' is the level 0.
+
 -------------------------
 Example in C++
 -------------------------
@@ -48,100 +62,124 @@ Constructors
 
 There is only one constructor to a ``HeadNode`` and that takes no arguments.
 
-----------------------
-``has(T &val) const;``
-----------------------
+------------------------------------
+``HeadNode::has(T &val) const;``
+------------------------------------
 
-Declaration: ``bool has(const T &value) const;``
+Declaration: ``bool HeadNode::has(const T &value) const;``
 
 This returns ``true`` or ``false`` if the skip list has the value val. This is O(log(n)) for well formed skip lists.
 
-----------------------------
-``at(size_t index) const;``
-----------------------------
+^^^^^^^^^^^^^^^^^
+Algorithm
+^^^^^^^^^^^^^^^^^
 
-Declaration: ``const T &at(size_t index) const;``
+Starting at the highest possible level search rightwards until a larger value is encountered, then drop down. At level 0 return true if the Node value is the supplied value.
+
+-------------------------------------
+``HeadNode::at(size_t index) const;``
+-------------------------------------
+
+Declaration: ``const T& HeadNode::at(size_t index) const;``
 
 This returns the value of type ``T`` at the given index. This will throw an ``IndexError`` if the index is >= size of the skip list. This is O(log(n)) for well formed skip lists.
 
-----------------------------------------------------------------
-``at(size_t index, size_t count, std::vector<T> &dest) const;``
-----------------------------------------------------------------
+^^^^^^^^^^^^^^^^^
+Algorithm
+^^^^^^^^^^^^^^^^^
 
-Declaration: ``void at(size_t index, size_t count, std::vector<T> &dest) const;``
+The algorithm is similar to ``has(T &val)`` but the search moves rightwards if the width is less than the index and decrementing the index by the width.
+If progress can not be made to the right, drop down a level.
+If the index is 0 return the node value.
+
+-------------------------------------------------------------------------
+``HeadNode::at(size_t index, size_t count, std::vector<T> &dest) const;``
+-------------------------------------------------------------------------
+
+Declaration: ``void HeadNode::at(size_t index, size_t count, std::vector<T> &dest) const;``
 
 This loads a vector of type ``T`` with ``count`` values starting at the given index. This will throw an ``IndexError`` if the index + count is >= size of the skip list. This is O(count * log(n)) for well formed skip lists.
 
-------------------
-``size() const``
-------------------
+^^^^^^^^^^^^^^^^^
+Algorithm
+^^^^^^^^^^^^^^^^^
 
-Declaration: ``size_t size() const;``
+The inital location follows the algorithm of ``at(size_t index) const;`` then sequential nodes are included.
+
+------------------------------
+``HeadNode::size() const``
+------------------------------
+
+Declaration: ``size_t HeadNode::size() const;``
 
 Returns the number of items in the skip list.
 
-------------------
-``insert(T &val)``
-------------------
+---------------------------------
+``HeadNode::insert(T &val)``
+---------------------------------
 
-Declaration: ``void insert(const T &value);``
+Declaration: ``void HeadNode::insert(const T &value);``
 
-Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value is > ``value``.
+Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value, if present, is > ``value``.
 
-Finding the place to insert a node follows the has(T &val) algorithm to find the place in the skip list to create a new node.
+^^^^^^^^^^^^^^^^^
+Algorithm
+^^^^^^^^^^^^^^^^^
+
+Finding the place to insert a node first follows the ``has(T &val)`` algorithm to find the place in the skip list to create a new node.
 Inserts of duplicate values are made after any existing duplicate values.
 All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
-The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes {width, Node<T>*} data.
+The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes ``{width, Node<T>*}`` data.
+
 Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin until 'tails' is found.
 This node initially has all node references to be to itself (this), and the widths set to 1 for level 0 and 0 for the remaining levels, they will be used to sum the widths at one level down.
 On recursion ('left') each node adds its width to the new node at the level above the current level.
 On moving up a level the current node swaps its width and node pointer with the new node at that new level.
 
-------------------
-``remove(T &val)``
-------------------
+------------------------------
+``HeadNode::remove(T &val)``
+------------------------------
 
-Declaration: ``void remove(const T &value);``
+Declaration: ``void HeadNode::remove(const T &value);``
 
 Removes the value from the skip list. This will throw an ``ValueError`` if the value is not present.
 
-If there are duplicate values the last one is removed first, this is for symmetry with insert().
-Essentially this is the same as insert() but once the node is found the insert() updating algorithm is reversed and the node deleted.
-
+If there are duplicate values the last one is removed first, this is for symmetry with ``insert()``.
+Essentially this is the same as ``insert()`` but once the node is found the ``insert()`` updating algorithm is reversed and the node deleted.
 
 -------------------------------------
 Specialised APIs
 -------------------------------------
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-``height() const``
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``HeadNode::height() const``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``size_t height() const;``
+Declaration: ``size_t HeadNode::height() const;``
 
-Returns the number of linked lists that make up the skip list. Minimum 1.
+Returns the number of linked lists that make up the skip list (minimum 1).
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``height(size_t idx) const``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``HeadNode::height(size_t idx) const``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``size_t height(size_t idx) const;``
+Declaration: ``size_t HeadNode::height(size_t idx) const;``
 
-Returns the number of linked lists that a particular node at index ``idx`` participates in. Will throw a IndexError if idx is >= size of the skip list. Minimum 1.
+Returns the number of linked lists that a particular node at index ``idx`` participates in. Will throw a IndexError if idx is >= size of the skip list (minimum 1).
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``width(size_t idx, size_t level) const``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``HeadNode::width(size_t idx, size_t level) const``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``size_t width(size_t idx, size_t level) const;``
+Declaration: ``size_t HeadNode::width(size_t idx, size_t level) const;``
 
-Returns the number of nodes a node reference skips for the node at ``idx`` and the level at ``level``. Will throw a IndexError if idx is >= size of the skip list or ``level`` >= the node height. Minimum 1.
+Returns the number of nodes a node reference skips for the node at ``idx`` and the level at ``level``. Will throw a IndexError if idx is >= size of the skip list or ``level`` >= the node height (minimum 1).
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``dotFile(std::ostream &os) const``
+``HeadNode::dotFile(std::ostream &os) const``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``void dotFile(std::ostream &os) const;``
+Declaration: ``void HeadNode::dotFile(std::ostream &os) const;``
 
 Writes a representation of the current state of the skip is as a fragment of a DOT file to the stream ``os`` as a ``subgraph``.
 
@@ -171,30 +209,30 @@ There are examples of the result in :ref:`skiplist-visualisation-label`
 This method requires the macro ``INCLUDE_METHODS_THAT_USE_STREAMS`` to be defined.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``dotFileFinalise(std::ostream &os) const``
+``HeadNode::dotFileFinalise(std::ostream &os) const``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``void dotFileFinalise(std::ostream &os) const;``
+Declaration: ``void HeadNode::dotFileFinalise(std::ostream &os) const;``
 
 Writing to ``os`` after ``dotFileFinalise()`` produces may produce undefined DOT format files.
 
 This method requires the macro ``INCLUDE_METHODS_THAT_USE_STREAMS`` to be defined.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``lacksIntegrity() const;``
+``HeadNode::lacksIntegrity() const;``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``IntegrityCheck lacksIntegrity() const;``
+Declaration: ``IntegrityCheck HeadNode::lacksIntegrity() const;``
 
 Returns non-zero if the integrity of this data structure is compromised.
 The return values are defined in *src/cpp/IntegrityEnums.h*
 This is a thorough but expensive check!
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``size_of() const``
+``HeadNode::size_of() const``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Declaration: ``size_t size_of() const;``
+Declaration: ``size_t HeadNode::size_of() const;``
 
 Estimate of the number of bytes used by the skip list. This will not include any dynamically allocated memory such as used by ``std::string``.
 
@@ -203,6 +241,8 @@ Estimate of the number of bytes used by the skip list. This will not include any
 ===============================================
 Python API
 ===============================================
+
+The Python API closely follows the C++ API.
 
 -------------------------
 Example in Python
@@ -231,4 +271,116 @@ Example in Python
     sl.size()    # 2
     sl.at(1)     # 84.0
 
+-------------------------------------
+Module ``cSkipList``
+-------------------------------------
 
+The module contains the following attributes:
+
+=================================== ================================================================
+Attribute                           Description
+=================================== ================================================================
+``cSkipList.__build_target__``      The Python version this module is built for.
+                                    Example: ``'3.5.1'``
+``cSkipList.__build_time__``        The date and time the module was built.
+                                    Example: ``'Jul 14 2016 11:35:03'``
+``cSkipList.__build_type__``        The build type, either ``'debug'`` or ``'release'``.
+``cSkipList.__version__``           The version of the build. Example ``'0.1.0'``.
+=================================== ================================================================
+
+-------------------------------------
+Class ``cSkipList.PySkipList``
+-------------------------------------
+
+--------------------
+Constructor
+--------------------
+
+The constructor takes a Python type. The following are valid:
+
+.. code-block:: python
+
+    import cSkipList
+    
+    sl = cSkipList.PySkipList(long)
+    sl = cSkipList.PySkipList(float)
+    sl = cSkipList.PySkipList(bytes)
+
+------------------------------------
+``PySkipList.has(val)``
+------------------------------------
+
+This returns ``True`` or ``False`` if the skip list has the value val. Will raise a ``TypeError`` if ``val`` is not the same type as the skip list was constructed with. This is O(log(n)) for well formed skip lists.
+
+-------------------------------------
+``PySkipList.at(index)``
+-------------------------------------
+
+This returns the value at the given index which must be of type long. Negative values of the index are dealt with Pythonically. This will raise an ``IndexError`` if the index is >= size of the skip list. This is O(log(n)) for well formed skip lists.
+
+-------------------------------------------------------------------------
+``PySkipList.at_seq(index, count)``
+-------------------------------------------------------------------------
+
+This returns a tuple of ``count`` values starting at the given ``index`` which must be of type long. Negative values of the index are dealt with Pythonically. ``count`` must be positive. This tuple contains a copy of the data in the skip list. This will raise an ``IndexError`` if the ``index`` + ``count`` is >= size of the skip list. This is O(count * log(n)) for well formed skip lists.
+
+------------------------------
+``PySkipList.size()``
+------------------------------
+
+Returns the number of items in the skip list.
+
+---------------------------------
+``PySkipList.insert(value)``
+---------------------------------
+
+Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value, if present, is > ``value``. Will raise a ``TypeError`` if ``val`` is not the same type as the skip list was constructed with.
+
+------------------------------
+``PySkipList.remove(value)``
+------------------------------
+
+Removes the value from the skip list. This will raise an ``ValueError`` if the value is not present. Will raise a ``TypeError`` if ``val`` is not the same type as the skip list was constructed with.
+
+If there are duplicate values the last one is removed first, this is for symmetry with ``insert()``.
+Essentially this is the same as ``insert()`` but once the node is found the ``insert()`` updating algorithm is reversed and the node deleted.
+
+-------------------------------------
+Specialised APIs
+-------------------------------------
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``PySkipList.height()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns the number of linked lists that make up the skip list (minimum 1).
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``PySkipList.node_height(index)``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns the number of linked lists that a particular node at index ``index`` participates in (minimum 1). Will raise a ``IndexError`` if idx is >= size of the skip list.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``PySkipList.width(index, level)``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns the number of nodes a node reference skips for the node at ``index`` and the level at ``level``. Will raise an ``IndexError`` if ``index`` is >= size of the skip list or ``level`` >= the node height (minimum 1).
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``PySkipList.dot_file()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns a representation of the current state of the skip is as a bytes object that represents a DOT file.
+
+This method requires the macro ``INCLUDE_METHODS_THAT_USE_STREAMS`` to be defined.
+
+There are examples of the result in :ref:`skiplist-visualisation-label`
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``PySkipList.lacks_integrity()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Returns non-zero if the integrity of this data structure is compromised.
+The return values are defined in *src/cpp/IntegrityEnums.h*
+This is a thorough but expensive check!
