@@ -184,6 +184,10 @@ template <typename T>
 void HeadNode<T>::insert(const T &value) {
     Node<T> *pNode = nullptr;
     size_t level = _nodeRefs.height();
+    
+    if (value != value) {
+        throw FailedComparison("Can not insert NaN.");
+    }
     while (level-- > 0) {
         assert(_nodeRefs[level].pNode);
         pNode = _nodeRefs[level].pNode->insert(value);
@@ -288,6 +292,10 @@ template <typename T>
 void HeadNode<T>::remove(const T &value) {
     Node<T> *pNode = nullptr;
     size_t level;
+
+    if (value != value) {
+        throw FailedComparison("Can not remove NaN.");
+    }
     for (level = _nodeRefs.height(); level-- > 0;) {
         assert(_nodeRefs[level].pNode);
         pNode = _nodeRefs[level].pNode->remove(level, value);

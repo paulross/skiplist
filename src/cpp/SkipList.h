@@ -362,6 +362,12 @@ class ValueError : public Exception {
     explicit ValueError(const std::string &in_msg) : Exception(in_msg) {}
 };
 
+/* Used for NaN detection where value != value */
+class FailedComparison : public Exception {
+public:
+    explicit FailedComparison(const std::string &in_msg) : Exception(in_msg) {}
+};
+    
 // This throws an IndexError when the index value >= size.
 // If possible the error will have an informative message.
 void _throw_exceeds_size(size_t size);

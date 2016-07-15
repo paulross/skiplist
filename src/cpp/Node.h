@@ -136,6 +136,7 @@ Node<T> *Node<T>::insert(const T &value) {
     assert(_nodeRefs.height());
     assert(_nodeRefs.noNodePointerMatches(this));
     assert(! _nodeRefs.canSwap());
+    assert(value == value); // NaN check for double
 
     if (value < _value) {
         return nullptr;

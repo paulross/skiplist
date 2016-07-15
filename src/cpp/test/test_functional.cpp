@@ -429,6 +429,22 @@ int test_insert_one_million() {
     return result;
 }
 
+/* Insert 1m doubles for memory measurement. */
+int test_insert_nan_throws() {
+    int result = 0;
+    ManAHL::SkipList::HeadNode<double> sl;
+    
+    srand(1);
+    std::string in;
+    result |= sl.lacksIntegrity();
+    try {
+        sl.insert(std::numeric_limits<double>::quiet_NaN());
+        result |= 1;
+    } catch (ManAHL::SkipList::FailedComparison &err) {}
+    result |= sl.lacksIntegrity();
+    return result;
+}
+
 /***************** END: Functional Tests ************************/
 
 int test_functional_all() {
@@ -459,5 +475,6 @@ int test_functional_all() {
                            test_single_ins_rem_middle());
     result |= print_result("test_insert_one_million",
                            test_insert_one_million());
+    result |= print_result("test_insert_nan_throws", test_insert_nan_throws());
     return result;
 }
