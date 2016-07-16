@@ -39,6 +39,7 @@ build/*
 __pycache__
 .cache
 *.pyc
+.hypothesis
 
 .project
 .pydevproject
