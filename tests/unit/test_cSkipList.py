@@ -2,23 +2,32 @@ import itertools
 
 import pytest
 
-from ahl.numpy import cSkipList
+import cSkipList
 import SeedTree
 
-def test_ctor():
-    cSkipList.PySkipList()
+@pytest.mark.parametrize('typ', [int, float, bytes])
+def test_ctor(typ):
+    assert cSkipList.PySkipList(typ) is not None
 
-def test_single_insert():
-    sl = cSkipList.PySkipList()
+@pytest.mark.parametrize('typ,value',
+                         [(int, 8), (float, 8.0), (bytes, b'abc')])
+def test_single_insert(typ, value):
+    sl = cSkipList.PySkipList(typ)
     assert sl.lacksIntegrity() == 0
-    assert sl.insert(8.0) is None
+    assert sl.insert(value) is None
     assert sl.lacksIntegrity() == 0
     
-def test_single_insert_raises_int():
-    sl = cSkipList.PySkipList()
+@pytest.mark.parametrize('typ,value',
+                         [
+                            (int, 8.0),
+                            (float, 8),
+                            (bytes, 'abc')
+                        ])
+def test_single_insert_raises(typ, value):
+    sl = cSkipList.PySkipList(typ)
     assert sl.lacksIntegrity() == 0
     with pytest.raises(TypeError):
-        sl.insert(8)
+        sl.insert(value)
     assert sl.lacksIntegrity() == 0
 
 def test_single_insert_raises_str():
