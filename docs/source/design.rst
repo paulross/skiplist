@@ -17,7 +17,7 @@ Design and Implementation of the C++ Skip List
 Design of the C++ Skip List
 ===============================================
 
-A skip list is a a singly linked list with additional, coarser, linked lists. These additional lists allow rapid location, insertion and removal of nodes. A skip list is maintained in order at all times.
+A skip list is a a singly linked list with additional, coarser, linked lists. These additional lists allow rapid location, insertion and removal of nodes. Values in a skip list are maintained in order at all times.
 
 Skip lists are alternatives to balanced trees for operations such as a rolling median.
 The disadvantages of skip lists are:
@@ -93,7 +93,7 @@ Insertion Position
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The first two operations are done by a recursive search.
-This creates the call chain that passes through the nodes: ``HED[1] -> A[1] -> C[1] -> C[0] -> D[0]``. Thus ``E`` will be created at level 0 and inserted after ``D``.
+This creates the call chain that passes through the nodes ``HED[1] -> A[1] -> C[1] -> C[0] -> D[0]``. Thus ``E`` will be created at level 0 and inserted after ``D``.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Node Creation
@@ -148,7 +148,7 @@ This skip list is implemented in C++ with templates so works for any type ``<T>`
 Node membership of the additional lists is done in a probabilistic manner. This is achieved at node creation time by tossing a virtual coin.
 These lists are not explicit, they are implied by the references between Nodes at a particular level.
 
-'Level' is an size_t that specifies the linked list, level 0 is the linked list to every node.
+'Level' is an ``size_t`` type that specifies the linked list, level 0 is the linked list to every node.
 The list at level 1 links (ideally) to every other node.
 The list at level 2 links (ideally) to every fourth node and so on.
 In general the list at level n links (ideally) to every 2**n node.
