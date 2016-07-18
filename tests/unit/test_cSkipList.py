@@ -95,7 +95,17 @@ def test_single_insert_float_NaN_raises():
     assert sl.lacks_integrity() == 0
     with pytest.raises(ValueError) as err:
         sl.insert(math.nan)
-    assert err.value.args[0] == 'Can not insert NaN.'
+    assert err.value.args[0] == \
+        'Can not insert something that does not compare equal to itself.'
+    assert sl.lacks_integrity() == 0
+
+def test_has_float_NaN_raises():
+    sl = cSkipList.PySkipList(float)
+    assert sl.lacks_integrity() == 0
+    with pytest.raises(ValueError) as err:
+        sl.has(math.nan)
+    assert err.value.args[0] == \
+        'Can not check for something that does not compare equal to itself.'
     assert sl.lacks_integrity() == 0
 
 #------- END: Some specialised insert tests for particular types ----------

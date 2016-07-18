@@ -82,6 +82,7 @@ Node<T>::Node(const T &value) : _value(value) {
 template <typename T>
 bool Node<T>::has(const T &value) const {
     assert(_nodeRefs.height());
+    assert(value == value); // value can not be NaN for example
     if (value > _value) {
         for (size_t l = _nodeRefs.height(); l-- > 0;) {
             if (_nodeRefs[l].pNode && _nodeRefs[l].pNode->has(value)) {

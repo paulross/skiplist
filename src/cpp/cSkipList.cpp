@@ -165,7 +165,15 @@ PySkipList_has(PySkipList* self, PyObject *arg)
                 PyErr_Format(PyExc_TypeError, "Argument to has() must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            ret_val = PyBool_FromLong(self->pSl_double->has(PyFloat_AS_DOUBLE(arg)));
+            
+            try {
+                ret_val = PyBool_FromLong(
+                    self->pSl_double->has(PyFloat_AS_DOUBLE(arg)));
+            } catch (ManAHL::SkipList::FailedComparison &err) {
+                /* This will happen if arg is a NaN. */
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                return NULL;
+            }
             break;
         case TYPE_BYTES:
             if (! PyBytes_Check(arg)) {

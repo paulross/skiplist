@@ -111,6 +111,11 @@ private:
 
 template <typename T>
 bool HeadNode<T>::has(const T &value) const {
+    if (value != value) {
+        // value can not be NaN for example
+        throw FailedComparison(
+            "Can not check for something that does not compare equal to itself.");
+    }
     for (size_t l = _nodeRefs.height(); l-- > 0;) {
         assert(_nodeRefs[l].pNode);
         if (_nodeRefs[l].pNode->has(value)) {
@@ -186,7 +191,8 @@ void HeadNode<T>::insert(const T &value) {
     size_t level = _nodeRefs.height();
     
     if (value != value) {
-        throw FailedComparison("Can not insert NaN.");
+        throw FailedComparison(
+            "Can not insert something that does not compare equal to itself.");
     }
     while (level-- > 0) {
         assert(_nodeRefs[level].pNode);
