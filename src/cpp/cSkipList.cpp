@@ -28,6 +28,9 @@ enum SkipListDataType {
 /* Define these as an attempt to reduce C&P errors in very similar code. */
 typedef long long   TYPE_TYPE_LONG;
 typedef double      TYPE_TYPE_DOUBLE;
+/* Note: We use a std::string but store bytes in it.
+ * So we have to be careful not to treat data as a NTS.
+ */
 typedef std::string TYPE_TYPE_BYTES;
 
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
@@ -53,7 +56,6 @@ PySkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */)
         self->_data_type = TYPE_ZERO;
         self->pSl_void = NULL;
     }
-    std::cout << "PySkipList_new " << self << std::endl;
     return (PyObject *)self;
 }
 
@@ -63,10 +65,8 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
     PyObject *value_type = NULL;
     static char *kwlist[] = { (char *)"value_type", NULL};
 
-//    std::cout << "PySkipList_init " << self->_data_type << " " << self->pSl_void << std::endl;
     assert(self);
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O:__init__", kwlist, &value_type)) {
-        std::cout << "PySkipList_init: can not parse arguments " << std::endl;
         goto except;
     }
     assert(value_type);
@@ -106,7 +106,6 @@ finally:
 static void
 PySkipList_dealloc(PySkipList* self)
 {
-//    std::cout << "PySkipList_dealloc " << self->_data_type << " " << self->pSl_void << std::endl;
     if (self && self->pSl_void) {
         switch (self->_data_type) {
             case TYPE_LONG:
@@ -129,6 +128,21 @@ PySkipList_dealloc(PySkipList* self)
 static PyMemberDef PySkipList_members[] = {
     {NULL, 0, 0, 0, NULL}  /* Sentinel */
 };
+
+/* Returns a std::string from the contents of a bytes object.
+ * This includes any '\0' characters in the content.
+ */
+std::string _bytes_as_std_string(PyObject *arg) {
+    assert(PyBytes_Check(arg));
+    return std::string(PyBytes_AS_STRING(arg), PyBytes_GET_SIZE(arg));
+}
+
+/* Returns a new PyBytesObject from a std::string.
+ * This includes any '\0' characters in the content.
+ */
+PyObject *_std_string_as_bytes(const std::string &str) {
+    return PyBytes_FromStringAndSize(str.c_str(), str.size());
+}
 
 static PyObject *
 PySkipList_has(PySkipList* self, PyObject *arg)
@@ -158,8 +172,9 @@ PySkipList_has(PySkipList* self, PyObject *arg)
                 PyErr_Format(PyExc_TypeError, "Argument to has() must be bytes not \"%s\" type", Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            str = std::string(PyBytes_AS_STRING(arg));
-            ret_val = PyBool_FromLong(self->pSl_bytes->has(str));
+            ret_val = PyBool_FromLong(self->pSl_bytes->has(
+                                            _bytes_as_std_string(arg)
+                                                           ));
             break;
         default:
             PyErr_BadInternalCall();
@@ -280,7 +295,7 @@ PySkipList_at(PySkipList *self, PyObject *arg)
             ret_val = PyFloat_FromDouble(self->pSl_double->at(index));
             break;
         case TYPE_BYTES:
-            ret_val = PyBytes_FromString(self->pSl_bytes->at(index).c_str());
+            ret_val = _std_string_as_bytes(self->pSl_bytes->at(index));
             break;
         default:
             PyErr_BadInternalCall();
@@ -370,7 +385,7 @@ _at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
     }
     assert(dest.size() == count);
     for (Py_ssize_t i = 0; i < count; ++i) {
-        PyTuple_SET_ITEM(ret_val, i, PyBytes_FromString(dest[i].c_str()));
+        PyTuple_SET_ITEM(ret_val, i, _std_string_as_bytes(dest[i]));
     }
     return ret_val;
 }
@@ -499,7 +514,7 @@ PySkipList_height(PySkipList* self)
 }
 
 static PyObject *
-PySkipList_insert(PySkipList* self, PyObject *arg)
+PySkipList_insert(PySkipList *self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
@@ -538,7 +553,7 @@ PySkipList_insert(PySkipList* self, PyObject *arg)
                              Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            self->pSl_bytes->insert(PyBytes_AsString(arg));
+            self->pSl_bytes->insert(_bytes_as_std_string(arg));
             break;
         default:
             PyErr_BadInternalCall();
@@ -590,9 +605,12 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             try {
-                self->pSl_bytes->remove(PyBytes_AsString(arg));
+                self->pSl_bytes->remove(_bytes_as_std_string(arg));
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                return NULL;
+            }
+            if (PyErr_Occurred()) {
                 return NULL;
             }
             break;

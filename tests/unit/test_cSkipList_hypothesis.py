@@ -12,12 +12,6 @@ import cSkipList
 
 BYTES_LONG_LONG = 8
 
-# def min_value():
-#     return -(1 << ((8 * BYTES_LONG_LONG) - 1))
-# 
-# def max_value():
-#     return (1 << ((8 * BYTES_LONG_LONG) - 1)) - 1
-
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
 def test_hypothesis_integers(lst):
