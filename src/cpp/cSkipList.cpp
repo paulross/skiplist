@@ -66,7 +66,8 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
     static char *kwlist[] = { (char *)"value_type", NULL};
 
     assert(self);
-    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O:__init__", kwlist, &value_type)) {
+    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O:__init__",
+                                      kwlist, &value_type)) {
         goto except;
     }
     assert(value_type);
@@ -74,6 +75,7 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
         PyErr_Format(PyExc_ValueError,
                      "Argument to __init__ must be type object not \"%s\"",
                      Py_TYPE(value_type)->tp_name);
+        goto except;
     }
     if ((PyTypeObject *)value_type == &PyLong_Type) {
         self->_data_type = TYPE_LONG;
@@ -86,8 +88,8 @@ PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
         self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
     } else {
         PyErr_Format(PyExc_ValueError,
-                     "Argument to __init__ must be long, float or bytes, not \"%s\"",
-                     Py_TYPE(value_type)->tp_name);
+            "Argument to __init__ must be long, float or bytes, not \"%s\"",
+                     ((PyTypeObject *)value_type)->tp_name);
         goto except;
     }
     assert(! PyErr_Occurred());
