@@ -160,6 +160,7 @@ Node<T> *Node<T>::insert(const T &value) {
         pNode = new Node<T>(value);
         level = 0;
     }
+    assert(pNode); // Should never get here unless a NaN has slipped through
     // Adjust references by marching up and recursing back.
     SwappableNodeRefStack<T> &thatRefs = pNode->_nodeRefs;
     if (! thatRefs.canSwap()) {

@@ -90,6 +90,20 @@ def test_single_insert_long_overflow_raises():
         sl.insert(cSkipList.max_long() + 1)
     assert sl.lacks_integrity() == 0
 
+def test_single_remove_long_underflow_raises():
+    sl = cSkipList.PySkipList(int)
+    assert sl.lacks_integrity() == 0
+    with pytest.raises(OverflowError):
+        sl.remove(cSkipList.min_long() - 1)
+    assert sl.lacks_integrity() == 0
+
+def test_single_remove_long_overflow_raises():
+    sl = cSkipList.PySkipList(int)
+    assert sl.lacks_integrity() == 0
+    with pytest.raises(OverflowError):
+        sl.remove(cSkipList.max_long() + 1)
+    assert sl.lacks_integrity() == 0
+
 def test_single_insert_float_NaN_raises():
     sl = cSkipList.PySkipList(float)
     assert sl.lacks_integrity() == 0

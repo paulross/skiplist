@@ -288,6 +288,17 @@ Attribute                           Description
 ``cSkipList.__version__``           The version of the build. Example ``'0.1.0'``.
 =================================== ================================================================
 
+The module contains the following module level functions:
+
+=================================== ================================================================
+Function                            Description
+=================================== ================================================================
+``toss_coin``                       Returns the result of a virtual coin toss.
+``seed_rand(long)``                 Seeds the random number generator with a long integer.
+``min_long()``                      The minimum storable value of a ``PySkipList(long)``.
+``max_long()``                      The maximum storable value of a ``PySkipList(long)``.
+=================================== ================================================================
+
 -------------------------------------
 Class ``cSkipList.PySkipList``
 -------------------------------------
@@ -336,6 +347,8 @@ Returns the number of items in the skip list.
 
 Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value, if present, is > ``value``. Will raise a ``TypeError`` if ``val`` is not the same type as the skip list was constructed with.
 
+In the case of a ``PySkipList(long)`` if the value < ``min_long()`` or > ``max_long()`` an ``OverflowError`` will be raised.
+
 ------------------------------
 ``PySkipList.remove(value)``
 ------------------------------
@@ -344,6 +357,8 @@ Removes the value from the skip list. This will raise an ``ValueError`` if the v
 
 If there are duplicate values the last one is removed first, this is for symmetry with ``insert()``.
 Essentially this is the same as ``insert()`` but once the node is found the ``insert()`` updating algorithm is reversed and the node deleted.
+
+In the case of a ``PySkipList(long)`` if the value < ``min_long()`` or > ``max_long()`` an ``OverflowError`` will be raised.
 
 -------------------------------------
 Specialised APIs

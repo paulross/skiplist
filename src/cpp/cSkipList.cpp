@@ -148,10 +148,12 @@ static PyObject *
 PySkipList_has(PySkipList* self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
-    ASSERT_TYPE_IN_RANGE;
     std::string str;
     
     assert(self && self->pSl_void);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -207,6 +209,8 @@ _size(PySkipList* self, Py_ssize_t &value) {
 
     ASSERT_TYPE_IN_RANGE;
     assert(self && self->pSl_void);
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             value = self->pSl_long->size();
@@ -248,6 +252,8 @@ PySkipList_at(PySkipList *self, PyObject *arg)
     long long index = 0;
 
     assert(self && self->pSl_void);
+    assert(! PyErr_Occurred());
+    
 #if PY_MAJOR_VERSION == 3
     if (! PyLong_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
@@ -330,6 +336,8 @@ _at_sequence_long(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 
     assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_LONG);
+    assert(! PyErr_Occurred());
+    
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -355,6 +363,8 @@ _at_sequence_double(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 
     assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_DOUBLE);
+    assert(! PyErr_Occurred());
+    
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -380,6 +390,8 @@ _at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 
     assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_BYTES);
+    assert(! PyErr_Occurred());
+    
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -413,6 +425,8 @@ PySkipList_at_sequence(PySkipList *self, PyObject *args, PyObject *kwargs)
     };
 
     assert(self && self->pSl_void);
+    assert(! PyErr_Occurred());
+    
     /* Check input and compute real index. */
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "nn:at_seq",
                                       kwlist, &index, &count)) {
@@ -480,6 +494,8 @@ PySkipList_size(PySkipList* self)
 
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             ret_val = PyLong_FromSsize_t(self->pSl_long->size());
@@ -504,6 +520,8 @@ PySkipList_height(PySkipList* self)
 
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             ret_val = PyLong_FromSsize_t(self->pSl_long->height());
@@ -526,6 +544,8 @@ PySkipList_insert(PySkipList *self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -575,6 +595,9 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
+    TYPE_TYPE_LONG value;
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -583,8 +606,12 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                              Py_TYPE(arg)->tp_name);
                 return NULL;
             }
+            value = PyLong_AsLongLong(arg);
+            if (PyErr_Occurred()) {
+                return NULL;
+            }
             try {
-                self->pSl_long->remove(PyLong_AsLongLong(arg));
+                self->pSl_long->remove(value);
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -638,6 +665,8 @@ PySkipList_dot_file(PySkipList* self)
 
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             self->pSl_long->dotFile(ostr);
@@ -667,6 +696,8 @@ PySkipList_lacks_integrity(PySkipList* self)
 
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     switch (self->_data_type) {
         case TYPE_LONG:
             ret_val = PyLong_FromSsize_t(self->pSl_long->lacksIntegrity());
@@ -696,6 +727,9 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
     };
     
     assert(self && self->pSl_void);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "i:node_height", kwlist, &index)) {
         assert(PyErr_Occurred());
         goto except;
@@ -749,6 +783,9 @@ PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
     };
 
     assert(self && self->pSl_void);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "ii:node_width",
                                       kwlist, &index, &level)) {
         assert(PyErr_Occurred());
