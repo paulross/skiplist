@@ -26,10 +26,8 @@ This describes the C++ API to a skip list with some algorithmic details of their
 
 In these descriptions:
 
-* 'right' is used to mean move to a higher ordinal node.
-* 'left' means to move to a lower ordinal node.
-* 'up' means to move to a coarser grained list, 'top' is the highest.
-* 'down' means to move to a finer grained list, 'bottom' is the level 0.
+* 'right' and 'left' is used to mean move to a higher/lower ordinal node.
+* 'up' and 'down' means to move to a coarser/finer grained list, 'top' is the highest, 'bottom' is the level 0.
 
 -------------------------
 Example in C++
@@ -62,9 +60,9 @@ Constructors
 
 There is only one constructor to a ``HeadNode`` and that takes no arguments.
 
-------------------------------------
-``HeadNode::has(T &val) const;``
-------------------------------------
+------------------------------------------
+``HeadNode::has(const T &val) const;``
+------------------------------------------
 
 Declaration: ``bool HeadNode::has(const T &value) const;``
 
@@ -114,9 +112,9 @@ Declaration: ``size_t HeadNode::size() const;``
 
 Returns the number of items in the skip list.
 
----------------------------------
-``HeadNode::insert(T &val)``
----------------------------------
+---------------------------------------
+``HeadNode::insert(const T &val)``
+---------------------------------------
 
 Declaration: ``void HeadNode::insert(const T &value);``
 
@@ -136,9 +134,9 @@ This node initially has all node references to be to itself (this), and the widt
 On recursion ('left') each node adds its width to the new node at the level above the current level.
 On moving up a level the current node swaps its width and node pointer with the new node at that new level.
 
-------------------------------
-``HeadNode::remove(T &val)``
-------------------------------
+-------------------------------------------
+``HeadNode::remove(const T &val)``
+-------------------------------------------
 
 Declaration: ``void HeadNode::remove(const T &value);``
 
@@ -293,7 +291,7 @@ The module contains the following module level functions:
 =================================== ================================================================
 Function                            Description
 =================================== ================================================================
-``toss_coin``                       Returns the result of a virtual coin toss.
+``toss_coin()``                     Returns the result of a virtual coin toss.
 ``seed_rand(long)``                 Seeds the random number generator with a long integer.
 ``min_long()``                      The minimum storable value of a ``PySkipList(long)``.
 ``max_long()``                      The maximum storable value of a ``PySkipList(long)``.

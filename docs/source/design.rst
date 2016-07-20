@@ -157,6 +157,12 @@ In general the list at level n links (ideally) to every 2**n node.
 
     This implementation is not thread safe.
 
+--------------------------------------
+Memory Management
+--------------------------------------
+
+Memory management is pretty simple in a skip list. Essentially it is no more complicated than a singly linked list and every node is created and deleted at level 0. The duplicate pointers at higher levels can be ignored.
+
 ===========
 Code Layout
 ===========

@@ -17,12 +17,12 @@ If the skip list is compiled with ``INCLUDE_METHODS_THAT_USE_STREAMS`` defined b
 
 Multiple snapshots of the same skiplist can be taken and plotted in the same graph. Each snapshot is denoted by a number.
 
-=================== ================================================================================
-Function            Description
-=================== ================================================================================
-``dotFile()``       Arguments are: an output stream and a snapshot number (default is 0).
-``dotFileFinalise`` Arguments are: an output stream and the number of snapshots.
-=================== ================================================================================
+===================== ==============================================================================
+Function              Description
+===================== ==============================================================================
+``dotFile()``         Arguments are: an output stream.
+``dotFileFinalise()`` Arguments are: an output stream.
+===================== ==============================================================================
 
 ----------------------------
 Simple Example
