@@ -453,7 +453,7 @@ int perf_at_in_one_million() {
     return result;
 }
 
-int perf_has_in_one_million() {
+int perf_has_in_one_million_vary_length() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
@@ -477,7 +477,7 @@ int perf_has_in_one_million() {
 }
 
 /* Tests the size_of() function on a skip list of length up to 1M. */
-int perf_size_of_double() {
+int perf_size_of_double_vary_length() {
     size_t NUM = 1024 * 1024;
     int result = 0;
     typedef double tValue;
@@ -504,7 +504,7 @@ int perf_size_of_double() {
 }
 
 /* Tests the size_of() function on a skip list of length up to 1M. */
-int perf_size_of_char() {
+int perf_size_of_char_vary_length() {
     size_t NUM = 1024 * 1024;
     int result = 0;
     typedef char tValue;
@@ -530,6 +530,49 @@ int perf_size_of_char() {
     return result;
 }
 
+int perf_index() {
+    size_t NUM = 1024 * 1024;
+    size_t REPEAT = 1000000;
+    int result = 0;
+    ManAHL::SkipList::HeadNode<double> sl;
+    
+    srand(1);
+    for (size_t i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+    time_t start = clock();
+    for (size_t j = 1; j < REPEAT; ++j) {
+        result |= sl.index(NUM / 2) != NUM / 2;
+    }
+    double exec = 1e9 * (clock() - start) / (double) CLOCKS_PER_SEC / REPEAT;
+    std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
+    std::cout << std::setw(8) << exec << " ns" << std::endl;
+    return result;
+}
+
+int perf_index_vary_length() {
+    size_t NUM = 1024 * 1024;
+    size_t REPEAT = 1000000;
+    int result = 0;
+    ManAHL::SkipList::HeadNode<double> sl;
+    
+    srand(1);
+    for (size_t i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+    for (size_t i = 1; i < NUM; i *= 2) {
+        time_t start = clock();
+        for (size_t j = 1; j < REPEAT; ++j) {
+            result |= sl.index(i) != i;
+        }
+        double exec = 1e9 * (clock() - start) / (double) CLOCKS_PER_SEC / REPEAT;
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
+        std::cout << "index(" << std::setw(8) << i << "): ";
+        std::cout << std::setw(8) << exec << " ns" << std::endl;
+    }
+    return result;
+}
+
 /******************* END: Performance Tests **************************/
 
 int perf_skiplist() {
@@ -548,7 +591,9 @@ int perf_skiplist() {
     result |= perf_1m_medians_1000_vectors();
     result |= perf_simulate_real_use();
     result |= perf_at_in_one_million();
-    result |= perf_has_in_one_million();
+    result |= perf_has_in_one_million_vary_length();
+    result |= perf_index();
+    result |= perf_index_vary_length();
     
     return result;
 }
@@ -556,8 +601,8 @@ int perf_skiplist() {
 int perf_size() {
     int result = 0;
     
-    result |= perf_size_of_double();
-    result |= perf_size_of_char();
+    result |= perf_size_of_double_vary_length();
+    result |= perf_size_of_char_vary_length();
     
     return result;
 }

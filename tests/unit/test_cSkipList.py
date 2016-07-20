@@ -292,6 +292,55 @@ def test_at_seq_raises_types(typ, seq):
     with pytest.raises(IndexError):
         sl.at_seq(5, 0)
 
+@pytest.mark.parametrize('typ, value',
+                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+def test_index(typ, value):
+    sl = cSkipList.PySkipList(typ)
+    assert sl.lacks_integrity() == 0
+    sl.insert(value)
+    assert sl.lacks_integrity() == 0
+    assert sl.index(value) == 0
+    assert sl.lacks_integrity() == 0
+
+@pytest.mark.parametrize('typ, value',
+                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+def test_index_raises_out_of_range(typ, value):
+    sl = cSkipList.PySkipList(typ)
+    assert sl.lacks_integrity() == 0
+    with pytest.raises(ValueError) as err:
+        assert sl.index(value) == 0
+    assert err.value.args[0].startswith('Value ')
+    assert err.value.args[0].endswith(' not found.')
+    assert sl.lacks_integrity() == 0
+
+@pytest.mark.parametrize('typ, seq',
+                         [(int_type, (1, 2, 4, 8,)),
+                          (float, (1.0, 2.0, 4.0, 8.0)),
+                          (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
+def test_index_sequence(typ, seq):
+    sl = cSkipList.PySkipList(typ)
+    assert sl.lacks_integrity() == 0
+    for value in seq:
+        sl.insert(value)
+    assert sl.lacks_integrity() == 0
+    reference = sorted(seq)
+    for v in seq:
+        assert reference.index(v) == sl.index(v)
+
+@pytest.mark.parametrize('typ, seq',
+                         [(int_type, reversed((1, 2, 4, 8,))),
+                          (float, reversed((1.0, 2.0, 4.0, 8.0))),
+                          (bytes, reversed((b'abc', b'def', b'ghi', b'jkl')))])
+def test_index_sequence_reversed(typ, seq):
+    sl = cSkipList.PySkipList(typ)
+    assert sl.lacks_integrity() == 0
+    for value in seq:
+        sl.insert(value)
+    assert sl.lacks_integrity() == 0
+    reference = sorted(seq)
+    for v in seq:
+        assert reference.index(v) == sl.index(v)
+
 #----------- Test using SkipList for rolling median. -------
 # def test_rolling_median():
 #     sl = cSkipList.PySkipList()

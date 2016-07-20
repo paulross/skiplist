@@ -5,7 +5,7 @@
     :linenothreshold: 10
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
 ***********************************************
 Skip List API
@@ -60,6 +60,39 @@ Constructors
 
 There is only one constructor to a ``HeadNode`` and that takes no arguments.
 
+---------------------------------------
+``HeadNode::insert(const T &val)``
+---------------------------------------
+
+Declaration: ``void HeadNode::insert(const T &value);``
+
+Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value, if present, is > ``value``.
+
+^^^^^^^^^^^^^^^^^
+Algorithm
+^^^^^^^^^^^^^^^^^
+
+Finding the place to insert a node first follows the ``has(T &val)`` algorithm to find the place in the skip list to create a new node.
+Inserts of duplicate values are made after any existing duplicate values.
+All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
+The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes ``{width, Node<T>*}`` data.
+
+Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin until 'tails' is found.
+This node initially has all node references to be to itself (this), and the widths set to 1 for level 0 and 0 for the remaining levels, they will be used to sum the widths at one level down.
+On recursion ('left') each node adds its width to the new node at the level above the current level.
+On moving up a level the current node swaps its width and node pointer with the new node at that new level.
+
+-------------------------------------------
+``HeadNode::remove(const T &val)``
+-------------------------------------------
+
+Declaration: ``void HeadNode::remove(const T &value);``
+
+Removes the value from the skip list. This will throw an ``ValueError`` if the value is not present.
+
+If there are duplicate values the last one is removed first, this is for symmetry with ``insert()``.
+Essentially this is the same as ``insert()`` but once the node is found the ``insert()`` updating algorithm is reversed and the node deleted.
+
 ------------------------------------------
 ``HeadNode::has(const T &val) const;``
 ------------------------------------------
@@ -104,6 +137,14 @@ Algorithm
 
 The inital location follows the algorithm of ``at(size_t index) const;`` then sequential nodes are included.
 
+----------------------------------------------
+``HeadNode::index(const T &value) const;``
+----------------------------------------------
+
+Declaration: ``size_t HeadNode<T>::index(const T& value) const``
+
+Returns the index of the first occurence of the value. This will throw a ``ValueError`` if not found. This will throw a ``FailedComparison`` if the value is not comparable. This is O(log(n)) for well formed skip lists.
+
 ------------------------------
 ``HeadNode::size() const``
 ------------------------------
@@ -111,39 +152,6 @@ The inital location follows the algorithm of ``at(size_t index) const;`` then se
 Declaration: ``size_t HeadNode::size() const;``
 
 Returns the number of items in the skip list.
-
----------------------------------------
-``HeadNode::insert(const T &val)``
----------------------------------------
-
-Declaration: ``void HeadNode::insert(const T &value);``
-
-Inserts a copy of ``value`` such that the previous value, if present, is <= ``value`` and the next value, if present, is > ``value``.
-
-^^^^^^^^^^^^^^^^^
-Algorithm
-^^^^^^^^^^^^^^^^^
-
-Finding the place to insert a node first follows the ``has(T &val)`` algorithm to find the place in the skip list to create a new node.
-Inserts of duplicate values are made after any existing duplicate values.
-All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
-The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes ``{width, Node<T>*}`` data.
-
-Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin until 'tails' is found.
-This node initially has all node references to be to itself (this), and the widths set to 1 for level 0 and 0 for the remaining levels, they will be used to sum the widths at one level down.
-On recursion ('left') each node adds its width to the new node at the level above the current level.
-On moving up a level the current node swaps its width and node pointer with the new node at that new level.
-
--------------------------------------------
-``HeadNode::remove(const T &val)``
--------------------------------------------
-
-Declaration: ``void HeadNode::remove(const T &value);``
-
-Removes the value from the skip list. This will throw an ``ValueError`` if the value is not present.
-
-If there are duplicate values the last one is removed first, this is for symmetry with ``insert()``.
-Essentially this is the same as ``insert()`` but once the node is found the ``insert()`` updating algorithm is reversed and the node deleted.
 
 -------------------------------------
 Specialised APIs
@@ -332,6 +340,12 @@ This returns the value at the given index which must be of type long. Negative v
 -------------------------------------------------------------------------
 
 This returns a tuple of ``count`` values starting at the given ``index`` which must be of type long. Negative values of the index are dealt with Pythonically. ``count`` must be positive. This tuple contains a copy of the data in the skip list. This will raise an ``IndexError`` if the ``index`` + ``count`` is >= size of the skip list. This is O(count * log(n)) for well formed skip lists.
+
+----------------------------------------------
+``PySkipList.index(value)``
+----------------------------------------------
+
+Returns the index of the first occurence of the value. This will throw a ``ValueError`` if not found or the value is not comparable. This is O(log(n)) for well formed skip lists.
 
 ------------------------------
 ``PySkipList.size()``

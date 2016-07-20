@@ -57,9 +57,9 @@ The test functions ``perf_single_ins_rem_middle_vary_length()``.
 
 This shows good O(log(n)) behaviour where n is the skip list size.
 
--------------------------------------------------
-Indexing operations: ``at()``, ``has()``
--------------------------------------------------
+-----------------------------------------------------------
+Indexing operations: ``at()``, ``has()`` ``index()``
+-----------------------------------------------------------
 
 These operations on a skip list containing 1 million doubles is typically 220 ns (4.6 million operations per second).
 
@@ -75,6 +75,11 @@ The test functions are respectively ``perf_at_in_one_million()`` and ``perf_has_
     :width: 640
 
 This shows fairly decent O(log(n))'ish type behaviour.
+
+The ``index(value)`` method has similar behavour:
+
+.. image:: plots/perf_index.svg
+    :width: 640
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Rolling Median
@@ -254,6 +259,8 @@ Test Name                           Measure                                     
                                     ``ManAHL::RollingMedian::odd_index``
                                     for 1 million values and a window size of
                                     101.
+``perf_index()``                    Tests the time cost of                      200 ns      5 M/s
+                                    ``index()`` half way through 1m doubles.
 =================================== =========================================== =========== ========
 
 ---------------------------------
@@ -272,4 +279,7 @@ Test Name                           Description
                                     This explores the time complexity of ``has()``.
 ``perf_roll_med_odd_index_wins()``  As ``perf_roll_med_odd_index()`` but explores various window
                                     sizes from 1 to 524288.
+``perf_index_vary_length()``        For 1M values call ``index(value)`` where value ranges from
+                                    2**1 to 2**19.
+                                    This explores the time complexity of ``index()``.
 =================================== ================================================================

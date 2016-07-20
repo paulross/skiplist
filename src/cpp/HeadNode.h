@@ -50,6 +50,9 @@ public:
     // the caller might want to implement the mean of two values.
     // Will throw a SkipList::IndexError if index or index + count is out of range.
     void at(size_t index, size_t count, std::vector<T> &dest) const;
+    // Computes index of the first occurrence of a value
+    // Will raise a ValueError if the value does not exist in the skip list
+    size_t index(const T& value) const;
     // Number of values in the skip list.
     size_t size() const { return _count; }
 
@@ -88,11 +91,12 @@ protected:
     const Node<T> *_nodeAt(size_t idx) const;
     
 protected:
+    // Standardised way of throwing a ValueError
+    void _throwValueErrorNotFound(const T &value) const;
     // Internal integrity checks
     IntegrityCheck _lacksIntegrityCyclicReferences() const;
     IntegrityCheck _lacksIntegrityWidthAccumulation() const;
     IntegrityCheck _lacksIntegrityNodeReferencesNotInList() const;
-
 protected:
     // Number of nodes in the list
     size_t _count;
@@ -146,6 +150,32 @@ void HeadNode<T>::at(size_t index, size_t count, std::vector<T> &dest) const {
         pNode = pNode->next();
         --count;
     }
+}
+
+/* Returns the index of the first occurence of the value.
+ * Will throw a ValueError if not found.
+ * Will throw a FailedComparison if the value is not comparable.
+ */
+template <typename T>
+size_t HeadNode<T>::index(const T& value) const {
+    assert(_nodeRefs.height());
+    if (value != value) {
+        // value can not be NaN for example
+        throw FailedComparison(
+            "Can not check for something that does not compare equal to itself.");
+    }
+    size_t idx;
+    
+    for (size_t l = _nodeRefs.height(); l-- > 0;) {
+        assert(_nodeRefs[l].pNode);
+        if (_nodeRefs[l].pNode->index(value, idx, l)) {
+            idx += _nodeRefs[l].width;
+            assert(idx > 0);
+            return idx - 1;
+        }
+    }
+    _throwValueErrorNotFound(value);
+    return 0;
 }
 
 template <typename T>
@@ -310,18 +340,23 @@ void HeadNode<T>::remove(const T &value) {
         }
     }
     if (! pNode) {
-#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-        std::ostringstream oss;
-        oss << "Value " << value << " not found.";
-        std::string err_msg = oss.str();
-#else
-        std::string err_msg = "Value not found.";
-#endif
-        throw ValueError(err_msg);
+        _throwValueErrorNotFound(value);
     }
     // Take swap level as some swaps will have been dealt with by the remove() above.
     _adjRemoveRefs(pNode->nodeRefs().swapLevel(), pNode);
     --_count;
+}
+
+template <typename T>
+void HeadNode<T>::_throwValueErrorNotFound(const T &value) const {
+#ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+    std::ostringstream oss;
+    oss << "Value " << value << " not found.";
+    std::string err_msg = oss.str();
+#else
+    std::string err_msg = "Value not found.";
+#endif
+    throw ValueError(err_msg);
 }
 
 /* This tests that at every level >= 0 the sequence of node pointers

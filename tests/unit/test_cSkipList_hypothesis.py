@@ -1,9 +1,15 @@
+import sys
+
 import hypothesis
 import hypothesis.strategies as hst
 import pytest
 
-
 import cSkipList
+
+if sys.version_info[0] == 3:
+    int_type = int
+elif sys.version_info[0] == 2:
+    int_type = long
 
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
@@ -74,3 +80,56 @@ def test_hypothesis_insert_remove_bytes(lst):
     for v in lst:
         sl.remove(v)
     assert sl.size() == 0
+
+@hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
+                                         max_value=cSkipList.max_long())))
+def test_hypothesis_index_integers(lst):
+    sl = cSkipList.PySkipList(int)
+    for v in lst:
+        sl.insert(v)
+    reference = sorted(lst)
+    for v in lst:
+        assert reference.index(v) == sl.index(v)
+    
+@hypothesis.given(hst.lists(hst.floats(allow_nan=False, allow_infinity=True)))
+def test_hypothesis_index_floats(lst):
+    sl = cSkipList.PySkipList(float)
+    for v in lst:
+        sl.insert(v)
+    reference = sorted(lst)
+    for v in lst:
+        assert reference.index(v) == sl.index(v)
+
+@hypothesis.given(hst.lists(hst.binary()))
+def test_hypothesis_index_bytes(lst):
+    sl = cSkipList.PySkipList(bytes)
+    for v in lst:
+        sl.insert(v)
+    reference = sorted(lst)
+    for v in lst:
+        assert reference.index(v) == sl.index(v)
+
+@hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
+                                         max_value=cSkipList.max_long())))
+def test_hypothesis_index_matches_at_integers(lst):
+    sl = cSkipList.PySkipList(int)
+    for v in lst:
+        sl.insert(v)
+    for v in lst:
+        assert sl.at(sl.index(v)) == v
+    
+@hypothesis.given(hst.lists(hst.floats(allow_nan=False, allow_infinity=True)))
+def test_hypothesis_index_matches_at_floats(lst):
+    sl = cSkipList.PySkipList(float)
+    for v in lst:
+        sl.insert(v)
+    for v in lst:
+        assert sl.at(sl.index(v)) == v
+
+@hypothesis.given(hst.lists(hst.binary()))
+def test_hypothesis_index_matches_at_bytes(lst):
+    sl = cSkipList.PySkipList(bytes)
+    for v in lst:
+        sl.insert(v)
+    for v in lst:
+        assert sl.at(sl.index(v)) == v

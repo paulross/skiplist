@@ -29,6 +29,8 @@ public:
     // Returns the value at the index in the skip list from this node onwards.
     // Will return nullptr is not found.
     const Node<T> *at(size_t idx) const;
+    // Computes index of the first occurrence of a value
+    bool index(const T& value, size_t &idx, size_t level) const;
     // Number of linked lists that this node engages in, minimum 1.
     size_t height() const { return _nodeRefs.height(); }
     // Return the pointer to the next node at level 0
@@ -112,6 +114,40 @@ const Node<T> *Node<T>::at(size_t idx) const {
         }
     }
     return nullptr;
+}
+
+template <typename T>
+bool Node<T>::index(const T& value, size_t &idx, size_t level) const {
+    assert(_nodeRefs.height());
+    assert(value == value); // value can not be NaN for example
+    assert(level < _nodeRefs.height());
+    // Search has overshot, try again at a lower level.
+    if (_value > value) {
+        return false;
+    }
+    // First check if we match but we have been approached at a high level
+    // as there may be an earlier node of the same value but with fewer
+    // node references. In that case this search has to fail and try at a
+    // lower level.
+    // If however the level is 0 and we match then set the idx to 0 to mark us.
+    if (_value == value) {
+        if (level > 0) {
+            return false;
+        }
+        idx = 0;
+        return true;
+    }
+    // Now work our way down
+    // NOTE: We initialise l as level + 1 because l-- > 0 will decrement it to
+    // the correct initial value
+    for (size_t l = level + 1; l-- > 0;) {
+        assert(l < _nodeRefs.height());
+        if (_nodeRefs[l].pNode && _nodeRefs[l].pNode->index(value, idx, l)) {
+            idx += _nodeRefs[l].width;
+            return true;
+        }
+    }
+    return false;
 }
 
 template <typename T>

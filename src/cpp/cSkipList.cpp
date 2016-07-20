@@ -490,6 +490,81 @@ finally:
 }
 
 static PyObject *
+PySkipList_index(PySkipList* self, PyObject *arg)
+{
+    PyObject *ret_val = NULL;
+    std::string str;
+    
+    assert(self && self->pSl_void);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
+    switch (self->_data_type) {
+        case TYPE_LONG:
+            if (! PyLong_Check(arg)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be long not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
+                goto except;
+            }
+            try {
+                ret_val = PyLong_FromSize_t(
+                            self->pSl_long->index(PyLong_AsLongLong(arg)));
+            } catch (ManAHL::SkipList::ValueError &err) {
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                goto except;
+            }
+            break;
+        case TYPE_DOUBLE:
+            if (! PyFloat_Check(arg)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be float not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
+                goto except;
+            }
+            try {
+                ret_val = PyLong_FromSize_t(
+                        self->pSl_double->index(PyFloat_AS_DOUBLE(arg)));
+            } catch (ManAHL::SkipList::FailedComparison &err) {
+                /* This will happen if arg is a NaN. */
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                goto except;
+            } catch (ManAHL::SkipList::ValueError &err) {
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                goto except;
+            }
+            break;
+        case TYPE_BYTES:
+            if (! PyBytes_Check(arg)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be bytes not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
+                goto except;
+            }
+            try {
+                ret_val = PyLong_FromSize_t(
+                        self->pSl_bytes->index(_bytes_as_std_string(arg)));
+            } catch (ManAHL::SkipList::ValueError &err) {
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                goto except;
+            }
+            break;
+        default:
+            PyErr_BadInternalCall();
+            goto except;
+            break;
+    }
+    assert(! PyErr_Occurred());
+    assert(ret_val);
+    goto finally;
+except:
+    assert(PyErr_Occurred());
+    Py_XDECREF(ret_val);
+finally:
+    return ret_val;
+}
+
+static PyObject *
 PySkipList_size(PySkipList* self)
 {
     PyObject *ret_val = NULL;
@@ -859,6 +934,9 @@ static PyMethodDef PySkipList_methods[] = {
     },
     {"at_seq", (PyCFunction)PySkipList_at_sequence, METH_VARARGS | METH_KEYWORDS,
         "Return the sequence of count values at the given index."
+    },
+    {"index", (PyCFunction)PySkipList_index, METH_O,
+        "Return the index of the given value, if found."
     },
     {"size", (PyCFunction)PySkipList_size, METH_NOARGS,
      "Return the number of elements in the skip list."

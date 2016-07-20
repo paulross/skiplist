@@ -445,12 +445,86 @@ int test_insert_nan_throws() {
     return result;
 }
 
+/* Test basic use of index() */
+int test_index_basic_7_node() {
+    size_t NUM = 8;
+    int result = 0;
+    ManAHL::SkipList::HeadNode<size_t> sl;
+    
+    srand(1);
+    std::string in;
+    result |= sl.lacksIntegrity();
+    for (size_t i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+//    size_t idx;
+//    for (int i = 0; i < NUM; ++i) {
+//        try {
+//            idx = sl.index(i);
+//            std::cout << "i = " << i << " sl.index(i) = " << idx << std::endl;
+//        } catch (ManAHL::SkipList::ValueError &err) {
+//            std::cout << "i = " << i << " FAILED" << std::endl;
+//        }
+//    }
+    for (size_t i = 0; i < NUM; ++i) {
+        result |= sl.index(i) != i;
+    }
+    result |= sl.lacksIntegrity();
+    return result;
+}
+
+/* Test index() throws with out of range values. */
+int test_index_throws() {
+    int NUM = 8;
+    int result = 0;
+    ManAHL::SkipList::HeadNode<int> sl;
+    
+    srand(1);
+    std::string in;
+    result |= sl.lacksIntegrity();
+    for (int i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+    size_t idx = 0;
+    try {
+        idx = sl.index(-1);
+        result |= 1;
+    } catch (ManAHL::SkipList::ValueError &err) {}
+    try {
+        idx = sl.index(NUM);
+        result |= 1;
+    } catch (ManAHL::SkipList::ValueError &err) {}
+    result |= idx;
+    result |= sl.lacksIntegrity();
+    return result;
+}
+
+/* Use of index() on a large number of integers. */
+int test_index_large() {
+    size_t NUM = 1024 * 128;
+    int result = 0;
+    ManAHL::SkipList::HeadNode<size_t> sl;
+    
+    srand(1);
+    std::string in;
+    result |= sl.lacksIntegrity();
+    for (size_t i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+    for (size_t i = 0; i < NUM; ++i) {
+        result |= sl.index(i) != i;
+    }
+    result |= sl.lacksIntegrity();
+    return result;
+}
+
 /***************** END: Functional Tests ************************/
 
 int test_functional_all() {
     int result = 0;
     
-    result |= print_result("test_very_simple_insert", test_very_simple_insert());
+    result |= print_result("test_very_simple_insert",
+                           test_very_simple_insert());
     result |= print_result("test_simple_insert", test_simple_insert());
     result |= print_result("test_insert_and_remove_same",
                            test_insert_and_remove_same());
@@ -476,5 +550,9 @@ int test_functional_all() {
     result |= print_result("test_insert_one_million",
                            test_insert_one_million());
     result |= print_result("test_insert_nan_throws", test_insert_nan_throws());
+    result |= print_result("test_index_basic_7_node()",
+                           test_index_basic_7_node());
+    result |= print_result("test_index_throws", test_index_throws());
+    result |= print_result("test_index_large", test_index_large());
     return result;
 }
