@@ -145,6 +145,8 @@ Declaration: ``size_t HeadNode<T>::index(const T& value) const``
 
 Returns the index of the first occurence of the value. This will throw a ``ValueError`` if not found. This will throw a ``FailedComparison`` if the value is not comparable. This is O(log(n)) for well formed skip lists.
 
+``at(index(value))`` is always true if ``value`` is in the skip list. If there are no duplicate values ``index(at(i))`` is true for all indices.
+
 ------------------------------
 ``HeadNode::size() const``
 ------------------------------
@@ -319,9 +321,9 @@ The constructor takes a Python type. The following are valid:
 
     import cSkipList
     
-    sl = cSkipList.PySkipList(long)
+    sl = cSkipList.PySkipList(int) # Python 3, for Python 2 use PySkipList(long)
     sl = cSkipList.PySkipList(float)
-    sl = cSkipList.PySkipList(bytes)
+    sl = cSkipList.PySkipList(bytes) # In Python 2 PySkipList(str) also works
 
 ------------------------------------
 ``PySkipList.has(val)``

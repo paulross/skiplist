@@ -283,3 +283,9 @@ Test Name                           Description
                                     2**1 to 2**19.
                                     This explores the time complexity of ``index()``.
 =================================== ================================================================
+
+====================================
+Python Performance Tests
+====================================
+
+Some informal testing of the Python wrapper around the C++ skip list was done. Operations took typically 4 to 6 times longer than using the C++ version directly.

@@ -259,7 +259,7 @@ PySkipList_at(PySkipList *self, PyObject *arg)
 #if PY_MAJOR_VERSION == 3
     if (! PyLong_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
-                     "Type must be long type not \"%s\" type",
+                     "Index of skip list must be type \"long\" not type \"%s\"",
                      arg->ob_type->tp_name);
         goto except;
     }
@@ -272,7 +272,7 @@ PySkipList_at(PySkipList *self, PyObject *arg)
 #else
     if (! PyLong_Check(arg) && ! PyInt_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
-                     "Type must be integer or long type not \"%s\" type",
+                     "Index of skip list must be type \"long\" or \"int\" not type \"%s\"",
                      arg->ob_type->tp_name);
         goto except;
     }
@@ -503,7 +503,7 @@ PySkipList_index(PySkipList* self, PyObject *arg)
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
                 PyErr_Format(PyExc_TypeError,
-                             "Argument to has() must be long not \"%s\" type",
+                             "Argument to index() must be long not \"%s\" type",
                              Py_TYPE(arg)->tp_name);
                 goto except;
             }
@@ -518,7 +518,7 @@ PySkipList_index(PySkipList* self, PyObject *arg)
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
                 PyErr_Format(PyExc_TypeError,
-                             "Argument to has() must be float not \"%s\" type",
+                             "Argument to index() must be float not \"%s\" type",
                              Py_TYPE(arg)->tp_name);
                 goto except;
             }
@@ -537,7 +537,7 @@ PySkipList_index(PySkipList* self, PyObject *arg)
         case TYPE_BYTES:
             if (! PyBytes_Check(arg)) {
                 PyErr_Format(PyExc_TypeError,
-                             "Argument to has() must be bytes not \"%s\" type",
+                             "Argument to index() must be bytes not \"%s\" type",
                              Py_TYPE(arg)->tp_name);
                 goto except;
             }

@@ -1,18 +1,11 @@
 import itertools
-import math
-import sys
 
 import pytest
 
 import cSkipList
 import SeedTree
 
-if sys.version_info[0] == 3:
-    int_type = int
-    math_nan = math.nan
-elif sys.version_info[0] == 2:
-    int_type = long    
-    math_nan = float('NaN')
+from compat_23 import int_type, math_nan, example_int_value, example_int_seq
 
 def test_module():
     assert hasattr(cSkipList, '__version__')
@@ -45,12 +38,11 @@ def test_ctor_raises_not_a_type():
 def test_ctor_raises_wrong_type(typ, msg):
     with pytest.raises(ValueError) as err:
         cSkipList.PySkipList(typ)
-    print(err.value.args[0])
     assert err.value.args[0] == \
         'Argument to __init__ must be long, float or bytes, not "%s"' % msg
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_insert(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -63,7 +55,6 @@ def test_single_insert(typ, value):
                             (int_type, '8'),
                             (float, 8),
                             (float, '8.0'),
-                            (bytes, 'abc'),
                             (bytes, u'abc'),
                             (bytes, r'abc'),
                         ])
@@ -138,7 +129,7 @@ def test_has_float_NaN_raises():
 #------- END: Some specialised insert tests for particular types ----------
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_has(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -148,7 +139,7 @@ def test_single_has(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_at(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -158,7 +149,7 @@ def test_single_at(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_at_fails(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -172,7 +163,7 @@ def test_single_at_fails(typ, value):
     assert err.value.args[0] == 'Index -2 out of range -2 < index <= -1'
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 4), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_insert_different_and_size(typ, value):
     sl = cSkipList.PySkipList(typ)
     for i in range(16):
@@ -184,7 +175,7 @@ def test_single_insert_different_and_size(typ, value):
         assert sl.size() == i + 1
     
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 4), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_insert_same_and_size(typ, value):
     sl = cSkipList.PySkipList(typ)
     for i in range(16):
@@ -196,7 +187,7 @@ def test_single_insert_same_and_size(typ, value):
         assert sl.size() == i + 1
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 4), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_remove(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.size() == 0
@@ -208,7 +199,7 @@ def test_single_remove(typ, value):
     assert sl.size() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 4), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_remove(typ, value):
     sl = cSkipList.PySkipList(typ)
     for i in range(16):
@@ -224,7 +215,7 @@ def test_remove(typ, value):
     assert sl.size() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_remove_fails(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.size() == 0
@@ -239,7 +230,7 @@ def test_single_remove_fails(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, (1, 2, 4, 8,)),
+                         [(int_type, example_int_seq),
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_at_seq(typ, seq):
@@ -264,7 +255,7 @@ def test_at_seq_empty_fails(typ):
     assert err.value.args[0] == 'Index -1 out of range -1 < index <= -1'
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, (1, 2, 4, 8,)),
+                         [(int_type, example_int_seq),
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_at_seq_raises_types(typ, seq):
@@ -293,7 +284,7 @@ def test_at_seq_raises_types(typ, seq):
         sl.at_seq(5, 0)
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_index(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -303,7 +294,7 @@ def test_index(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_index_raises_out_of_range(typ, value):
     sl = cSkipList.PySkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -314,7 +305,7 @@ def test_index_raises_out_of_range(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, (1, 2, 4, 8,)),
+                         [(int_type, example_int_seq),
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_index_sequence(typ, seq):
@@ -328,7 +319,7 @@ def test_index_sequence(typ, seq):
         assert reference.index(v) == sl.index(v)
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, reversed((1, 2, 4, 8,))),
+                         [(int_type, reversed(example_int_seq)),
                           (float, reversed((1.0, 2.0, 4.0, 8.0))),
                           (bytes, reversed((b'abc', b'def', b'ghi', b'jkl')))])
 def test_index_sequence_reversed(typ, seq):
@@ -387,7 +378,7 @@ def test_node_height_raises(typ):
         sl.node_height(1, 2)
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_all_level_one(typ, value):
     """Set up the random number generator so that each node is height 1."""
     num = 3
@@ -406,7 +397,7 @@ def test_insert_all_level_one(typ, value):
         assert sl.lacks_integrity() == 0
         
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_all_level_two(typ, value):
     """Set up the random number generator so that each node is height 2."""
     num = 3
@@ -425,7 +416,7 @@ def test_insert_all_level_two(typ, value):
         assert sl.lacks_integrity() == 0
         
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_all_level_three(typ, value):
     """Set up the random number generator so that each node is height 3."""
     num = 2
@@ -444,7 +435,7 @@ def test_insert_all_level_three(typ, value):
         assert sl.lacks_integrity() == 0
         
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_all_level_four(typ, value):
     """Set up the random number generator so that each node is height 4."""
     num = 2
@@ -463,7 +454,7 @@ def test_insert_all_level_four(typ, value):
         assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_levels_one_two_three_four(typ, value):
     """Set up the random number generator so that the first node is inserted
     with height=1, second node inserted with height=2, third node inserted
@@ -484,7 +475,7 @@ def test_insert_levels_one_two_three_four(typ, value):
         assert sl.lacks_integrity() == 0
         
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_levels_one_two_three_four_node_width(typ, value):
     """Set up the random number generator so that the first node is inserted
     with height=1, second node inserted with height=2, third node inserted
@@ -517,7 +508,7 @@ def test_insert_levels_one_two_three_four_node_width(typ, value):
         assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_node_width(typ, value):
     """See: skiplist/doc/dot/doc_insert_remove.svg to node 3"""
     num_nodes = 4
@@ -558,7 +549,7 @@ def test_node_width_raises(typ):
         sl.node_width(1, '2')
 
 @pytest.mark.parametrize('typ, value',
-                         [(int_type, 8), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_insert_levels_one_two_three_four_permutations(typ, value):
     """Set up the random number generator so that the first node is inserted
     with height=1, second node inserted with height=2, third node inserted

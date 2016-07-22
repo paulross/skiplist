@@ -6,15 +6,12 @@ import pytest
 
 import cSkipList
 
-if sys.version_info[0] == 3:
-    int_type = int
-elif sys.version_info[0] == 2:
-    int_type = long
+from compat_23 import int_type
 
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
 def test_hypothesis_insert_integers(lst):
-    sl = cSkipList.PySkipList(int)
+    sl = cSkipList.PySkipList(int_type)
     for v in lst:
         sl.insert(v)
     result = [sl.at(i) for i in range(sl.size())]
@@ -47,7 +44,7 @@ def test_hypothesis_insert_bytes(lst):
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
 def test_hypothesis_insert_remove_integers(lst):
-    sl = cSkipList.PySkipList(int)
+    sl = cSkipList.PySkipList(int_type)
     for v in lst:
         sl.insert(v)
     for v in lst:
@@ -84,7 +81,7 @@ def test_hypothesis_insert_remove_bytes(lst):
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
 def test_hypothesis_index_integers(lst):
-    sl = cSkipList.PySkipList(int)
+    sl = cSkipList.PySkipList(int_type)
     for v in lst:
         sl.insert(v)
     reference = sorted(lst)
@@ -112,7 +109,7 @@ def test_hypothesis_index_bytes(lst):
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))
 def test_hypothesis_index_matches_at_integers(lst):
-    sl = cSkipList.PySkipList(int)
+    sl = cSkipList.PySkipList(int_type)
     for v in lst:
         sl.insert(v)
     for v in lst:

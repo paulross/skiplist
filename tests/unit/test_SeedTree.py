@@ -12,11 +12,11 @@ import pytest
 import SeedTree
 
 def test_time_to_depth_dict():
-    print('Time:')
+#     print('Time:')
     for depth in range(1, 10):
         t = time.clock()
         SeedTree.find_seeds_for_sequences(depth, SeedTree.RANDOM_SEED, SeedTree.FAIR_COIN)
-        print('%4d %8.3f' % (depth, time.clock() - t))
+#         print('%4d %8.3f' % (depth, time.clock() - t))
 
 def test_seed_tree_permutations_dict():
     depth = 8
