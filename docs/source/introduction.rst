@@ -13,13 +13,13 @@
 Introduction
 ======================================
 
-A skip list behaves as a maintained sorted list with O(log(n)) cost for insertion, look-up and removal. This makes it ideal for such operations as computing the rolling median of a large dataset. A skip list is an alternative to binary tree.
+A skip list behaves as a maintained sorted list with, typically, O(log(n)) cost for insertion, look-up and removal. This makes it ideal for such operations as computing the rolling median of a large dataset. A skip list is an alternative to binary tree.
 
 A skip list is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists. These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list.
 
 A skip list is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in.
 
-The advantages claimed for skip lists are that the insert and remove logic is simpler (however I do not subscribe to this).
+An advantage claimed for skip lists are that the insert and remove logic is simpler (however I do not subscribe to this).
 
 The drawbacks of a skip list include its larger space requirements and its O(log(N)) lookup behaviour compared to other, more restricted and specialised, data structures that may have either faster runtime behaviour or lower space requirements or both.
 

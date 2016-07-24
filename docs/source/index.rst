@@ -14,8 +14,10 @@ Contents:
    introduction
    design
    performance
+   rolling_median
    visualisations
    biased_coins
+   test_notes
    api
    
 Indices and tables

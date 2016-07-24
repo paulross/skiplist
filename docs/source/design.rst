@@ -50,7 +50,9 @@ Search Algorithms
 Presence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This search returns true/false as to whether a value is present. The search is recursive starting at the coarsest list dropping down a level when the search overshoots. Take for example searching for the presence of ``D``. The search starts as ``HED[2]`` this leads to ``E[2]`` and ``E > D`` so that search is rejected. The search then tries ``HED[2] -> HED[1]`` which leads to ``A[1] -> C[1] -> E[1]``, again that search is rejected as ``E > D``. The search finally succeeds following the path ``HED[2] -> HED[1] -> A[1] -> C[1] -> C[0] -> D[0]`` so returns true.
+This search returns true/false as to whether a value is present. The search is recursive starting at the coarsest list dropping down a level when the search overshoots.
+
+Take, for example, searching for the presence of ``D``. The search starts as ``HED[2]`` this leads to ``E[2]`` and ``E > D`` so that search is rejected. The search then evolves to: ``HED[2] -> HED[1]`` which leads to ``A[1] -> C[1] -> E[1]``, again that search is rejected as ``E > D``. The search finally succeeds following the path ``HED[2] -> HED[1] -> A[1] -> C[1] -> C[0] -> D[0]`` so returns true.
 
 It is not necessary for the search to reach level 0 if it can be terminated earlier. For example the search for ``C`` would be achieved by ``HED[2] -> HED[1] -> A[1] -> C[1]``.
 
@@ -75,7 +77,7 @@ To understand how the skip list is maintained, consider insertion. Before insert
 Inserting ``E`` means:
 
 * Finding where ``E`` should be inserted (after ``D``).
-* Creating node ``E`` with a random height (heads/heads/tails so 3 high).
+* Creating node ``E`` with a random height (tossing a coin gives heads/heads/tails so 3 high).
 * Updating ``D`` to refer to ``E`` at level 0.
 * Updating ``C`` to refer to ``E`` at level 1 and decreasing ``C``'s width to 2, increasing ``E`` width at level 1 to 2.
 * Expanding ``HED`` to level 2 with a reference to ``E`` and a width of 5.
@@ -99,8 +101,9 @@ This creates the call chain that passes through the nodes ``HED[1] -> A[1] -> C[
 Node Creation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Node E is created with a stack containing a single pointer to the next node F.
-Then a virtual coin is tossed, for each 'head' an extra NULL reference is added to the stack.
+Node ``E`` is created with a stack containing a single pointer to the next node ``F``.
+Then a virtual coin is tossed, for each 'head' a pair of values ``{this, 1}`` is added to this stack.
+These values will be swapped with other nodes when the recursive calls unwind.
 If a 'tail' is thrown the stack is complete.
 In the example above when creating ``E`` we have encountered tosses of 'head', 'head', 'tail'.
 
@@ -109,12 +112,12 @@ Recursive Unwinding
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The remaining operations are done as recursion unwinds.
-D[0] and C[0] update E[1] with their cumulative width (2).
-C[1] adds 1 to width (a new node is inserted) then subtracts E[1].
-Then C[1]/E[1] are swapped so that the pointers and widths are correct.
-And so on until HED is reached, in this case a new level is added and HED[2] swapped with E[2].
+``D[0]`` and ``C[0]`` update ``E[1]`` with their cumulative width (2).
+``C[1]`` adds 1 to width (a new node is inserted) then subtracts ``E[1]``.
+Then ``C[1]`` / ``E[1]`` are swapped so that the pointers and widths are correct.
+And so on until ``HED`` is reached, in this case a new level is added and ``HED[2]`` swapped with ``E[2]``.
 
-A more detailed description of the algorithms used for each method is in the :ref:`skiplist-cpp-api-label`
+There are some visualisations of this behaviour here: :ref:`skiplist-visualisation-label`
 
 --------------------------------------
 Removal Algorithm
@@ -139,6 +142,8 @@ The final search succeeds by setting up the call chain ``HED[2] -> HED[1] -> A[1
 
 As the recursion unwinds node that data at each level of ``E`` is used to swap node pointers and adjust the widths of node C. Finally ``HED`` can drop one level before deleting ``E``.
 
+A more detailed description of the algorithm used for each method is in the :ref:`skiplist-cpp-api-label`
+
 =====================================
 Implementation Notes
 =====================================
@@ -161,7 +166,9 @@ In general the list at level n links (ideally) to every 2**n node.
 Memory Management
 --------------------------------------
 
-Memory management is pretty simple in a skip list. Essentially it is no more complicated than a singly linked list and every node is created and deleted at level 0. The duplicate pointers at higher levels can be ignored.
+Memory management is pretty simple in a skip list.
+Essentially it is no more complicated than a singly linked list as every node is created and deleted at level 0.
+The duplicate pointers at higher levels can be ignored.
 
 ===========
 Code Layout

@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 import cSkipList
-import SeedTree
+import seed_tree
 
 from compat_23 import int_type, math_nan, example_int_value, example_int_seq
 
@@ -355,12 +355,12 @@ def test_index_sequence_reversed(typ, seq):
 
 #----------------- Test probabilistic results. -----------
 SEEDTREE_DEPTH = 10
-SEED_DICT = SeedTree.find_seeds_for_sequences(SEEDTREE_DEPTH,
-                                              cSkipList.seed_rand,
-                                              cSkipList.toss_coin)
+SEED_DICT = seed_tree.find_seeds_for_sequences(SEEDTREE_DEPTH,
+                                               cSkipList.seed_rand,
+                                               cSkipList.toss_coin)
 
 def test_seed_tree_permutations():
-    """Test the SeedTree using the cSkipList random number generator which is
+    """Test the seed_tree using the cSkipList random number generator which is
     actually std::rand() and std::srand() for seeding."""
     results = []
     for seq in itertools.product(range(2), repeat=SEEDTREE_DEPTH):

@@ -50,7 +50,7 @@ Mutating operations: ``insert()``, ``remove()``
 These operations depend on the size of the skip list. For one containing 1 million doubles each operation is typically 450 ns (2.2 million operations per second).
 
 Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in the middle of the list, both as time in (ns) and rate per second.
-The test functions ``perf_single_ins_rem_middle_vary_length()``.
+The test function is ``perf_single_ins_rem_middle_vary_length()``.
 
 .. image:: plots/perf_ins_rem_mid.svg
     :width: 640
@@ -117,7 +117,7 @@ Memory usage can be gauged by any of the following methods:
 
 * Theoretical calculation such as above which gives ~72 bytes per node for doubles.
 * Observing a process that creates a skip list using OS tools, this typically gives ~86 bytes per node for doubles.
-* Calling the ``size_of()`` method that can make use of its knowledge of the internal structure of a skip list to estimate memory usage. For ``double`` this is shown to be about 76 bytes per node. Any ``size_of()`` estimate will be an underestimate if the skip list type uses dynamic memory allocation such as ``std::string``.
+* Calling the ``size_of()`` method that can make use of its knowledge of the internal structure of a skip list to estimate memory usage. For ``double`` this is shown to be about 76 bytes per node. Any ``size_of()`` estimate will be an underestimate if the skip list ``<T>`` uses dynamic memory allocation such as ``std::string``.
 
 -------------------------------------------
 Estimate Memory Usage With ``size_of()``
@@ -131,7 +131,7 @@ Total memory allocation is a function of a number of factors:
 * The size of the skip lists, very small skip lists carry the overhead of the ``HeadNode``.
 * The coin probability ``p()``. Unfair coins can change the overhead of the additional coarser linked lists. More about this later.
 
-The following graph shows the ``size_of()`` a skip list of doubles of varying lengths. The Y axis is the ``size_of()`` divided by the length of the skip list in bytes per node. Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double. The test name is ``perf_size_of()``.
+The following graph shows the ``size_of()`` a skip list of doubles of varying lengths with a fair coin. The Y axis is the ``size_of()`` divided by the length of the skip list in bytes per node. Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double. The test name is ``perf_size_of()``.
 
 .. image:: plots/perf_size_of.svg
     :width: 640

@@ -158,7 +158,6 @@ void HeadNode<T>::at(size_t index, size_t count, std::vector<T> &dest) const {
  */
 template <typename T>
 size_t HeadNode<T>::index(const T& value) const {
-    assert(_nodeRefs.height());
     if (value != value) {
         // value can not be NaN for example
         throw FailedComparison(
@@ -446,7 +445,6 @@ IntegrityCheck HeadNode<T>::_lacksIntegrityNodeReferencesNotInList() const {
     
     return INTEGRITY_SUCCESS;
 }
-
 
 template <typename T>
 IntegrityCheck HeadNode<T>::lacksIntegrity() const {
