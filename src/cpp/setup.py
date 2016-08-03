@@ -24,7 +24,6 @@ from distutils.core import setup, Extension
 # CFLAGS_DEBUG = $(CFLAGS) -g3 -O0 -DDEBUG=1
 extra_compile_args = ['-Wall', '-Wextra', '-Werror', '-Wfatal-errors', ]
 DEBUG = False
-DEBUG = True
 
 if DEBUG:
     extra_compile_args.extend(['-g3', '-O0', '-DDEBUG=1'])

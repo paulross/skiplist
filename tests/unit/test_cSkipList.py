@@ -55,8 +55,7 @@ def test_single_insert(typ, value):
                             (int_type, '8'),
                             (float, 8),
                             (float, '8.0'),
-                            (bytes, u'abc'),
-                            (bytes, r'abc'),
+                            (bytes, u'unicode'),
                         ])
 def test_single_insert_raises(typ, value):
     sl = cSkipList.PySkipList(typ)

@@ -13,7 +13,7 @@ from compat_23 import int_type
 def test_hypothesis_insert_integers(lst):
     sl = cSkipList.PySkipList(int_type)
     for v in lst:
-        sl.insert(v)
+        sl.insert(int_type(v))
     result = [sl.at(i) for i in range(sl.size())]
     assert result == sorted(lst)
     
@@ -46,9 +46,9 @@ def test_hypothesis_insert_bytes(lst):
 def test_hypothesis_insert_remove_integers(lst):
     sl = cSkipList.PySkipList(int_type)
     for v in lst:
-        sl.insert(v)
+        sl.insert(int_type(v))
     for v in lst:
-        sl.remove(v)
+        sl.remove(int_type(v))
     assert sl.size() == 0
     
 @hypothesis.given(hst.lists(hst.floats(allow_nan=False)))
@@ -83,10 +83,10 @@ def test_hypothesis_insert_remove_bytes(lst):
 def test_hypothesis_index_integers(lst):
     sl = cSkipList.PySkipList(int_type)
     for v in lst:
-        sl.insert(v)
+        sl.insert(int_type(v))
     reference = sorted(lst)
     for v in lst:
-        assert reference.index(v) == sl.index(v)
+        assert reference.index(v) == sl.index(int_type(v))
     
 @hypothesis.given(hst.lists(hst.floats(allow_nan=False, allow_infinity=True)))
 def test_hypothesis_index_floats(lst):
@@ -111,9 +111,9 @@ def test_hypothesis_index_bytes(lst):
 def test_hypothesis_index_matches_at_integers(lst):
     sl = cSkipList.PySkipList(int_type)
     for v in lst:
-        sl.insert(v)
+        sl.insert(int_type(v))
     for v in lst:
-        assert sl.at(sl.index(v)) == v
+        assert sl.at(sl.index(int_type(v))) == v
     
 @hypothesis.given(hst.lists(hst.floats(allow_nan=False, allow_infinity=True)))
 def test_hypothesis_index_matches_at_floats(lst):

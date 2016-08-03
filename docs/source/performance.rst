@@ -288,4 +288,17 @@ Test Name                           Description
 Python Performance Tests
 ====================================
 
-Some informal testing of the Python wrapper around the C++ skip list was done. Operations took typically 4 to 6 times longer than using the C++ version directly.
+Some informal testing of the Python wrapper around the C++ skip list was done using ``timeit`` in *tests/perf/test_perf_cSkipList.py*. The skip list has 1m items. The performance is comparable to the C++ tests.
+
+=============================== ===========================
+Test                            Time per item (ns)
+=============================== ===========================
+test_at_integer                 217
+test_at_float                   242
+test_has_integer                234
+test_has_float                  238
+test_insert_remove_mid_integer  1312
+test_insert_remove_mid_float    1497
+test_index_mid_int              400
+test_index_mid_float            356
+=============================== ===========================
