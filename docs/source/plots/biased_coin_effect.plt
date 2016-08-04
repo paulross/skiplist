@@ -6,7 +6,7 @@ set xrange [0:1]
 set xtics 0,0.1,1
 
 set ylabel "Relative to p(0.5)"
-set yrange [0:6]
+set yrange [0:7]
 set pointsize 1
 set datafile separator "\t"
 # Curve fit

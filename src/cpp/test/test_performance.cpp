@@ -349,7 +349,7 @@ int perf_1m_median_values() {
     std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
     std::cout << " vectors: " << std::setw(6) << NUMBER_VECTORS;
     std::cout << " of length: " << std::setw(8) << VECTOR_LENGTH;
-    std::cout << " window width: " << std::setw(4) << WINDOW_WIDTH;
+//    std::cout << " window width: " << std::setw(4) << WINDOW_WIDTH;
     std::cout << " time: ";
     std::cout << exec / 1e6;
     std::cout << " (s)";
@@ -530,6 +530,31 @@ int perf_size_of_char_vary_length() {
     return result;
 }
 
+/* Tests the size_of() function on a skip list of length up to 1M. */
+int perf_size_of_1m() {
+    size_t NUM = 1024 * 1024;
+    int result = 0;
+    typedef double tValue;
+    
+    srand(1);
+    ManAHL::SkipList::HeadNode<tValue> sl;
+    for (size_t j = 0; j < NUM; ++j) {
+        sl.insert(j);
+    }
+    size_t size_of = sl.size_of();
+    std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "(): ";
+    std::cout << "size_of(" << std::setw(8) << NUM << "): ";
+    std::cout << std::setw(8) << size_of << " bytes";
+    std::cout << " ratio: ";
+    std::cout << std::setw(8) << std::setprecision(4);
+    std::cout << 1.0 * size_of / NUM;
+    std::cout << " /sizeof(T): ";
+    std::cout << std::setw(8) << std::setprecision(4);
+    std::cout << 1.0 * size_of / (NUM * sizeof(tValue));
+    std::cout << std::endl;
+    return result;
+}
+
 int perf_index() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
@@ -603,6 +628,23 @@ int perf_size() {
     
     result |= perf_size_of_double_vary_length();
     result |= perf_size_of_char_vary_length();
+    result |= perf_size_of_1m();
+    
+    return result;
+}
+
+/* This function call justs tests a subset of the performance.
+ * This subset is the one we are interested in when exploring the effect
+ * of an unfair coin.
+ */
+int perf_skiplist_unfair_coin() {
+    int result = 0;
+    
+    result |= perf_single_at_middle();
+    result |= perf_single_has_middle();
+    result |= perf_single_ins_at_rem_middle();
+    result |= perf_1m_median_values();
+    result |= perf_size_of_1m();
     
     return result;
 }
@@ -612,7 +654,7 @@ int test_performance_all() {
     
     result |= perf_skiplist();
     result |= perf_size();
-    
+//    result |= perf_skiplist_unfair_coin();
     return result;
 }
 

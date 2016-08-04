@@ -59,11 +59,11 @@ int main(int /* argc */, const char *[] /* argv[] */) {
     result = test_all();
     double exec = (clock() - start) / (double) CLOCKS_PER_SEC;
 
-    std::cout << "__cplusplus: \""<< __cplusplus << "\"" << std::endl;
+//    std::cout << "__cplusplus: \""<< __cplusplus << "\"" << std::endl;
     std::cout << "Final result: ";
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
     std::cout << "Exec time: " << exec << " (s)" << std::endl;
-    test_clock_resolution();
+//    test_clock_resolution();
     std::cout << "Bye, bye!\n";
     return 0;
 }

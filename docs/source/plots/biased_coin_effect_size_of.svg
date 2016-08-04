@@ -170,10 +170,12 @@
 	<g transform="translate(657.9,76.6)" style="stroke:none; fill:black; font-family:Arial; font-size:12.00pt; text-anchor:end">
 		<text>size_of()</text>
 	</g>
-	<path  d='M666.2,72.1 L708.4,72.1 M112.7,353.7 L153.5,351.6 L235.2,345.7 L398.5,323.6 L561.7,253.4 L643.4,109.9 
-		 h0.01'/>	<use xlink:href='#gpPt11' transform='translate(112.7,353.7) scale(4.50)'/>
+	<path  d='M666.2,72.1 L708.4,72.1 M112.7,353.7 L153.5,351.6 L235.2,345.7 L316.8,337.1 L357.6,331.2 L398.5,323.6 
+		L561.7,253.4 L643.4,109.9  h0.01'/>	<use xlink:href='#gpPt11' transform='translate(112.7,353.7) scale(4.50)'/>
 	<use xlink:href='#gpPt11' transform='translate(153.5,351.6) scale(4.50)'/>
 	<use xlink:href='#gpPt11' transform='translate(235.2,345.7) scale(4.50)'/>
+	<use xlink:href='#gpPt11' transform='translate(316.8,337.1) scale(4.50)'/>
+	<use xlink:href='#gpPt11' transform='translate(357.6,331.2) scale(4.50)'/>
 	<use xlink:href='#gpPt11' transform='translate(398.5,323.6) scale(4.50)'/>
 	<use xlink:href='#gpPt11' transform='translate(561.7,253.4) scale(4.50)'/>
 	<use xlink:href='#gpPt11' transform='translate(643.4,109.9) scale(4.50)'/>
