@@ -290,15 +290,17 @@ Python Performance Tests
 
 Some informal testing of the Python wrapper around the C++ skip list was done using ``timeit`` in *tests/perf/test_perf_cSkipList.py*. The skip list has 1m items. The performance is comparable to the C++ tests.
 
-=============================== ===========================
-Test                            Time per item (ns)
-=============================== ===========================
-test_at_integer                 217
-test_at_float                   242
-test_has_integer                234
-test_has_float                  238
-test_insert_remove_mid_integer  1312
-test_insert_remove_mid_float    1497
-test_index_mid_int              400
-test_index_mid_float            356
-=============================== ===========================
+======================================= =========================== ==============================
+Test                                    Time per operation (ns)     Factor over C++ time
+======================================= =========================== ==============================
+``test_at_integer()``                   217
+``test_at_float()``                     242                         x2.7
+``test_has_integer()``                  234
+``test_has_float()``                    238                         x1.4
+``test_insert_remove_mid_integer()``    1312
+``test_insert_remove_mid_float()``      1497                        x1.4
+``test_index_mid_int()``                400
+``test_index_mid_float()``              356                         x1.9
+======================================= =========================== ==============================
+
+It is rather surprising, and satisfying, that the Python overhead is so small considering the boxing/unboxing that is going on. The test methodology is different in the Python/C++ cases which might skew the figures.

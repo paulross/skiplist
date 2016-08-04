@@ -21,8 +21,10 @@
  * stripped out in release builds where performance is really tested.
  */
 
+static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
+
 int perf_single_insert_remove() {
-    int num = 1000 * 1000;
+    int num = GLOBAL_REPEAT_COUNT;
     ManAHL::SkipList::HeadNode<double> sl;
     
     srand(1);
@@ -45,7 +47,7 @@ int perf_single_insert_remove() {
 
 /* Insert to create a large skiplist no deletion. */
 int perf_large_skiplist_ins_only() {
-    size_t SIZE = 1000 * 1000;
+    size_t SIZE = GLOBAL_REPEAT_COUNT;
     int COUNT = 1;
     ManAHL::SkipList::HeadNode<double> sl;
     
@@ -111,7 +113,7 @@ int perf_large_skiplist_ins_rem() {
  * a value at the mid point. */
 int perf_single_ins_rem_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
-    int REPEAT_COUNT = 1000 * 1000;
+    int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double val = SKIPLIST_SIZE / 2;
     ManAHL::SkipList::HeadNode<double> sl;
@@ -146,7 +148,7 @@ int perf_single_ins_rem_middle() {
 /* Create a large skip list then time how long it takes to insert and remove
  * a value at the mid point for various length skip lists. */
 int perf_single_ins_rem_middle_vary_length() {
-    int REPEAT_COUNT = 1000 * 1000;
+    int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     
     for (size_t siz = 1; siz < 1024 * 1024 + 1; siz *= 2) {
@@ -185,7 +187,7 @@ int perf_single_ins_rem_middle_vary_length() {
 /* Performance of calling at() on the middle value of a 1M long skip list. */
 int perf_single_at_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
-    int REPEAT_COUNT = 1000 * 1000;
+    int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double value = SKIPLIST_SIZE / 2;
     ManAHL::SkipList::HeadNode<double> sl;
@@ -220,7 +222,7 @@ int perf_single_at_middle() {
 /* Performance of calling has() on the middle value of a 1M long skip list. */
 int perf_single_has_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
-    int REPEAT_COUNT = 1000 * 1000;
+    int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     int value;
     ManAHL::SkipList::HeadNode<double> sl;
@@ -257,7 +259,7 @@ int perf_single_has_middle() {
  * of a 1M long skip list. */
 int perf_single_ins_at_rem_middle() {
     size_t SKIPLIST_SIZE = 1024 * 1024;
-    int REPEAT_COUNT = 1000 * 1000;
+    int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double value = SKIPLIST_SIZE / 2;
     ManAHL::SkipList::HeadNode<double> sl;
