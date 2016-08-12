@@ -13,6 +13,10 @@ def test_module():
     assert hasattr(cSkipList, '__build_type__')
     assert cSkipList.__build_type__ in ('debug', 'release')
     assert hasattr(cSkipList, '__build_target__')
+    print('Module attributes and values:')
+    attrs = ('__version__',) + tuple([a for a in dir(cSkipList) if a.startswith('__build')])
+    for attr_name in attrs:
+        print('{:16}:'.format(attr_name), getattr(cSkipList, attr_name))
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_ctor(typ):

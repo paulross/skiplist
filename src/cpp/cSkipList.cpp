@@ -159,14 +159,20 @@ PySkipList_has(PySkipList* self, PyObject *arg)
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Argument to has() must be long not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be long not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 goto except;
             }
-            ret_val = PyBool_FromLong(self->pSl_long->has(PyLong_AsLongLong(arg)));
+            ret_val = PyBool_FromLong(
+                            self->pSl_long->has(PyLong_AsLongLong(arg))
+                                      );
             break;
         case TYPE_DOUBLE:
             if (! PyFloat_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Argument to has() must be float not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be float not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 goto except;
             }
             
@@ -181,7 +187,9 @@ PySkipList_has(PySkipList* self, PyObject *arg)
             break;
         case TYPE_BYTES:
             if (! PyBytes_Check(arg)) {
-                PyErr_Format(PyExc_TypeError, "Argument to has() must be bytes not \"%s\" type", Py_TYPE(arg)->tp_name);
+                PyErr_Format(PyExc_TypeError,
+                             "Argument to has() must be bytes not \"%s\" type",
+                             Py_TYPE(arg)->tp_name);
                 goto except;
             }
             ret_val = PyBool_FromLong(self->pSl_bytes->has(
@@ -237,9 +245,13 @@ static int
 _check_index_against_size(const char *prefix, long index, Py_ssize_t size) {
     if ((index < 0 && index + size < 0) || (index >= 0 && index >= size)) {
         if (index > 0) {
-            PyErr_Format(PyExc_IndexError, "%s %ld out of range 0 <= index < %ld", prefix, index, size);
+            PyErr_Format(PyExc_IndexError,
+                         "%s %ld out of range 0 <= index < %ld",
+                         prefix, index, size);
         } else {
-            PyErr_Format(PyExc_IndexError, "%s %ld out of range %ld < index <= -1", prefix, index, -(size + 1));
+            PyErr_Format(PyExc_IndexError,
+                         "%s %ld out of range %ld < index <= -1",
+                         prefix, index, -(size + 1));
         }
         return -1;
     }
@@ -509,7 +521,8 @@ PySkipList_index(PySkipList* self, PyObject *arg)
             }
             try {
                 ret_val = PyLong_FromSize_t(
-                            self->pSl_long->index(PyLong_AsLongLong(arg)));
+                            self->pSl_long->index(PyLong_AsLongLong(arg))
+                                            );
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
@@ -524,7 +537,8 @@ PySkipList_index(PySkipList* self, PyObject *arg)
             }
             try {
                 ret_val = PyLong_FromSize_t(
-                        self->pSl_double->index(PyFloat_AS_DOUBLE(arg)));
+                        self->pSl_double->index(PyFloat_AS_DOUBLE(arg))
+                                            );
             } catch (ManAHL::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -543,7 +557,8 @@ PySkipList_index(PySkipList* self, PyObject *arg)
             }
             try {
                 ret_val = PyLong_FromSize_t(
-                        self->pSl_bytes->index(_bytes_as_std_string(arg)));
+                        self->pSl_bytes->index(_bytes_as_std_string(arg))
+                                            );
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
@@ -807,7 +822,8 @@ PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
     ASSERT_TYPE_IN_RANGE;
     assert(! PyErr_Occurred());
     
-    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "i:node_height", kwlist, &index)) {
+    if (! PyArg_ParseTupleAndKeywords(args, kwargs,
+                                      "i:node_height", kwlist, &index)) {
         assert(PyErr_Occurred());
         goto except;
     }
@@ -984,7 +1000,9 @@ static PyTypeObject PySkipListType = {
     0,                         /* tp_reserved */
     0,                         /* tp_repr */
     0,                         /* tp_as_number */
-    /* TODO: implement PySequenceMethods.sq_length, PySequenceMethods.sq_item  etc. */
+    /* TODO: implement:
+     * PySequenceMethods.sq_length,
+     * PySequenceMethods.sq_item  etc. */
     0,                         /* tp_as_sequence */
     0,                         /* tp_as_mapping */
     0,                         /* tp_hash  */
@@ -993,8 +1011,7 @@ static PyTypeObject PySkipListType = {
     0,                         /* tp_getattro */
     0,                         /* tp_setattro */
     0,                         /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT |
-        Py_TPFLAGS_BASETYPE,   /* tp_flags */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
     _py_skip_list_docs,           /* tp_doc */
     0,                     /* tp_traverse */
     0,                     /* tp_clear */
@@ -1105,6 +1122,9 @@ struct module_state {
 
 static const char *MODULE_VERSION = "0.1.0";
 
+static const char* MODULE_BUILD_DOCS = "Initial standard build";
+
+/** Start of module initialisation. */
 #if PY_MAJOR_VERSION == 3
 #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
 #else
@@ -1136,17 +1156,14 @@ static struct PyModuleDef cSkipList_moduledef = {
     NULL
 };
 
-//#define INITERROR return NULL
-
 PyMODINIT_FUNC
 PyInit_cSkipList(void)
 
-#else
-//#define INITERROR return
+#else // ! PY_MAJOR_VERSION >= 3
 
 PyMODINIT_FUNC
 initcSkipList(void)
-#endif
+#endif // ! PY_MAJOR_VERSION >= 3
 {
     PyObject* module = NULL;
     struct module_state *st = NULL;
@@ -1158,7 +1175,9 @@ initcSkipList(void)
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&cSkipList_moduledef);
 #else
-    module = Py_InitModule3("cSkipList", cSkipListmodule_methods, _c_skip_list_docs);
+    module = Py_InitModule3("cSkipList",
+                            cSkipListmodule_methods,
+                            _c_skip_list_docs);
 #endif
     if (module == NULL) {
         goto except;
@@ -1179,7 +1198,8 @@ initcSkipList(void)
     if (PyModule_AddStringConstant(module, "__version__", MODULE_VERSION)) {
         goto except;
     }
-    if (PyModule_AddStringConstant(module, "__build_time__", __DATE__ " " __TIME__)) {
+    if (PyModule_AddStringConstant(module, "__build_time__",
+                                   __DATE__ " " __TIME__)) {
         goto except;
     }
 #ifdef DEBUG
@@ -1192,6 +1212,10 @@ initcSkipList(void)
     }
 #endif
     if (PyModule_AddStringConstant(module, "__build_target__", PY_VERSION)) {
+        goto except;
+    }
+    if (PyModule_AddStringConstant(module, "__build_docs__",
+                                   MODULE_BUILD_DOCS)) {
         goto except;
     }
     goto finally;
