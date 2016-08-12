@@ -750,7 +750,7 @@ PySkipList_dot_file(PySkipList* self)
             self->pSl_long->dotFileFinalise(ostr);
             break;
         case TYPE_DOUBLE:
-            self->pSl_long->dotFile(ostr);
+            self->pSl_double->dotFile(ostr);
             self->pSl_double->dotFileFinalise(ostr);
             break;
         case TYPE_BYTES:
