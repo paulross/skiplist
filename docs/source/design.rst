@@ -273,7 +273,7 @@ Key/Value Implementation
 ------------------------
 
 Skip lists are commonly used for key/value dictionaries. Given things
-like map<T> or unorderedmap<T> etc. in C++ I see no reason why a SkipList should be used
+like ``std::map`` or ``std::unorderedmap`` etc. in C++ I see no reason why a SkipList should be used
 as an alternative.
 
 -----------------
