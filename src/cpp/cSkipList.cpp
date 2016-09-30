@@ -5,39 +5,21 @@
 //  Created by Paul Ross on 20/11/2015.
 //  Copyright (c) 2015 AHL. All rights reserved.
 //
-
 #include <Python.h>
 #include "structmember.h"
 
 #define INCLUDE_METHODS_THAT_USE_STREAMS // We want the DOT output.
 #include "SkipList.h"
 
+
 #include <string>
 #include <iostream>
 
-/* Roll our own RTTI */
-enum SkipListDataType {
-    TYPE_ZERO = 0,
-    TYPE_LONG,
-    TYPE_DOUBLE,
-    TYPE_BYTES,
-    /* Insert new enumerated values above this comment. */
-    TYPE_OVERFLOW
-};
-
-/* Define these as an attempt to reduce C&P errors in very similar code. */
-typedef long long   TYPE_TYPE_LONG;
-typedef double      TYPE_TYPE_DOUBLE;
-/* Note: We use a std::string but store bytes in it.
- * So we have to be careful not to treat data as a NTS.
- */
-typedef std::string TYPE_TYPE_BYTES;
-
-#define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
+#include "OrderedStructs.h"
 
 typedef struct {
     PyObject_HEAD
-    enum SkipListDataType _data_type;
+    enum KeyDataType _data_type;
     union {
         /* NULL/non-NULL pointer, not to be de-referrenced. */
         ManAHL::SkipList::HeadNode<void>             *pSl_void;
@@ -131,21 +113,6 @@ static PyMemberDef PySkipList_members[] = {
     {NULL, 0, 0, 0, NULL}  /* Sentinel */
 };
 
-/* Returns a std::string from the contents of a bytes object.
- * This includes any '\0' characters in the content.
- */
-std::string _bytes_as_std_string(PyObject *arg) {
-    assert(PyBytes_Check(arg));
-    return std::string(PyBytes_AS_STRING(arg), PyBytes_GET_SIZE(arg));
-}
-
-/* Returns a new PyBytesObject from a std::string.
- * This includes any '\0' characters in the content.
- */
-PyObject *_std_string_as_bytes(const std::string &str) {
-    return PyBytes_FromStringAndSize(str.c_str(), str.size());
-}
-
 static PyObject *
 PySkipList_has(PySkipList* self, PyObject *arg)
 {
@@ -193,7 +160,7 @@ PySkipList_has(PySkipList* self, PyObject *arg)
                 goto except;
             }
             ret_val = PyBool_FromLong(self->pSl_bytes->has(
-                                            _bytes_as_std_string(arg)
+                                            bytes_as_std_string(arg)
                                                            ));
             break;
         default:
@@ -323,7 +290,7 @@ PySkipList_at(PySkipList *self, PyObject *arg)
             ret_val = PyFloat_FromDouble(self->pSl_double->at(index));
             break;
         case TYPE_BYTES:
-            ret_val = _std_string_as_bytes(self->pSl_bytes->at(index));
+            ret_val = std_string_as_bytes(self->pSl_bytes->at(index));
             break;
         default:
             PyErr_BadInternalCall();
@@ -419,7 +386,7 @@ _at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
     }
     assert(dest.size() == count);
     for (Py_ssize_t i = 0; i < count; ++i) {
-        PyTuple_SET_ITEM(ret_val, i, _std_string_as_bytes(dest[i]));
+        PyTuple_SET_ITEM(ret_val, i, std_string_as_bytes(dest[i]));
     }
     return ret_val;
 }
@@ -557,7 +524,7 @@ PySkipList_index(PySkipList* self, PyObject *arg)
             }
             try {
                 ret_val = PyLong_FromSize_t(
-                        self->pSl_bytes->index(_bytes_as_std_string(arg))
+                        self->pSl_bytes->index(bytes_as_std_string(arg))
                                             );
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -673,7 +640,7 @@ PySkipList_insert(PySkipList *self, PyObject *arg)
                              Py_TYPE(arg)->tp_name);
                 return NULL;
             }
-            self->pSl_bytes->insert(_bytes_as_std_string(arg));
+            self->pSl_bytes->insert(bytes_as_std_string(arg));
             break;
         default:
             PyErr_BadInternalCall();
@@ -732,7 +699,7 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
                 return NULL;
             }
             try {
-                self->pSl_bytes->remove(_bytes_as_std_string(arg));
+                self->pSl_bytes->remove(bytes_as_std_string(arg));
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -940,7 +907,6 @@ finally:
     return ret_val;
 }
 
-
 static PyMethodDef PySkipList_methods[] = {
     {"has", (PyCFunction)PySkipList_has, METH_O,
         "Return True if the value is in the skip list, False otherwise."
@@ -986,11 +952,11 @@ static PyMethodDef PySkipList_methods[] = {
 };
 
 static char _py_skip_list_docs[] =
-"PySkipList - An implementation of a skip list for floats.";
+"PySkipList - An implementation of a skip list for floats, longs and bytes.";
 
-static PyTypeObject PySkipListType = {
+PyTypeObject PySkipListType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "cSkipList.PySkipList",      /* tp_name */
+    ORDERED_STRUCTS_MODULE_NAME ".PySkipList",      /* tp_name */
     sizeof(PySkipList),             /* tp_basicsize */
     0,                         /* tp_itemsize */
     (destructor)PySkipList_dealloc, /* tp_dealloc */
@@ -1045,187 +1011,3 @@ static PyTypeObject PySkipListType = {
 };
 
 
-static char _toss_coin_docs[] = \
-"Toss a coin and return True/False."
-" This calls ManAHL::SkipList::tossCoin().";
-
-static PyObject *
-_toss_coin(PyObject */* mod */)
-{
-    return PyBool_FromLong(ManAHL::SkipList::tossCoin());
-}
-
-static char _seed_rand_docs[] = \
-"Seed the random number generator."
-" This calls ManAHL::SkipList::seedRand().";
-
-static PyObject *
-_seed_rand(PyObject */* mod */, PyObject *arg)
-{
-#if PY_MAJOR_VERSION == 3
-    if (! PyLong_Check(arg)) {
-        PyErr_Format(PyExc_TypeError,
-                     "Type must be long type not \"%s\" type",
-                     arg->ob_type->tp_name);
-        return NULL;
-    }
-    ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
-#else
-    if (! PyLong_Check(arg) && ! PyInt_Check(arg)) {
-        PyErr_Format(PyExc_TypeError,
-                     "Type must be integer or long type not \"%s\" type",
-                     arg->ob_type->tp_name);
-        return NULL;
-    }
-    if (PyLong_Check(arg)) {
-        // TODO: Check for overflow
-        ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
-    } else if (PyInt_Check(arg)) {
-        // TODO: Check for overflow
-        ManAHL::SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
-    }
-#endif
-    Py_RETURN_NONE;
-}
-
-static PyObject *
-_long_min_value(PyObject */* mod */)
-{
-    return PyLong_FromLongLong(LONG_LONG_MIN);
-}
-
-static PyObject *
-_long_max_value(PyObject */* mod */)
-{
-    return PyLong_FromLongLong(LONG_LONG_MAX);
-}
-
-static PyMethodDef cSkipListmodule_methods[] = {
-    {"toss_coin", (PyCFunction)_toss_coin, METH_NOARGS, _toss_coin_docs },
-    {"seed_rand", (PyCFunction)_seed_rand, METH_O, _seed_rand_docs},
-    {"min_long", (PyCFunction)_long_min_value, METH_NOARGS,
-        "Minimum value I can handle for an integer."},
-    {"max_long", (PyCFunction)_long_max_value, METH_NOARGS,
-        "Maximum value I can handle for an integer."},
-    {NULL, NULL, 0, NULL}  /* Sentinel */
-};
-
-static char _c_skip_list_docs[] =
-    "cSkipList is an interface between Python and a C++ skip list implementation. It contains:"
-    "\nPySkipList - An implementation of a skip list for floats."
-    "\nseed_rand(int) - Seed the random number generator."
-    "\ntoss_coin() - Toss a coin using the random number generator and return True/False.";
-
-struct module_state {
-    PyObject *error;
-};
-
-static const char *MODULE_VERSION = "0.1.0";
-
-static const char* MODULE_BUILD_DOCS = "Initial standard build";
-
-/** Start of module initialisation. */
-#if PY_MAJOR_VERSION == 3
-#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
-#else
-static struct module_state _state;
-#define GETSTATE(m) (&_state)
-#endif
-
-#if PY_MAJOR_VERSION >= 3
-
-static int cSkipList_traverse(PyObject *m, visitproc visit, void *arg) {
-    Py_VISIT(GETSTATE(m)->error);
-    return 0;
-}
-
-static int cSkipList_clear(PyObject *m) {
-    Py_CLEAR(GETSTATE(m)->error);
-    return 0;
-}
-
-static struct PyModuleDef cSkipList_moduledef = {
-    PyModuleDef_HEAD_INIT,
-    "cSkipList",
-    _c_skip_list_docs,
-    sizeof(struct module_state),
-    cSkipListmodule_methods,
-    NULL,
-    cSkipList_traverse,
-    cSkipList_clear,
-    NULL
-};
-
-PyMODINIT_FUNC
-PyInit_cSkipList(void)
-
-#else // ! PY_MAJOR_VERSION >= 3
-
-PyMODINIT_FUNC
-initcSkipList(void)
-#endif // ! PY_MAJOR_VERSION >= 3
-{
-    PyObject* module = NULL;
-    struct module_state *st = NULL;
-
-    PySkipListType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PySkipListType) < 0) {
-        goto except;
-    }
-#if PY_MAJOR_VERSION >= 3
-    module = PyModule_Create(&cSkipList_moduledef);
-#else
-    module = Py_InitModule3("cSkipList",
-                            cSkipListmodule_methods,
-                            _c_skip_list_docs);
-#endif
-    if (module == NULL) {
-        goto except;
-    }
-    Py_INCREF(&PySkipListType);
-    if (PyModule_AddObject(module, "PySkipList", (PyObject *)&PySkipListType)) {
-        goto except;
-    }
-    st = GETSTATE(module);
-    if (st == NULL) {
-        goto except;
-    }
-    st->error = PyErr_NewException("cSkipList.Error", NULL, NULL);
-    if (st->error == NULL) {
-        goto except;
-    }
-    /* Adds version and build information to the module. */
-    if (PyModule_AddStringConstant(module, "__version__", MODULE_VERSION)) {
-        goto except;
-    }
-    if (PyModule_AddStringConstant(module, "__build_time__",
-                                   __DATE__ " " __TIME__)) {
-        goto except;
-    }
-#ifdef DEBUG
-    if (PyModule_AddStringConstant(module, "__build_type__", "debug")) {
-        goto except;
-    }
-#else
-    if (PyModule_AddStringConstant(module, "__build_type__", "release")) {
-        goto except;
-    }
-#endif
-    if (PyModule_AddStringConstant(module, "__build_target__", PY_VERSION)) {
-        goto except;
-    }
-    if (PyModule_AddStringConstant(module, "__build_docs__",
-                                   MODULE_BUILD_DOCS)) {
-        goto except;
-    }
-    goto finally;
-except:
-    Py_XDECREF(module);
-    module = NULL;
-finally:
-#if PY_MAJOR_VERSION >= 3
-    return module;
-#else
-    return;
-#endif
-}

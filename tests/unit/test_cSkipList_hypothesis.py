@@ -6,7 +6,7 @@ import pytest
 
 import cSkipList
 
-from compat_23 import int_type
+from .compat_23 import int_type
 
 @hypothesis.given(hst.lists(hst.integers(min_value=cSkipList.min_long(),
                                          max_value=cSkipList.max_long())))

@@ -16,7 +16,10 @@ else:
 
 cSkipList = Extension("cSkipList",
                              sources=[
+                                      'src/cpp/cOrderedStructs.cpp',
+                                      'src/cpp/OrderedStructs.cpp',
                                       'src/cpp/cSkipList.cpp',
+                                      'src/cpp/cStdMap.cpp',
                                       'src/cpp/SkipList.cpp',
                                       ],
                              include_dirs=['.', ],

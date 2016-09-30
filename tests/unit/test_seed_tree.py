@@ -10,7 +10,7 @@ import time
 import hypothesis
 import hypothesis.strategies as hst
 
-import seed_tree
+from . import seed_tree
 
 def test_time_to_depth_dict():
     for depth in range(1, 10):

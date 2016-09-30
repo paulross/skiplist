@@ -3,9 +3,9 @@ import itertools
 import pytest
 
 import cSkipList
-import seed_tree
+from . import seed_tree
 
-from compat_23 import int_type, math_nan, example_int_value, example_int_seq
+from .compat_23 import int_type, math_nan, example_int_value, example_int_seq
 
 def test_module():
     assert hasattr(cSkipList, '__version__')
