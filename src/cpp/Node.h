@@ -16,6 +16,9 @@
 #endif
 
 /**************************** Node *********************************/
+#pragma mark -
+#pragma mark class Node definition
+
 template <typename T>
 class Node {
 public:
@@ -73,6 +76,9 @@ private:
     Node(const Node &that);
     Node &operator=(const Node &that) const;
 };
+
+#pragma mark -
+#pragma mark class Node implementation
 
 template <typename T>
 Node<T>::Node(const T &value) : _value(value) {

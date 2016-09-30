@@ -29,6 +29,10 @@
  *  sl.remove(sl.at(50)); // Remove 50 pi
  *
  */
+
+#pragma mark -
+#pragma mark class HeadNode definition
+
 template <typename T>
 class HeadNode {
 public:
@@ -112,6 +116,11 @@ private:
     HeadNode(const HeadNode &that);
     HeadNode &operator=(const HeadNode &that) const;
 };
+
+#pragma mark -
+#pragma mark class HeadNode implementation
+
+#pragma mark class HeadNode public const methods
 
 template <typename T>
 bool HeadNode<T>::has(const T &value) const {
@@ -213,6 +222,8 @@ const Node<T> *HeadNode<T>::_nodeAt(size_t idx) const {
     // Should not get here as _throw_exceeds_size() will always throw.
     return NULL;
 }
+
+#pragma mark class HeadNode public non-const methods
 
 template <typename T>
 void HeadNode<T>::insert(const T &value) {
