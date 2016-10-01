@@ -30,8 +30,6 @@ typedef double      TYPE_TYPE_DOUBLE;
  */
 typedef std::string TYPE_TYPE_BYTES;
 
-#define ORDERED_STRUCTS_MODULE_NAME "cSkipList"
-
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
 
 /* Returns a std::string from the contents of a bytes object.

@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "OrderedStructs.h"
+#include "cOrderedStructs.h"
 
 typedef struct {
     PyObject_HEAD

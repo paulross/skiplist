@@ -12,6 +12,7 @@
 #include <string>
 
 #include "OrderedStructs.h"
+#include "cOrderedStructs.h"
 
 typedef struct {
     PyObject_HEAD
@@ -132,9 +133,38 @@ PyStdMap_size(PyStdMap* self)
     return ret_val;
 }
 
+static PyObject *
+PyStdMap_max_size(PyStdMap* self)
+{
+    PyObject *ret_val = NULL;
+    
+    assert(self && self->_pKeyVoid);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
+    switch (self->_data_type) {
+        case TYPE_LONG:
+            ret_val = PyLong_FromSsize_t(self->_pKeyLong->max_size());
+            break;
+        case TYPE_DOUBLE:
+            ret_val = PyLong_FromSsize_t(self->_pKeyDouble->max_size());
+            break;
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->_pKeyBytes->max_size());
+            break;
+        default:
+            PyErr_BadInternalCall();
+            break;
+    }
+    return ret_val;
+}
+
 static PyMethodDef PyStdMap_methods[] = {
     {"size", (PyCFunction)PyStdMap_size, METH_NOARGS,
         "Return the number of elements in the map."
+    },
+    {"max_size", (PyCFunction)PyStdMap_max_size, METH_NOARGS,
+        "Return returns the maximum possible number of elements in the map."
     },
     {NULL, NULL, 0, NULL}  /* Sentinel */
 };

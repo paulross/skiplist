@@ -9,7 +9,7 @@
 #include <Python.h>
 
 #include "SkipList.h"
-
+#include "cOrderedStructs.h"
 #include "cSkipList.h"
 #include "cStdMap.h"
 
@@ -88,7 +88,7 @@ struct module_state {
     PyObject *error;
 };
 
-static const char *MODULE_VERSION = "0.1.0";
+static const char *MODULE_VERSION = "0.2.0";
 
 static const char* MODULE_BUILD_DOCS = "Initial standard build";
 
@@ -114,7 +114,7 @@ static int cSkipList_clear(PyObject *m) {
 
 static struct PyModuleDef cSkipList_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "cSkipList",
+    ORDERED_STRUCTS_MODULE_NAME,
     _c_skip_list_docs,
     sizeof(struct module_state),
     cSkipListmodule_methods,
@@ -148,7 +148,7 @@ initcSkipList(void)
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&cSkipList_moduledef);
 #else
-    module = Py_InitModule3("cSkipList",
+    module = Py_InitModule3(ORDERED_STRUCTS_MODULE_NAME,
                             cSkipListmodule_methods,
                             _c_skip_list_docs);
 #endif
@@ -167,7 +167,8 @@ initcSkipList(void)
     if (st == NULL) {
         goto except;
     }
-    st->error = PyErr_NewException("cSkipList.Error", NULL, NULL);
+    st->error = PyErr_NewException(ORDERED_STRUCTS_MODULE_NAME ".Error",
+                                   NULL, NULL);
     if (st->error == NULL) {
         goto except;
     }
