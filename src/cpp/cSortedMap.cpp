@@ -125,7 +125,7 @@ SortedMap_dealloc(SortedMap *self)
 }
 
 static PyObject *
-SortedMap_size(SortedMap* self)
+SortedMap_size(SortedMap *self)
 {
     PyObject *ret_val = NULL;
     
@@ -151,7 +151,7 @@ SortedMap_size(SortedMap* self)
 }
 
 static PyObject *
-SortedMap_max_size(SortedMap* self)
+SortedMap_max_size(SortedMap *self)
 {
     PyObject *ret_val = NULL;
     
@@ -174,6 +174,73 @@ SortedMap_max_size(SortedMap* self)
             break;
     }
     return ret_val;
+}
+
+static PyObject *
+SortedMap_insert(SortedMap *self, PyObject *args, PyObject *kwargs)
+{
+    assert(self && self->_pKeyVoid);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
+    PyObject *key = NULL;
+    PyObject *val = NULL;
+    static char *kwlist[] = {
+        (char *) "key", /* Integer, negative values are from the end. */
+        (char *) "value", /* Integer, negative values are from the end. */
+        NULL
+    };
+    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "OO:insert",
+                                      kwlist, &key, &val)) {
+        assert(PyErr_Occurred());
+        return NULL;
+    }
+    
+    switch (self->_data_type) {
+        case TYPE_LONG:
+            if (! PyLong_Check(key)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be long not \"%s\" type",
+                             Py_TYPE(key)->tp_name);
+                return NULL;
+            }
+            assert(0);
+//            self->pSl_long->insert(PyLong_AsLongLong(arg));
+            if (PyErr_Occurred()) {
+                return NULL;
+            }
+            break;
+        case TYPE_DOUBLE:
+            if (! PyFloat_Check(key)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be float not \"%s\" type",
+                             Py_TYPE(key)->tp_name);
+                return NULL;
+            }
+            assert(0);
+//            try {
+//                self->pSl_double->insert(PyFloat_AS_DOUBLE(arg));
+//            } catch (ManAHL::SkipList::FailedComparison &err) {
+//                /* This will happen if arg is a NaN. */
+//                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+//                return NULL;
+//            }
+            break;
+        case TYPE_BYTES:
+            if (! PyBytes_Check(key)) {
+                PyErr_Format(PyExc_TypeError,
+                             "Type must be bytes not \"%s\" type",
+                             Py_TYPE(key)->tp_name);
+                return NULL;
+            }
+            assert(0);
+//            self->pSl_bytes->insert(bytes_as_std_string(arg));
+            break;
+        default:
+            PyErr_BadInternalCall();
+            break;
+    }
+    Py_RETURN_NONE;
 }
 
 static PyMethodDef SortedMap_methods[] = {
