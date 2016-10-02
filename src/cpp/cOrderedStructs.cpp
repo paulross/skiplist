@@ -11,7 +11,7 @@
 #include "SkipList.h"
 #include "cOrderedStructs.h"
 #include "cSkipList.h"
-#include "cStdMap.h"
+#include "cSortedMap.h"
 
 static char _toss_coin_docs[] = \
 "Toss a coin and return True/False."
@@ -68,7 +68,7 @@ _long_max_value(PyObject */* mod */)
     return PyLong_FromLongLong(LONG_LONG_MAX);
 }
 
-static PyMethodDef cSkipListmodule_methods[] = {
+static PyMethodDef orderedstructsmodule_methods[] = {
     {"toss_coin", (PyCFunction)_toss_coin, METH_NOARGS, _toss_coin_docs },
     {"seed_rand", (PyCFunction)_seed_rand, METH_O, _seed_rand_docs},
     {"min_long", (PyCFunction)_long_min_value, METH_NOARGS,
@@ -79,8 +79,8 @@ static PyMethodDef cSkipListmodule_methods[] = {
 };
 
 static char _c_skip_list_docs[] =
-"cSkipList is an interface between Python and a C++ skip list implementation. It contains:"
-"\nPySkipList - An implementation of a skip list for floats."
+"orderedstructs is an interface between Python and a C++ skip list implementation. It contains:"
+"\nSkipList - An implementation of a skip list for floats."
 "\nseed_rand(int) - Seed the random number generator."
 "\ntoss_coin() - Toss a coin using the random number generator and return True/False.";
 
@@ -102,65 +102,65 @@ static struct module_state _state;
 
 #if PY_MAJOR_VERSION >= 3
 
-static int cSkipList_traverse(PyObject *m, visitproc visit, void *arg) {
+static int orderedstructs_traverse(PyObject *m, visitproc visit, void *arg) {
     Py_VISIT(GETSTATE(m)->error);
     return 0;
 }
 
-static int cSkipList_clear(PyObject *m) {
+static int orderedstructs_clear(PyObject *m) {
     Py_CLEAR(GETSTATE(m)->error);
     return 0;
 }
 
-static struct PyModuleDef cSkipList_moduledef = {
+static struct PyModuleDef orderedstructs_moduledef = {
     PyModuleDef_HEAD_INIT,
     ORDERED_STRUCTS_MODULE_NAME,
     _c_skip_list_docs,
     sizeof(struct module_state),
-    cSkipListmodule_methods,
+    orderedstructsmodule_methods,
     NULL,
-    cSkipList_traverse,
-    cSkipList_clear,
+    orderedstructs_traverse,
+    orderedstructs_clear,
     NULL
 };
 
 PyMODINIT_FUNC
-PyInit_cSkipList(void)
+PyInit_orderedstructs(void)
 
 #else // ! PY_MAJOR_VERSION >= 3
 
 PyMODINIT_FUNC
-initcSkipList(void)
+initorderedstructs(void)
 #endif // ! PY_MAJOR_VERSION >= 3
 {
     PyObject* module = NULL;
     struct module_state *st = NULL;
     
     // Prepare every type in the moduls, else segfaults!
-    PySkipListType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PySkipListType) < 0) {
+    SkipListType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&SkipListType) < 0) {
         goto except;
     }
-    PyStdMapType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyStdMapType) < 0) {
+    SortedMapType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&SortedMapType) < 0) {
         goto except;
     }
 #if PY_MAJOR_VERSION >= 3
-    module = PyModule_Create(&cSkipList_moduledef);
+    module = PyModule_Create(&orderedstructs_moduledef);
 #else
     module = Py_InitModule3(ORDERED_STRUCTS_MODULE_NAME,
-                            cSkipListmodule_methods,
+                            orderedstructsmodule_methods,
                             _c_skip_list_docs);
 #endif
     if (module == NULL) {
         goto except;
     }
-    Py_INCREF(&PySkipListType);
-    if (PyModule_AddObject(module, "PySkipList", (PyObject *)&PySkipListType)) {
+    Py_INCREF(&SkipListType);
+    if (PyModule_AddObject(module, "SkipList", (PyObject *)&SkipListType)) {
         goto except;
     }
-    Py_INCREF(&PyStdMapType);
-    if (PyModule_AddObject(module, "PyStdMap", (PyObject *)&PyStdMapType)) {
+    Py_INCREF(&SortedMapType);
+    if (PyModule_AddObject(module, "SortedMap", (PyObject *)&SortedMapType)) {
         goto except;
     }
     st = GETSTATE(module);

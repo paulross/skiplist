@@ -9,7 +9,7 @@
 #ifndef skiplist_cOrderedStructs_h
 #define skiplist_cOrderedStructs_h
 
-#define ORDERED_STRUCTS_MODULE_NAME "cSkipList"
+#define ORDERED_STRUCTS_MODULE_NAME "orderedstructs"
 
 
 #endif

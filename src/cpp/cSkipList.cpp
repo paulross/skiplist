@@ -28,13 +28,13 @@ typedef struct {
         ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE> *pSl_double;
         ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
     };
-} PySkipList;
+} SkipList;
 
 static PyObject *
-PySkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
-    PySkipList *self = NULL;
+SkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
+    SkipList *self = NULL;
 
-    self = (PySkipList *)type->tp_alloc(type, 0);
+    self = (SkipList *)type->tp_alloc(type, 0);
     if (self != NULL) {
         self->_data_type = TYPE_ZERO;
         self->pSl_void = NULL;
@@ -43,7 +43,7 @@ PySkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */)
 }
 
 static int
-PySkipList_init(PySkipList *self, PyObject *args, PyObject *kwargs) {
+SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
     int ret_val = -1;
     PyObject *value_type = NULL;
     static char *kwlist[] = { (char *)"value_type", NULL};
@@ -89,7 +89,7 @@ finally:
 }
 
 static void
-PySkipList_dealloc(PySkipList* self)
+SkipList_dealloc(SkipList* self)
 {
     if (self && self->pSl_void) {
         switch (self->_data_type) {
@@ -110,12 +110,12 @@ PySkipList_dealloc(PySkipList* self)
     }
 }
 
-static PyMemberDef PySkipList_members[] = {
+static PyMemberDef SkipList_members[] = {
     {NULL, 0, 0, 0, NULL}  /* Sentinel */
 };
 
 static PyObject *
-PySkipList_has(PySkipList* self, PyObject *arg)
+SkipList_has(SkipList* self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
     std::string str;
@@ -182,7 +182,7 @@ finally:
 /* Sets value to the size of the skiplist as a size_t.
  * Returns 0 on success, non-zero on failure. */
 static size_t
-_size(PySkipList* self, Py_ssize_t &value) {
+_size(SkipList* self, Py_ssize_t &value) {
     int err_code = 0;
 
     ASSERT_TYPE_IN_RANGE;
@@ -227,7 +227,7 @@ _check_index_against_size(const char *prefix, long index, Py_ssize_t size) {
 }
 
 static PyObject *
-PySkipList_at(PySkipList *self, PyObject *arg)
+SkipList_at(SkipList *self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
     Py_ssize_t size;
@@ -312,7 +312,7 @@ finally:
 }
 
 static PyObject*
-_at_sequence_long(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
+_at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_LONG> dest;
 
@@ -339,7 +339,7 @@ _at_sequence_long(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_double(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
+_at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_DOUBLE> dest;
 
@@ -366,7 +366,7 @@ _at_sequence_double(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
+_at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_BYTES> dest;
 
@@ -395,7 +395,7 @@ _at_sequence_bytes(PySkipList *self, Py_ssize_t index, Py_ssize_t count) {
 
 /* Returns a tuple of 'count' PyObjects starting at 'index'. */
 static PyObject *
-PySkipList_at_sequence(PySkipList *self, PyObject *args, PyObject *kwargs)
+SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *ret = NULL;
     Py_ssize_t index;
@@ -470,7 +470,7 @@ finally:
 }
 
 static PyObject *
-PySkipList_index(PySkipList* self, PyObject *arg)
+SkipList_index(SkipList* self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
     std::string str;
@@ -548,7 +548,7 @@ finally:
 }
 
 static PyObject *
-PySkipList_size(PySkipList* self)
+SkipList_size(SkipList* self)
 {
     PyObject *ret_val = NULL;
 
@@ -574,7 +574,7 @@ PySkipList_size(PySkipList* self)
 }
 
 static PyObject *
-PySkipList_height(PySkipList* self)
+SkipList_height(SkipList* self)
 {
     PyObject *ret_val = NULL;
 
@@ -600,7 +600,7 @@ PySkipList_height(PySkipList* self)
 }
 
 static PyObject *
-PySkipList_insert(PySkipList *self, PyObject *arg)
+SkipList_insert(SkipList *self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
@@ -651,7 +651,7 @@ PySkipList_insert(PySkipList *self, PyObject *arg)
 }
 
 static PyObject *
-PySkipList_remove(PySkipList* self, PyObject *arg)
+SkipList_remove(SkipList* self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
@@ -719,7 +719,7 @@ PySkipList_remove(PySkipList* self, PyObject *arg)
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
 static PyObject *
-PySkipList_dot_file(PySkipList* self)
+SkipList_dot_file(SkipList* self)
 {
     std::stringstream ostr;
 
@@ -750,7 +750,7 @@ PySkipList_dot_file(PySkipList* self)
 #endif
 
 static PyObject *
-PySkipList_lacks_integrity(PySkipList* self)
+SkipList_lacks_integrity(SkipList* self)
 {
     PyObject *ret_val = NULL;
 
@@ -776,7 +776,7 @@ PySkipList_lacks_integrity(PySkipList* self)
 }
 
 static PyObject *
-PySkipList_node_height(PySkipList* self, PyObject *args, PyObject *kwargs)
+SkipList_node_height(SkipList* self, PyObject *args, PyObject *kwargs)
 {
     PyObject *ret_val = NULL;
     int index;
@@ -831,7 +831,7 @@ finally:
 }
 
 static PyObject *
-PySkipList_node_width(PySkipList *self, PyObject *args, PyObject *kwargs)
+SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *ret_val = NULL;
     int index;
@@ -908,59 +908,59 @@ finally:
     return ret_val;
 }
 
-static PyMethodDef PySkipList_methods[] = {
-    {"has", (PyCFunction)PySkipList_has, METH_O,
+static PyMethodDef SkipList_methods[] = {
+    {"has", (PyCFunction)SkipList_has, METH_O,
         "Return True if the value is in the skip list, False otherwise."
     },
-    {"at", (PyCFunction)PySkipList_at, METH_O,
+    {"at", (PyCFunction)SkipList_at, METH_O,
         "Return the value at the given index."
     },
-    {"at_seq", (PyCFunction)PySkipList_at_sequence, METH_VARARGS | METH_KEYWORDS,
+    {"at_seq", (PyCFunction)SkipList_at_sequence, METH_VARARGS | METH_KEYWORDS,
         "Return the sequence of count values at the given index."
     },
-    {"index", (PyCFunction)PySkipList_index, METH_O,
+    {"index", (PyCFunction)SkipList_index, METH_O,
         "Return the index of the given value, if found."
     },
-    {"size", (PyCFunction)PySkipList_size, METH_NOARGS,
+    {"size", (PyCFunction)SkipList_size, METH_NOARGS,
      "Return the number of elements in the skip list."
     },
-    {"height", (PyCFunction)PySkipList_height, METH_NOARGS,
+    {"height", (PyCFunction)SkipList_height, METH_NOARGS,
         "Return the height of the skip list head node."
     },
-    {"insert", (PyCFunction)PySkipList_insert, METH_O,
+    {"insert", (PyCFunction)SkipList_insert, METH_O,
         "Insert the value into the skip list."
     },
-    {"remove", (PyCFunction)PySkipList_remove, METH_O,
+    {"remove", (PyCFunction)SkipList_remove, METH_O,
         "Remove the value from the skip list."
     },
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    {"dot_file", (PyCFunction)PySkipList_dot_file, METH_NOARGS,
+    {"dot_file", (PyCFunction)SkipList_dot_file, METH_NOARGS,
         "Returns a bytes object suitable for Graphviz processing of the"
         "current state of the skip list."
         " Use open(<name>, 'wb').write(self.dotFile()) for Graphviz."
     },
 #endif
-    {"lacks_integrity", (PyCFunction)PySkipList_lacks_integrity, METH_NOARGS,
+    {"lacks_integrity", (PyCFunction)SkipList_lacks_integrity, METH_NOARGS,
         "Returns non-zero is the skip list faulty, zero if OK."
     },
-    {"node_height", (PyCFunction)PySkipList_node_height, METH_VARARGS | METH_KEYWORDS,
+    {"node_height", (PyCFunction)SkipList_node_height, METH_VARARGS | METH_KEYWORDS,
         "Return the height of node at the given index."
     },
-    {"node_width", (PyCFunction)PySkipList_node_width, METH_VARARGS | METH_KEYWORDS,
+    {"node_width", (PyCFunction)SkipList_node_width, METH_VARARGS | METH_KEYWORDS,
         "Return the width of node at the given index and level."
     },
     {NULL, NULL, 0, NULL}  /* Sentinel */
 };
 
 static char _py_skip_list_docs[] =
-"PySkipList - An implementation of a skip list for floats, longs and bytes.";
+"SkipList - An implementation of a skip list for floats, longs and bytes.";
 
-PyTypeObject PySkipListType = {
+PyTypeObject SkipListType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    ORDERED_STRUCTS_MODULE_NAME ".PySkipList",      /* tp_name */
-    sizeof(PySkipList),             /* tp_basicsize */
+    ORDERED_STRUCTS_MODULE_NAME ".SkipList",      /* tp_name */
+    sizeof(SkipList),             /* tp_basicsize */
     0,                         /* tp_itemsize */
-    (destructor)PySkipList_dealloc, /* tp_dealloc */
+    (destructor)SkipList_dealloc, /* tp_dealloc */
     0,                         /* tp_print */
     0,                         /* tp_getattr */
     0,                         /* tp_setattr */
@@ -986,17 +986,17 @@ PyTypeObject PySkipListType = {
     0,                     /* tp_weaklistoffset */
     0,                     /* tp_iter */
     0,                     /* tp_iternext */
-    PySkipList_methods,             /* tp_methods */
-    PySkipList_members,             /* tp_members */
+    SkipList_methods,             /* tp_methods */
+    SkipList_members,             /* tp_members */
     0,                         /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
     0,                         /* tp_descr_set */
     0,                         /* tp_dictoffset */
-    (initproc)PySkipList_init,      /* tp_init */
+    (initproc)SkipList_init,      /* tp_init */
     0,                         /* tp_alloc */
-    PySkipList_new,                 /* tp_new */
+    SkipList_new,                 /* tp_new */
     0,                         /* tp_free */
     0,                         /* tp_is_gc */
     0,                         /* tp_bases */

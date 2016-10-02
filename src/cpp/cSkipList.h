@@ -9,6 +9,6 @@
 #ifndef skiplist_cSkipList_h
 #define skiplist_cSkipList_h
 
-extern PyTypeObject PySkipListType;
+extern PyTypeObject SkipListType;
 
 #endif

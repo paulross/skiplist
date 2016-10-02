@@ -14,12 +14,12 @@ if DEBUG:
 else:
     extra_compile_args.extend(['-O3', '-DNDEBUG'])
 
-cSkipList = Extension("cSkipList",
+orderedstructs = Extension("orderedstructs",
                              sources=[
                                       'src/cpp/cOrderedStructs.cpp',
                                       'src/cpp/OrderedStructs.cpp',
                                       'src/cpp/cSkipList.cpp',
-                                      'src/cpp/cStdMap.cpp',
+                                      'src/cpp/cSortedMap.cpp',
                                       'src/cpp/SkipList.cpp',
                                       ],
                              include_dirs=['.', ],
@@ -28,6 +28,6 @@ cSkipList = Extension("cSkipList",
                              language='c++',
                              )
 
-setup(name='cSkipList',
-      version='0.1.0',
-      ext_modules=[cSkipList, ])
+setup(name='orderedstructs',
+      version='0.2.0',
+      ext_modules=[orderedstructs, ])

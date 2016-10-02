@@ -50,7 +50,7 @@
  * Python
  * ------
  * from ahl.numpy import cSkipList
- * sl = cSkipList.PySkipList(float)
+ * sl = cSkipList.SkipList(float)
  * sl.insert(42.0)
  * sl.insert(21.0)
  * sl.insert(84.0)

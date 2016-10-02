@@ -6,7 +6,7 @@ import timeit
 
 import pytest
 
-import cSkipList
+import orderedstructs
 
 if sys.version_info[0] == 3:
     int_type = int
@@ -17,8 +17,8 @@ elif sys.version_info[0] == 2:
 
 def _setup_skiplist(typ, n):
     return '\n'.join([
-                       'import cSkipList',
-                       'sl = cSkipList.PySkipList({})'.format(typ),
+                       'import orderedstructs',
+                       'sl = orderedstructs.SkipList({})'.format(typ),
                        'for v in range({}): sl.insert({}(v))'.format(n, typ)
                        ])
 

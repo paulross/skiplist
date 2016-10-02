@@ -2,34 +2,34 @@ import itertools
 
 import pytest
 
-import cSkipList
+import orderedstructs
 from . import seed_tree
 
 from .compat_23 import int_type, math_nan, example_int_value, example_int_seq
 
 def test_module():
-    assert hasattr(cSkipList, '__version__')
-    assert hasattr(cSkipList, '__build_time__')
-    assert hasattr(cSkipList, '__build_type__')
-    assert cSkipList.__build_type__ in ('debug', 'release')
-    assert hasattr(cSkipList, '__build_target__')
+    assert hasattr(orderedstructs, '__version__')
+    assert hasattr(orderedstructs, '__build_time__')
+    assert hasattr(orderedstructs, '__build_type__')
+    assert orderedstructs.__build_type__ in ('debug', 'release')
+    assert hasattr(orderedstructs, '__build_target__')
     print('Module attributes and values:')
-    attrs = ('__version__',) + tuple([a for a in dir(cSkipList) if a.startswith('__build')])
+    attrs = ('__version__',) + tuple([a for a in dir(orderedstructs) if a.startswith('__build')])
     for attr_name in attrs:
-        print('{:16}:'.format(attr_name), getattr(cSkipList, attr_name))
+        print('{:16}:'.format(attr_name), getattr(orderedstructs, attr_name))
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_ctor(typ):
-    assert cSkipList.PySkipList(typ) is not None
+    assert orderedstructs.SkipList(typ) is not None
 
 def test_ctor_raises_no_type():
     with pytest.raises(TypeError) as err:
-        cSkipList.PySkipList()
+        orderedstructs.SkipList()
     assert err.value.args[0] == "Required argument 'value_type' (pos 1) not found"
 
 def test_ctor_raises_not_a_type():
     with pytest.raises(ValueError) as err:
-        cSkipList.PySkipList('')
+        orderedstructs.SkipList('')
     assert err.value.args[0] == \
         'Argument to __init__ must be type object not "str"'
 
@@ -41,14 +41,14 @@ def test_ctor_raises_not_a_type():
                                  ])
 def test_ctor_raises_wrong_type(typ, msg):
     with pytest.raises(ValueError) as err:
-        cSkipList.PySkipList(typ)
+        orderedstructs.SkipList(typ)
     assert err.value.args[0] == \
         'Argument to __init__ must be long, float or bytes, not "%s"' % msg
 
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_insert(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     assert sl.insert(value) is None
     assert sl.lacks_integrity() == 0
@@ -62,7 +62,7 @@ def test_single_insert(typ, value):
                             (bytes, u'unicode'),
                         ])
 def test_single_insert_raises(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     with pytest.raises(TypeError):
         sl.insert(value)
@@ -70,49 +70,49 @@ def test_single_insert_raises(typ, value):
 
 #------- Some specialised insert tests for particular types ----------
 def test_single_insert_long_min_long():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
-    sl.insert(cSkipList.min_long())
+    sl.insert(orderedstructs.min_long())
     assert sl.size() == 1
     assert sl.lacks_integrity() == 0
 
 def test_single_insert_long_max_long():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
-    sl.insert(cSkipList.max_long())
+    sl.insert(orderedstructs.max_long())
     assert sl.size() == 1
     assert sl.lacks_integrity() == 0
 
 def test_single_insert_long_underflow_raises():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
     with pytest.raises(OverflowError):
-        sl.insert(cSkipList.min_long() - 1)
+        sl.insert(orderedstructs.min_long() - 1)
     assert sl.lacks_integrity() == 0
 
 def test_single_insert_long_overflow_raises():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
     with pytest.raises(OverflowError):
-        sl.insert(cSkipList.max_long() + 1)
+        sl.insert(orderedstructs.max_long() + 1)
     assert sl.lacks_integrity() == 0
 
 def test_single_remove_long_underflow_raises():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
     with pytest.raises(OverflowError):
-        sl.remove(cSkipList.min_long() - 1)
+        sl.remove(orderedstructs.min_long() - 1)
     assert sl.lacks_integrity() == 0
 
 def test_single_remove_long_overflow_raises():
-    sl = cSkipList.PySkipList(int_type)
+    sl = orderedstructs.SkipList(int_type)
     assert sl.lacks_integrity() == 0
     with pytest.raises(OverflowError):
-        sl.remove(cSkipList.max_long() + 1)
+        sl.remove(orderedstructs.max_long() + 1)
     assert sl.lacks_integrity() == 0
 
 def test_single_insert_float_NaN_raises():
-    sl = cSkipList.PySkipList(float)
+    sl = orderedstructs.SkipList(float)
     assert sl.lacks_integrity() == 0
     with pytest.raises(ValueError) as err:
         sl.insert(math_nan)
@@ -121,7 +121,7 @@ def test_single_insert_float_NaN_raises():
     assert sl.lacks_integrity() == 0
 
 def test_has_float_NaN_raises():
-    sl = cSkipList.PySkipList(float)
+    sl = orderedstructs.SkipList(float)
     assert sl.lacks_integrity() == 0
     with pytest.raises(ValueError) as err:
         sl.has(math_nan)
@@ -134,7 +134,7 @@ def test_has_float_NaN_raises():
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_has(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     sl.insert(value)
     assert sl.lacks_integrity() == 0
@@ -144,7 +144,7 @@ def test_single_has(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_at(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     sl.insert(value)
     assert sl.lacks_integrity() == 0
@@ -154,7 +154,7 @@ def test_single_at(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_at_fails(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     sl.insert(value)
     assert sl.lacks_integrity() == 0
@@ -168,7 +168,7 @@ def test_single_at_fails(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_insert_different_and_size(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     for i in range(16):
         assert sl.lacks_integrity() == 0
         assert sl.size() == i
@@ -180,7 +180,7 @@ def test_single_insert_different_and_size(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_insert_same_and_size(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     for i in range(16):
         assert sl.lacks_integrity() == 0
         assert sl.size() == i
@@ -192,7 +192,7 @@ def test_single_insert_same_and_size(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_single_remove(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.size() == 0
     assert sl.lacks_integrity() == 0
     assert sl.insert(value) is None
@@ -204,7 +204,7 @@ def test_single_remove(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
 def test_remove(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     for i in range(16):
         assert sl.size() == i
         assert sl.lacks_integrity() == 0
@@ -220,7 +220,7 @@ def test_remove(typ, value):
 @pytest.mark.parametrize('typ,value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_single_remove_fails(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.size() == 0
     assert sl.lacks_integrity() == 0
     assert sl.insert(value) is None
@@ -237,7 +237,7 @@ def test_single_remove_fails(typ, value):
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_at_seq(typ, seq):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     for value in seq:
         sl.insert(value)
@@ -248,7 +248,7 @@ def test_at_seq(typ, seq):
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_at_seq_empty_fails(typ):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     with pytest.raises(IndexError) as err:
         sl.at_seq(0, 0)
@@ -262,7 +262,7 @@ def test_at_seq_empty_fails(typ):
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_at_seq_raises_types(typ, seq):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     for value in seq:
         sl.insert(value)
@@ -289,7 +289,7 @@ def test_at_seq_raises_types(typ, seq):
 @pytest.mark.parametrize('typ, value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_index(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     sl.insert(value)
     assert sl.lacks_integrity() == 0
@@ -299,7 +299,7 @@ def test_index(typ, value):
 @pytest.mark.parametrize('typ, value',
                          [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
 def test_index_raises_out_of_range(typ, value):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     with pytest.raises(ValueError) as err:
         assert sl.index(value) == 0
@@ -312,7 +312,7 @@ def test_index_raises_out_of_range(typ, value):
                           (float, (1.0, 2.0, 4.0, 8.0)),
                           (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
 def test_index_sequence(typ, seq):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     for value in seq:
         sl.insert(value)
@@ -326,7 +326,7 @@ def test_index_sequence(typ, seq):
                           (float, reversed((1.0, 2.0, 4.0, 8.0))),
                           (bytes, reversed((b'abc', b'def', b'ghi', b'jkl')))])
 def test_index_sequence_reversed(typ, seq):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
     for value in seq:
         sl.insert(value)
@@ -337,7 +337,7 @@ def test_index_sequence_reversed(typ, seq):
 
 #----------- Test using SkipList for rolling median. -------
 # def test_rolling_median():
-#     sl = cSkipList.PySkipList()
+#     sl = orderedstructs.SkipList()
 #     assert sl.lacks_integrity() == 0
 #     win_len = 7
 #     data_len = 1024
@@ -359,22 +359,22 @@ def test_index_sequence_reversed(typ, seq):
 #----------------- Test probabilistic results. -----------
 SEEDTREE_DEPTH = 10
 SEED_DICT = seed_tree.find_seeds_for_sequences(SEEDTREE_DEPTH,
-                                               cSkipList.seed_rand,
-                                               cSkipList.toss_coin)
+                                               orderedstructs.seed_rand,
+                                               orderedstructs.toss_coin)
 
 def test_seed_tree_permutations():
-    """Test the seed_tree using the cSkipList random number generator which is
+    """Test the seed_tree using the orderedstructs random number generator which is
     actually std::rand() and std::srand() for seeding."""
     results = []
     for seq in itertools.product(range(2), repeat=SEEDTREE_DEPTH):
-        cSkipList.seed_rand(SEED_DICT[seq])
-        random_tosses = tuple([cSkipList.toss_coin() for _i in range(SEEDTREE_DEPTH)])
+        orderedstructs.seed_rand(SEED_DICT[seq])
+        random_tosses = tuple([orderedstructs.toss_coin() for _i in range(SEEDTREE_DEPTH)])
         results.append(seq == random_tosses)
         assert seq == random_tosses
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_node_height_raises(typ):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     with pytest.raises(TypeError):
         sl.node_height('123')
     with pytest.raises(TypeError):
@@ -387,8 +387,8 @@ def test_insert_all_level_one(typ, value):
     num = 3
     seq = (0,) * num
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -406,8 +406,8 @@ def test_insert_all_level_two(typ, value):
     num = 3
     seq = (1, 0,) * num
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -425,8 +425,8 @@ def test_insert_all_level_three(typ, value):
     num = 2
     seq = (1, 1, 0,) * num
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -444,8 +444,8 @@ def test_insert_all_level_four(typ, value):
     num = 2
     seq = (1, 1, 1, 0,) * num
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -465,8 +465,8 @@ def test_insert_levels_one_two_three_four(typ, value):
     num_nodes = 4
     seq = (0, 1, 0, 1, 1, 0, 1, 1, 1, 0)
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num_nodes):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -490,8 +490,8 @@ def test_insert_levels_one_two_three_four_node_width(typ, value):
            1, 1, 1, 0,
     )
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num_nodes):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -521,8 +521,8 @@ def test_insert_node_width(typ, value):
            0,  # Node value 3
     )
     assert len(seq) <= SEEDTREE_DEPTH
-    cSkipList.seed_rand(SEED_DICT[seq])
-    sl = cSkipList.PySkipList(typ)
+    orderedstructs.seed_rand(SEED_DICT[seq])
+    sl = orderedstructs.SkipList(typ)
     for i in range(num_nodes):
         assert sl.lacks_integrity() == 0
         sl.insert(value * i)
@@ -543,7 +543,7 @@ def test_insert_node_width(typ, value):
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_node_width_raises(typ):
-    sl = cSkipList.PySkipList(typ)
+    sl = orderedstructs.SkipList(typ)
     with pytest.raises(TypeError):
         sl.node_width(1)
     with pytest.raises(TypeError):
@@ -562,8 +562,8 @@ def test_insert_levels_one_two_three_four_permutations(typ, value):
     seq = (0, 1, 0, 1, 1, 0, 1, 1, 1, 0)
     assert len(seq) <= SEEDTREE_DEPTH
     for values in itertools.permutations(range(num)):
-        cSkipList.seed_rand(SEED_DICT[seq])
-        sl = cSkipList.PySkipList(typ)
+        orderedstructs.seed_rand(SEED_DICT[seq])
+        sl = orderedstructs.SkipList(typ)
         for i in values:
             assert sl.lacks_integrity() == 0
             sl.insert(value * i)

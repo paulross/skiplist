@@ -1,5 +1,5 @@
 //
-//  cStdMap.cpp
+//  cSortedMap.cpp
 //  skiplist
 //
 //  Created by Paul Ross on 30/09/2016.
@@ -24,13 +24,13 @@ typedef struct {
         std::map<TYPE_TYPE_DOUBLE, PyObject*> *_pKeyDouble;
         std::map<TYPE_TYPE_BYTES, PyObject*>  *_pKeyBytes;
     };
-} PyStdMap;
+} SortedMap;
 
 static PyObject *
-PyStdMap_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
-    PyStdMap *self = NULL;
+SortedMap_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
+    SortedMap *self = NULL;
     
-    self = (PyStdMap *)type->tp_alloc(type, 0);
+    self = (SortedMap *)type->tp_alloc(type, 0);
     if (self != NULL) {
         self->_data_type = TYPE_ZERO;
         self->_pKeyVoid = NULL;
@@ -39,7 +39,7 @@ PyStdMap_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
 }
 
 static int
-PyStdMap_init(PyStdMap *self, PyObject *args, PyObject *kwargs) {
+SortedMap_init(SortedMap *self, PyObject *args, PyObject *kwargs) {
     int ret_val = -1;
     PyObject *value_type = NULL;
     static char *kwlist[] = { (char *)"value_type", NULL};
@@ -85,7 +85,7 @@ finally:
 }
 
 static void
-PyStdMap_dealloc(PyStdMap* self)
+SortedMap_dealloc(SortedMap* self)
 {
     // TODO: decref the values.
     if (self && self->_pKeyVoid) {
@@ -108,7 +108,7 @@ PyStdMap_dealloc(PyStdMap* self)
 }
 
 static PyObject *
-PyStdMap_size(PyStdMap* self)
+SortedMap_size(SortedMap* self)
 {
     PyObject *ret_val = NULL;
     
@@ -134,7 +134,7 @@ PyStdMap_size(PyStdMap* self)
 }
 
 static PyObject *
-PyStdMap_max_size(PyStdMap* self)
+SortedMap_max_size(SortedMap* self)
 {
     PyObject *ret_val = NULL;
     
@@ -159,29 +159,29 @@ PyStdMap_max_size(PyStdMap* self)
     return ret_val;
 }
 
-static PyMethodDef PyStdMap_methods[] = {
-    {"size", (PyCFunction)PyStdMap_size, METH_NOARGS,
+static PyMethodDef SortedMap_methods[] = {
+    {"size", (PyCFunction)SortedMap_size, METH_NOARGS,
         "Return the number of elements in the map."
     },
-    {"max_size", (PyCFunction)PyStdMap_max_size, METH_NOARGS,
+    {"max_size", (PyCFunction)SortedMap_max_size, METH_NOARGS,
         "Return returns the maximum possible number of elements in the map."
     },
     {NULL, NULL, 0, NULL}  /* Sentinel */
 };
 
-static PyMemberDef PyStdMap_members[] = {
+static PyMemberDef SortedMap_members[] = {
     {NULL, 0, 0, 0, NULL}  /* Sentinel */
 };
 
 static char _py_std_map_docs[] =
-"PyStdMap - An implementation of a sorted map for floats, long and bytes.";
+"SortedMap - An implementation of a sorted map for floats, long and bytes.";
 
-PyTypeObject PyStdMapType = {
+PyTypeObject SortedMapType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    ORDERED_STRUCTS_MODULE_NAME ".PyStdMap",      /* tp_name */
-    sizeof(PyStdMap),             /* tp_basicsize */
+    ORDERED_STRUCTS_MODULE_NAME ".SortedMap",      /* tp_name */
+    sizeof(SortedMap),             /* tp_basicsize */
     0,                         /* tp_itemsize */
-    (destructor)PyStdMap_dealloc, /* tp_dealloc */
+    (destructor)SortedMap_dealloc, /* tp_dealloc */
     0,                         /* tp_print */
     0,                         /* tp_getattr */
     0,                         /* tp_setattr */
@@ -207,17 +207,17 @@ PyTypeObject PyStdMapType = {
     0,                     /* tp_weaklistoffset */
     0,                     /* tp_iter */
     0,                     /* tp_iternext */
-    PyStdMap_methods,             /* tp_methods */
-    PyStdMap_members,             /* tp_members */
+    SortedMap_methods,             /* tp_methods */
+    SortedMap_members,             /* tp_members */
     0,                         /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
     0,                         /* tp_descr_set */
     0,                         /* tp_dictoffset */
-    (initproc)PyStdMap_init,      /* tp_init */
+    (initproc)SortedMap_init,      /* tp_init */
     0,                         /* tp_alloc */
-    PyStdMap_new,                 /* tp_new */
+    SortedMap_new,                 /* tp_new */
     0,                         /* tp_free */
     0,                         /* tp_is_gc */
     0,                         /* tp_bases */
