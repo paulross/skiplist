@@ -8,6 +8,8 @@
 
 #include <Python.h>
 
+#include <limits.h>
+
 #include "SkipList.h"
 #include "cOrderedStructs.h"
 #include "cSkipList.h"
@@ -59,13 +61,13 @@ _seed_rand(PyObject */* mod */, PyObject *arg)
 static PyObject *
 _long_min_value(PyObject */* mod */)
 {
-    return PyLong_FromLongLong(LONG_LONG_MIN);
+    return PyLong_FromLongLong(LLONG_MIN);
 }
 
 static PyObject *
 _long_max_value(PyObject */* mod */)
 {
-    return PyLong_FromLongLong(LONG_LONG_MAX);
+    return PyLong_FromLongLong(LLONG_MAX);
 }
 
 static PyMethodDef orderedstructsmodule_methods[] = {

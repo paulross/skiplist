@@ -84,19 +84,36 @@ finally:
     return ret_val;
 }
 
+template<typename T>
 static void
-SortedMap_dealloc(SortedMap* self)
+_decref_all_values(std::map<T, PyObject*> *p) {
+    for (auto iter = p->begin(); iter != p->end(); ++iter) {
+        Py_DECREF(iter->second);
+    }
+}
+// Template instatiations.
+template void
+_decref_all_values<TYPE_TYPE_LONG>(std::map<TYPE_TYPE_LONG, PyObject*> *p);
+template void
+_decref_all_values<TYPE_TYPE_DOUBLE>(std::map<TYPE_TYPE_DOUBLE, PyObject*> *p);
+template void
+_decref_all_values<TYPE_TYPE_BYTES>(std::map<TYPE_TYPE_BYTES, PyObject*> *p);
+
+static void
+SortedMap_dealloc(SortedMap *self)
 {
-    // TODO: decref the values.
     if (self && self->_pKeyVoid) {
         switch (self->_data_type) {
             case TYPE_LONG:
+                _decref_all_values(self->_pKeyLong);
                 delete self->_pKeyLong;
                 break;
             case TYPE_DOUBLE:
+                _decref_all_values(self->_pKeyDouble);
                 delete self->_pKeyDouble;
                 break;
             case TYPE_BYTES:
+                _decref_all_values(self->_pKeyBytes);
                 delete self->_pKeyBytes;
                 break;
             default:
