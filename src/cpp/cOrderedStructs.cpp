@@ -13,7 +13,6 @@
 #include "SkipList.h"
 #include "cOrderedStructs.h"
 #include "cSkipList.h"
-#include "cSortedMap.h"
 
 static char _toss_coin_docs[] = \
 "Toss a coin and return True/False."
@@ -143,10 +142,6 @@ initorderedstructs(void)
     if (PyType_Ready(&SkipListType) < 0) {
         goto except;
     }
-    SortedMapType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&SortedMapType) < 0) {
-        goto except;
-    }
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&orderedstructs_moduledef);
 #else
@@ -159,10 +154,6 @@ initorderedstructs(void)
     }
     Py_INCREF(&SkipListType);
     if (PyModule_AddObject(module, "SkipList", (PyObject *)&SkipListType)) {
-        goto except;
-    }
-    Py_INCREF(&SortedMapType);
-    if (PyModule_AddObject(module, "SortedMap", (PyObject *)&SortedMapType)) {
         goto except;
     }
     st = GETSTATE(module);
