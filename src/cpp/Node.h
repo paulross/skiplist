@@ -9,6 +9,8 @@
 #ifndef SkipList_Node_h
 #define SkipList_Node_h
 
+#include <functional>
+
 #include "IntegrityEnums.h"
 
 #if __cplusplus < 201103L
@@ -19,10 +21,10 @@
 #pragma mark -
 #pragma mark class Node definition
 
-template <typename T>
+template <typename T, typename _Compare>
 class Node {
 public:
-    Node(const T &value);
+    Node(const T &value, _Compare _cmp);
     // Const methods
     //
     // Returns the node value
@@ -31,27 +33,27 @@ public:
     bool has(const T &value) const;
     // Returns the value at the index in the skip list from this node onwards.
     // Will return nullptr is not found.
-    const Node<T> *at(size_t idx) const;
+    const Node<T, _Compare> *at(size_t idx) const;
     // Computes index of the first occurrence of a value
     bool index(const T& value, size_t &idx, size_t level) const;
     // Number of linked lists that this node engages in, minimum 1.
     size_t height() const { return _nodeRefs.height(); }
     // Return the pointer to the next node at level 0
-    const Node<T> *next() const;
+    const Node<T, _Compare> *next() const;
     // Return the width at given level.
     size_t width(size_t level) const;
     // Return the node pointer at given level, only used for HeadNode
     // integrity checks.
-    const Node<T> *pNode(size_t level) const;
+    const Node<T, _Compare> *pNode(size_t level) const;
     
     // Non-const methods
     // Get a reference to the node references
-    SwappableNodeRefStack<T> &nodeRefs() { return _nodeRefs; }
-    const SwappableNodeRefStack<T> &nodeRefs() const { return _nodeRefs; }
+    SwappableNodeRefStack<T, _Compare> &nodeRefs() { return _nodeRefs; }
+    const SwappableNodeRefStack<T, _Compare> &nodeRefs() const { return _nodeRefs; }
     // Insert a node
-    Node<T> *insert(const T &value);
+    Node<T, _Compare> *insert(const T &value);
     // Remove a node
-    Node<T> *remove(size_t call_level, const T &value);
+    Node<T, _Compare> *remove(size_t call_level, const T &value);
     // An estimate of the number of bytes used by this node
     size_t size_of() const;
     
@@ -62,15 +64,16 @@ public:
     
     // Integrity checks, returns non-zero on failure
     IntegrityCheck lacksIntegrity(size_t headnode_height) const;
-    IntegrityCheck lacksIntegrityRefsInSet(const std::set<const Node<T>*> &nodeSet) const;
+    IntegrityCheck lacksIntegrityRefsInSet(const std::set<const Node<T, _Compare>*> &nodeSet) const;
     
 protected:
-    Node<T> *_adjRemoveRefs(size_t level, Node<T> *pNode);
+    Node<T, _Compare> *_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode);
     
 protected:
     T _value;
-    SwappableNodeRefStack<T> _nodeRefs;
-    
+    SwappableNodeRefStack<T, _Compare> _nodeRefs;
+    // Comparison function
+    _Compare _compare;
 private:
     // Prevent cctor and operator=
     Node(const Node &that);
@@ -80,18 +83,20 @@ private:
 #pragma mark -
 #pragma mark class Node implementation
 
-template <typename T>
-Node<T>::Node(const T &value) : _value(value) {
+template <typename T, typename _Compare>
+Node<T, _Compare>::Node(const T &value, _Compare _cmp) : \
+    _value(value), _compare(_cmp) {
     do {
         _nodeRefs.push_back(this, _nodeRefs.height() ? 0 : 1);
     } while (tossCoin());
 }
 
-template <typename T>
-bool Node<T>::has(const T &value) const {
+template <typename T, typename _Compare>
+bool Node<T, _Compare>::has(const T &value) const {
     assert(_nodeRefs.height());
     assert(value == value); // value can not be NaN for example
-    if (value > _value) {
+    // if (value > _value) {
+    if (_compare(_value, value)) {
         for (size_t l = _nodeRefs.height(); l-- > 0;) {
             if (_nodeRefs[l].pNode && _nodeRefs[l].pNode->has(value)) {
                 return true;
@@ -108,8 +113,8 @@ bool Node<T>::has(const T &value) const {
  * found.
  * Return nullptr if not found at level 0.
  */
-template <typename T>
-const Node<T> *Node<T>::at(size_t idx) const {
+template <typename T, typename _Compare>
+const Node<T, _Compare> *Node<T, _Compare>::at(size_t idx) const {
     assert(_nodeRefs.height());
     if (idx == 0) {
         return this;
@@ -122,13 +127,14 @@ const Node<T> *Node<T>::at(size_t idx) const {
     return nullptr;
 }
 
-template <typename T>
-bool Node<T>::index(const T& value, size_t &idx, size_t level) const {
+template <typename T, typename _Compare>
+bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
     assert(_nodeRefs.height());
     assert(value == value); // value can not be NaN for example
     assert(level < _nodeRefs.height());
     // Search has overshot, try again at a lower level.
-    if (_value > value) {
+    //if (_value > value) {
+    if (_compare(value, _value)) {
         return false;
     }
     // First check if we match but we have been approached at a high level
@@ -156,38 +162,40 @@ bool Node<T>::index(const T& value, size_t &idx, size_t level) const {
     return false;
 }
 
-template <typename T>
-const Node<T> *Node<T>::next() const {
+template <typename T, typename _Compare>
+const Node<T, _Compare> *Node<T, _Compare>::next() const {
     assert(_nodeRefs.height());
     return _nodeRefs[0].pNode;
 }
 
-template <typename T>
-size_t Node<T>::width(size_t level) const {
+template <typename T, typename _Compare>
+size_t Node<T, _Compare>::width(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].width;
 }
 
-template <typename T>
-const Node<T> *Node<T>::pNode(size_t level) const {
+template <typename T, typename _Compare>
+const Node<T, _Compare> *Node<T, _Compare>::pNode(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].pNode;
 }
 
-template <typename T>
-Node<T> *Node<T>::insert(const T &value) {
+template <typename T, typename _Compare>
+Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     assert(_nodeRefs.height());
     assert(_nodeRefs.noNodePointerMatches(this));
     assert(! _nodeRefs.canSwap());
     assert(value == value); // NaN check for double
 
-    if (value < _value) {
+//    if (value < _value) {
+    if (_compare(value, _value)) {
         return nullptr;
     }
     // Recursive search for where to put the node
-    Node<T> *pNode = nullptr;
+    Node<T, _Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
-    if (value >= _value) {
+//    if (value >= _value) {
+    if (! _compare(value, _value)) {
         for (level = _nodeRefs.height(); level-- > 0;) {
             if (_nodeRefs[level].pNode) {
                 pNode = _nodeRefs[level].pNode->insert(value);
@@ -197,14 +205,15 @@ Node<T> *Node<T>::insert(const T &value) {
             }
         }
     }
-    if (! pNode && value >= _value) {
+//    if (! pNode && value >= _value) {
+    if (! pNode && ! _compare(value, _value)) {
         // Insert new node here
-        pNode = new Node<T>(value);
+        pNode = new Node<T, _Compare>(value, _compare);
         level = 0;
     }
     assert(pNode); // Should never get here unless a NaN has slipped through
     // Adjust references by marching up and recursing back.
-    SwappableNodeRefStack<T> &thatRefs = pNode->_nodeRefs;
+    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->_nodeRefs;
     if (! thatRefs.canSwap()) {
         // Have an existing node or new node that is all swapped.
         // All I need to do is adjust my overshooting nodes and return
@@ -263,10 +272,10 @@ Node<T> *Node<T>::insert(const T &value) {
     return pNode;
 }
 
-template <typename T>
-Node<T> *Node<T>::_adjRemoveRefs(size_t level, Node<T> *pNode) {
+template <typename T, typename _Compare>
+Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode) {
     assert(pNode);
-    SwappableNodeRefStack<T> &thatRefs = pNode->_nodeRefs;
+    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->_nodeRefs;
     
     assert(pNode != this);
     if (level < thatRefs.swapLevel()) {
@@ -301,14 +310,15 @@ Node<T> *Node<T>::_adjRemoveRefs(size_t level, Node<T> *pNode) {
     return this;
 }
 
-template <typename T>
-Node<T> *Node<T>::remove(size_t call_level,
+template <typename T, typename _Compare>
+Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
                          const T &value) {
     assert(_nodeRefs.height());
     assert(_nodeRefs.noNodePointerMatches(this));
     
-    Node<T> *pNode = nullptr;
-    if (value >= _value) {
+    Node<T, _Compare> *pNode = nullptr;
+//    if (value >= _value) {
+    if (! _compare(value, _value)) {
         for (size_t level = call_level + 1; level-- > 0;) {
             if (_nodeRefs[level].pNode) {
                 // Make progress to the right
@@ -344,8 +354,8 @@ Node<T> *Node<T>::remove(size_t call_level,
  * - NULL pointer must not have a non-NULL above them.
  * - Node pointers must not be self-referential.
  */
-template <typename T>
-IntegrityCheck Node<T>::lacksIntegrity(size_t headnode_height) const {
+template <typename T, typename _Compare>
+IntegrityCheck Node<T, _Compare>::lacksIntegrity(size_t headnode_height) const {
     IntegrityCheck result = _nodeRefs.lacksIntegrity();
     if (result) {
         return result;
@@ -377,8 +387,8 @@ IntegrityCheck Node<T>::lacksIntegrity(size_t headnode_height) const {
     return INTEGRITY_SUCCESS;
 }
 
-template <typename T>
-IntegrityCheck Node<T>::lacksIntegrityRefsInSet(const std::set<const Node<T>*> &nodeSet) const {
+template <typename T, typename _Compare>
+IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const Node<T, _Compare>*> &nodeSet) const {
     size_t level = 0;
     while (level < _nodeRefs.height()) {
         if (nodeSet.count(_nodeRefs[level].pNode) == 0) {
@@ -390,8 +400,8 @@ IntegrityCheck Node<T>::lacksIntegrityRefsInSet(const std::set<const Node<T>*> &
 }
 
 // Returns an estimate of the memory usage of an instance
-template <typename T>
-size_t Node<T>::size_of() const {
+template <typename T, typename _Compare>
+size_t Node<T, _Compare>::size_of() const {
     // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
     // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
     return sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
@@ -400,15 +410,15 @@ size_t Node<T>::size_of() const {
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
-template <typename T>
-void Node<T>::writeNode(std::ostream &os, size_t suffix) const {
+template <typename T, typename _Compare>
+void Node<T, _Compare>::writeNode(std::ostream &os, size_t suffix) const {
     os << "\"node";
     os << suffix;
     os << std::hex << this << std::dec << "\"";
 }
 
-template <typename T>
-void Node<T>::dotFile(std::ostream &os, size_t suffix) const {
+template <typename T, typename _Compare>
+void Node<T, _Compare>::dotFile(std::ostream &os, size_t suffix) const {
     assert(_nodeRefs.height());
     writeNode(os, suffix);
     os << " [" << std::endl;

@@ -8,6 +8,8 @@
 #include "test_print.h"
 #include "test_functional.h"
 
+#include <functional> // For comparison function
+
 #include "../SkipList.h"
 
 /******************* Functional Tests **************************/
@@ -457,15 +459,6 @@ int test_index_basic_7_node() {
     for (size_t i = 0; i < NUM; ++i) {
         sl.insert(i);
     }
-//    size_t idx;
-//    for (int i = 0; i < NUM; ++i) {
-//        try {
-//            idx = sl.index(i);
-//            std::cout << "i = " << i << " sl.index(i) = " << idx << std::endl;
-//        } catch (ManAHL::SkipList::ValueError &err) {
-//            std::cout << "i = " << i << " FAILED" << std::endl;
-//        }
-//    }
     for (size_t i = 0; i < NUM; ++i) {
         result |= sl.index(i) != i;
     }
@@ -518,6 +511,51 @@ int test_index_large() {
     return result;
 }
 
+/******* Functional Tests with compare() specified **************/
+
+/* Creates a comparison function that return the inverse of std::less */
+//template <typename T>
+//struct reversed : std::binary_function<T, T, bool> {
+//    bool operator()(const T &a, const T &b) const {
+//        return b < a;
+//    }
+//};
+
+template <typename T>
+struct reversed {
+    bool operator()(const T &a, const T &b) const {
+        return b < a;
+    }
+};
+
+struct reversed_double {
+    bool operator()(const double &a, const double &b) const {
+        return b < a;
+    }
+};
+
+int test_reversed_simple_insert() {
+    int result = 0;
+    std::stringstream ostr;
+    ostr << "# " << __FUNCTION__ << std::endl;
+    
+    srand(1);
+//    struct reversed<double> cmp;
+//    ManAHL::SkipList::HeadNode<double, reversed_double> sl;
+    ManAHL::SkipList::HeadNode<double, reversed<double>> sl;
+    sl.insert(42.0);
+    result |= sl.lacksIntegrity();
+    sl.insert(84.0);
+    result |= sl.lacksIntegrity();
+    result |= sl.at(0) != 84.0;
+    result |= sl.index(84.0) != 0;
+    result |= sl.at(1) != 42.0;
+    result |= sl.index(42.0) != 1;
+    return result;
+}
+
+/******* END: Functional Tests with compare() specified **********/
+
 /***************** END: Functional Tests ************************/
 
 int test_functional_all() {
@@ -550,9 +588,11 @@ int test_functional_all() {
     result |= print_result("test_insert_one_million",
                            test_insert_one_million());
     result |= print_result("test_insert_nan_throws", test_insert_nan_throws());
-    result |= print_result("test_index_basic_7_node()",
+    result |= print_result("test_index_basic_7_node",
                            test_index_basic_7_node());
     result |= print_result("test_index_throws", test_index_throws());
     result |= print_result("test_index_large", test_index_large());
+    // Tests of reversed skiplists
+    result |= print_result("test_reversed_simple_insert", test_reversed_simple_insert());
     return result;
 }

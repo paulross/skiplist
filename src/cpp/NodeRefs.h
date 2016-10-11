@@ -9,15 +9,17 @@
 #ifndef SkipList_NodeRefs_h
 #define SkipList_NodeRefs_h
 
+#include <functional>
+
 #include "IntegrityEnums.h"
 
 // Forward reference
-template <typename T>
+template <typename T, typename _Compare>
 class Node;
 
-template <typename T>
+template <typename T, typename _Compare=std::less<T> >
 struct NodeRef {
-    Node<T> *pNode;
+    Node<T, _Compare> *pNode;
     size_t width;
 };
 
@@ -26,7 +28,7 @@ struct NodeRef {
  * Each reference is a NodeRef so a pointer to a Node and a width.
  * This just does simple bookkeeping on this stack.
  */
-template <typename T>
+template <typename T, typename _Compare>
 class SwappableNodeRefStack {
 public:
     SwappableNodeRefStack() : _swapLevel(0) { }
@@ -34,8 +36,8 @@ public:
     // Const methods
     // -------------
     // Subscript read/write
-    const NodeRef<T> &operator[](size_t level) const;
-    NodeRef<T> &operator[](size_t level);
+    const NodeRef<T, _Compare> &operator[](size_t level) const;
+    NodeRef<T, _Compare> &operator[](size_t level);
     // Number of nodes referenced
     size_t height() const {
         return _nodes.size();
@@ -45,15 +47,15 @@ public:
     bool canSwap() const { return _swapLevel < height(); }
     // Returns true if there is no record of p in my data that
     // could lead to circular references
-    bool noNodePointerMatches(const Node<T> *p) const;
+    bool noNodePointerMatches(const Node<T, _Compare> *p) const;
     // Returns true if all pointers in my data are equal to p.
-    bool allNodePointerMatch(const Node<T> *p) const;
+    bool allNodePointerMatch(const Node<T, _Compare> *p) const;
     
     // Non-const methods
     // -----------------
     // Add a new reference
-    void push_back(Node<T> *p, size_t w) {
-    	struct NodeRef<T> val = {p, w};
+    void push_back(Node<T, _Compare> *p, size_t w) {
+    	struct NodeRef<T, _Compare> val = {p, w};
         _nodes.push_back(val);
     }
     // Remove top reference
@@ -61,7 +63,7 @@ public:
         _nodes.pop_back();
     }
     // Swap reference at current swap level with another SwappableNodeRefStack
-    void swap(SwappableNodeRefStack<T> &val);
+    void swap(SwappableNodeRefStack<T, _Compare> &val);
     // Reset the swap level (for example before starting a remove).
     void resetSwapLevel() { _swapLevel = 0; }
 
@@ -71,7 +73,7 @@ public:
     size_t size_of() const;
     
 protected:
-    std::vector<struct NodeRef<T> > _nodes;
+    std::vector<struct NodeRef<T, _Compare> > _nodes;
     size_t _swapLevel;
     
 private:
@@ -80,15 +82,15 @@ private:
     SwappableNodeRefStack &operator=(const SwappableNodeRefStack &that) const;
 };
 
-template <typename T>
-const NodeRef<T> &SwappableNodeRefStack<T>::operator[](size_t level) const {
+template <typename T, typename _Compare>
+const NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_t level) const {
     // NOTE: No bounds checking on vector::operator[], so this assert will do
     assert(level < _nodes.size());
     return _nodes[level];
 }
 
-template <typename T>
-NodeRef<T> &SwappableNodeRefStack<T>::operator[](size_t level) {
+template <typename T, typename _Compare>
+NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_t level) {
     // NOTE: No bounds checking on vector::operator[], so this assert will do
     assert(level < _nodes.size());
     return _nodes[level];
@@ -96,8 +98,8 @@ NodeRef<T> &SwappableNodeRefStack<T>::operator[](size_t level) {
 
 // Whether all node references are swapped.
 // Should be true after an insert.
-template <typename T>
-bool SwappableNodeRefStack<T>::noNodePointerMatches(const Node<T> *p) const {
+template <typename T, typename _Compare>
+bool SwappableNodeRefStack<T, _Compare>::noNodePointerMatches(const Node<T, _Compare> *p) const {
     for (size_t level = height(); level-- > 0;) {
         if (p == _nodes[level].pNode) {
             return false;
@@ -108,8 +110,8 @@ bool SwappableNodeRefStack<T>::noNodePointerMatches(const Node<T> *p) const {
 
 // Returns true if all pointers in my data are equal to p.
 // Should be true after an remove.
-template <typename T>
-bool SwappableNodeRefStack<T>::allNodePointerMatch(const Node<T> *p) const {
+template <typename T, typename _Compare>
+bool SwappableNodeRefStack<T, _Compare>::allNodePointerMatch(const Node<T, _Compare> *p) const {
     for (size_t level = height(); level-- > 0;) {
         if (p != _nodes[level].pNode) {
             return false;
@@ -119,9 +121,9 @@ bool SwappableNodeRefStack<T>::allNodePointerMatch(const Node<T> *p) const {
 }
 
 // Swap references with another SwappableNodeRefStack at the current swap level.
-template <typename T>
-void SwappableNodeRefStack<T>::swap(SwappableNodeRefStack<T> &val) {
-    NodeRef<T> temp = val[_swapLevel];
+template <typename T, typename _Compare>
+void SwappableNodeRefStack<T, _Compare>::swap(SwappableNodeRefStack<T, _Compare> &val) {
+    NodeRef<T, _Compare> temp = val[_swapLevel];
     val[_swapLevel] = _nodes[_swapLevel];
     _nodes[_swapLevel] = temp;
     ++_swapLevel;
@@ -134,8 +136,8 @@ void SwappableNodeRefStack<T>::swap(SwappableNodeRefStack<T> &val) {
  * - Widths must all be >= 1
  * - Widths muts be weakly increasing with level
  */
-template <typename T>
-IntegrityCheck SwappableNodeRefStack<T>::lacksIntegrity() const {
+template <typename T, typename _Compare>
+IntegrityCheck SwappableNodeRefStack<T, _Compare>::lacksIntegrity() const {
     if (height()) {
         if (_nodes[0].width != 1) {
             return NODEREFS_WIDTH_ZERO_NOT_UNITY;
@@ -150,8 +152,8 @@ IntegrityCheck SwappableNodeRefStack<T>::lacksIntegrity() const {
 }
 
 // Returns an estimate of the memory usage of an instance
-template <typename T>
-size_t SwappableNodeRefStack<T>::size_of() const {
+template <typename T, typename _Compare>
+size_t SwappableNodeRefStack<T, _Compare>::size_of() const {
     return sizeof(*this) + _nodes.capacity() * sizeof(struct NodeRef<T>);
 }
 
