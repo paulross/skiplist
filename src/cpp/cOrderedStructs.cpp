@@ -89,7 +89,12 @@ struct module_state {
     PyObject *error;
 };
 
-static const char *MODULE_VERSION = "0.2.0";
+/* History:
+ * 0.1.0 Initial release.
+ * 0.2.0 Module now orderedstructs.
+ * 0.3.0 Allows storing of PyObject* and rich comparison.
+ */
+static const char *MODULE_VERSION = "0.3.0";
 
 static const char* MODULE_BUILD_DOCS = "Initial standard build";
 

@@ -14,9 +14,11 @@
 
 #include <string>
 #include <iostream>
+#include <stdexcept>
 
 #include "OrderedStructs.h"
 #include "cOrderedStructs.h"
+#include "cmpPyObject.h"
 
 typedef struct {
     PyObject_HEAD
@@ -27,6 +29,7 @@ typedef struct {
         ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>   *pSl_long;
         ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE> *pSl_double;
         ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
+        ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject> *pSl_object;
     };
 } SkipList;
 
@@ -45,18 +48,22 @@ SkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
 static int
 SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
     int ret_val = -1;
-    PyObject *value_type = NULL;
-    static char *kwlist[] = { (char *)"value_type", NULL};
-
+    PyObject *value_type    = NULL;
+    static char *kwlist[] = {
+        (char *)"value_type",
+        NULL
+    };
     assert(self);
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O:__init__",
-                                      kwlist, &value_type)) {
+                                      kwlist,
+                                      &value_type)) {
         goto except;
     }
     assert(value_type);
     if (! PyType_CheckExact(value_type)) {
         PyErr_Format(PyExc_ValueError,
-                     "Argument to __init__ must be type object not \"%s\"",
+                     "Argument to __init__ must be"
+                     " a type object not \"%s\"",
                      Py_TYPE(value_type)->tp_name);
         goto except;
     }
@@ -69,9 +76,13 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
     } else if ((PyTypeObject *)value_type == &PyBytes_Type) {
         self->_data_type = TYPE_BYTES;
         self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
+    } else if ((PyTypeObject *)value_type == &PyBaseObject_Type) {
+        self->_data_type = TYPE_OBJECT;
+        self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject>();
     } else {
         PyErr_Format(PyExc_ValueError,
-            "Argument to __init__ must be long, float or bytes, not \"%s\"",
+                     "Argument to __init__ must be"
+                     " long, float, bytes or object, not \"%s\"",
                      ((PyTypeObject *)value_type)->tp_name);
         goto except;
     }
@@ -89,6 +100,16 @@ finally:
 }
 
 static void
+_decref_all_contents(SkipList *self) {
+    assert(self && self->pSl_void);
+    assert(self->_data_type == TYPE_OBJECT);
+    
+    for (size_t i = 0; i < self->pSl_object->size(); ++i) {
+        Py_DECREF(self->pSl_object->at(i));
+    }
+}
+
+static void
 SkipList_dealloc(SkipList* self)
 {
     if (self && self->pSl_void) {
@@ -101,6 +122,10 @@ SkipList_dealloc(SkipList* self)
                 break;
             case TYPE_BYTES:
                 delete self->pSl_bytes;
+                break;
+            case TYPE_OBJECT:
+                _decref_all_contents(self);
+                delete self->pSl_object;
                 break;
             default:
                 PyErr_BadInternalCall();
@@ -164,6 +189,16 @@ SkipList_has(SkipList* self, PyObject *arg)
                                             bytes_as_std_string(arg)
                                                            ));
             break;
+        case TYPE_OBJECT:
+            try {
+                ret_val = PyBool_FromLong(self->pSl_object->has(arg));
+            } catch (std::invalid_argument) {
+                // Thrown if PyObject_RichCompareBool returns -1
+                PyErr_Format(PyExc_ValueError,
+                             "Rich comparison fails for type %s",
+                             Py_TYPE(arg)->tp_name);
+            }
+            break;
         default:
             PyErr_BadInternalCall();
             goto except;
@@ -198,6 +233,9 @@ _size(SkipList* self, Py_ssize_t &value) {
             break;
         case TYPE_BYTES:
             value = self->pSl_bytes->size();
+            break;
+        case TYPE_OBJECT:
+            value = self->pSl_object->size();
             break;
         default:
             err_code = -1;
@@ -292,6 +330,10 @@ SkipList_at(SkipList *self, PyObject *arg)
             break;
         case TYPE_BYTES:
             ret_val = std_string_as_bytes(self->pSl_bytes->at(index));
+            break;
+        case TYPE_OBJECT:
+            ret_val = self->pSl_object->at(index);
+            Py_INCREF(ret_val);
             break;
         default:
             PyErr_BadInternalCall();
@@ -392,6 +434,33 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     return ret_val;
 }
 
+static PyObject*
+_at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
+    PyObject *ret_val = NULL;
+    std::vector<TYPE_TYPE_OBJECT> dest;
+    
+    assert(self && self->pSl_void);
+    assert(self->_data_type == TYPE_OBJECT);
+    assert(! PyErr_Occurred());
+    
+    ret_val = PyTuple_New(count);
+    if (! ret_val) {
+        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
+        return NULL;
+    }
+    try {
+        self->pSl_object->at(index, count, dest);
+    } catch (ManAHL::SkipList::IndexError &err) {
+        PyErr_SetString(PyExc_IndexError, err.message().c_str());
+        return NULL;
+    }
+    assert(dest.size() == count);
+    for (Py_ssize_t i = 0; i < count; ++i) {
+        Py_INCREF(dest[i]);
+        PyTuple_SET_ITEM(ret_val, i, dest[i]);
+    }
+    return ret_val;
+}
 
 /* Returns a tuple of 'count' PyObjects starting at 'index'. */
 static PyObject *
@@ -454,6 +523,12 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
                 goto except;
             }
             break;
+        case TYPE_OBJECT:
+            ret = _at_sequence_object(self, index, count);
+            if (! ret) {
+                goto except;
+            }
+            break;
         default:
             PyErr_BadInternalCall();
             goto except;
@@ -479,6 +554,7 @@ SkipList_index(SkipList* self, PyObject *arg)
     ASSERT_TYPE_IN_RANGE;
     assert(! PyErr_Occurred());
     
+    Py_INCREF(arg);
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -532,6 +608,14 @@ SkipList_index(SkipList* self, PyObject *arg)
                 goto except;
             }
             break;
+        case TYPE_OBJECT:
+            try {
+                ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
+            } catch (ManAHL::SkipList::ValueError &err) {
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                goto except;
+            }
+            break;
         default:
             PyErr_BadInternalCall();
             goto except;
@@ -544,6 +628,7 @@ except:
     assert(PyErr_Occurred());
     Py_XDECREF(ret_val);
 finally:
+    Py_DECREF(arg);
     return ret_val;
 }
 
@@ -565,6 +650,9 @@ SkipList_size(SkipList* self)
             break;
         case TYPE_BYTES:
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->size());
+            break;
+        case TYPE_OBJECT:
+            ret_val = PyLong_FromSize_t(self->pSl_object->size());
             break;
         default:
             PyErr_BadInternalCall();
@@ -591,6 +679,9 @@ SkipList_height(SkipList* self)
             break;
         case TYPE_BYTES:
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->height());
+            break;
+        case TYPE_OBJECT:
+            ret_val = PyLong_FromSsize_t(self->pSl_object->height());
             break;
         default:
             PyErr_BadInternalCall();
@@ -643,6 +734,10 @@ SkipList_insert(SkipList *self, PyObject *arg)
             }
             self->pSl_bytes->insert(bytes_as_std_string(arg));
             break;
+        case TYPE_OBJECT:
+            Py_INCREF(arg);
+            self->pSl_object->insert(arg);
+            break;
         default:
             PyErr_BadInternalCall();
             break;
@@ -659,6 +754,7 @@ SkipList_remove(SkipList* self, PyObject *arg)
     
     TYPE_TYPE_LONG value;
     switch (self->_data_type) {
+        // TODO: New remove() returns T: break this into functions.
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
                 PyErr_Format(PyExc_TypeError,
@@ -667,6 +763,7 @@ SkipList_remove(SkipList* self, PyObject *arg)
                 return NULL;
             }
             value = PyLong_AsLongLong(arg);
+            // TODO: Is this really necessary?
             if (PyErr_Occurred()) {
                 return NULL;
             }
@@ -705,14 +802,31 @@ SkipList_remove(SkipList* self, PyObject *arg)
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
             }
+            // TODO: Is this really necessary?
             if (PyErr_Occurred()) {
                 return NULL;
             }
+            break;
+        case TYPE_OBJECT:
+            // TODO: New remove() returns T: Fix me as below.
+            // TODO: Py_DECREF(arg); is pretty bad when arg is a different object
+            // that exists in the skip list.
+            assert(0);
+            try {
+                self->pSl_object->remove(arg);
+            } catch (ManAHL::SkipList::ValueError &err) {
+                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                return NULL;
+            }
+            // TODO: New remove() returns T: Fix me as below.
+            // TODO: This is very wrong. Decreffing the caller rather then the object in the skiplist.
+            Py_DECREF(arg);
             break;
         default:
             PyErr_BadInternalCall();
             break;
     }
+    // TODO: New remove() returns T: Return a Python object? If so no decref above
     Py_RETURN_NONE;
 }
 
@@ -739,6 +853,10 @@ SkipList_dot_file(SkipList* self)
         case TYPE_BYTES:
             self->pSl_bytes->dotFile(ostr);
             self->pSl_bytes->dotFileFinalise(ostr);
+            break;
+        case TYPE_OBJECT:
+            self->pSl_object->dotFile(ostr);
+            self->pSl_object->dotFileFinalise(ostr);
             break;
         default:
             PyErr_BadInternalCall();
@@ -767,6 +885,9 @@ SkipList_lacks_integrity(SkipList* self)
             break;
         case TYPE_BYTES:
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->lacksIntegrity());
+            break;
+        case TYPE_OBJECT:
+            ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
             break;
         default:
             PyErr_BadInternalCall();
@@ -814,6 +935,9 @@ SkipList_node_height(SkipList* self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_BYTES:
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->height(index));
+            break;
+        case TYPE_OBJECT:
+            ret_val = PyLong_FromSsize_t(self->pSl_object->height(index));
             break;
         default:
             PyErr_BadInternalCall();
@@ -874,6 +998,9 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
         case TYPE_BYTES:
             height = self->pSl_bytes->height(index);
             break;
+        case TYPE_OBJECT:
+            height = self->pSl_object->height(index);
+            break;
         default:
             PyErr_BadInternalCall();
             goto except;
@@ -892,6 +1019,9 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_BYTES:
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->width(index, level));
+            break;
+        case TYPE_OBJECT:
+            ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
             break;
         default:
             PyErr_BadInternalCall();
@@ -953,7 +1083,9 @@ static PyMethodDef SkipList_methods[] = {
 };
 
 static char _py_skip_list_docs[] =
-"SkipList - An implementation of a skip list for floats, longs and bytes.";
+"SkipList - An implementation of a skip list for floats, longs, bytes and"
+" Python objects."
+;
 
 PyTypeObject SkipListType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -1010,5 +1142,3 @@ PyTypeObject SkipListType = {
     0,                         /* tp_tp_finalize */
 #endif
 };
-
-

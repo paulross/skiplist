@@ -8,5 +8,5 @@ elif sys.version_info[0] == 2:
     int_type = long    
     math_nan = float('NaN')
 
-example_int_value = int_type(8)
-example_int_seq = tuple([int_type(v) for v in (1, 2, 4, 8,)])
+example_int_value = int_type(8000)
+example_int_seq = tuple([int_type(v) for v in (1000, 2000, 4000, 8000,)])

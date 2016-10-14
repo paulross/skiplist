@@ -66,6 +66,7 @@ public:
     // Insert a value.
     void insert(const T &value);
     // Remove a value. Will throw a ValueError is value not present.
+    // TODO: New remove() returns T: Return T
     void remove(const T &value);
     
     // Const methods that are mostly used for debugging and visualisation.
@@ -147,10 +148,12 @@ const T &HeadNode<T, _Compare>::at(size_t index) const {
 }
 
 template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::at(size_t index, size_t count, std::vector<T> &dest) const {
+void HeadNode<T, _Compare>::at(size_t index, size_t count,
+                               std::vector<T> &dest) const {
     dest.clear();
     const Node<T, _Compare> *pNode = _nodeAt(index);
-    // _nodeAt will (should) throw an IndexError so this assert should always be true
+    // _nodeAt will (should) throw an IndexError so this
+    // assert should always be true
     assert(pNode);
     while (count) {
         if (! pNode) {
@@ -291,7 +294,8 @@ void HeadNode<T, _Compare>::insert(const T &value) {
  * Adjust references for removal of the node.
  */
 template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode) {
+void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
+                                           Node<T, _Compare> *pNode) {
     assert(pNode);
     SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->nodeRefs();
     
@@ -306,11 +310,13 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Compare> *pNod
         thatRefs.swap(_nodeRefs);
         ++level;
         if (! thatRefs.canSwap()) {
+            // TODO: New remove() returns T: Do not delete here but in HeadNode::remove()
             delete pNode;
             pNode = nullptr;
             break;
         }
     }
+    // TODO: New remove() returns T: Remove this check and comment.
     // Check either:
     // - either: node deleted here
     // - or: all references swapped (it is an existing node and the removed
@@ -346,6 +352,7 @@ void HeadNode<T, _Compare>::remove(const T &value) {
     // Take swap level as some swaps will have been dealt with by the remove() above.
     _adjRemoveRefs(pNode->nodeRefs().swapLevel(), pNode);
     --_count;
+    // TODO: New remove() returns T: Copy pNode->value(), delete pNode and return value.
 }
 
 template <typename T, typename _Compare>
@@ -369,7 +376,7 @@ template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
     if (value != value) {
         throw FailedComparison(
-            "Can not insert something that does not compare equal to itself.");
+            "Can not work with something that does not compare equal to itself.");
     }
 }
 

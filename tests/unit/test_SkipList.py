@@ -31,7 +31,7 @@ def test_ctor_raises_not_a_type():
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList('')
     assert err.value.args[0] == \
-        'Argument to __init__ must be type object not "str"'
+        'Argument to __init__ must be a type object not "str"'
 
 @pytest.mark.parametrize('typ, msg', [
                                  (complex, 'complex'),
@@ -43,10 +43,17 @@ def test_ctor_raises_wrong_type(typ, msg):
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList(typ)
     assert err.value.args[0] == \
-        'Argument to __init__ must be long, float or bytes, not "%s"' % msg
+        'Argument to __init__ must be long, float, bytes or object, not "%s"' % msg
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_insert(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -117,7 +124,7 @@ def test_single_insert_float_NaN_raises():
     with pytest.raises(ValueError) as err:
         sl.insert(math_nan)
     assert err.value.args[0] == \
-        'Can not insert something that does not compare equal to itself.'
+        'Can not work with something that does not compare equal to itself.'
     assert sl.lacks_integrity() == 0
 
 def test_has_float_NaN_raises():
@@ -126,13 +133,20 @@ def test_has_float_NaN_raises():
     with pytest.raises(ValueError) as err:
         sl.has(math_nan)
     assert err.value.args[0] == \
-        'Can not check for something that does not compare equal to itself.'
+        'Can not work with something that does not compare equal to itself.'
     assert sl.lacks_integrity() == 0
 
 #------- END: Some specialised insert tests for particular types ----------
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_has(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -142,7 +156,14 @@ def test_single_has(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_at(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -152,7 +173,14 @@ def test_single_at(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_at_fails(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -166,7 +194,14 @@ def test_single_at_fails(typ, value):
     assert err.value.args[0] == 'Index -2 out of range -2 < index <= -1'
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_insert_different_and_size(typ, value):
     sl = orderedstructs.SkipList(typ)
     for i in range(16):
@@ -178,7 +213,14 @@ def test_single_insert_different_and_size(typ, value):
         assert sl.size() == i + 1
     
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_insert_same_and_size(typ, value):
     sl = orderedstructs.SkipList(typ)
     for i in range(16):
@@ -190,7 +232,14 @@ def test_single_insert_same_and_size(typ, value):
         assert sl.size() == i + 1
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_remove(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.size() == 0
@@ -202,23 +251,43 @@ def test_single_remove(typ, value):
     assert sl.size() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 4.0), (bytes, b'a')])
+                         [
+#                           (int_type, example_int_value),
+#                           (float, 8.0),
+#                           (bytes, b'abc'),
+#                           (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+#                           (object, 'abc'),
+                          ])
 def test_remove(typ, value):
     sl = orderedstructs.SkipList(typ)
     for i in range(16):
         assert sl.size() == i
         assert sl.lacks_integrity() == 0
+        print('Inserting {}'.format(repr(value * i)))
         assert sl.insert(value * i) is None
+        assert sl.lacks_integrity() == 0
         assert sl.size() == i + 1
     for i in range(16):
         assert sl.size() == 16 - i
+        assert sl.lacks_integrity() == 0
+        print('Removing  {}'.format(repr(value * i)))
         assert sl.remove(value * i) is None
+        assert sl.lacks_integrity() == 0
         assert sl.size() == 16 - i - 1
     assert sl.lacks_integrity() == 0
     assert sl.size() == 0
 
 @pytest.mark.parametrize('typ,value',
-                         [(int_type, example_int_value), (float, 8.0), (bytes, b'abc')])
+                         [(int_type, example_int_value),
+                          (float, 8.0),
+                          (bytes, b'abc'),
+                          (object, example_int_value),
+                          (object, 8.0),
+                          (object, b'abc'),
+                          (object, 'abc'),
+                          ])
 def test_single_remove_fails(typ, value):
     sl = orderedstructs.SkipList(typ)
     assert sl.size() == 0
@@ -233,9 +302,15 @@ def test_single_remove_fails(typ, value):
     assert sl.lacks_integrity() == 0
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, example_int_seq),
-                          (float, (1.0, 2.0, 4.0, 8.0)),
-                          (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
+                         [
+                            (int_type, example_int_seq),
+                            (float, (1.0, 2.0, 4.0, 8.0)),
+                            (bytes, (b'abc', b'def', b'ghi', b'jkl')),
+                            (object, example_int_seq),
+                            (object, (1.0, 2.0, 4.0, 8.0)),
+                            (object, (b'abc', b'def', b'ghi', b'jkl')),
+                            (object, ('abc', 'def', 'ghi', 'jkl')),
+                          ])
 def test_at_seq(typ, seq):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -246,7 +321,7 @@ def test_at_seq(typ, seq):
     assert sl.at_seq(0, 2) == seq[:2]
     assert sl.at_seq(2, 2) == seq[2:4]
 
-@pytest.mark.parametrize('typ', [int_type, float, bytes])
+@pytest.mark.parametrize('typ', [int_type, float, bytes, object])
 def test_at_seq_empty_fails(typ):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -258,9 +333,15 @@ def test_at_seq_empty_fails(typ):
     assert err.value.args[0] == 'Index -1 out of range -1 < index <= -1'
 
 @pytest.mark.parametrize('typ, seq',
-                         [(int_type, example_int_seq),
-                          (float, (1.0, 2.0, 4.0, 8.0)),
-                          (bytes, (b'abc', b'def', b'ghi', b'jkl'))])
+                         [
+                            (int_type, example_int_seq),
+                            (float, (1.0, 2.0, 4.0, 8.0)),
+                            (bytes, (b'abc', b'def', b'ghi', b'jkl')),
+                            (object, example_int_seq),
+                            (object, (1.0, 2.0, 4.0, 8.0)),
+                            (object, (b'abc', b'def', b'ghi', b'jkl')),
+                            (object, ('abc', 'def', 'ghi', 'jkl')),
+                          ])
 def test_at_seq_raises_types(typ, seq):
     sl = orderedstructs.SkipList(typ)
     assert sl.lacks_integrity() == 0
@@ -576,3 +657,7 @@ def test_insert_levels_one_two_three_four_permutations(typ, value):
             assert sl.lacks_integrity() == 0
 
 #----------------- END: Test probabilistic results. ----------- 
+
+if __name__ == '__main__':
+    test_remove()
+

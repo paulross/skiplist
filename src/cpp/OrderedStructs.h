@@ -2,6 +2,9 @@
 //  OrderedStructs.h
 //  skiplist
 //
+//  This is just common C++/CPython code used by all ordered structures.
+//  We only have the SkipList at the moment however.
+//
 //  Created by Paul Ross on 30/09/2016.
 //  Copyright (c) 2016 Paul Ross. All rights reserved.
 //
@@ -18,6 +21,7 @@ enum KeyDataType {
     TYPE_LONG,
     TYPE_DOUBLE,
     TYPE_BYTES,
+    TYPE_OBJECT,
     /* Insert new enumerated values above this comment. */
     TYPE_OVERFLOW
 };
@@ -29,6 +33,7 @@ typedef double      TYPE_TYPE_DOUBLE;
  * So we have to be careful not to treat data as a NTS.
  */
 typedef std::string TYPE_TYPE_BYTES;
+typedef PyObject* TYPE_TYPE_OBJECT;
 
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
 

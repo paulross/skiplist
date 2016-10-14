@@ -95,7 +95,7 @@ template <typename T, typename _Compare>
 bool Node<T, _Compare>::has(const T &value) const {
     assert(_nodeRefs.height());
     assert(value == value); // value can not be NaN for example
-    // if (value > _value) {
+    // Effectively: if (value > _value) {
     if (_compare(_value, value)) {
         for (size_t l = _nodeRefs.height(); l-- > 0;) {
             if (_nodeRefs[l].pNode && _nodeRefs[l].pNode->has(value)) {
@@ -104,8 +104,8 @@ bool Node<T, _Compare>::has(const T &value) const {
         }
         return false;
     }
-    // false if value smaller
-    return value == _value;
+    // Effectively: return value == _value; // false if value smaller
+    return !_compare(value, _value) && !_compare(_value, value);
 }
 
 /* Return a pointer to the n'th node.
@@ -142,7 +142,8 @@ bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
     // node references. In that case this search has to fail and try at a
     // lower level.
     // If however the level is 0 and we match then set the idx to 0 to mark us.
-    if (_value == value) {
+    // Effectively: if (_value == value) {
+    if (!_compare(value, _value) && !_compare(_value, value)) {
         if (level > 0) {
             return false;
         }
@@ -187,15 +188,15 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     assert(! _nodeRefs.canSwap());
     assert(value == value); // NaN check for double
 
-//    if (value < _value) {
+    // Effectively: if (value < _value) {
     if (_compare(value, _value)) {
         return nullptr;
     }
     // Recursive search for where to put the node
     Node<T, _Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
-//    if (value >= _value) {
-    if (! _compare(value, _value)) {
+    // Effectively: if (value >= _value) {
+    if (!_compare(value, _value)) {
         for (level = _nodeRefs.height(); level-- > 0;) {
             if (_nodeRefs[level].pNode) {
                 pNode = _nodeRefs[level].pNode->insert(value);
@@ -205,8 +206,8 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
             }
         }
     }
-//    if (! pNode && value >= _value) {
-    if (! pNode && ! _compare(value, _value)) {
+    // Effectively: if (! pNode && value >= _value) {
+    if (! pNode && !_compare(value, _value)) {
         // Insert new node here
         pNode = new Node<T, _Compare>(value, _compare);
         level = 0;
@@ -317,8 +318,8 @@ Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
     assert(_nodeRefs.noNodePointerMatches(this));
     
     Node<T, _Compare> *pNode = nullptr;
-//    if (value >= _value) {
-    if (! _compare(value, _value)) {
+    // Effectively: if (value >= _value) {
+    if (!_compare(value, _value)) {
         for (size_t level = call_level + 1; level-- > 0;) {
             if (_nodeRefs[level].pNode) {
                 // Make progress to the right
@@ -337,7 +338,8 @@ Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
         // but the recursion stack will not have been set up in the correct
         // step wise fashion so that the lower level references will
         // not be swapped.
-        if (call_level == 0 and value == _value) {
+        // Effectively: if (call_level == 0 && value == _value) {
+        if (call_level == 0 && !_compare(value, _value) && !_compare(_value, value)) {
             _nodeRefs.resetSwapLevel();
             return this;
         }

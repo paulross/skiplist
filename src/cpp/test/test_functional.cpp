@@ -55,6 +55,8 @@ int test_insert_and_remove_same() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
+    // TODO: New remove() returns T: result |= sl.remove(42.0) != 42.0;
+    // etc.
     sl.remove(42.0);
     result |= sl.lacksIntegrity();
     return result;

@@ -49,6 +49,13 @@ int test_all() {
     return result;
 }
 
+// TODO: New remove() returns T: Fix me as below.
+/* TODO: remove() currently returns void. It should return the object removed
+ * like pop().
+ * Then specialised instantiations such as PyObject* can work their ref
+ * count magic.
+ */
+
 
 int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
