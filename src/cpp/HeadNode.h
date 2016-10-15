@@ -67,7 +67,7 @@ public:
     void insert(const T &value);
     // Remove a value. Will throw a ValueError is value not present.
     // TODO: New remove() returns T: Return T
-    void remove(const T &value);
+    T remove(const T &value);
     
     // Const methods that are mostly used for debugging and visualisation.
     //
@@ -291,7 +291,7 @@ void HeadNode<T, _Compare>::insert(const T &value) {
 }
 
 /*
- * Adjust references for removal of the node.
+ * Adjust references >= level for removal of the node pNode.
  */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
@@ -310,9 +310,6 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
         thatRefs.swap(_nodeRefs);
         ++level;
         if (! thatRefs.canSwap()) {
-            // TODO: New remove() returns T: Do not delete here but in HeadNode::remove()
-            delete pNode;
-            pNode = nullptr;
             break;
         }
     }
@@ -334,7 +331,7 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
 }
 
 template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::remove(const T &value) {
+T HeadNode<T, _Compare>::remove(const T &value) {
     Node<T, _Compare> *pNode = nullptr;
     size_t level;
 
@@ -352,7 +349,9 @@ void HeadNode<T, _Compare>::remove(const T &value) {
     // Take swap level as some swaps will have been dealt with by the remove() above.
     _adjRemoveRefs(pNode->nodeRefs().swapLevel(), pNode);
     --_count;
-    // TODO: New remove() returns T: Copy pNode->value(), delete pNode and return value.
+    T ret_val = pNode->value();
+    delete pNode;
+    return ret_val;
 }
 
 template <typename T, typename _Compare>

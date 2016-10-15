@@ -292,23 +292,16 @@ Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Comp
             thatRefs.swap(_nodeRefs);
             ++level;
         }
-        if (! thatRefs.canSwap()) {
-            // Confirm all pointers swapped back to 'this'.
-            assert(thatRefs.allNodePointerMatch(pNode));
-            delete pNode;
-            pNode = this;
-        } else {
-            // More to do
-            return pNode;
-        }
+        assert(thatRefs.canSwap() || thatRefs.allNodePointerMatch(pNode));
     }
     // Decrement my widths as my refs are over the top of the missing pNode.
     while (level < _nodeRefs.height()) {
         _nodeRefs[level].width -= 1;
         ++level;
+        thatRefs.incSwapLevel();
     }
     assert(! _nodeRefs.canSwap());
-    return this;
+    return pNode;
 }
 
 template <typename T, typename _Compare>

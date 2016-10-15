@@ -66,6 +66,11 @@ public:
     void swap(SwappableNodeRefStack<T, _Compare> &val);
     // Reset the swap level (for example before starting a remove).
     void resetSwapLevel() { _swapLevel = 0; }
+    // Increment the swap level. This is used when removing nodes where
+    // the parent node can record to what level it has made its adjustments
+    // so the grand parent knows where to start.
+    // For this reason the _swapLevel can easily be >= _nodes.size().
+    void incSwapLevel() { ++_swapLevel; }
 
     IntegrityCheck lacksIntegrity() const;
     
@@ -123,6 +128,7 @@ bool SwappableNodeRefStack<T, _Compare>::allNodePointerMatch(const Node<T, _Comp
 // Swap references with another SwappableNodeRefStack at the current swap level.
 template <typename T, typename _Compare>
 void SwappableNodeRefStack<T, _Compare>::swap(SwappableNodeRefStack<T, _Compare> &val) {
+    assert(_swapLevel < height());
     NodeRef<T, _Compare> temp = val[_swapLevel];
     val[_swapLevel] = _nodes[_swapLevel];
     _nodes[_swapLevel] = temp;
@@ -130,11 +136,11 @@ void SwappableNodeRefStack<T, _Compare>::swap(SwappableNodeRefStack<T, _Compare>
 }
 
 /* This checks the internal consistency of the object. It returns
- * INTEGRITY_SUCCESS [0] if successful,
- * non-zero on error. The tests are:
+ * INTEGRITY_SUCCESS [0] if successful or non-zero on error.
+ * The tests are:
  *
  * - Widths must all be >= 1
- * - Widths muts be weakly increasing with level
+ * - Widths must be weakly increasing with increasing level
  */
 template <typename T, typename _Compare>
 IntegrityCheck SwappableNodeRefStack<T, _Compare>::lacksIntegrity() const {
