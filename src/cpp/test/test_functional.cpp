@@ -55,9 +55,7 @@ int test_insert_and_remove_same() {
     ManAHL::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
-    // TODO: New remove() returns T: result |= sl.remove(42.0) != 42.0;
-    // etc.
-    sl.remove(42.0);
+    result |= sl.remove(42.0) != 42.0;
     result |= sl.lacksIntegrity();
     return result;
 }
@@ -73,21 +71,21 @@ int test_insert_remove_multiple() {
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
     result |= sl.lacksIntegrity();
-    sl.remove(42.0);
+    result |= sl.remove(42.0) != 42.0;
     result |= sl.lacksIntegrity();
     sl.insert(21.0);
     result |= sl.lacksIntegrity();
-    sl.remove(84.0);
+    result |= sl.remove(84.0) != 84.0;
     result |= sl.lacksIntegrity();
     sl.insert(100.0);
     result |= sl.lacksIntegrity();
     sl.insert(12.0);
     result |= sl.lacksIntegrity();
-    sl.remove(21.0);
+    result |= sl.remove(21.0) != 21.0;
     result |= sl.lacksIntegrity();
-    sl.remove(12.0);
+    result |= sl.remove(12.0) != 12.0;
     result |= sl.lacksIntegrity();
-    sl.remove(100.0);
+    result |= sl.remove(100.0) != 100.0;
     result |= sl.lacksIntegrity();
     return result;
 }
@@ -119,7 +117,7 @@ int test_ins_rem_rand() {
         while (values.size()) {
             value = values.back();
             ostr << "# Removing value " << value << std::endl;
-            sl.remove(value);
+            result |= sl.remove(value) != value;
             values.pop_back();
             result |= sl.lacksIntegrity();
             if (result) {
@@ -146,7 +144,7 @@ int test_insert_n_numbers_same(int n, double value) {
         result |= sl.lacksIntegrity();
     }
     for (int i = 0; i < n; ++i) {
-        sl.remove(value);
+        result |= sl.remove(value) != value;
         result |= sl.lacksIntegrity();
     }
     return result;
@@ -367,7 +365,7 @@ int test_ins_at_rem_with_srand() {
             result |= sl.lacksIntegrity();
         }
         for (int i = 0; i < LENGTH; ++i) {
-            sl.remove(i * 2);
+            result |= sl.remove(i * 2.0) != i * 2.0;
             result |= sl.lacksIntegrity();
         }
     }
@@ -385,7 +383,7 @@ int test_single_insert_remove() {
     for (int i = 0; i < num; ++i) {
         sl.insert(42.0);
         result |= sl.lacksIntegrity();
-        sl.remove(42.0);
+        result |= sl.remove(42.0) != 42.0;
         result |= sl.lacksIntegrity();
     }
     return result;
@@ -408,7 +406,7 @@ int test_single_ins_rem_middle() {
     for (int i = 0; i < NUM; ++i) {
         sl.insert(val);
         result = sl.lacksIntegrity();
-        sl.remove(val);
+        result |= sl.remove(val) != val;
         result |= sl.lacksIntegrity();
     }
     return result;
