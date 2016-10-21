@@ -65,8 +65,8 @@ public:
     //
     // Insert a value.
     void insert(const T &value);
-    // Remove a value. Will throw a ValueError is value not present.
-    // TODO: New remove() returns T: Return T
+    // Remove a value and return it.
+    // Will throw a ValueError is value not present.
     T remove(const T &value);
     
     // Const methods that are mostly used for debugging and visualisation.
@@ -313,12 +313,7 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
             break;
         }
     }
-    // TODO: New remove() returns T: Remove this check and comment.
-    // Check either:
-    // - either: node deleted here
-    // - or: all references swapped (it is an existing node and the removed
-    //  node has already been deleted).
-    assert(pNode == nullptr || ! thatRefs.canSwap());
+    assert(! thatRefs.canSwap());
     // Decrement my widths as my references are now going over the top of
     // pNode.
     while (level < _nodeRefs.height()) {

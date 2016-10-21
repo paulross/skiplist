@@ -246,34 +246,32 @@ def test_single_remove(typ, value):
     assert sl.lacks_integrity() == 0
     assert sl.insert(value) is None
     assert sl.size() == 1
-    assert sl.remove(value) is None
+    assert sl.remove(value) == value
     assert sl.lacks_integrity() == 0
     assert sl.size() == 0
 
 @pytest.mark.parametrize('typ,value',
                          [
-#                           (int_type, example_int_value),
-#                           (float, 8.0),
-#                           (bytes, b'abc'),
-#                           (object, example_int_value),
-                          (object, 8.0),
-                          (object, b'abc'),
-#                           (object, 'abc'),
+                            (int_type, example_int_value),
+                            (float, 8.0),
+                            (bytes, b'abc'),
+                            (object, example_int_value),
+                            (object, 8.0),
+                            (object, b'abc'),
+                            (object, 'abc'),
                           ])
 def test_remove(typ, value):
     sl = orderedstructs.SkipList(typ)
     for i in range(16):
         assert sl.size() == i
         assert sl.lacks_integrity() == 0
-        print('Inserting {}'.format(repr(value * i)))
         assert sl.insert(value * i) is None
         assert sl.lacks_integrity() == 0
         assert sl.size() == i + 1
     for i in range(16):
         assert sl.size() == 16 - i
         assert sl.lacks_integrity() == 0
-        print('Removing  {}'.format(repr(value * i)))
-        assert sl.remove(value * i) is None
+        assert sl.remove(value * i) == value * i
         assert sl.lacks_integrity() == 0
         assert sl.size() == 16 - i - 1
     assert sl.lacks_integrity() == 0
@@ -657,7 +655,3 @@ def test_insert_levels_one_two_three_four_permutations(typ, value):
             assert sl.lacks_integrity() == 0
 
 #----------------- END: Test probabilistic results. ----------- 
-
-if __name__ == '__main__':
-    test_remove()
-

@@ -229,11 +229,11 @@
  *
  * Optimisation: Re-index Nodes on Complete Traversal
  * --------------------------------------------------
- * TODO:
+ * TODO: Re-index Nodes on Complete Traversal ???
  *
  * Optimisation: Reuse removed nodes for insert()
  * ----------------------------------------------
- * TODO:
+ * TODO: Reuse removed nodes for insert() ???
  *
  * Reference Counting
  * ------------------

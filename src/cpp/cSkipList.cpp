@@ -146,9 +146,11 @@ SkipList_has(SkipList* self, PyObject *arg)
     std::string str;
     
     assert(self && self->pSl_void);
+    assert(arg);
     ASSERT_TYPE_IN_RANGE;
     assert(! PyErr_Occurred());
     
+    Py_INCREF(arg);
     switch (self->_data_type) {
         case TYPE_LONG:
             if (! PyLong_Check(arg)) {
@@ -192,11 +194,13 @@ SkipList_has(SkipList* self, PyObject *arg)
         case TYPE_OBJECT:
             try {
                 ret_val = PyBool_FromLong(self->pSl_object->has(arg));
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument &err) {
                 // Thrown if PyObject_RichCompareBool returns -1
-                PyErr_Format(PyExc_ValueError,
-                             "Rich comparison fails for type %s",
-                             Py_TYPE(arg)->tp_name);
+                // A TypeError should be set
+                if (! PyErr_Occurred()) {
+                    PyErr_SetString(PyExc_TypeError, err.what());
+                }
+                goto except;
             }
             break;
         default:
@@ -210,7 +214,9 @@ SkipList_has(SkipList* self, PyObject *arg)
 except:
     assert(PyErr_Occurred());
     Py_XDECREF(ret_val);
+    ret_val = NULL;
 finally:
+    Py_DECREF(arg);
     return ret_val;
 }
 
@@ -265,8 +271,7 @@ _check_index_against_size(const char *prefix, long index, Py_ssize_t size) {
 }
 
 static PyObject *
-SkipList_at(SkipList *self, PyObject *arg)
-{
+SkipList_at(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
     Py_ssize_t size;
     long long index = 0;
@@ -362,11 +367,6 @@ _at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     assert(self->_data_type == TYPE_LONG);
     assert(! PyErr_Occurred());
     
-    ret_val = PyTuple_New(count);
-    if (! ret_val) {
-        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
-        return NULL;
-    }
     try {
         self->pSl_long->at(index, count, dest);
     } catch (ManAHL::SkipList::IndexError &err) {
@@ -374,6 +374,11 @@ _at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         return NULL;
     }
     assert(dest.size() == count);
+    ret_val = PyTuple_New(count);
+    if (! ret_val) {
+        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
+        return NULL;
+    }
     for (Py_ssize_t i = 0; i < count; ++i) {
         PyTuple_SET_ITEM(ret_val, i, PyLong_FromLongLong(dest[i]));
     }
@@ -389,11 +394,6 @@ _at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     assert(self->_data_type == TYPE_DOUBLE);
     assert(! PyErr_Occurred());
     
-    ret_val = PyTuple_New(count);
-    if (! ret_val) {
-        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
-        return NULL;
-    }
     try {
         self->pSl_double->at(index, count, dest);
     } catch (ManAHL::SkipList::IndexError &err) {
@@ -401,6 +401,11 @@ _at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         return NULL;
     }
     assert(dest.size() == count);
+    ret_val = PyTuple_New(count);
+    if (! ret_val) {
+        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
+        return NULL;
+    }
     for (Py_ssize_t i = 0; i < count; ++i) {
         PyTuple_SET_ITEM(ret_val, i, PyFloat_FromDouble(dest[i]));
     }
@@ -416,11 +421,6 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     assert(self->_data_type == TYPE_BYTES);
     assert(! PyErr_Occurred());
     
-    ret_val = PyTuple_New(count);
-    if (! ret_val) {
-        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
-        return NULL;
-    }
     try {
         self->pSl_bytes->at(index, count, dest);
     } catch (ManAHL::SkipList::IndexError &err) {
@@ -428,6 +428,11 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         return NULL;
     }
     assert(dest.size() == count);
+    ret_val = PyTuple_New(count);
+    if (! ret_val) {
+        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
+        return NULL;
+    }
     for (Py_ssize_t i = 0; i < count; ++i) {
         PyTuple_SET_ITEM(ret_val, i, std_string_as_bytes(dest[i]));
     }
@@ -443,11 +448,6 @@ _at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     assert(self->_data_type == TYPE_OBJECT);
     assert(! PyErr_Occurred());
     
-    ret_val = PyTuple_New(count);
-    if (! ret_val) {
-        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
-        return NULL;
-    }
     try {
         self->pSl_object->at(index, count, dest);
     } catch (ManAHL::SkipList::IndexError &err) {
@@ -455,6 +455,11 @@ _at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         return NULL;
     }
     assert(dest.size() == count);
+    ret_val = PyTuple_New(count);
+    if (! ret_val) {
+        PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
+        return NULL;
+    }
     for (Py_ssize_t i = 0; i < count; ++i) {
         Py_INCREF(dest[i]);
         PyTuple_SET_ITEM(ret_val, i, dest[i]);
@@ -614,6 +619,13 @@ SkipList_index(SkipList* self, PyObject *arg)
             } catch (ManAHL::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
+            } catch (std::invalid_argument &err) {
+                // Thrown if PyObject_RichCompareBool returns -1
+                // A TypeError should be set
+                if (! PyErr_Occurred()) {
+                    PyErr_SetString(PyExc_TypeError, err.what());
+                }
+                goto except;
             }
             break;
         default:
@@ -736,7 +748,16 @@ SkipList_insert(SkipList *self, PyObject *arg)
             break;
         case TYPE_OBJECT:
             Py_INCREF(arg);
-            self->pSl_object->insert(arg);
+            try {
+                self->pSl_object->insert(arg);
+            } catch (std::invalid_argument &err) {
+                // Thrown if PyObject_RichCompareBool returns -1
+                // A TypeError should be set
+                if (! PyErr_Occurred()) {
+                    PyErr_SetString(PyExc_TypeError, err.what());
+                }
+                return NULL;
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -745,89 +766,117 @@ SkipList_insert(SkipList *self, PyObject *arg)
     Py_RETURN_NONE;
 }
 
+/******* Type specific implementations of remove() ********/
+static PyObject *
+_remove_long(SkipList* self, PyObject *arg) {
+    if (! PyLong_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "Type must be long not \"%s\" type",
+                     Py_TYPE(arg)->tp_name);
+        return NULL;
+    }
+    TYPE_TYPE_LONG value = PyLong_AsLongLong(arg);
+    // This willl occur on overflow error
+    if (PyErr_Occurred()) {
+        return NULL;
+    }
+    try {
+        value = self->pSl_long->remove(value);
+    } catch (ManAHL::SkipList::ValueError &err) {
+        PyErr_SetString(PyExc_ValueError, err.message().c_str());
+        return NULL;
+    }
+    return PyLong_FromLongLong(value);
+}
+
+static PyObject *
+_remove_double(SkipList* self, PyObject *arg) {
+    if (! PyFloat_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "Type must be float not \"%s\" type",
+                     Py_TYPE(arg)->tp_name);
+        return NULL;
+    }
+    TYPE_TYPE_DOUBLE value = PyFloat_AS_DOUBLE(arg);
+    try {
+        value = self->pSl_double->remove(value);
+    } catch (ManAHL::SkipList::ValueError &err) {
+        // For whatever reason PyErr_Format does not support doubles
+        PyErr_SetString(PyExc_ValueError, err.message().c_str());
+        return NULL;
+    }
+    return PyFloat_FromDouble(value);
+}
+
+static PyObject *
+_remove_bytes(SkipList* self, PyObject *arg) {
+    if (! PyBytes_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "Type must be bytes not \"%s\" type",
+                     Py_TYPE(arg)->tp_name);
+        return NULL;
+    }
+    TYPE_TYPE_BYTES value = bytes_as_std_string(arg);
+    try {
+        value = self->pSl_bytes->remove(value);
+    } catch (ManAHL::SkipList::ValueError &err) {
+        PyErr_SetString(PyExc_ValueError, err.message().c_str());
+        return NULL;
+    }
+    // There does not seem a situation where a Python exception would be set
+    assert(! PyErr_Occurred());
+    return std_string_as_bytes(value);
+}
+
+static PyObject *
+_remove_object(SkipList* self, PyObject *arg) {
+    PyObject *value = NULL;
+    // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
+    // the skip list. We do not do the symmetric Py_DECREF here as we
+    // return the object and the Python code will decref it appropriately.
+    try {
+        value = self->pSl_object->remove(arg);
+    } catch (ManAHL::SkipList::ValueError &err) {
+        PyErr_SetString(PyExc_ValueError, err.message().c_str());
+        return NULL;
+    } catch (std::invalid_argument &err) {
+        // Thrown if PyObject_RichCompareBool returns -1
+        // A TypeError should be set
+        if (! PyErr_Occurred()) {
+            PyErr_SetString(PyExc_TypeError, err.what());
+        }
+        return NULL;
+    }
+    return value;
+}
+/***** END: Type specific implementations of remove() ******/
+
 static PyObject *
 SkipList_remove(SkipList* self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     assert(! PyErr_Occurred());
+    PyObject *ret_val = NULL;
     
-    TYPE_TYPE_LONG value;
     switch (self->_data_type) {
-        // TODO: New remove() returns T: break this into functions.
         case TYPE_LONG:
-            if (! PyLong_Check(arg)) {
-                PyErr_Format(PyExc_TypeError,
-                             "Type must be long not \"%s\" type",
-                             Py_TYPE(arg)->tp_name);
-                return NULL;
-            }
-            value = PyLong_AsLongLong(arg);
-            // TODO: Is this really necessary?
-            if (PyErr_Occurred()) {
-                return NULL;
-            }
-            try {
-                self->pSl_long->remove(value);
-            } catch (ManAHL::SkipList::ValueError &err) {
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
-                return NULL;
-            }
+            ret_val = _remove_long(self, arg);
             break;
         case TYPE_DOUBLE:
-            if (! PyFloat_Check(arg)) {
-                PyErr_Format(PyExc_TypeError,
-                             "Type must be float not \"%s\" type",
-                             Py_TYPE(arg)->tp_name);
-                return NULL;
-            }
-            try {
-                self->pSl_double->remove(PyFloat_AS_DOUBLE(arg));
-            } catch (ManAHL::SkipList::ValueError &err) {
-                // For whatever reason PyErr_Format does not support doubles
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
-                return NULL;
-            }
+            ret_val = _remove_double(self, arg);
             break;
         case TYPE_BYTES:
-            if (! PyBytes_Check(arg)) {
-                PyErr_Format(PyExc_TypeError,
-                             "Type must be bytes not \"%s\" type",
-                             Py_TYPE(arg)->tp_name);
-                return NULL;
-            }
-            try {
-                self->pSl_bytes->remove(bytes_as_std_string(arg));
-            } catch (ManAHL::SkipList::ValueError &err) {
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
-                return NULL;
-            }
-            // TODO: Is this really necessary?
-            if (PyErr_Occurred()) {
-                return NULL;
-            }
+            ret_val = _remove_bytes(self, arg);
             break;
         case TYPE_OBJECT:
-            // TODO: New remove() returns T: Fix me as below.
-            // TODO: Py_DECREF(arg); is pretty bad when arg is a different object
-            // that exists in the skip list.
-            assert(0);
-            try {
-                self->pSl_object->remove(arg);
-            } catch (ManAHL::SkipList::ValueError &err) {
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
-                return NULL;
-            }
-            // TODO: New remove() returns T: Fix me as below.
-            // TODO: This is very wrong. Decreffing the caller rather then the object in the skiplist.
-            Py_DECREF(arg);
+            ret_val = _remove_object(self, arg);
             break;
         default:
             PyErr_BadInternalCall();
             break;
     }
-    // TODO: New remove() returns T: Return a Python object? If so no decref above
-    Py_RETURN_NONE;
+    return ret_val;
 }
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
@@ -1049,7 +1098,8 @@ static PyMethodDef SkipList_methods[] = {
         "Return the sequence of count values at the given index."
     },
     {"index", (PyCFunction)SkipList_index, METH_O,
-        "Return the index of the given value, if found."
+        "Return the index of the given value."
+        " Will raise a ValueError if not found."
     },
     {"size", (PyCFunction)SkipList_size, METH_NOARGS,
      "Return the number of elements in the skip list."
