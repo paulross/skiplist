@@ -49,36 +49,68 @@ static int
 SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
     int ret_val = -1;
     PyObject *value_type    = NULL;
+    PyObject *cmp_func      = NULL;
     static char *kwlist[] = {
         (char *)"value_type",
+        (char *)"cmp_func",
         NULL
     };
     assert(self);
-    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O:__init__",
+    if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:__init__",
                                       kwlist,
-                                      &value_type)) {
+                                      &value_type,
+                                      &cmp_func)) {
         goto except;
     }
     assert(value_type);
     if (! PyType_CheckExact(value_type)) {
         PyErr_Format(PyExc_ValueError,
-                     "Argument to __init__ must be"
+                     "Argument \"value_type\" to __init__ must be"
                      " a type object not \"%s\"",
                      Py_TYPE(value_type)->tp_name);
         goto except;
     }
+    if (cmp_func && ! PyCallable_Check(cmp_func)) {
+        PyErr_Format(PyExc_ValueError,
+                     "Argument \"cmp_func\" to __init__ must be"
+                     " a callable object not an \"%s\" object.",
+                     Py_TYPE(cmp_func)->tp_name);
+        goto except;
+    }
+    // cmp_func can only exist if value_type is an object.
     if ((PyTypeObject *)value_type == &PyLong_Type) {
+        if (cmp_func) {
+            PyErr_SetString(PyExc_ValueError,
+                "Can not specify comparison function with type \"long\".");
+            goto except;
+        }
         self->_data_type = TYPE_LONG;
         self->pSl_long = new ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>();
     } else if ((PyTypeObject *)value_type == &PyFloat_Type) {
+        if (cmp_func) {
+            PyErr_SetString(PyExc_ValueError,
+                "Can not specify comparison function with type \"float\".");
+            goto except;
+        }
         self->_data_type = TYPE_DOUBLE;
         self->pSl_double = new ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>();
     } else if ((PyTypeObject *)value_type == &PyBytes_Type) {
+        if (cmp_func) {
+            PyErr_SetString(PyExc_ValueError,
+                "Can not specify comparison function with type \"bytes\".");
+            goto except;
+        }
         self->_data_type = TYPE_BYTES;
         self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
     } else if ((PyTypeObject *)value_type == &PyBaseObject_Type) {
         self->_data_type = TYPE_OBJECT;
-        self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject>();
+        if (cmp_func) {
+            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+                    cmpPyObject>(cmpPyObject(cmp_func));
+        } else {
+            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+                    cmpPyObject>(cmpPyObject(NULL));
+        }
     } else {
         PyErr_Format(PyExc_ValueError,
                      "Argument to __init__ must be"

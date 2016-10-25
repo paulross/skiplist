@@ -12,8 +12,12 @@
 #include "Python.h"
 #include <functional>
 
-struct cmpPyObject {
+class cmpPyObject {
+public:
+    cmpPyObject(PyObject *cmp=NULL) : cmp_func(cmp) {}
     bool operator()(PyObject *a, PyObject *b) const;
+private:
+    PyObject *cmp_func;
 };
 
 #endif /* defined(__skiplist__cmpPyObject__) */

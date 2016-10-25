@@ -36,7 +36,7 @@ def _setup_objects(typ, n):
                        ])
 
 ORDERED_CLASS = """@functools.total_ordering
-class Ordered(object):
+class TotalOrdered(object):
     def __init__(self, value):
         self._value = value
 
@@ -57,12 +57,12 @@ def _setup_PyObject_skiplist(n):
                        'import functools',
                        ORDERED_CLASS,
                        'sl = orderedstructs.SkipList(object)'.format(),
-                       'for v in range({}): sl.insert(Ordered(v))'.format(n)
+                       'for v in range({}): sl.insert(TotalOrdered(v))'.format(n)
                        ])
 
 STD_SKIP_LIST_LENGTH = 1000 * 10# * 1000
 STD_TIMEIT_COUNT = 1000 * 1000
-MAX_FUNCTION_NAME_LENGTH = 80
+MAX_FUNCTION_NAME_LENGTH = 90
 
 def test_at_integer():
     length = STD_SKIP_LIST_LENGTH
@@ -187,11 +187,11 @@ def test_index_mid_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
      
-def test_index_mid_object_Ordered():
+def test_index_mid_object_TotalOrdered():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
 #         'sl.index({})'.format(float(length // 2)),
-        'sl.index(Ordered({}))'.format(float(length // 2)),
+        'sl.index(TotalOrdered({}))'.format(float(length // 2)),
     ]
     t = timeit.Timer('\n'.join(cmdS), _setup_PyObject_skiplist(length))
     num_timeits = STD_TIMEIT_COUNT // 10
@@ -256,12 +256,12 @@ def test_insert_at_remove_mid_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
-def test_insert_at_remove_mid_object_Ordered():
+def test_insert_at_remove_mid_object_TotalOrdered():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
-        'sl.insert(Ordered({}))'.format(float(length / 2)),
+        'sl.insert(TotalOrdered({}))'.format(float(length / 2)),
         'sl.at({})'.format(length // 2),
-        'sl.remove(Ordered({}))'.format(float(length / 2)),
+        'sl.remove(TotalOrdered({}))'.format(float(length / 2)),
     ]
     t = timeit.Timer('\n'.join(cmdS), _setup_PyObject_skiplist(length))
     num_timeits = STD_TIMEIT_COUNT // 10

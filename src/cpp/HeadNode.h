@@ -37,7 +37,7 @@
 template <typename T, typename _Compare=std::less<T>>
 class HeadNode {
 public:
-    HeadNode() : _count(0), _compare(_Compare()) {
+    HeadNode(_Compare cmp=_Compare()) : _count(0), _compare(cmp) {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
         _dot_file_subgraph = 0;
 #endif

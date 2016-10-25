@@ -31,7 +31,7 @@ def test_ctor_raises_not_a_type():
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList('')
     assert err.value.args[0] == \
-        'Argument to __init__ must be a type object not "str"'
+        'Argument "value_type" to __init__ must be a type object not "str"'
 
 @pytest.mark.parametrize('typ, msg', [
                                  (complex, 'complex'),
