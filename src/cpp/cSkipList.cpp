@@ -5,6 +5,46 @@
 //  Created by Paul Ross on 20/11/2015.
 //  Copyright (c) 2015 AHL. All rights reserved.
 //
+
+/** Note about Python thread safety
+ *  ===============================
+ *
+ * Non-PyObjects's
+ * ---------------
+ * For skip lists storing non-native Python objects, for example those
+ * stored as C++ int/double/std::string this is thread safe.
+ *
+ * PyObjects's
+ * -----------
+ * For skip lists that store native Python objects as a PyObject*
+ * the comparison function will be either using
+ * PyObject_RichCompareBool (the default) or some user supplied
+ * comparison function.
+ *
+ * In either case these will call into arbitrary Python
+ * code such as __lt__() and this could be preempted by another
+ * Python thread that modifies this skip list whilst this
+ * thread is trying to do the same. Even immutable C functions
+ * here (like has()) should not be preempted.
+ *
+ * To prevent that we must acquire the GIL with any C function
+ * here that might cause the Python comparison function to be used.
+ * Once the value of the functon is known the GIL must be released.
+ *
+ * Multi-treaded access with Python code
+ * -------------------------------------
+ * Thread saftey is only guarenteed within the C code, not the Python
+ * code. For example if two or more threads share the same skip list
+ * then this code may fail:
+ *
+ * val = skip_list.at(4)
+ * skip_list.remove(val)
+ *
+ * The thread may get pre-empted between the two statements and the
+ * second statememt will raise if another thread has removed 'val'.
+ */
+
+
 #include <Python.h>
 #include "structmember.h"
 
@@ -19,6 +59,16 @@
 #include "OrderedStructs.h"
 #include "cOrderedStructs.h"
 #include "cmpPyObject.h"
+
+class HoldGIL {
+public:
+    HoldGIL() : _gstate(PyGILState_Ensure()) {}
+    ~HoldGIL() {
+        PyGILState_Release(_gstate);
+    }
+private:
+    PyGILState_STATE _gstate;
+};
 
 typedef struct {
     PyObject_HEAD
@@ -142,7 +192,7 @@ _decref_all_contents(SkipList *self) {
 }
 
 static void
-SkipList_dealloc(SkipList* self)
+SkipList_dealloc(SkipList *self)
 {
     if (self && self->pSl_void) {
         switch (self->_data_type) {
@@ -156,8 +206,11 @@ SkipList_dealloc(SkipList* self)
                 delete self->pSl_bytes;
                 break;
             case TYPE_OBJECT:
-                _decref_all_contents(self);
-                delete self->pSl_object;
+                {
+                    HoldGIL _gil;
+                    _decref_all_contents(self);
+                    delete self->pSl_object;
+                }
                 break;
             default:
                 PyErr_BadInternalCall();
@@ -171,8 +224,33 @@ static PyMemberDef SkipList_members[] = {
     {NULL, 0, 0, 0, NULL}  /* Sentinel */
 };
 
+/* Returns the result of .has() for native Python objects or NULL
+ * on failure (such a failed comparison between types).
+ * As this calls into arbitrary Python code such as __lt__()
+ * for comparison operations the GIL has to be claimed for the
+ * duration of this function and released once the result of the
+ * function is known.
+ */
 static PyObject *
-SkipList_has(SkipList* self, PyObject *arg)
+_has_object(SkipList *self, PyObject *arg) {
+    PyObject *ret_val = NULL;
+    HoldGIL _gil;
+    
+    assert(self->_data_type == TYPE_OBJECT);
+    try {
+        ret_val = PyBool_FromLong(self->pSl_object->has(arg));
+    } catch (std::invalid_argument &err) {
+        // Thrown if PyObject_RichCompareBool returns -1
+        // A TypeError should be set
+        if (! PyErr_Occurred()) {
+            PyErr_SetString(PyExc_TypeError, err.what());
+        }
+    }
+    return ret_val;
+}
+
+static PyObject *
+SkipList_has(SkipList *self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
     std::string str;
@@ -224,14 +302,9 @@ SkipList_has(SkipList* self, PyObject *arg)
                                                            ));
             break;
         case TYPE_OBJECT:
-            try {
-                ret_val = PyBool_FromLong(self->pSl_object->has(arg));
-            } catch (std::invalid_argument &err) {
-                // Thrown if PyObject_RichCompareBool returns -1
-                // A TypeError should be set
-                if (! PyErr_Occurred()) {
-                    PyErr_SetString(PyExc_TypeError, err.what());
-                }
+            ret_val = _has_object(self, arg);
+            if (! ret_val) {
+                assert(PyErr_Occurred());
                 goto except;
             }
             break;
@@ -255,7 +328,7 @@ finally:
 /* Sets value to the size of the skiplist as a size_t.
  * Returns 0 on success, non-zero on failure. */
 static size_t
-_size(SkipList* self, Py_ssize_t &value) {
+_size(SkipList *self, Py_ssize_t &value) {
     int err_code = 0;
 
     ASSERT_TYPE_IN_RANGE;
@@ -273,6 +346,7 @@ _size(SkipList* self, Py_ssize_t &value) {
             value = self->pSl_bytes->size();
             break;
         case TYPE_OBJECT:
+            // No need to obtain the GIL as no Python code is being executed.
             value = self->pSl_object->size();
             break;
         default:
@@ -369,8 +443,11 @@ SkipList_at(SkipList *self, PyObject *arg) {
             ret_val = std_string_as_bytes(self->pSl_bytes->at(index));
             break;
         case TYPE_OBJECT:
-            ret_val = self->pSl_object->at(index);
-            Py_INCREF(ret_val);
+            {
+                HoldGIL _gil;
+                ret_val = self->pSl_object->at(index);
+                Py_INCREF(ret_val);
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -561,9 +638,12 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
             }
             break;
         case TYPE_OBJECT:
-            ret = _at_sequence_object(self, index, count);
-            if (! ret) {
-                goto except;
+            {
+                HoldGIL _gil;
+                ret = _at_sequence_object(self, index, count);
+                if (! ret) {
+                    goto except;
+                }
             }
             break;
         default:
@@ -582,7 +662,26 @@ finally:
 }
 
 static PyObject *
-SkipList_index(SkipList* self, PyObject *arg)
+_index_object(SkipList *self, PyObject *arg) {
+    PyObject *ret_val = NULL;
+    HoldGIL _gil;
+
+    try {
+        ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
+    } catch (ManAHL::SkipList::ValueError &err) {
+        PyErr_SetString(PyExc_ValueError, err.message().c_str());
+    } catch (std::invalid_argument &err) {
+        // Thrown if PyObject_RichCompareBool returns -1
+        // A TypeError should be set
+        if (! PyErr_Occurred()) {
+            PyErr_SetString(PyExc_TypeError, err.what());
+        }
+    }
+    return ret_val;
+}
+
+static PyObject *
+SkipList_index(SkipList *self, PyObject *arg)
 {
     PyObject *ret_val = NULL;
     std::string str;
@@ -646,17 +745,8 @@ SkipList_index(SkipList* self, PyObject *arg)
             }
             break;
         case TYPE_OBJECT:
-            try {
-                ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
-            } catch (ManAHL::SkipList::ValueError &err) {
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
-                goto except;
-            } catch (std::invalid_argument &err) {
-                // Thrown if PyObject_RichCompareBool returns -1
-                // A TypeError should be set
-                if (! PyErr_Occurred()) {
-                    PyErr_SetString(PyExc_TypeError, err.what());
-                }
+            ret_val = _index_object(self, arg);
+            if (! ret_val) {
                 goto except;
             }
             break;
@@ -677,7 +767,7 @@ finally:
 }
 
 static PyObject *
-SkipList_size(SkipList* self)
+SkipList_size(SkipList *self)
 {
     PyObject *ret_val = NULL;
 
@@ -696,6 +786,7 @@ SkipList_size(SkipList* self)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->size());
             break;
         case TYPE_OBJECT:
+            // No need to get the GIL as no Python code being called.
             ret_val = PyLong_FromSize_t(self->pSl_object->size());
             break;
         default:
@@ -706,7 +797,7 @@ SkipList_size(SkipList* self)
 }
 
 static PyObject *
-SkipList_height(SkipList* self)
+SkipList_height(SkipList *self)
 {
     PyObject *ret_val = NULL;
 
@@ -725,6 +816,7 @@ SkipList_height(SkipList* self)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->height());
             break;
         case TYPE_OBJECT:
+            // No need to get the GIL as no Python function used.
             ret_val = PyLong_FromSsize_t(self->pSl_object->height());
             break;
         default:
@@ -780,15 +872,18 @@ SkipList_insert(SkipList *self, PyObject *arg)
             break;
         case TYPE_OBJECT:
             Py_INCREF(arg);
-            try {
-                self->pSl_object->insert(arg);
-            } catch (std::invalid_argument &err) {
-                // Thrown if PyObject_RichCompareBool returns -1
-                // A TypeError should be set
-                if (! PyErr_Occurred()) {
-                    PyErr_SetString(PyExc_TypeError, err.what());
+            {
+                HoldGIL _gil;
+                try {
+                    self->pSl_object->insert(arg);
+                } catch (std::invalid_argument &err) {
+                    // Thrown if PyObject_RichCompareBool returns -1
+                    // A TypeError should be set
+                    if (! PyErr_Occurred()) {
+                        PyErr_SetString(PyExc_TypeError, err.what());
+                    }
+                    return NULL;
                 }
-                return NULL;
             }
             break;
         default:
@@ -800,7 +895,7 @@ SkipList_insert(SkipList *self, PyObject *arg)
 
 /******* Type specific implementations of remove() ********/
 static PyObject *
-_remove_long(SkipList* self, PyObject *arg) {
+_remove_long(SkipList *self, PyObject *arg) {
     if (! PyLong_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be long not \"%s\" type",
@@ -822,7 +917,7 @@ _remove_long(SkipList* self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_double(SkipList* self, PyObject *arg) {
+_remove_double(SkipList *self, PyObject *arg) {
     if (! PyFloat_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be float not \"%s\" type",
@@ -841,7 +936,7 @@ _remove_double(SkipList* self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_bytes(SkipList* self, PyObject *arg) {
+_remove_bytes(SkipList *self, PyObject *arg) {
     if (! PyBytes_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be bytes not \"%s\" type",
@@ -861,8 +956,10 @@ _remove_bytes(SkipList* self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_object(SkipList* self, PyObject *arg) {
+_remove_object(SkipList *self, PyObject *arg) {
     PyObject *value = NULL;
+    HoldGIL _gil;
+    
     // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
@@ -884,7 +981,7 @@ _remove_object(SkipList* self, PyObject *arg) {
 /***** END: Type specific implementations of remove() ******/
 
 static PyObject *
-SkipList_remove(SkipList* self, PyObject *arg)
+SkipList_remove(SkipList *self, PyObject *arg)
 {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
@@ -914,7 +1011,7 @@ SkipList_remove(SkipList* self, PyObject *arg)
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
 static PyObject *
-SkipList_dot_file(SkipList* self)
+SkipList_dot_file(SkipList *self)
 {
     std::stringstream ostr;
 
@@ -936,8 +1033,11 @@ SkipList_dot_file(SkipList* self)
             self->pSl_bytes->dotFileFinalise(ostr);
             break;
         case TYPE_OBJECT:
-            self->pSl_object->dotFile(ostr);
-            self->pSl_object->dotFileFinalise(ostr);
+            {
+                HoldGIL _gil;
+                self->pSl_object->dotFile(ostr);
+                self->pSl_object->dotFileFinalise(ostr);
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -949,7 +1049,7 @@ SkipList_dot_file(SkipList* self)
 #endif
 
 static PyObject *
-SkipList_lacks_integrity(SkipList* self)
+SkipList_lacks_integrity(SkipList *self)
 {
     PyObject *ret_val = NULL;
 
@@ -968,7 +1068,10 @@ SkipList_lacks_integrity(SkipList* self)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->lacksIntegrity());
             break;
         case TYPE_OBJECT:
-            ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
+            {
+                HoldGIL _gil;
+                ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -978,7 +1081,7 @@ SkipList_lacks_integrity(SkipList* self)
 }
 
 static PyObject *
-SkipList_node_height(SkipList* self, PyObject *args, PyObject *kwargs)
+SkipList_node_height(SkipList *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *ret_val = NULL;
     int index;
@@ -1018,7 +1121,10 @@ SkipList_node_height(SkipList* self, PyObject *args, PyObject *kwargs)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->height(index));
             break;
         case TYPE_OBJECT:
-            ret_val = PyLong_FromSsize_t(self->pSl_object->height(index));
+            {
+                HoldGIL _gil;
+                ret_val = PyLong_FromSsize_t(self->pSl_object->height(index));
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -1080,7 +1186,10 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             height = self->pSl_bytes->height(index);
             break;
         case TYPE_OBJECT:
-            height = self->pSl_object->height(index);
+            {
+                HoldGIL _gil;
+                height = self->pSl_object->height(index);
+            }
             break;
         default:
             PyErr_BadInternalCall();
@@ -1102,7 +1211,10 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->width(index, level));
             break;
         case TYPE_OBJECT:
-            ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
+            {
+                HoldGIL _gil;
+                ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
+            }
             break;
         default:
             PyErr_BadInternalCall();
