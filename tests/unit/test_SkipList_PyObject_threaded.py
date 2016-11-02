@@ -1,5 +1,6 @@
 """Some specific PyObject* tests"""
 import logging
+import sys
 import threading
 import time
 
@@ -7,32 +8,56 @@ import pytest
 
 import orderedstructs
 
-from .SkipList_common import TotalOrdered, OrderedLt
+from SkipList_common import TotalOrdered, OrderedLt
 
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
                     )
-def test_one():
-    sl = orderedstructs.SkipList(object)
-    obj_insert = TotalOrdered(0)
-    sl.insert(obj_insert)
-    obj_remove = sl.remove(obj_insert)
-    assert id(obj_remove) == id(obj_insert)
 
-# def worker():
-#     logging.debug('Starting')
-#     time.sleep(2)
-#     logging.debug('Exiting')
-# 
-# def my_service():
-#     logging.debug('Starting')
-#     time.sleep(3)
-#     logging.debug('Exiting')
-# 
-# t = threading.Thread(name='my_service', target=my_service)
-# w = threading.Thread(name='worker', target=worker)
-# w2 = threading.Thread(target=worker) # use default name
-# 
-# w.start()
-# w2.start()
-# t.start()
+def insert_and_remove_TotalOrdered(sl, count):
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    lacks_integrity = sl.lacks_integrity()
+    assert lacks_integrity == 0, 'lacks_integrity is {}'.lacks_integrity
+    for _i in range(count):
+#         logging.debug('Inserting')
+        sl.insert(TotalOrdered(1))
+#         logging.debug('Inserting - DONE')
+#         logging.debug('Checking integrity [0]')
+        lacks_integrity = sl.lacks_integrity()
+#         logging.debug('Checking integrity [0] - DONE')
+        assert lacks_integrity == 0, 'lacks_integrity is {}'.lacks_integrity
+#         logging.debug('Removing')
+        sl.remove(TotalOrdered(1))
+#         logging.debug('Removing - DONE')
+#         logging.debug('Checking integrity [1]')
+        lacks_integrity = sl.lacks_integrity()
+#         logging.debug('Checking integrity [1] - DONE')
+        assert lacks_integrity == 0, 'lacks_integrity is {}'.lacks_integrity
+    logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
+ 
+def test_one():
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    sl = orderedstructs.SkipList(object)
+    sl.insert(TotalOrdered(0))
+    NUM_INSERTS = 100000
+    threads = [
+        threading.Thread(
+            name='insert_remove[0]',
+            target=insert_and_remove_TotalOrdered,
+            args=(sl, NUM_INSERTS)),
+        threading.Thread(
+            name='insert_remove[1]',
+            target=insert_and_remove_TotalOrdered,
+            args=(sl, NUM_INSERTS)),
+    ]
+    for thread in threads:
+        thread.start()
+    logging.debug('Waiting for worker threads')
+    main_thread = threading.currentThread()
+    for t in threading.enumerate():
+        if t is not main_thread:
+            t.join()
+    logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
+
+if __name__ == '__main__':
+    test_one()

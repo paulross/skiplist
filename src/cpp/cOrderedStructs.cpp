@@ -142,10 +142,14 @@ initorderedstructs(void)
     PyObject* module = NULL;
     struct module_state *st = NULL;
     
-    // Prepare every type in the moduls, else segfaults!
+    // Prepare every type in the modules, else segfaults!
     SkipListType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&SkipListType) < 0) {
         goto except;
+    }
+    if (! PyEval_ThreadsInitialized()) {
+//        std::cout << "PyEval_InitThreads()" << std::endl;
+        PyEval_InitThreads();
     }
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&orderedstructs_moduledef);

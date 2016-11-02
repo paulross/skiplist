@@ -60,6 +60,7 @@
 #include "cOrderedStructs.h"
 #include "cmpPyObject.h"
 
+#ifdef WITH_THREAD
 class HoldGIL {
 public:
     HoldGIL() : _gstate(PyGILState_Ensure()) {}
@@ -69,6 +70,9 @@ public:
 private:
     PyGILState_STATE _gstate;
 };
+#else
+class HoldGIL {};
+#endif
 
 typedef struct {
     PyObject_HEAD
@@ -958,12 +962,12 @@ _remove_bytes(SkipList *self, PyObject *arg) {
 static PyObject *
 _remove_object(SkipList *self, PyObject *arg) {
     PyObject *value = NULL;
-    HoldGIL _gil;
     
     // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
     try {
+        HoldGIL _gil;
         value = self->pSl_object->remove(arg);
     } catch (ManAHL::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());

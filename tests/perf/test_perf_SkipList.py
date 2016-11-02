@@ -60,7 +60,16 @@ def _setup_PyObject_skiplist(n):
                        'for v in range({}): sl.insert(TotalOrdered(v))'.format(n)
                        ])
 
-STD_SKIP_LIST_LENGTH = 1000 * 10# * 1000
+def _setup_PyObject_skiplist_user_cmp(n):
+    return '\n'.join([
+                       'import orderedstructs',
+                       'import functools',
+                       ORDERED_CLASS,
+                       'sl = orderedstructs.SkipList(object, lambda x, y: y < x)'.format(),
+                       'for v in range({}): sl.insert(TotalOrdered(v))'.format(n)
+                       ])
+
+STD_SKIP_LIST_LENGTH = 1000 * 1000
 STD_TIMEIT_COUNT = 1000 * 1000
 MAX_FUNCTION_NAME_LENGTH = 90
 
@@ -264,6 +273,20 @@ def test_insert_at_remove_mid_object_TotalOrdered():
         'sl.remove(TotalOrdered({}))'.format(float(length / 2)),
     ]
     t = timeit.Timer('\n'.join(cmdS), _setup_PyObject_skiplist(length))
+    num_timeits = STD_TIMEIT_COUNT // 10
+    tim = t.timeit(num_timeits)
+    fn_name = inspect.getframeinfo(inspect.currentframe()).function
+    print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
+          '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
+
+def test_insert_at_remove_mid_object_TotalOrdered_user_cmp():
+    length = STD_SKIP_LIST_LENGTH
+    cmdS = [
+        'sl.insert(TotalOrdered({}))'.format(float(length / 2)),
+        'sl.at({})'.format(length // 2),
+        'sl.remove(TotalOrdered({}))'.format(float(length / 2)),
+    ]
+    t = timeit.Timer('\n'.join(cmdS), _setup_PyObject_skiplist_user_cmp(length))
     num_timeits = STD_TIMEIT_COUNT // 10
     tim = t.timeit(num_timeits)
     fn_name = inspect.getframeinfo(inspect.currentframe()).function
