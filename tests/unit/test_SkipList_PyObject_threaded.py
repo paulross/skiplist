@@ -50,7 +50,7 @@ def test_one():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(object)
     sl.insert(TotalOrdered(1000))
-    NUM_INSERTS = 10000
+    NUM_INSERTS = 100000
     threads = [
         threading.Thread(
             name='insert_remove[{:d}]'.format((i + 2) * 1000),

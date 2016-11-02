@@ -147,10 +147,11 @@ initorderedstructs(void)
     if (PyType_Ready(&SkipListType) < 0) {
         goto except;
     }
+#ifdef WITH_THREAD
     if (! PyEval_ThreadsInitialized()) {
-//        std::cout << "PyEval_InitThreads()" << std::endl;
         PyEval_InitThreads();
     }
+#endif
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&orderedstructs_moduledef);
 #else

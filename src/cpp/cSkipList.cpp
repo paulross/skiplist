@@ -60,19 +60,19 @@
 #include "cOrderedStructs.h"
 #include "cmpPyObject.h"
 
-//#ifdef WITH_THREAD
-//class HoldGIL {
-//public:
-//    HoldGIL() : _gstate(PyGILState_Ensure()) {}
-//    ~HoldGIL() {
-//        PyGILState_Release(_gstate);
-//    }
-//private:
-//    PyGILState_STATE _gstate;
-//};
-//#else
-//class HoldGIL {};
-//#endif
+#ifdef WITH_THREAD
+class HoldGIL {
+public:
+    HoldGIL() : _gstate(PyGILState_Ensure()) {}
+    ~HoldGIL() {
+        PyGILState_Release(_gstate);
+    }
+private:
+    PyGILState_STATE _gstate;
+};
+#else
+class HoldGIL {};
+#endif
 
 typedef struct {
     PyObject_HEAD
@@ -876,8 +876,9 @@ SkipList_insert(SkipList *self, PyObject *arg)
             break;
         case TYPE_OBJECT:
             Py_INCREF(arg);
+            Py_BEGIN_ALLOW_THREADS
             {
-//                HoldGIL _gil;
+                HoldGIL _gil;
                 try {
                     self->pSl_object->insert(arg);
                 } catch (std::invalid_argument &err) {
@@ -889,6 +890,7 @@ SkipList_insert(SkipList *self, PyObject *arg)
                     return NULL;
                 }
             }
+            Py_END_ALLOW_THREADS
             break;
         default:
             PyErr_BadInternalCall();
@@ -966,20 +968,22 @@ _remove_object(SkipList *self, PyObject *arg) {
     // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
+    Py_BEGIN_ALLOW_THREADS
     try {
-//        HoldGIL _gil;
+        HoldGIL _gil;
         value = self->pSl_object->remove(arg);
     } catch (ManAHL::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
-        return NULL;
+        value = NULL;
     } catch (std::invalid_argument &err) {
         // Thrown if PyObject_RichCompareBool returns -1
         // A TypeError should be set
         if (! PyErr_Occurred()) {
             PyErr_SetString(PyExc_TypeError, err.what());
         }
-        return NULL;
+        value = NULL;
     }
+    Py_END_ALLOW_THREADS
     return value;
 }
 /***** END: Type specific implementations of remove() ******/
@@ -1072,10 +1076,12 @@ SkipList_lacks_integrity(SkipList *self)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->lacksIntegrity());
             break;
         case TYPE_OBJECT:
+            Py_BEGIN_ALLOW_THREADS
             {
-//                HoldGIL _gil;
+                HoldGIL _gil;
                 ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
             }
+            Py_END_ALLOW_THREADS
             break;
         default:
             PyErr_BadInternalCall();
