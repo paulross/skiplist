@@ -10,6 +10,9 @@
 #define SkipList_HeadNode_h
 
 #include <functional>
+//#ifdef SKIPLIST_THREAD_SUPPORT
+//    #include <mutex>
+//#endif
 #include <vector>
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
@@ -59,8 +62,7 @@ public:
     // Will raise a ValueError if the value does not exist in the skip list
     size_t index(const T& value) const;
     // Number of values in the skip list.
-    size_t size() const { return _count; }
-
+    size_t size() const;
     // Non-const methods
     //
     // Insert a value.
@@ -72,7 +74,7 @@ public:
     // Const methods that are mostly used for debugging and visualisation.
     //
     // Number of linked lists that are in the skip list.
-    size_t height() const { return _nodeRefs.height(); }
+    size_t height() const;
     // Number of linked lists that the node at index has.
     // Will throw a SkipList::IndexError if idx out of range.
     size_t height(size_t idx) const;
@@ -131,6 +133,9 @@ private:
 template <typename T, typename _Compare>
 bool HeadNode<T, _Compare>::has(const T &value) const {
     _throwIfValueDoesNotCompare(value);
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     for (size_t l = _nodeRefs.height(); l-- > 0;) {
         assert(_nodeRefs[l].pNode);
         if (_nodeRefs[l].pNode->has(value)) {
@@ -142,6 +147,9 @@ bool HeadNode<T, _Compare>::has(const T &value) const {
 
 template <typename T, typename _Compare>
 const T &HeadNode<T, _Compare>::at(size_t index) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     const Node<T, _Compare> *pNode = _nodeAt(index);
     assert(pNode);
     return pNode->value();
@@ -150,6 +158,9 @@ const T &HeadNode<T, _Compare>::at(size_t index) const {
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::at(size_t index, size_t count,
                                std::vector<T> &dest) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     dest.clear();
     const Node<T, _Compare> *pNode = _nodeAt(index);
     // _nodeAt will (should) throw an IndexError so this
@@ -174,6 +185,9 @@ size_t HeadNode<T, _Compare>::index(const T& value) const {
     _throwIfValueDoesNotCompare(value);
     size_t idx;
     
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     for (size_t l = _nodeRefs.height(); l-- > 0;) {
         assert(_nodeRefs[l].pNode);
         if (_nodeRefs[l].pNode->index(value, idx, l)) {
@@ -187,7 +201,24 @@ size_t HeadNode<T, _Compare>::index(const T& value) const {
 }
 
 template <typename T, typename _Compare>
+size_t HeadNode<T, _Compare>::size() const {
+    return _count;
+}
+
+template <typename T, typename _Compare>
+size_t HeadNode<T, _Compare>::height() const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
+    size_t val = _nodeRefs.height();
+    return val;
+}
+
+template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::height(size_t idx) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     const Node<T, _Compare> *pNode = _nodeAt(idx);
     assert(pNode);
     return pNode->height();
@@ -195,11 +226,13 @@ size_t HeadNode<T, _Compare>::height(size_t idx) const {
 
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::width(size_t idx, size_t level) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     const Node<T, _Compare> *pNode = _nodeAt(idx);
     assert(pNode);
     if (level >= pNode->height()) {
         _throw_exceeds_size(pNode->height());
-//        throw IndexError("level out of range.");
     }
     return pNode->nodeRefs()[level].width;
 }
@@ -227,6 +260,12 @@ const Node<T, _Compare> *HeadNode<T, _Compare>::_nodeAt(size_t idx) const {
 
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::insert(const T &value) {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#ifdef SKIPLIST_THREAD_SUPPORT_TRACE
+    std::cout << "HeadNode insert() thread: " << std::this_thread::get_id() << std::endl;
+#endif
+#endif
     Node<T, _Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
     
@@ -288,6 +327,11 @@ void HeadNode<T, _Compare>::insert(const T &value) {
         _nodeRefs[level++].width += 1;
     }
     ++_count;
+#ifdef SKIPLIST_THREAD_SUPPORT
+#ifdef SKIPLIST_THREAD_SUPPORT_TRACE
+    std::cout << "HeadNode insert() thread: " << std::this_thread::get_id() << " DONE" << std::endl;
+#endif
+#endif
 }
 
 /*
@@ -327,6 +371,12 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
 
 template <typename T, typename _Compare>
 T HeadNode<T, _Compare>::remove(const T &value) {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#ifdef SKIPLIST_THREAD_SUPPORT_TRACE
+    std::cout << "HeadNode remove() thread: " << std::this_thread::get_id() << std::endl;
+#endif
+#endif
     Node<T, _Compare> *pNode = nullptr;
     size_t level;
 
@@ -346,6 +396,9 @@ T HeadNode<T, _Compare>::remove(const T &value) {
     --_count;
     T ret_val = pNode->value();
     delete pNode;
+#ifdef SKIPLIST_THREAD_SUPPORT_TRACE
+    std::cout << "HeadNode remove() thread: " << std::this_thread::get_id() << " DONE" << std::endl;
+#endif
     return ret_val;
 }
 
@@ -379,7 +432,7 @@ void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
  */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
-    assert(height());
+    assert(_nodeRefs.height());
     // Check for cyclic references at each level
     for (size_t level = 0; level < _nodeRefs.height(); ++level) {
         Node<T, _Compare> *p1 = _nodeRefs[level].pNode;
@@ -404,7 +457,7 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
  */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
-    assert(height());
+    assert(_nodeRefs.height());
     for (size_t level = 1; level < _nodeRefs.height(); ++level) {
         const Node<T, _Compare> *pl = _nodeRefs[level].pNode;
         const Node<T, _Compare> *pl_1 = _nodeRefs[level - 1].pNode;
@@ -434,7 +487,7 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
 
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityNodeReferencesNotInList() const {
-    assert(height());
+    assert(_nodeRefs.height());
 
     IntegrityCheck result;
     std::set<const Node<T, _Compare>*> nodeSet;
@@ -485,6 +538,9 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityOrder() const {
 
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     if (_nodeRefs.height()) {
         IntegrityCheck result = _nodeRefs.lacksIntegrity();
         if (result) {
@@ -496,7 +552,7 @@ IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
         // Check all nodes for integrity
         const Node<T, _Compare> *pNode = _nodeRefs[0].pNode;
         while (pNode) {
-            result = pNode->lacksIntegrity(height());
+            result = pNode->lacksIntegrity(_nodeRefs.height());
             if (result) {
                 return result;
             }
@@ -535,6 +591,9 @@ IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
 // Returns an estimate of the memory usage of an instance
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::size_of() const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
     // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
     size_t ret_val = sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
@@ -550,6 +609,10 @@ size_t HeadNode<T, _Compare>::size_of() const {
 
 template <typename T, typename _Compare>
 HeadNode<T, _Compare>::~HeadNode() {
+    // Hmm could this deadlock?
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     if (_nodeRefs.height()) {
         // Traverse the lowest level list iteratively deleting as we go
         // Doing this recursivley could be expensive as we are at level 0.
@@ -569,6 +632,9 @@ HeadNode<T, _Compare>::~HeadNode() {
 
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     if (_dot_file_subgraph == 0) {
         os << "digraph SkipList {" << std::endl;
         os << "label = \"SkipList.\"" << std::endl;
@@ -637,6 +703,9 @@ void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
 
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::dotFileFinalise(std::ostream &os) const {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::lock_guard<std::mutex> lock(gSkipListMutex);
+#endif
     if (_dot_file_subgraph > 0) {
         // Link the nodes together with an invisible node.
         //    node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | ",

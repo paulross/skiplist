@@ -60,19 +60,19 @@
 #include "cOrderedStructs.h"
 #include "cmpPyObject.h"
 
-#ifdef WITH_THREAD
-class HoldGIL {
-public:
-    HoldGIL() : _gstate(PyGILState_Ensure()) {}
-    ~HoldGIL() {
-        PyGILState_Release(_gstate);
-    }
-private:
-    PyGILState_STATE _gstate;
-};
-#else
-class HoldGIL {};
-#endif
+//#ifdef WITH_THREAD
+//class HoldGIL {
+//public:
+//    HoldGIL() : _gstate(PyGILState_Ensure()) {}
+//    ~HoldGIL() {
+//        PyGILState_Release(_gstate);
+//    }
+//private:
+//    PyGILState_STATE _gstate;
+//};
+//#else
+//class HoldGIL {};
+//#endif
 
 typedef struct {
     PyObject_HEAD
@@ -211,7 +211,7 @@ SkipList_dealloc(SkipList *self)
                 break;
             case TYPE_OBJECT:
                 {
-                    HoldGIL _gil;
+//                    HoldGIL _gil;
                     _decref_all_contents(self);
                     delete self->pSl_object;
                 }
@@ -238,7 +238,7 @@ static PyMemberDef SkipList_members[] = {
 static PyObject *
 _has_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-    HoldGIL _gil;
+//    HoldGIL _gil;
     
     assert(self->_data_type == TYPE_OBJECT);
     try {
@@ -448,7 +448,7 @@ SkipList_at(SkipList *self, PyObject *arg) {
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret_val = self->pSl_object->at(index);
                 Py_INCREF(ret_val);
             }
@@ -643,7 +643,7 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret = _at_sequence_object(self, index, count);
                 if (! ret) {
                     goto except;
@@ -668,7 +668,7 @@ finally:
 static PyObject *
 _index_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-    HoldGIL _gil;
+//    HoldGIL _gil;
 
     try {
         ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
@@ -877,7 +877,7 @@ SkipList_insert(SkipList *self, PyObject *arg)
         case TYPE_OBJECT:
             Py_INCREF(arg);
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 try {
                     self->pSl_object->insert(arg);
                 } catch (std::invalid_argument &err) {
@@ -967,7 +967,7 @@ _remove_object(SkipList *self, PyObject *arg) {
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
     try {
-        HoldGIL _gil;
+//        HoldGIL _gil;
         value = self->pSl_object->remove(arg);
     } catch (ManAHL::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -1038,7 +1038,7 @@ SkipList_dot_file(SkipList *self)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 self->pSl_object->dotFile(ostr);
                 self->pSl_object->dotFileFinalise(ostr);
             }
@@ -1073,7 +1073,7 @@ SkipList_lacks_integrity(SkipList *self)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
             }
             break;
@@ -1126,7 +1126,7 @@ SkipList_node_height(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret_val = PyLong_FromSsize_t(self->pSl_object->height(index));
             }
             break;
@@ -1191,7 +1191,7 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 height = self->pSl_object->height(index);
             }
             break;
@@ -1216,7 +1216,7 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
             }
             break;

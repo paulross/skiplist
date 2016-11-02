@@ -7,7 +7,11 @@
 //
 
 #include <cstdlib>
+#ifdef SKIPLIST_THREAD_SUPPORT
+#include <mutex>
+#endif
 #include <string>
+
 #include "SkipList.h"
 
 namespace ManAHL {
@@ -53,6 +57,11 @@ void _throw_exceeds_size(size_t /* size */) {
 #endif
     throw IndexError(err_msg);
 }
+
+#ifdef SKIPLIST_THREAD_SUPPORT
+    std::mutex gSkipListMutex;
+#endif
+
 
 } // namespace SkipList
 } // namespace ManAHL

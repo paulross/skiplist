@@ -339,6 +339,16 @@
 #include <sstream>
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
 
+//#define SKIPLIST_THREAD_SUPPORT
+//#define SKIPLIST_THREAD_SUPPORT_TRACE
+
+#ifdef SKIPLIST_THREAD_SUPPORT
+#ifdef SKIPLIST_THREAD_SUPPORT_TRACE
+#include <thread>
+#endif
+#include <mutex>
+#endif
+
 namespace ManAHL {
 namespace SkipList {
 
@@ -379,6 +389,10 @@ bool tossCoin();
 /* Seed the random number generator for coin tosses. */
 void seedRand(unsigned seed);
 
+#ifdef SKIPLIST_THREAD_SUPPORT
+    extern std::mutex gSkipListMutex;
+#endif
+    
 #include "NodeRefs.h"
 #include "Node.h"
 #include "HeadNode.h"

@@ -6,7 +6,8 @@ from distutils.core import setup, Extension
 # CFLAGS = -Wall -Wextra
 # CFLAGS_RELEASE = $(CFLAGS) -O3 -DNDEBUG
 # CFLAGS_DEBUG = $(CFLAGS) -g3 -O0 -DDEBUG=1
-extra_compile_args = ['-Wall', '-Wextra', '-Werror', '-Wfatal-errors', '-std=c++11',]
+extra_compile_args = ['-Wall', '-Wextra', '-Werror', '-Wfatal-errors', '-std=c++11',
+                      '-DSKIPLIST_THREAD_SUPPORT', '-DSKIPLIST_THREAD_SUPPORT_TRACE']
 DEBUG = False
 
 if DEBUG:
@@ -22,7 +23,7 @@ orderedstructs = Extension("orderedstructs",
                                       'src/cpp/SkipList.cpp',
                                       'src/cpp/cmpPyObject.cpp',
                                       ],
-                             include_dirs=['.', ],
+                             include_dirs=['.', '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1'],
                              library_dirs=[os.getcwd(), ],
                              extra_compile_args=extra_compile_args,
                              extra_link_args=['-lstdc++'],

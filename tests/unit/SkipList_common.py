@@ -5,6 +5,10 @@ class TotalOrdered(object):
     """A class that has Python total ordering on a Python object."""
     def __init__(self, value):
         self._value = value
+    
+    @property
+    def value(self):
+        return self._value
 
     def __eq__(self, other):
         if not hasattr(other, '_value') or callable(getattr(other, '_value')):
