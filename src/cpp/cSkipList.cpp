@@ -238,7 +238,7 @@ static PyMemberDef SkipList_members[] = {
 static PyObject *
 _has_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-//    HoldGIL _gil;
+    HoldGIL _gil;
     
     assert(self->_data_type == TYPE_OBJECT);
     try {
@@ -306,7 +306,9 @@ SkipList_has(SkipList *self, PyObject *arg)
                                                            ));
             break;
         case TYPE_OBJECT:
+            Py_BEGIN_ALLOW_THREADS
             ret_val = _has_object(self, arg);
+            Py_END_ALLOW_THREADS
             if (! ret_val) {
                 assert(PyErr_Occurred());
                 goto except;
