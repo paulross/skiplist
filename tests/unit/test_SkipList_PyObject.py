@@ -178,6 +178,7 @@ def test_mixed_types_succeeds(obj0, obj1, method):
     getattr(sl, method)(obj1)
 
 # NOTE: Can not compare int/float and complex
+@pytest.mark.skipif(sys.version_info.major==2, reason='Requires Python 3')
 @pytest.mark.parametrize('obj0, obj1, method', [
                                  (TotalOrdered(0), 0.0, 'insert'),
                                  (0.0, TotalOrdered(0), 'insert'),
@@ -227,8 +228,14 @@ def test_fails_with_no_comparison(obj0, obj1, method):
 def test_given_cmp_function_int_fails(cls):
     """Test of passing in a non-callable.
     This can be detected at instantiation time."""
+    if sys.version_info.major == 2:
+        int_type = long
+    elif sys.version_info.major == 3:
+        int_type = int
+    else:
+        assert 0, 'Unsupported Python version.'
     with pytest.raises(ValueError) as err:
-        orderedstructs.SkipList(int, lambda x, y: x < y)
+        orderedstructs.SkipList(int_type, lambda x, y: x < y)
     assert err.value.args[0] == \
         'Can not specify comparison function with type "long".'
 
@@ -271,8 +278,13 @@ def test_ordered_cmp_function_lambda_too_few_arguments(cls):
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
         sl.insert(8.0)
-    assert err.value.args[0] == \
-        '<lambda>() takes 1 positional argument but 2 were given'
+    if sys.version_info.major == 2:
+        exp = '<lambda>() takes exactly 1 argument (2 given)'
+    elif sys.version_info.major == 3:
+        exp = '<lambda>() takes 1 positional argument but 2 were given'
+    else:
+        assert 0, 'Unsupported Python version.'
+    assert err.value.args[0] == exp
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_lambda_too_many_arguments(cls):
@@ -283,8 +295,13 @@ def test_ordered_cmp_function_lambda_too_many_arguments(cls):
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
         sl.insert(8.0)
-    assert err.value.args[0] == \
-        "<lambda>() missing 1 required positional argument: 'z'"
+    if sys.version_info.major == 2:
+        exp = '<lambda>() takes exactly 3 arguments (2 given)'
+    elif sys.version_info.major == 3:
+        exp = "<lambda>() missing 1 required positional argument: 'z'"
+    else:
+        assert 0, 'Unsupported Python version.'
+    assert err.value.args[0] == exp
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_local_too_few_arguments(cls):
@@ -297,8 +314,13 @@ def test_ordered_cmp_function_local_too_few_arguments(cls):
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
         sl.insert(8.0)
-    assert err.value.args[0] == \
-        'cmp() takes 1 positional argument but 2 were given'
+    if sys.version_info.major == 2:
+        exp = 'cmp() takes exactly 1 argument (2 given)'
+    elif sys.version_info.major == 3:
+        exp = 'cmp() takes 1 positional argument but 2 were given'
+    else:
+        assert 0, 'Unsupported Python version.'
+    assert err.value.args[0] == exp
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_local_too_many_arguments(cls):
@@ -311,8 +333,13 @@ def test_ordered_cmp_function_local_too_many_arguments(cls):
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
         sl.insert(8.0)
-    assert err.value.args[0] == \
-        "cmp() missing 1 required positional argument: 'z'"
+    if sys.version_info.major == 2:
+        exp = "cmp() takes exactly 3 arguments (2 given)"
+    elif sys.version_info.major == 3:
+        exp = "cmp() missing 1 required positional argument: 'z'"
+    else:
+        assert 0, 'Unsupported Python version.'
+    assert err.value.args[0] == exp
 
 #---- END: Bespoke comparison function wrong signature ----
 

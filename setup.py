@@ -4,16 +4,24 @@ from distutils.core import setup, Extension
 
 # Makefile:
 # CFLAGS = -Wall -Wextra
-# CFLAGS_RELEASE = $(CFLAGS) -O3 -DNDEBUG
+# CFLAGS_RELEASE = $(CFLAGS) -O2 -DNDEBUG
 # CFLAGS_DEBUG = $(CFLAGS) -g3 -O0 -DDEBUG=1
-extra_compile_args = ['-Wall', '-Wextra', '-Werror', '-Wfatal-errors', '-std=c++11',]
-#                      '-DSKIPLIST_THREAD_SUPPORT', '-DSKIPLIST_THREAD_SUPPORT_TRACE']
+extra_compile_args = [
+    '-Wall',
+    '-Wextra',
+    '-Werror',
+    '-Wfatal-errors',
+    # Some internal Python library code does not like this.
+    '-Wno-c++11-compat-deprecated-writable-strings',
+    '-std=c++11',
+]
+
 DEBUG = False
 
 if DEBUG:
     extra_compile_args.extend(['-g3', '-O0', '-DDEBUG=1'])
 else:
-    extra_compile_args.extend(['-O3', '-DNDEBUG'])
+    extra_compile_args.extend(['-O2', '-DNDEBUG'])
 
 orderedstructs = Extension("orderedstructs",
                              sources=[
@@ -25,7 +33,7 @@ orderedstructs = Extension("orderedstructs",
                                       ],
                              include_dirs=[
                                 '.',
-#                                '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
+                                '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
                             ],
                              library_dirs=[os.getcwd(), ],
                              extra_compile_args=extra_compile_args,

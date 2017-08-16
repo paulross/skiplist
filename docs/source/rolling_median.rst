@@ -25,6 +25,8 @@ Rolling median code using a skip list might look like this, error checking is om
 
 .. code-block:: cpp
 
+    #include "SkipList.h"
+    
     template <typename T>
     void rolling_median(const std::vector<T> data,
                         size_t win_length,
@@ -46,6 +48,8 @@ If you are working with C arrays (such as Numpy arrays) then this C approach mig
 
 .. code-block:: c
 
+    #include "SkipList.h"
+    
     template <typename T>
     void rolling_median(const T *src, size_t count, size_t win_length, T *dest) {
         

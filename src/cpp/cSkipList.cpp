@@ -158,13 +158,16 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
         self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
     } else if ((PyTypeObject *)value_type == &PyBaseObject_Type) {
         self->_data_type = TYPE_OBJECT;
-        if (cmp_func) {
-            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
-                    cmpPyObject>(cmpPyObject(cmp_func));
-        } else {
-            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
-                    cmpPyObject>(cmpPyObject(NULL));
-        }
+        self->pSl_object = new ManAHL::SkipList::HeadNode<
+            TYPE_TYPE_OBJECT,
+            cmpPyObject>(cmpPyObject(cmp_func));
+//        if (cmp_func) {
+//            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+//                    cmpPyObject>(cmpPyObject(cmp_func));
+//        } else {
+//            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+//                    cmpPyObject>(cmpPyObject(NULL));
+//        }
     } else {
         PyErr_Format(PyExc_ValueError,
                      "Argument to __init__ must be"
@@ -238,8 +241,8 @@ static PyMemberDef SkipList_members[] = {
 static PyObject *
 _has_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-    HoldGIL _gil;
-    
+//    HoldGIL _gil;
+
     assert(self->_data_type == TYPE_OBJECT);
     try {
         ret_val = PyBool_FromLong(self->pSl_object->has(arg));
@@ -306,9 +309,7 @@ SkipList_has(SkipList *self, PyObject *arg)
                                                            ));
             break;
         case TYPE_OBJECT:
-            Py_BEGIN_ALLOW_THREADS
             ret_val = _has_object(self, arg);
-            Py_END_ALLOW_THREADS
             if (! ret_val) {
                 assert(PyErr_Occurred());
                 goto except;
@@ -386,7 +387,7 @@ static PyObject *
 SkipList_at(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
     Py_ssize_t size;
-    long long index = 0;
+    long index = 0;
 
     assert(self && self->pSl_void);
     assert(! PyErr_Occurred());
@@ -413,7 +414,7 @@ SkipList_at(SkipList *self, PyObject *arg) {
     }
     assert(! PyErr_Occurred());
     if (PyLong_Check(arg)) {
-        index = PyLong_AsLongLong(arg);
+        index = PyLong_AsLong(arg);
         // Check for failure
         if (index == -1 && PyErr_Occurred()) {
             goto except;
@@ -803,8 +804,7 @@ SkipList_size(SkipList *self)
 }
 
 static PyObject *
-SkipList_height(SkipList *self)
-{
+SkipList_height(SkipList *self) {
     PyObject *ret_val = NULL;
 
     assert(self && self->pSl_void);
@@ -833,8 +833,7 @@ SkipList_height(SkipList *self)
 }
 
 static PyObject *
-SkipList_insert(SkipList *self, PyObject *arg)
-{
+SkipList_insert(SkipList *self, PyObject *arg) {
     assert(self && self->pSl_void);
     ASSERT_TYPE_IN_RANGE;
     assert(! PyErr_Occurred());
@@ -878,9 +877,8 @@ SkipList_insert(SkipList *self, PyObject *arg)
             break;
         case TYPE_OBJECT:
             Py_INCREF(arg);
-            Py_BEGIN_ALLOW_THREADS
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 try {
                     self->pSl_object->insert(arg);
                 } catch (std::invalid_argument &err) {
@@ -892,7 +890,6 @@ SkipList_insert(SkipList *self, PyObject *arg)
                     return NULL;
                 }
             }
-            Py_END_ALLOW_THREADS
             break;
         default:
             PyErr_BadInternalCall();
@@ -970,9 +967,8 @@ _remove_object(SkipList *self, PyObject *arg) {
     // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
-    Py_BEGIN_ALLOW_THREADS
     try {
-        HoldGIL _gil;
+//        HoldGIL _gil;
         value = self->pSl_object->remove(arg);
     } catch (ManAHL::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -985,7 +981,6 @@ _remove_object(SkipList *self, PyObject *arg) {
         }
         value = NULL;
     }
-    Py_END_ALLOW_THREADS
     return value;
 }
 /***** END: Type specific implementations of remove() ******/
@@ -1078,12 +1073,10 @@ SkipList_lacks_integrity(SkipList *self)
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->lacksIntegrity());
             break;
         case TYPE_OBJECT:
-            Py_BEGIN_ALLOW_THREADS
             {
-                HoldGIL _gil;
+//                HoldGIL _gil;
                 ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
             }
-            Py_END_ALLOW_THREADS
             break;
         default:
             PyErr_BadInternalCall();

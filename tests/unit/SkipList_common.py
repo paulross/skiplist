@@ -1,7 +1,7 @@
 import functools
 
 @functools.total_ordering
-class TotalOrdered(object):
+class TotalOrdered:#(object):
     """A class that has Python total ordering on a Python object."""
     def __init__(self, value):
         self._value = value
@@ -20,7 +20,7 @@ class TotalOrdered(object):
             return NotImplemented
         return self._value < other._value
 
-class OrderedLt(object):
+class OrderedLt:#(object):
     """A class that has just __lt__ ordering a Python object."""
     def __init__(self, value):
         self._value = value

@@ -5,14 +5,18 @@
 //  Created by Paul Ross on 04/10/2016.
 //  Copyright (c) 2016 Paul Ross. All rights reserved.
 //
-#include <stdexcept>
+#include <assert.h>
 #include <sstream>
+#include <stdexcept>
 
 #include "cmpPyObject.h"
 
 bool cmpPyObject::operator()(PyObject *a, PyObject *b) const {
     bool ret_val;
     long result;
+    assert(a);
+    assert(b);
+
     if (cmp_func) {
         PyObject *py_result = PyObject_CallFunctionObjArgs(cmp_func, a, b, NULL);
         if (! py_result) {

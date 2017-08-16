@@ -81,7 +81,7 @@ static PyMethodDef orderedstructsmodule_methods[] = {
 
 static char _c_skip_list_docs[] =
 "orderedstructs is an interface between Python and a C++ skip list implementation. It contains:"
-"\nSkipList - An implementation of a skip list for floats."
+"\nSkipList - An implementation of a skip list for float/long/bytes or objects."
 "\nseed_rand(int) - Seed the random number generator."
 "\ntoss_coin() - Toss a coin using the random number generator and return True/False.";
 
@@ -170,7 +170,7 @@ initorderedstructs(void)
     if (st == NULL) {
         goto except;
     }
-    st->error = PyErr_NewException(ORDERED_STRUCTS_MODULE_NAME ".Error",
+    st->error = PyErr_NewException((char*)ORDERED_STRUCTS_MODULE_NAME ".Error",
                                    NULL, NULL);
     if (st->error == NULL) {
         goto except;

@@ -208,8 +208,9 @@ def test_index_mid_object_TotalOrdered():
     fn_name = inspect.getframeinfo(inspect.currentframe()).function
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
-     
-def test_insert_at_remove_mid_integer():
+
+# IARM - insert_at_remove_mid
+def test_IARM_integer():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({}({}))'.format(int_type_str, length // 2),
@@ -223,7 +224,7 @@ def test_insert_at_remove_mid_integer():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
-def test_insert_at_remove_mid_float():
+def test_IARM_float():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({})'.format(float(length / 2)),
@@ -237,7 +238,7 @@ def test_insert_at_remove_mid_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
-def test_insert_at_remove_mid_object_int():
+def test_IARM_object_int():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({}({}))'.format(int_type_str, length // 2),
@@ -251,7 +252,7 @@ def test_insert_at_remove_mid_object_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
-def test_insert_at_remove_mid_object_float():
+def test_IARM_object_float():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({})'.format(float(length / 2)),
@@ -265,7 +266,7 @@ def test_insert_at_remove_mid_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
-def test_insert_at_remove_mid_object_TotalOrdered():
+def test_IARM_object_TotalOrdered():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert(TotalOrdered({}))'.format(float(length / 2)),
@@ -279,7 +280,7 @@ def test_insert_at_remove_mid_object_TotalOrdered():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
-def test_insert_at_remove_mid_object_TotalOrdered_user_cmp():
+def test_IARM_object_TotalOrdered_user_cmp():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert(TotalOrdered({}))'.format(float(length / 2)),

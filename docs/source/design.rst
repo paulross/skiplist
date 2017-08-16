@@ -52,7 +52,11 @@ Presence
 
 This search returns true/false as to whether a value is present. The search is recursive starting at the coarsest list dropping down a level when the search overshoots.
 
-Take, for example, searching for the presence of ``D``. The search starts as ``HED[2]`` this leads to ``E[2]`` and ``E > D`` so that search is rejected. The search then evolves to: ``HED[2] -> HED[1]`` which leads to ``A[1] -> C[1] -> E[1]``, again that search is rejected as ``E > D``. The search finally succeeds following the path ``HED[2] -> HED[1] -> A[1] -> C[1] -> C[0] -> D[0]`` so returns true.
+Take, for example, searching for the presence of ``D``.
+
+* The search starts as ``HED[2]`` this leads to ``E[2]`` and ``E > D`` so that search is rejected.
+* The search then evolves to: ``HED[2] -> HED[1]`` which leads to ``A[1] -> C[1] -> E[1]``, again that search is rejected as ``E > D``.
+* The search finally succeeds following the path ``HED[2] -> HED[1] -> A[1] -> C[1] -> C[0] -> D[0]`` so returns true.
 
 It is not necessary for the search to reach level 0 if it can be terminated earlier. For example the search for ``C`` would be achieved by ``HED[2] -> HED[1] -> A[1] -> C[1]``.
 
@@ -60,7 +64,11 @@ It is not necessary for the search to reach level 0 if it can be terminated earl
 Index
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Searching for a particular index value is accomplished in a similar way using the widths to calculate the position in the list. For example to find the 6th node (``F``) the search starts at ``HED[2]`` and moves to ``E[2]``. Any further move to the right is not possible because 5 + 4 > 6. Dropping down to ``E[1]`` no further progress can be made to the right as 5 + 2 > 6. Dropping down to ``E[0]`` finds node ``F`` as 5 + 1 == 6.
+Searching for a particular index value is accomplished in a similar way using the widths to calculate the position in the list. For example to find the 6th node (``F``):
+
+* The search starts at ``HED[2]`` and moves to ``E[2]``. Any further move to the right is not possible because 5 + 4 > 6.
+* Dropping down to ``E[1]`` no further progress can be made to the right as 5 + 2 > 6.
+* Dropping down to ``E[0]`` finds node ``F`` as 5 + 1 == 6.
 
 It is not necessary for the search to reach level 0 if it can be terminated earlier. For example the search for the fifth member would be achieved by ``HED[2] -> E[2]``.
 
@@ -95,7 +103,11 @@ Insertion Position
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The first two operations are done by a recursive search.
-This creates the call chain that passes through the nodes ``HED[1] -> A[1] -> C[1] -> C[0] -> D[0]``. Thus ``E`` will be created at level 0 and inserted after ``D``.
+This creates the call chain that passes through these nodes:
+
+``HED[1] -> A[1] -> C[1] -> C[0] -> D[0]``.
+
+Thus ``E`` will be created at level 0 and inserted after ``D``. All node creation is done from level 0 so that when the recursive search unwinds only the appropriate nodes and levels will be updated.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Node Creation

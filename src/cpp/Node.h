@@ -196,7 +196,7 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     Node<T, _Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
     // Effectively: if (value >= _value) {
-    if (!_compare(value, _value)) {
+    if (! _compare(value, _value)) {
         for (level = _nodeRefs.height(); level-- > 0;) {
             if (_nodeRefs[level].pNode) {
                 pNode = _nodeRefs[level].pNode->insert(value);

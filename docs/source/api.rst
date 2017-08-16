@@ -36,10 +36,8 @@ Example in C++
 .. code-block:: cpp
 
     #include "SkipList.h"
-    
-    using namespace ManAHL::SkipList;
-    
-    HeadNode<double> sl;
+        
+    SkipList::HeadNode<double> sl;
     
     sl.insert(42.0);
     sl.insert(21.0);
@@ -47,9 +45,9 @@ Example in C++
     
     sl.has(42.0) // true
     sl.size()    // 3
-    sl.at(1)     // 42.0, throws IndexError if index out of range
+    sl.at(1)     // 42.0, throws SkipList::IndexError if index out of range
 
-    sl.remove(21.0); // throws ValueError if value not present
+    sl.remove(21.0); // throws SkipList::ValueError if value not present
     
     sl.size()    // 2
     sl.at(1)     // 84.0
