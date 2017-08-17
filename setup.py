@@ -14,6 +14,7 @@ extra_compile_args = [
     # Some internal Python library code does not like this.
     '-Wno-c++11-compat-deprecated-writable-strings',
     '-std=c++11',
+    '-Isrc/cpp',
 ]
 
 DEBUG = False
@@ -25,16 +26,16 @@ else:
 
 orderedstructs = Extension("orderedstructs",
                              sources=[
-                                      'src/cpp/cOrderedStructs.cpp',
-                                      'src/cpp/OrderedStructs.cpp',
-                                      'src/cpp/cSkipList.cpp',
+                                      'src/cpy/cOrderedStructs.cpp',
+                                      'src/cpy/OrderedStructs.cpp',
+                                      'src/cpy/cSkipList.cpp',
+                                      'src/cpy/cmpPyObject.cpp',
                                       'src/cpp/SkipList.cpp',
-                                      'src/cpp/cmpPyObject.cpp',
                                       ],
                              include_dirs=[
                                 '.',
                                 '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
-                            ],
+                             ],
                              library_dirs=[os.getcwd(), ],
                              extra_compile_args=extra_compile_args,
                              extra_link_args=['-lstdc++'],
