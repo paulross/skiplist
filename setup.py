@@ -42,6 +42,49 @@ orderedstructs = Extension("orderedstructs",
                              language='c++11',
                              )
 
-setup(name='orderedstructs',
-      version='0.2.0',
-      ext_modules=[orderedstructs, ])
+with open('README.md') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+
+requirements = [
+]
+
+setup_requirements = [
+]
+
+test_requirements = [
+    'pytest',
+	'pytest-cov',
+    'hypothesis',
+]
+
+setup(
+    name='orderedstructs',
+    version='0.3.0',
+    ext_modules=[orderedstructs, ],
+    description="Contains a variety of ordered structures, in paricular a SkipList.",
+    long_description=readme + '\n\n' + history,
+    author="Paul Ross",
+    author_email='apaulross@gmail.com',
+    url='https://github.com/paulross/skiplist',
+    license="MIT License",
+    keywords=['orderedstructs', 'SkipList'],
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        "Programming Language :: Python :: 2",
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
+#     test_suite='tests',
+#     tests_require=test_requirements,
+#     setup_requires=setup_requirements,
+)
