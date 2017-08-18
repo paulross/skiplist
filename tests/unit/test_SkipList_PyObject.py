@@ -5,8 +5,15 @@ import pytest
 
 import orderedstructs
 
-from .SkipList_common import TotalOrdered, OrderedLt
+from .SkipList_common import TotalOrdered, OrderedLt, Person
 
+def test_ordered_person():
+    sl = orderedstructs.SkipList(object)
+    sl.insert(Person('Peter', 'Pan'))
+    sl.insert(Person('Alan', 'Pan'))
+    assert sl.size() == 2
+    assert str(sl.at(0)) == 'Pan, Alan' 
+    assert str(sl.at(1)) == 'Pan, Peter' 
 
 #---- id() tests -------
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])

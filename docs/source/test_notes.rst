@@ -88,6 +88,8 @@ Python Functional Tests.
 
 There are some tests for the Python API in *tests/*. One of the reasons for creating a Python API was to use the most excellent `Hypothesis <https://github.com/HypothesisWorks/hypothesis-python>`_ to test the underlying C++ code.
 
+.. _testing_a_probabilistic_structure:
+
 -----------------------------------------------
 Testing a Probabilistic Structure
 -----------------------------------------------

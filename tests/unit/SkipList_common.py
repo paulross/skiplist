@@ -30,3 +30,28 @@ class OrderedLt:#(object):
             return NotImplemented
         return self._value < other._value
 
+@functools.total_ordering
+class Person:#(object):
+    """Simple example of ordering."""
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+    
+    def __eq__(self, other):
+        try:
+            return self.last_name == other.last_name \
+                and self.first_name == other.first_name
+        except AttributeError:
+            return NotImplemented
+
+    def __lt__(self, other):
+        try:
+            return self.last_name < other.last_name \
+                or self.first_name < other.first_name
+        except AttributeError:
+            return NotImplemented
+    
+    def __str__(self):
+        return '{}, {}'.format(self.last_name, self.first_name)
+
+
