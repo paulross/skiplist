@@ -43,8 +43,6 @@ This SkipList requires:
 
 This SkipList supports Python 2.7 and 3.6 (and, probably, some earlier Python 3 versions).
 
-.. code-block:: sh
-
     $ cd <skiplist>
     $ python setup.py install
 
@@ -58,23 +56,17 @@ This SkipList has extensive tests for correctness and performance.
 
 To run all the C++ functional and performance tests:
 
-.. code-block:: sh
-
     $ cd <skiplist>/src/cpp
     $ make release
     $ ./SkipList_R.exe
 
 To run the C++ functional tests with agressive internal integrity checks:
 
-.. code-block:: sh
-
     $ cd <skiplist>/src/cpp
     $ make debug
     $ ./SkipList_R.exe
 
 To run all the C++ functional and performance tests for a thread safe SkipList:
-
-.. code-block:: sh
 
     $ cd <skiplist>/src/cpp
     $ make release CXXFLAGS=-DSKIPLIST_THREAD_SUPPORT
@@ -87,8 +79,6 @@ Testing requires ``pytest`` and ``hypothesis``:
 
 To run all the C++ functional and performance tests:
 
-.. code-block:: sh
-
     $ cd <skiplist>
     $ py.test -vs tests/
 
@@ -99,8 +89,6 @@ Here are some examples of using a SkipList in your code:
 
 ## C++
 
-
-.. code-block:: cpp
 
     #include "SkipList.h"
         
@@ -121,8 +109,6 @@ Here are some examples of using a SkipList in your code:
     sl.at(1)     // 84.0
 
 The C++ SkipList is thread safe when compiled with the macro ``SKIPLIST_THREAD_SUPPORT``, then a SkipList can then be shared across threads:
-
-.. code-block:: cpp
 
     #include <thread>
     #include <vector>
@@ -150,8 +136,6 @@ The C++ SkipList is thread safe when compiled with the macro ``SKIPLIST_THREAD_S
 
 An example of using a SkipList of always ordered floats:
 
-.. code-block:: python
-
     import cSkipList
     
     # Declare with a type. Supported types are long/float/bytes/object.
@@ -175,8 +159,6 @@ An example of using a SkipList of always ordered floats:
     sl.at(1)     # 84.0
 
 The Python SkipList can be used with user defined objects with a user defined sort order. In this example the last name of the person takes precedence over the first name:
-
-.. code-block:: python
 
     import functools
     
