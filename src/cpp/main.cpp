@@ -3,7 +3,7 @@
 //  SkipList
 //
 //  Created by Paul Ross on 15/11/2015.
-//  Copyright (c) 2015 AHL. All rights reserved.
+//  Copyright (c) 2017 Paul Ross. All rights reserved.
 //
 #include <cstdlib>
 #include <iostream>

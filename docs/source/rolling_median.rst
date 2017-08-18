@@ -32,7 +32,7 @@ Rolling median code using a skip list might look like this, error checking is om
                         size_t win_length,
                         std::vector<T> &result) {
         
-        SkipList::HeadNode<T> sl;
+        OrderedStructs::SkipList::HeadNode<T> sl;
 
         result.clear();
         for (size_t i = 0; i < data.size(); ++i) {
@@ -44,7 +44,7 @@ Rolling median code using a skip list might look like this, error checking is om
         }
     }
 
-If you are working with C arrays (such as Numpy arrays) then this C approach might be better, again error checking omitted:
+If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error checking omitted:
 
 .. code-block:: c
 
@@ -53,7 +53,7 @@ If you are working with C arrays (such as Numpy arrays) then this C approach mig
     template <typename T>
     void rolling_median(const T *src, size_t count, size_t win_length, T *dest) {
         
-        SkipList::HeadNode<T> sl;
+        OrderedStructs::SkipList::HeadNode<T> sl;
         const T *tail = src;
 
         for (size_t i = 0; i < count; ++i) {
