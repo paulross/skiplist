@@ -79,11 +79,11 @@ typedef struct {
     enum KeyDataType _data_type;
     union {
         /* NULL/non-NULL pointer, not to be de-referrenced. */
-        ManAHL::SkipList::HeadNode<void>             *pSl_void;
-        ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>   *pSl_long;
-        ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE> *pSl_double;
-        ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
-        ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject> *pSl_object;
+        OrderedStructs::SkipList::HeadNode<void>             *pSl_void;
+        OrderedStructs::SkipList::HeadNode<TYPE_TYPE_LONG>   *pSl_long;
+        OrderedStructs::SkipList::HeadNode<TYPE_TYPE_DOUBLE> *pSl_double;
+        OrderedStructs::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
+        OrderedStructs::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject> *pSl_object;
     };
 } SkipList;
 
@@ -139,7 +139,7 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
             goto except;
         }
         self->_data_type = TYPE_LONG;
-        self->pSl_long = new ManAHL::SkipList::HeadNode<TYPE_TYPE_LONG>();
+        self->pSl_long = new OrderedStructs::SkipList::HeadNode<TYPE_TYPE_LONG>();
     } else if ((PyTypeObject *)value_type == &PyFloat_Type) {
         if (cmp_func) {
             PyErr_SetString(PyExc_ValueError,
@@ -147,7 +147,7 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
             goto except;
         }
         self->_data_type = TYPE_DOUBLE;
-        self->pSl_double = new ManAHL::SkipList::HeadNode<TYPE_TYPE_DOUBLE>();
+        self->pSl_double = new OrderedStructs::SkipList::HeadNode<TYPE_TYPE_DOUBLE>();
     } else if ((PyTypeObject *)value_type == &PyBytes_Type) {
         if (cmp_func) {
             PyErr_SetString(PyExc_ValueError,
@@ -155,17 +155,17 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
             goto except;
         }
         self->_data_type = TYPE_BYTES;
-        self->pSl_bytes = new ManAHL::SkipList::HeadNode<TYPE_TYPE_BYTES>();
+        self->pSl_bytes = new OrderedStructs::SkipList::HeadNode<TYPE_TYPE_BYTES>();
     } else if ((PyTypeObject *)value_type == &PyBaseObject_Type) {
         self->_data_type = TYPE_OBJECT;
-        self->pSl_object = new ManAHL::SkipList::HeadNode<
+        self->pSl_object = new OrderedStructs::SkipList::HeadNode<
             TYPE_TYPE_OBJECT,
             cmpPyObject>(cmpPyObject(cmp_func));
 //        if (cmp_func) {
-//            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+//            self->pSl_object = new OrderedStructs::SkipList::HeadNode<TYPE_TYPE_OBJECT,
 //                    cmpPyObject>(cmpPyObject(cmp_func));
 //        } else {
-//            self->pSl_object = new ManAHL::SkipList::HeadNode<TYPE_TYPE_OBJECT,
+//            self->pSl_object = new OrderedStructs::SkipList::HeadNode<TYPE_TYPE_OBJECT,
 //                    cmpPyObject>(cmpPyObject(NULL));
 //        }
     } else {
@@ -291,7 +291,7 @@ SkipList_has(SkipList *self, PyObject *arg)
             try {
                 ret_val = PyBool_FromLong(
                     self->pSl_double->has(PyFloat_AS_DOUBLE(arg)));
-            } catch (ManAHL::SkipList::FailedComparison &err) {
+            } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -485,7 +485,7 @@ _at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     
     try {
         self->pSl_long->at(index, count, dest);
-    } catch (ManAHL::SkipList::IndexError &err) {
+    } catch (OrderedStructs::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -512,7 +512,7 @@ _at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     
     try {
         self->pSl_double->at(index, count, dest);
-    } catch (ManAHL::SkipList::IndexError &err) {
+    } catch (OrderedStructs::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -539,7 +539,7 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     
     try {
         self->pSl_bytes->at(index, count, dest);
-    } catch (ManAHL::SkipList::IndexError &err) {
+    } catch (OrderedStructs::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -566,7 +566,7 @@ _at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     
     try {
         self->pSl_object->at(index, count, dest);
-    } catch (ManAHL::SkipList::IndexError &err) {
+    } catch (OrderedStructs::SkipList::IndexError &err) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
@@ -675,7 +675,7 @@ _index_object(SkipList *self, PyObject *arg) {
 
     try {
         ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
-    } catch (ManAHL::SkipList::ValueError &err) {
+    } catch (OrderedStructs::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
     } catch (std::invalid_argument &err) {
         // Thrown if PyObject_RichCompareBool returns -1
@@ -710,7 +710,7 @@ SkipList_index(SkipList *self, PyObject *arg)
                 ret_val = PyLong_FromSize_t(
                             self->pSl_long->index(PyLong_AsLongLong(arg))
                                             );
-            } catch (ManAHL::SkipList::ValueError &err) {
+            } catch (OrderedStructs::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
             }
@@ -726,11 +726,11 @@ SkipList_index(SkipList *self, PyObject *arg)
                 ret_val = PyLong_FromSize_t(
                         self->pSl_double->index(PyFloat_AS_DOUBLE(arg))
                                             );
-            } catch (ManAHL::SkipList::FailedComparison &err) {
+            } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
-            } catch (ManAHL::SkipList::ValueError &err) {
+            } catch (OrderedStructs::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
             }
@@ -746,7 +746,7 @@ SkipList_index(SkipList *self, PyObject *arg)
                 ret_val = PyLong_FromSize_t(
                         self->pSl_bytes->index(bytes_as_std_string(arg))
                                             );
-            } catch (ManAHL::SkipList::ValueError &err) {
+            } catch (OrderedStructs::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 goto except;
             }
@@ -860,7 +860,7 @@ SkipList_insert(SkipList *self, PyObject *arg) {
             }
             try {
                 self->pSl_double->insert(PyFloat_AS_DOUBLE(arg));
-            } catch (ManAHL::SkipList::FailedComparison &err) {
+            } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
                 return NULL;
@@ -914,7 +914,7 @@ _remove_long(SkipList *self, PyObject *arg) {
     }
     try {
         value = self->pSl_long->remove(value);
-    } catch (ManAHL::SkipList::ValueError &err) {
+    } catch (OrderedStructs::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
         return NULL;
     }
@@ -932,7 +932,7 @@ _remove_double(SkipList *self, PyObject *arg) {
     TYPE_TYPE_DOUBLE value = PyFloat_AS_DOUBLE(arg);
     try {
         value = self->pSl_double->remove(value);
-    } catch (ManAHL::SkipList::ValueError &err) {
+    } catch (OrderedStructs::SkipList::ValueError &err) {
         // For whatever reason PyErr_Format does not support doubles
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
         return NULL;
@@ -951,7 +951,7 @@ _remove_bytes(SkipList *self, PyObject *arg) {
     TYPE_TYPE_BYTES value = bytes_as_std_string(arg);
     try {
         value = self->pSl_bytes->remove(value);
-    } catch (ManAHL::SkipList::ValueError &err) {
+    } catch (OrderedStructs::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
         return NULL;
     }
@@ -970,7 +970,7 @@ _remove_object(SkipList *self, PyObject *arg) {
     try {
 //        HoldGIL _gil;
         value = self->pSl_object->remove(arg);
-    } catch (ManAHL::SkipList::ValueError &err) {
+    } catch (OrderedStructs::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
         value = NULL;
     } catch (std::invalid_argument &err) {

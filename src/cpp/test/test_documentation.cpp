@@ -27,7 +27,7 @@ int doc_height_trend(size_t level) {
     
     srand(1);
     for (size_t i = 0; i < level; ++i) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         int num = 1 << i;
         for (int j = 0; j < num; ++j) {
             sl.insert(42.0);
@@ -48,7 +48,7 @@ int doc_simple_dot() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
@@ -72,7 +72,7 @@ int doc_insert() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<int> sl;
+    OrderedStructs::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
@@ -91,7 +91,7 @@ int doc_insert_remove() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<int> sl;
+    OrderedStructs::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr);
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
@@ -116,7 +116,7 @@ int doc_insert_remove_repeat() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<int> sl;
+    OrderedStructs::SkipList::HeadNode<int> sl;
     sl.dotFile(ostr);
     for (int c = 0; c < REPEAT_COUNT; ++c) {
         for (int i = 0; i < NUM; ++i) {

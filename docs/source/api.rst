@@ -37,7 +37,7 @@ Example in C++
 
     #include "SkipList.h"
         
-    SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     sl.insert(42.0);
     sl.insert(21.0);
@@ -199,7 +199,7 @@ Here is an example of using this method:
 
     #include "SkipList.h"
     
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     sl.insert(84.0);
     sl.insert(21.0);

@@ -16,17 +16,17 @@
 
 static char _toss_coin_docs[] = \
 "Toss a coin and return True/False."
-" This calls ManAHL::SkipList::tossCoin().";
+" This calls OrderedStructs::SkipList::tossCoin().";
 
 static PyObject *
 _toss_coin(PyObject */* mod */)
 {
-    return PyBool_FromLong(ManAHL::SkipList::tossCoin());
+    return PyBool_FromLong(OrderedStructs::SkipList::tossCoin());
 }
 
 static char _seed_rand_docs[] = \
 "Seed the random number generator."
-" This calls ManAHL::SkipList::seedRand().";
+" This calls OrderedStructs::SkipList::seedRand().";
 
 static PyObject *
 _seed_rand(PyObject */* mod */, PyObject *arg)
@@ -38,7 +38,7 @@ _seed_rand(PyObject */* mod */, PyObject *arg)
                      arg->ob_type->tp_name);
         return NULL;
     }
-    ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
+    OrderedStructs::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
 #else
     if (! PyLong_Check(arg) && ! PyInt_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
@@ -48,10 +48,10 @@ _seed_rand(PyObject */* mod */, PyObject *arg)
     }
     if (PyLong_Check(arg)) {
         // TODO: Check for overflow
-        ManAHL::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
+        OrderedStructs::SkipList::seedRand((unsigned) PyLong_AsLong(arg));
     } else if (PyInt_Check(arg)) {
         // TODO: Check for overflow
-        ManAHL::SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
+        OrderedStructs::SkipList::seedRand((unsigned) PyInt_AS_LONG(arg));
     }
 #endif
     Py_RETURN_NONE;

@@ -25,7 +25,7 @@ static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
 
 int perf_single_insert_remove() {
     int num = GLOBAL_REPEAT_COUNT;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
@@ -49,12 +49,12 @@ int perf_single_insert_remove() {
 int perf_large_skiplist_ins_only() {
     size_t SIZE = GLOBAL_REPEAT_COUNT;
     int COUNT = 1;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
     for (int c = 0; c < COUNT; ++c) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         assert(! sl.lacksIntegrity());
         for (size_t i = 0; i < SIZE; ++i) {
             sl.insert(i);
@@ -79,12 +79,12 @@ int perf_large_skiplist_ins_only() {
 int perf_large_skiplist_ins_rem() {
     size_t SIZE = 1024 * 1024;
     int COUNT = 1;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     time_t start = clock();
     for (int c = 0; c < COUNT; ++c) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         assert(! sl.lacksIntegrity());
         for (size_t i = 0; i < SIZE; ++i) {
             sl.insert(i);
@@ -116,7 +116,7 @@ int perf_single_ins_rem_middle() {
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double val = SKIPLIST_SIZE / 2;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     assert(! sl.lacksIntegrity());
@@ -152,7 +152,7 @@ int perf_single_ins_rem_middle_vary_length() {
     int result = 0;
     
     for (size_t siz = 1; siz < 1024 * 1024 + 1; siz *= 2) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         
         srand(1);
         assert(! sl.lacksIntegrity());
@@ -190,7 +190,7 @@ int perf_single_at_middle() {
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double value = SKIPLIST_SIZE / 2;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::stringstream ostr;
     
     srand(1);
@@ -225,7 +225,7 @@ int perf_single_has_middle() {
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     int value;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::stringstream ostr;
     
     srand(1);
@@ -262,7 +262,7 @@ int perf_single_ins_at_rem_middle() {
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     double value = SKIPLIST_SIZE / 2;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::stringstream ostr;
     
     srand(1);
@@ -302,7 +302,7 @@ int perf_median_sliding_window() {
     for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
         data.push_back(rand());
     }
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     time_t start = clock();
     std::vector<double> medians;
     for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
@@ -337,7 +337,7 @@ int perf_1m_median_values() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -373,7 +373,7 @@ int perf_1m_medians_1000_vectors() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -409,7 +409,7 @@ int perf_simulate_real_use() {
     }
     time_t start = clock();
     for (size_t equity = 0; equity < NUMBER_VECTORS; ++equity) {
-        ManAHL::SkipList::HeadNode<double> sl;
+        OrderedStructs::SkipList::HeadNode<double> sl;
         std::vector<double> medians;
         for (size_t i = 0; i < VECTOR_LENGTH; ++i) {
             sl.insert(data[i]);
@@ -435,7 +435,7 @@ int perf_at_in_one_million() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {
@@ -459,7 +459,7 @@ int perf_has_in_one_million_vary_length() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {
@@ -486,7 +486,7 @@ int perf_size_of_double_vary_length() {
     
     srand(1);
     for (size_t i = 1; i <= NUM; i *= 2) {
-        ManAHL::SkipList::HeadNode<tValue> sl;
+        OrderedStructs::SkipList::HeadNode<tValue> sl;
         for (size_t j = 0; j < i; ++j) {
             sl.insert(j);
         }
@@ -513,7 +513,7 @@ int perf_size_of_char_vary_length() {
     
     srand(1);
     for (size_t i = 1; i <= NUM; i *= 2) {
-        ManAHL::SkipList::HeadNode<tValue> sl;
+        OrderedStructs::SkipList::HeadNode<tValue> sl;
         for (size_t j = 0; j < i; ++j) {
             sl.insert(j & 0xFF);
         }
@@ -539,7 +539,7 @@ int perf_size_of_1m() {
     typedef double tValue;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<tValue> sl;
+    OrderedStructs::SkipList::HeadNode<tValue> sl;
     for (size_t j = 0; j < NUM; ++j) {
         sl.insert(j);
     }
@@ -561,7 +561,7 @@ int perf_index() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {
@@ -581,7 +581,7 @@ int perf_index_vary_length() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     for (size_t i = 0; i < NUM; ++i) {

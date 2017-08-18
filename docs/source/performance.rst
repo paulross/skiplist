@@ -299,56 +299,56 @@ Detailed Performance
 The performance test function names all start with ``perf_...`` and are as follows. The SkipList type is ``<double>``. In the table below 1M means mega, i.e. 2**20 or 1024*1024 or 1048576:
 
 
-=================================== =========================================== =========== ========
-Test Name                           Measure                                     Time/value  Rate
-=================================== =========================================== =========== ========
-``perf_single_insert_remove()``     With an empty SkipList                      240 ns      4.1 M/s
+=================================== =============================================== =========== ========
+Test Name                           Measure                                         Time/value  Rate
+=================================== =============================================== =========== ========
+``perf_single_insert_remove()``     With an empty SkipList                          240 ns      4.1 M/s
                                     add one item and remove it.
-``perf_large_skiplist_ins_only()``  Starting with an empty SkipList append 1    740 ns      1.3 M/s
+``perf_large_skiplist_ins_only()``  Starting with an empty SkipList append 1        740 ns      1.3 M/s
                                     million values.
-``perf_large_skiplist_ins_rem()``   Starting with an empty SkipList append 1    900 ns      1.1 M/s
+``perf_large_skiplist_ins_rem()``   Starting with an empty SkipList append 1        900 ns      1.1 M/s
                                     million values then remove the first
                                     (lowest) value until the SkipList is
                                     empty.
-``perf_single_ins_rem_middle()``    With a SkipList of 1 million values insert  1200 ns     0.85 M/s
+``perf_single_ins_rem_middle()``    With a SkipList of 1 million values insert      1200 ns     0.85 M/s
                                     the middle value (i.e. 500,000.0) and
                                     remove it. 
-``perf_single_at_middle()``         With a SkipList of 1 million values find    220 ns      4.6 M/s
+``perf_single_at_middle()``         With a SkipList of 1 million values find        220 ns      4.6 M/s
                                     the middle value.
-``perf_single_has_middle()``        With a SkipList of 1 million values test    210 ns      4.8 M/s
+``perf_single_has_middle()``        With a SkipList of 1 million values test        210 ns      4.8 M/s
                                     for the middle value.
-``perf_single_ins_at_rem_middle()`` With a SkipList of 1 million values call    1400 ns     0.7 M/s
+``perf_single_ins_at_rem_middle()`` With a SkipList of 1 million values call        1400 ns     0.7 M/s
                                     ``insert(v)``, ``at(500000)`` and
                                     ``remove(v)`` where ``v`` corresponds to
                                     the middle value. This simulates the
                                     actions of a rolling median.
-``perf_median_sliding_window()``    Simulate a rolling median of 100 values.    800 ns      1.3 M/s
+``perf_median_sliding_window()``    Simulate a rolling median of 100 values.        800 ns      1.3 M/s
                                     Create an initially empty SkipList. For
                                     each of 10,000 random values
                                     insert the value into the SkipList. For
                                     indicies > 100 extract the middle value
                                     from the SkipList as the median then
                                     remove the i-100 value from the SkipList.
-``perf_1m_median_values()``         Simulate a rolling median of 101 values.    720 ns      1.4 M/s
+``perf_1m_median_values()``         Simulate a rolling median of 101 values.        720 ns      1.4 M/s
                                     Similar to
                                     ``perf_median_sliding_window()`` but uses
                                     1 million values.
-``perf_1m_medians_1000_vectors()``  Simulate a rolling median of 101 values.    690 ns      1.4 M/s
+``perf_1m_medians_1000_vectors()``  Simulate a rolling median of 101 values.        690 ns      1.4 M/s
                                     Similar to ``perf_1m_median_values()``
                                     but uses 1000 values repeated 1000 times.
-``perf_simulate_real_use()``        Simulate a rolling median of 200 values.    760 ns      1.3 M/s
+``perf_simulate_real_use()``        Simulate a rolling median of 200 values.        760 ns      1.3 M/s
                                     Similar to
                                     ``perf_1m_medians_1000_vectors()`` but
                                     uses 8000 values repeated 8000 times
                                     i.e. the rolling median of 8000x8000
                                     array.
-``perf_roll_med_odd_index()``       Tests the time cost of                      830 ns      1.2 M/s
-                                    ``ManAHL::RollingMedian::odd_index``
+``perf_roll_med_odd_index()``       Tests the time cost of                          830 ns      1.2 M/s
+                                    ``OrderedStructs::RollingMedian::odd_index``
                                     for 1 million values and a window size of
                                     101.
-``perf_index()``                    Tests the time cost of                      200 ns      5 M/s
+``perf_index()``                    Tests the time cost of                          200 ns      5 M/s
                                     ``index()`` half way through 1m doubles.
-=================================== =========================================== =========== ========
+=================================== =============================================== =========== ========
 
 ---------------------------------
 Time Complexity

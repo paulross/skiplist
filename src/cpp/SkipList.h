@@ -349,7 +349,7 @@
 #include <mutex>
 #endif
 
-namespace ManAHL {
+namespace OrderedStructs {
 namespace SkipList {
 
 /************************ Exceptions ****************************/
@@ -398,6 +398,6 @@ void seedRand(unsigned seed);
 #include "HeadNode.h"
 
 } // namespace SkipList
-} // namespace ManAHL
+} // namespace OrderedStructs
 
 #endif /* defined(__SkipList__SkipList__) */

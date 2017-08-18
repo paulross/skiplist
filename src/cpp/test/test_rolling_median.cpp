@@ -20,7 +20,7 @@ int test_roll_med_simple() {
     const int WIN_LENGTH = 5;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+    double *dest = new double[OrderedStructs::RollingMedian::dest_size(COUNT,
                                                                WIN_LENGTH,
                                                                DEST_STRIDE)];
     int result = 0;
@@ -29,11 +29,11 @@ int test_roll_med_simple() {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+    result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
                                                WIN_LENGTH, dest, DEST_STRIDE);
     // Test
     for (size_t i = 0;
-         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < OrderedStructs::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 4. + 2.0 * i;
@@ -47,7 +47,7 @@ int test_roll_med_even_win() {
     const int WIN_LENGTH = 4;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+    double *dest = new double[OrderedStructs::RollingMedian::dest_size(COUNT,
                                                                WIN_LENGTH,
                                                                DEST_STRIDE)];
     int result = 0;
@@ -56,11 +56,11 @@ int test_roll_med_even_win() {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+    result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
                                                WIN_LENGTH, dest, DEST_STRIDE);
     // Test
     for (size_t i = 0;
-         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < OrderedStructs::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 4. + 2.0 * i;
@@ -74,7 +74,7 @@ int test_roll_med_even_mean() {
     const int WIN_LENGTH = 4;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+    double *dest = new double[OrderedStructs::RollingMedian::dest_size(COUNT,
                                                                WIN_LENGTH,
                                                                DEST_STRIDE)];
     int result = 0;
@@ -83,10 +83,10 @@ int test_roll_med_even_mean() {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= ManAHL::RollingMedian::even_odd_index(src, 1, COUNT,
+    result |= OrderedStructs::RollingMedian::even_odd_index(src, 1, COUNT,
                                                     WIN_LENGTH, dest, DEST_STRIDE);
     for (size_t i = 0;
-         i < ManAHL::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
+         i < OrderedStructs::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
         result |= dest[i] != 3. + 2.0 * i;
@@ -100,7 +100,7 @@ int perf_roll_med_odd_index() {
     const int WIN_LENGTH = 101;
     const int DEST_STRIDE = 1;
     double src[COUNT];
-    double *dest = new double[ManAHL::RollingMedian::dest_size(COUNT,
+    double *dest = new double[OrderedStructs::RollingMedian::dest_size(COUNT,
                                                                WIN_LENGTH,
                                                                DEST_STRIDE)];
     int result = 0;
@@ -110,7 +110,7 @@ int perf_roll_med_odd_index() {
     }
     srand(1);
     time_t start = clock();
-    result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+    result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
                                                WIN_LENGTH, dest, DEST_STRIDE);
     double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
@@ -137,11 +137,11 @@ int perf_roll_med_odd_index_wins() {
     }
     // Loop over this data for various window sizes from 1 to 524288
     for (size_t win = 1; win < COUNT; win *= 2) {
-        size_t dest_size = ManAHL::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
+        size_t dest_size = OrderedStructs::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
         double *dest = new double[dest_size];
         srand(1);
         time_t start = clock();
-        result |= ManAHL::RollingMedian::odd_index(src, 1, COUNT,
+        result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
                                                    win, dest, DEST_STRIDE);
         double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
         std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";

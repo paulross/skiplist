@@ -13,7 +13,7 @@
 
 #include "SkipList.h"
 
-namespace ManAHL {
+namespace OrderedStructs {
 namespace RollingMedian {
 
 enum RollingMedianResult {
@@ -128,6 +128,6 @@ RollingMedianResult even_odd_index(const T *src, size_t src_stride,
 }
 
 } // namespace RollingMedian
-} // namespace ManAHL
+} // namespace OrderedStructs
 
 #endif /* defined(__SkipList__RollingMedian__) */

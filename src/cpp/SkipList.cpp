@@ -14,7 +14,7 @@
 
 #include "SkipList.h"
 
-namespace ManAHL {
+namespace OrderedStructs {
 namespace SkipList {
 
 /* Tosses a virtual coin, returns true if 'heads'.
@@ -64,4 +64,4 @@ void _throw_exceeds_size(size_t /* size */) {
 
 
 } // namespace SkipList
-} // namespace ManAHL
+} // namespace OrderedStructs

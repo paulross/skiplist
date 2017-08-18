@@ -14,24 +14,24 @@
 
 /******************* Functional Tests **************************/
 
-ManAHL::SkipList::IntegrityCheck test_very_simple_insert() {
-    ManAHL::SkipList::IntegrityCheck result;
+OrderedStructs::SkipList::IntegrityCheck test_very_simple_insert() {
+    OrderedStructs::SkipList::IntegrityCheck result;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result = sl.lacksIntegrity();
     return result;
 }
 
-// Need int as ManAHL::SkipList::IntegrityCheck can not use |=
+// Need int as OrderedStructs::SkipList::IntegrityCheck can not use |=
 int test_simple_insert() {
     int result = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
@@ -52,7 +52,7 @@ int test_insert_and_remove_same() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     result |= sl.remove(42.0) != 42.0;
@@ -66,7 +66,7 @@ int test_insert_remove_multiple() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);
@@ -102,7 +102,7 @@ int test_ins_rem_rand() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        ManAHL::SkipList::HeadNode<unsigned int> sl;
+        OrderedStructs::SkipList::HeadNode<unsigned int> sl;
         std::vector<unsigned int> values;
         unsigned int value;
         for (int i = 0; i < LENGTH; ++i) {
@@ -138,7 +138,7 @@ int test_insert_n_numbers_same(int n, double value) {
     int result = 0;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     for (int i = 0; i < n; ++i) {
         sl.insert(value);
         result |= sl.lacksIntegrity();
@@ -156,7 +156,7 @@ int test_at() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
@@ -181,7 +181,7 @@ int test_at_fails() {
     int result = 0;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
@@ -196,15 +196,15 @@ int test_at_fails() {
     try {
         sl.at(-1);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     try {
         sl.at(5);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     try {
         sl.at(6);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     return result;
 }
 
@@ -213,7 +213,7 @@ int test_at_dest() {
     int result = 0;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
     result |= sl.lacksIntegrity();
@@ -234,7 +234,7 @@ int test_at_dest_fails() {
     int result = 0;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
     result |= sl.lacksIntegrity();
@@ -246,19 +246,19 @@ int test_at_dest_fails() {
     try {
         sl.at(0, 3, dest);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     try {
         sl.at(1, 2, dest);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     try {
         sl.at(2, 1, dest);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     try {
         sl.at(3, 0, dest);
         result |= 1;
-    } catch (ManAHL::SkipList::IndexError &err) {}
+    } catch (OrderedStructs::SkipList::IndexError &err) {}
     return result;
 }
 
@@ -268,7 +268,7 @@ int test_has() {
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
@@ -293,7 +293,7 @@ int test_has_not() {
     int result = 0;
     
     srand(1);
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     result |= sl.has(-1);
     result |= sl.lacksIntegrity();
     sl.insert(42.0);
@@ -312,7 +312,7 @@ int test_has_not() {
 
 int test_remove_fails() {
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -320,11 +320,11 @@ int test_remove_fails() {
     try {
         sl.remove(84.0);
         result |= 1;
-    } catch (ManAHL::SkipList::ValueError &err) {}
+    } catch (OrderedStructs::SkipList::ValueError &err) {}
     try {
         sl.remove(21.0);
         result |= 1;
-    } catch (ManAHL::SkipList::ValueError &err) {}
+    } catch (OrderedStructs::SkipList::ValueError &err) {}
     return result;
 }
 
@@ -335,7 +335,7 @@ int test_at_large() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        ManAHL::SkipList::HeadNode<int> sl;
+        OrderedStructs::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
             result |= sl.lacksIntegrity();
@@ -355,7 +355,7 @@ int test_ins_at_rem_with_srand() {
     
     for (int seed = 1; seed < SEED; ++seed) {
         srand(seed);
-        ManAHL::SkipList::HeadNode<int> sl;
+        OrderedStructs::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
             result |= sl.lacksIntegrity();
@@ -376,7 +376,7 @@ int test_ins_at_rem_with_srand() {
 int test_single_insert_remove() {
     int num = 1000 * 1000;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -394,7 +394,7 @@ int test_single_ins_rem_middle() {
     size_t SIZE = 1000;//24;
     int result = 0;
     double val = SIZE / 2;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     result |= sl.lacksIntegrity();
@@ -416,7 +416,7 @@ int test_single_ins_rem_middle() {
 int test_insert_one_million() {
     int num = 1024 * 1024;
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     std::string in;
@@ -434,7 +434,7 @@ int test_insert_one_million() {
 /* Insert 1m doubles for memory measurement. */
 int test_insert_nan_throws() {
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     std::string in;
@@ -442,7 +442,7 @@ int test_insert_nan_throws() {
     try {
         sl.insert(std::numeric_limits<double>::quiet_NaN());
         result |= 1;
-    } catch (ManAHL::SkipList::FailedComparison &err) {}
+    } catch (OrderedStructs::SkipList::FailedComparison &err) {}
     result |= sl.lacksIntegrity();
     return result;
 }
@@ -451,7 +451,7 @@ int test_insert_nan_throws() {
 int test_index_basic_7_node() {
     size_t NUM = 8;
     int result = 0;
-    ManAHL::SkipList::HeadNode<size_t> sl;
+    OrderedStructs::SkipList::HeadNode<size_t> sl;
     
     srand(1);
     std::string in;
@@ -470,7 +470,7 @@ int test_index_basic_7_node() {
 int test_index_throws() {
     int NUM = 8;
     int result = 0;
-    ManAHL::SkipList::HeadNode<int> sl;
+    OrderedStructs::SkipList::HeadNode<int> sl;
     
     srand(1);
     std::string in;
@@ -482,11 +482,11 @@ int test_index_throws() {
     try {
         idx = sl.index(-1);
         result |= 1;
-    } catch (ManAHL::SkipList::ValueError &err) {}
+    } catch (OrderedStructs::SkipList::ValueError &err) {}
     try {
         idx = sl.index(NUM);
         result |= 1;
-    } catch (ManAHL::SkipList::ValueError &err) {}
+    } catch (OrderedStructs::SkipList::ValueError &err) {}
     result |= idx;
     result |= sl.lacksIntegrity();
     return result;
@@ -496,7 +496,7 @@ int test_index_throws() {
 int test_index_large() {
     size_t NUM = 1024 * 128;
     int result = 0;
-    ManAHL::SkipList::HeadNode<size_t> sl;
+    OrderedStructs::SkipList::HeadNode<size_t> sl;
     
     srand(1);
     std::string in;
@@ -541,8 +541,8 @@ int test_reversed_simple_insert() {
     
     srand(1);
 //    struct reversed<double> cmp;
-//    ManAHL::SkipList::HeadNode<double, reversed_double> sl;
-    ManAHL::SkipList::HeadNode<double, reversed<double>> sl;
+//    OrderedStructs::SkipList::HeadNode<double, reversed_double> sl;
+    OrderedStructs::SkipList::HeadNode<double, reversed<double>> sl;
     sl.insert(42.0);
     result |= sl.lacksIntegrity();
     sl.insert(84.0);

@@ -35,7 +35,7 @@ This takes a single snapshot of the skip list. Create a skip list and insert 5 v
     #include "SkipList.h"
 
     void doc_insert_simple() {
-        ManAHL::SkipList::HeadNode<int> sl;
+        OrderedStructs::SkipList::HeadNode<int> sl;
         
         sl.insert(42);
         sl.insert(84);
@@ -68,7 +68,7 @@ Multiple snapshots can also be created showing how the skiplist grows and shrink
     #include "SkipList.h"
 
     void doc_insert() {
-        ManAHL::SkipList::HeadNode<int> sl;
+        OrderedStructs::SkipList::HeadNode<int> sl;
         
         // Write out the empty head node
         sl.dotFile(std::cout);
@@ -109,7 +109,7 @@ This visualisation is produced by this code:
         int NUM = 4;
         int REPEAT_COUNT = 4;
     
-        ManAHL::SkipList::HeadNode<int> sl;
+        OrderedStructs::SkipList::HeadNode<int> sl;
 
         sl.dotFile(std::cout);
         for (int c = 0; c < REPEAT_COUNT; ++c) {

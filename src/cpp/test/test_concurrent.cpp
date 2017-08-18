@@ -17,20 +17,20 @@
 /******************** Concurrency Tests **************************/
 template<typename T>
 void
-insert_value(ManAHL::SkipList::HeadNode<T> *psl, const T &value) {
+insert_value(OrderedStructs::SkipList::HeadNode<T> *psl, const T &value) {
     psl->insert(value);
 }
 
 template<typename T>
 void
-insert_has_remove(ManAHL::SkipList::HeadNode<T> *psl, const T &value) {
+insert_has_remove(OrderedStructs::SkipList::HeadNode<T> *psl, const T &value) {
     psl->insert(value);
     psl->has(value);
     psl->remove(value);
 }
 
 template<typename T>
-void insert_has_remove_count(ManAHL::SkipList::HeadNode<T> *psl,
+void insert_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
                              const T &value,
                              const size_t &count) {
     for (size_t i = 0; i < count; ++i) {
@@ -39,7 +39,7 @@ void insert_has_remove_count(ManAHL::SkipList::HeadNode<T> *psl,
 }
 
 template<typename T>
-void insert_count_has_remove_count(ManAHL::SkipList::HeadNode<T> *psl,
+void insert_count_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
                                    const T &value,
                                    const size_t &count) {
     for (size_t i = 0; i < count; ++i) {
@@ -54,7 +54,7 @@ void insert_count_has_remove_count(ManAHL::SkipList::HeadNode<T> *psl,
 int test_single_thread_insert() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
 
     std::thread t(insert_value<double>, &sl, 1.0);
     t.join();
@@ -68,7 +68,7 @@ int test_single_thread_insert() {
 int test_two_thread_insert_has_remove() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
 
     std::thread t0(insert_has_remove<double>, &sl, 1.0);
     std::thread t1(insert_has_remove<double>, &sl, 2.0);
@@ -84,7 +84,7 @@ int test_two_thread_insert_has_remove() {
 int test_two_thread_insert_multi_count() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
 
     std::thread t0(insert_count_has_remove_count<double>, &sl, 1.0, 1024*128);
     std::thread t1(insert_count_has_remove_count<double>, &sl, 2.0, 1024*128);
@@ -110,7 +110,7 @@ int _test_perf_multi_threads(
                              ) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
     std::vector<std::thread> threads;
 
     time_t start = clock();
@@ -169,7 +169,7 @@ int _test_perf_single_thread(const char* caller_name,
                              size_t repeat_count,
                              size_t skiplist_size) {
     int result = 0;
-    ManAHL::SkipList::HeadNode<double> sl;
+    OrderedStructs::SkipList::HeadNode<double> sl;
 
     time_t start = clock();
     for (size_t i = 0; i < repeat_count; ++i) {
