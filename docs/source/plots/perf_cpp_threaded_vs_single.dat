@@ -1,0 +1,12 @@
+# Comparison of execution of test_perf_single_thread_fixed_length() with and without
+# make release CXXFLAGS=-DSKIPLIST_THREAD_SUPPORT
+# Inserts a value 16384 into a skiplist then removess them one by one.
+# This is repeated n times 1 <= n <= 64
+# n, compiled as single threaded, compiled as multithreaded
+1	19.726	18.105
+2	36.634	38.577
+4	77.502	77.811
+8	151.188	151.128
+16	273.312	308.652
+32	538.699	607.464
+64	1099.49	1208.15

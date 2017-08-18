@@ -8,14 +8,14 @@
 PROGRAM_RELEASE = SkipList_R.exe
 PROGRAM_DEBUG = SkipList_D.exe
 
-CPP_FILES := main.cpp SkipList.cpp test/test_documentation.cpp test/test_functional.cpp test/test_performance.cpp test/test_print.cpp test/test_rolling_median.cpp
+CPP_FILES := main.cpp SkipList.cpp test/test_documentation.cpp test/test_functional.cpp test/test_performance.cpp test/test_print.cpp test/test_rolling_median.cpp test/test_concurrent.cpp
 
 OBJS := $(patsubst %.c, %.o, $(CPP_FILES))
 INCLUDES = 
 CC = g++
-CFLAGS = -Wall -Wextra -Werror -Wfatal-errors -std=c++11
-CFLAGS_RELEASE = $(CFLAGS) -O2 -DNDEBUG
-CFLAGS_DEBUG = $(CFLAGS) -g3 -O0 -DDEBUG=1
+override CXXFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c++11
+CXXFLAGS_RELEASE = $(CXXFLAGS) -O2 -DNDEBUG
+CXXFLAGS_DEBUG = $(CXXFLAGS) -g3 -O0 -DDEBUG=1
 LDFLAGS = 
 
 all: $(PROGRAM_RELEASE) $(PROGRAM_DEBUG)
@@ -24,13 +24,13 @@ release: $(PROGRAM_RELEASE)
 	@echo "Release binaries built."
 
 $(PROGRAM_RELEASE): .depend $(OBJS)
-	$(CC) $(CFLAGS_RELEASE) $(OBJS) $(LDFLAGS) -o $(PROGRAM_RELEASE)
+	$(CC) $(CXXFLAGS_RELEASE) $(OBJS) $(LDFLAGS) -o $(PROGRAM_RELEASE)
 
 debug: $(PROGRAM_DEBUG)
 	@echo "Debug binaries built."
 
 $(PROGRAM_DEBUG): .depend $(OBJS)
-	$(CC) $(CFLAGS_DEBUG) $(OBJS) $(LDFLAGS) -o $(PROGRAM_DEBUG)
+	$(CC) $(CXXFLAGS_DEBUG) $(OBJS) $(LDFLAGS) -o $(PROGRAM_DEBUG)
 
 # Create file of dependancies
 depend: .depend
@@ -47,10 +47,10 @@ depend: .depend
 # variables used here, the variable $* that matches whatever % stands for
 # can be useful in special cases.
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) -c $< -o $@
 
 %: %.c
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CXXFLAGS) -o $@ $<
 
 clean:
 	rm -f .depend *.o src/*.o $(PROGRAM_RELEASE) $(PROGRAM_DEBUG)

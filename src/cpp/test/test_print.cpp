@@ -15,13 +15,15 @@ const int FUNCTION_WIDTH = 40;
 
 int print_result(const char *fn_name, int result) {
     std::cout << std::setw(FUNCTION_WIDTH) << fn_name << "():";
-    if (result) {
+    if (result > 1) {
         std::cout << " FAIL";
+    } else if (result < 0) {
+        std::cout << " N/A";
     } else {
         std::cout << " PASS";
     }
     std::cout << std::endl;
-    return result;
+    return result > 0;
 }
 
 

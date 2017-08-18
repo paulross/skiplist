@@ -18,6 +18,7 @@
 #include "test/test_functional.h"
 #include "test/test_performance.h"
 #include "test/test_rolling_median.h"
+#include "test/test_concurrent.h"
 
 void test_clock_resolution() {
     int count = 10;
@@ -46,6 +47,8 @@ int test_all() {
 #ifndef DEBUG
     result |= test_performance_all();
 #endif
+    // test_concurrent_all() only executes performance tests #ifndef DEBUG
+    result |= test_concurrent_all();
     return result;
 }
 
