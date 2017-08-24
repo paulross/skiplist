@@ -9,8 +9,6 @@
 #ifndef SkipList_NodeRefs_h
 #define SkipList_NodeRefs_h
 
-#include <functional>
-
 #include "IntegrityEnums.h"
 
 // Forward reference
