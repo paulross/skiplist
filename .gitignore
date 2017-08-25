@@ -49,3 +49,6 @@ __pycache__
 # Temporary stuff
 tmp/
 
+# Dependency file
+.depend
+

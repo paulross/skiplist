@@ -8,11 +8,11 @@
 PROGRAM_RELEASE = SkipList_R.exe
 PROGRAM_DEBUG = SkipList_D.exe
 
-CPP_FILES := main.cpp SkipList.cpp test/test_documentation.cpp test/test_functional.cpp test/test_performance.cpp test/test_print.cpp test/test_rolling_median.cpp test/test_concurrent.cpp
+CXX_FILES := main.cpp	SkipList.cpp	test/test_documentation.cpp	test/test_functional.cpp	test/test_performance.cpp	test/test_print.cpp	test/test_rolling_median.cpp	test/test_concurrent.cpp
 
-OBJS := $(patsubst %.c, %.o, $(CPP_FILES))
-INCLUDES = 
-CC = g++
+OBJS := $(patsubst %.c, %.o, $(CXX_FILES))
+INCLUDES = -I . -I test/
+#CXX = g++
 override CXXFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c++11
 CXXFLAGS_RELEASE = $(CXXFLAGS) -O2 -DNDEBUG
 CXXFLAGS_DEBUG = $(CXXFLAGS) -g3 -O0 -DDEBUG=1
@@ -24,21 +24,20 @@ release: $(PROGRAM_RELEASE)
 	@echo "Release binaries built."
 
 $(PROGRAM_RELEASE): .depend $(OBJS)
-	$(CC) $(CXXFLAGS_RELEASE) $(OBJS) $(LDFLAGS) -o $(PROGRAM_RELEASE)
+	$(CXX) $(CXXFLAGS_RELEASE) $(OBJS) $(LDFLAGS) -o $(PROGRAM_RELEASE)
 
 debug: $(PROGRAM_DEBUG)
 	@echo "Debug binaries built."
 
 $(PROGRAM_DEBUG): .depend $(OBJS)
-	$(CC) $(CXXFLAGS_DEBUG) $(OBJS) $(LDFLAGS) -o $(PROGRAM_DEBUG)
+	$(CXX) $(CXXFLAGS_DEBUG) $(OBJS) $(LDFLAGS) -o $(PROGRAM_DEBUG)
 
 # Create file of dependancies
 depend: .depend
-.depend: cmd = gcc $(INCLUDES) -MM -MF depend $(VAR); cat depend >> .depend
+.depend: cmd = $(CXX) $(INCLUDES) -MM -MF depend $(var); cat depend >> .depend; rm -f depend;
 .depend:
 	@echo "Creating dependencies..."
-	@$(foreach var, $(C_FILES), $(cmd))
-	@rm -f depend
+	@$(foreach var, $(CXX_FILES), $(cmd))
 	@echo "Creating dependencies... DONE"
 
 -include: depend
@@ -47,10 +46,10 @@ depend: .depend
 # variables used here, the variable $* that matches whatever % stands for
 # can be useful in special cases.
 %.o: %.c
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %: %.c
-	$(CC) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 clean:
 	rm -f .depend *.o src/*.o $(PROGRAM_RELEASE) $(PROGRAM_DEBUG)
