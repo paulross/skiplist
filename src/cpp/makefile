@@ -55,3 +55,6 @@ clean:
 	rm -f .depend *.o src/*.o $(PROGRAM_RELEASE) $(PROGRAM_DEBUG)
 
 .PHONY: clean depend
+
+print-%:
+	@echo $*=$($*)
