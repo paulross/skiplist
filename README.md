@@ -14,7 +14,9 @@ This project contains a SkipList implementation in C++ with Python bindings with
 
 * No capacity restrictions apart from available memory.
 * Works with any C++ type <T> that has meaningful comparison operators.
-* The underlying C++ SkipList is thread safe and has exhaustive internal integrity checks.
+* The C++ SkipList can be compiled as thread safe.
+* The Python SkipList is thread safe.
+* The SkipList has exhaustive internal integrity checks.
 * The Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
 * This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`
 
@@ -37,7 +39,7 @@ This SkipList requires:
 * A C++11 compiler.
 * ``-I<skiplist>/src/cpp`` as an include path.
 * ``<skiplist>/src/cpp/SkipList.cpp`` to be compiled/linked.
-* The macro ``SKIPLIST_THREAD_SUPPORT`` set if you want a thread safe SkipList
+* The macro ``SKIPLIST_THREAD_SUPPORT`` set if you want a thread safe SkipList using C++ mutexes.
 
 ## Python
 
@@ -195,4 +197,4 @@ The Python SkipList can be used with user defined objects with a user defined so
     assert str(sl.at(1)) == 'Pan, Peter' 
 
 
-The Python SkipList is thread safe when used with type ``object``.
+The Python SkipList is thread safe when using any acceptable Python type even if that type has user defined comparison methods. This uses Pythons mutex machinery which is independent of C++ mutexes.
