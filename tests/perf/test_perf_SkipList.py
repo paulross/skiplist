@@ -211,6 +211,8 @@ def test_index_mid_object_TotalOrdered():
 
 # IARM - insert_at_remove_mid
 def test_IARM_integer():
+    """Declaring a Skiplist with Python integers insert in the middle,
+    call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({}({}))'.format(int_type_str, length // 2),
@@ -225,6 +227,8 @@ def test_IARM_integer():
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
 def test_IARM_float():
+    """Declaring a Skiplist with Python floats insert in the middle,
+    call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({})'.format(float(length / 2)),
@@ -239,6 +243,8 @@ def test_IARM_float():
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
 def test_IARM_object_int():
+    """Declaring a Skiplist with Python objects insert in the middle,
+    call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({}({}))'.format(int_type_str, length // 2),
@@ -253,6 +259,8 @@ def test_IARM_object_int():
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
 def test_IARM_object_float():
+    """Declaring a Skiplist with Python objects insert floats in the middle,
+    call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert({})'.format(float(length / 2)),
@@ -267,6 +275,8 @@ def test_IARM_object_float():
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
 def test_IARM_object_TotalOrdered():
+    """Declaring a Skiplist with Python objects that have total ordering insert
+    in the middle, call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert(TotalOrdered({}))'.format(float(length / 2)),
@@ -281,6 +291,8 @@ def test_IARM_object_TotalOrdered():
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
 def test_IARM_object_TotalOrdered_user_cmp():
+    """Declaring a Skiplist with Python objects that have user defined
+    comparison insert in the middle, call at() then remove."""
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
         'sl.insert(TotalOrdered({}))'.format(float(length / 2)),

@@ -170,10 +170,6 @@ The list at level 1 links (ideally) to every other node.
 The list at level 2 links (ideally) to every fourth node and so on.
 In general the list at level n links (ideally) to every 2**n node.
 
-.. warning::
-
-    This implementation is not thread safe.
-
 --------------------------------------
 Memory Management
 --------------------------------------
@@ -181,6 +177,14 @@ Memory Management
 Memory management is pretty simple in a skip list.
 Essentially it is no more complicated than a singly linked list as every node is created and deleted at level 0.
 The duplicate pointers at higher levels can be ignored.
+
+--------------------------------------
+Thread Safety
+--------------------------------------
+
+The C++ SkipList can be compiled with the macro ``SKIPLIST_THREAD_SUPPORT`` set and this will introduce a mutex on the ``HeadNode`` that makes the SkipList thread safe. There are illustrations of the use of this in *skiplist/src/cpp/test/test_concurrent.cpp*
+
+The Python SkipList is thread safe. There are tests in *skiplist/tests/unit/test_SkipList_PyObject_threaded.py* that illustrate this.
 
 ===========
 Code Layout

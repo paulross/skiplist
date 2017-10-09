@@ -31,22 +31,18 @@
  * here that might cause the Python comparison function to be used.
  * Once the value of the functon is known the GIL must be released.
  *
- * Multi-treaded access with Python code
- * -------------------------------------
- * Thread saftey is only guarenteed within the C code, not the Python
- * code. For example if two or more threads share the same skip list
- * then this code may fail:
+ * If Python is compiled with HAS_THREADS then the Skiplist object gains a
+ * PyThread_type_lock and we use a class AcquireLock on the Skiplist to mange
+ * this lock.
  *
- * val = skip_list.at(4)
- * skip_list.remove(val)
- *
- * The thread may get pre-empted between the two statements and the
- * second statememt will raise if another thread has removed 'val'.
  */
 
 
 #include <Python.h>
 #include "structmember.h"
+#ifdef WITH_THREAD
+#include "pythread.h"
+#endif
 
 #define INCLUDE_METHODS_THAT_USE_STREAMS // We want the DOT output.
 #include "SkipList.h"
@@ -60,20 +56,6 @@
 #include "cOrderedStructs.h"
 #include "cmpPyObject.h"
 
-#ifdef WITH_THREAD
-class HoldGIL {
-public:
-    HoldGIL() : _gstate(PyGILState_Ensure()) {}
-    ~HoldGIL() {
-        PyGILState_Release(_gstate);
-    }
-private:
-    PyGILState_STATE _gstate;
-};
-#else
-class HoldGIL {};
-#endif
-
 typedef struct {
     PyObject_HEAD
     enum KeyDataType _data_type;
@@ -85,7 +67,38 @@ typedef struct {
         OrderedStructs::SkipList::HeadNode<TYPE_TYPE_BYTES>  *pSl_bytes;
         OrderedStructs::SkipList::HeadNode<TYPE_TYPE_OBJECT, cmpPyObject> *pSl_object;
     };
+#ifdef WITH_THREAD
+    PyThread_type_lock lock;
+#endif
 } SkipList;
+
+#ifdef WITH_THREAD
+/* A RAII wrapper around the PyThread_type_lock. */
+class AcquireLock {
+public:
+    AcquireLock(SkipList *pSL) : _pSL(pSL) {
+        assert(pSL);
+        assert(pSL->lock);
+        if (! PyThread_acquire_lock(_pSL->lock, NOWAIT_LOCK)) {
+            Py_BEGIN_ALLOW_THREADS
+            PyThread_acquire_lock(_pSL->lock, WAIT_LOCK);
+            Py_END_ALLOW_THREADS
+        }
+    }
+    ~AcquireLock() {
+        assert(_pSL);
+        assert(_pSL->lock);
+        PyThread_release_lock(_pSL->lock);
+    }
+private:
+    SkipList *_pSL;
+};
+#else
+class AcquireLock {
+public:
+    AcquireLock(SkipList *) {}
+};
+#endif
 
 static PyObject *
 SkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
@@ -95,6 +108,9 @@ SkipList_new(PyTypeObject *type, PyObject */* args */, PyObject */* kwargs */) {
     if (self != NULL) {
         self->_data_type = TYPE_ZERO;
         self->pSl_void = NULL;
+#ifdef WITH_THREAD
+        self->lock = NULL;
+#endif
     }
     return (PyObject *)self;
 }
@@ -110,6 +126,13 @@ SkipList_init(SkipList *self, PyObject *args, PyObject *kwargs) {
         NULL
     };
     assert(self);
+#ifdef WITH_THREAD
+    self->lock = PyThread_allocate_lock();
+    if (self->lock == NULL) {
+        PyErr_SetString(PyExc_MemoryError, "Unable to allocate thread lock.");
+        goto except;
+    }
+#endif
     if (! PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:__init__",
                                       kwlist,
                                       &value_type,
@@ -214,7 +237,7 @@ SkipList_dealloc(SkipList *self)
                 break;
             case TYPE_OBJECT:
                 {
-//                    HoldGIL _gil;
+                    AcquireLock _lock(self);
                     _decref_all_contents(self);
                     delete self->pSl_object;
                 }
@@ -223,6 +246,11 @@ SkipList_dealloc(SkipList *self)
                 PyErr_BadInternalCall();
                 break;
         }
+#ifdef WITH_THREAD
+        if (self->lock) {
+            PyThread_free_lock(self->lock);
+        }
+#endif
         Py_TYPE(self)->tp_free((PyObject*)self);
     }
 }
@@ -241,7 +269,7 @@ static PyMemberDef SkipList_members[] = {
 static PyObject *
 _has_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-//    HoldGIL _gil;
+    AcquireLock _lock(self);
 
     assert(self->_data_type == TYPE_OBJECT);
     try {
@@ -451,7 +479,7 @@ SkipList_at(SkipList *self, PyObject *arg) {
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 ret_val = self->pSl_object->at(index);
                 Py_INCREF(ret_val);
             }
@@ -646,7 +674,7 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 ret = _at_sequence_object(self, index, count);
                 if (! ret) {
                     goto except;
@@ -671,7 +699,7 @@ finally:
 static PyObject *
 _index_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
-//    HoldGIL _gil;
+    AcquireLock _lock(self);
 
     try {
         ret_val = PyLong_FromSize_t(self->pSl_object->index(arg));
@@ -878,7 +906,7 @@ SkipList_insert(SkipList *self, PyObject *arg) {
         case TYPE_OBJECT:
             Py_INCREF(arg);
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 try {
                     self->pSl_object->insert(arg);
                 } catch (std::invalid_argument &err) {
@@ -968,7 +996,7 @@ _remove_object(SkipList *self, PyObject *arg) {
     // the skip list. We do not do the symmetric Py_DECREF here as we
     // return the object and the Python code will decref it appropriately.
     try {
-//        HoldGIL _gil;
+        AcquireLock _lock(self);
         value = self->pSl_object->remove(arg);
     } catch (OrderedStructs::SkipList::ValueError &err) {
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -1039,7 +1067,7 @@ SkipList_dot_file(SkipList *self)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 self->pSl_object->dotFile(ostr);
                 self->pSl_object->dotFileFinalise(ostr);
             }
@@ -1074,7 +1102,7 @@ SkipList_lacks_integrity(SkipList *self)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 ret_val = PyLong_FromSsize_t(self->pSl_object->lacksIntegrity());
             }
             break;
@@ -1127,7 +1155,7 @@ SkipList_node_height(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 ret_val = PyLong_FromSsize_t(self->pSl_object->height(index));
             }
             break;
@@ -1192,7 +1220,7 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 height = self->pSl_object->height(index);
             }
             break;
@@ -1217,7 +1245,7 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             break;
         case TYPE_OBJECT:
             {
-//                HoldGIL _gil;
+                AcquireLock _lock(self);
                 ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
             }
             break;

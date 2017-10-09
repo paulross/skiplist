@@ -58,7 +58,6 @@ def insert_and_remove_TotalOrdered(sl, value, count):
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
 
-@pytest.mark.skip(reason='cSkipList is not yet thread safe.')
 def test_insert_and_remove():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(object)
@@ -92,7 +91,6 @@ def insert_has_remove_TotalOrdered(sl, value, count):
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
  
-@pytest.mark.skip(reason='cSkipList is not yet thread safe.')
 def test_insert_has_remove():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(object)
@@ -113,5 +111,5 @@ def test_insert_has_remove():
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
 if __name__ == '__main__':
-#     test_insert_and_remove()
+    test_insert_and_remove()
     test_insert_has_remove()

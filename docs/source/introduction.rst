@@ -82,13 +82,13 @@ To run all the C++ functional and performance tests:
     $ make release
     $ ./SkipList_R.exe
 
-To run the C++ functional tests with agressive internal integrity checks:
+To run the C++ functional tests with agressive internal integrity checks but excluding the performance checks:
 
 .. code-block:: sh
 
     $ cd <skiplist>/src/cpp
     $ make debug
-    $ ./SkipList_R.exe
+    $ ./SkipList_D.exe
 
 To run all the C++ functional and performance tests for a thread safe SkipList:
 
@@ -233,6 +233,3 @@ The Python SkipList can be used with user defined objects with a user defined so
     assert sl.size() == 2
     assert str(sl.at(0)) == 'Pan, Alan' 
     assert str(sl.at(1)) == 'Pan, Peter' 
-
-
-The Python SkipList is **not** thread safe when used with type ``object``.

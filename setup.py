@@ -15,6 +15,9 @@ extra_compile_args = [
     '-Wno-c++11-compat-deprecated-writable-strings',
     '-std=c++11',
     '-Isrc/cpp',
+    # We implement mutex with Python's thread locking so we don't want the
+    # overhead of C++'s thread locking as well.
+    '-USKIPLIST_THREAD_SUPPORT',
 ]
 
 DEBUG = False
@@ -64,7 +67,7 @@ setup(
     name='orderedstructs',
     version='0.3.0',
     ext_modules=[orderedstructs, ],
-    description="Contains a variety of ordered structures, in paricular a SkipList.",
+    description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,
     author="Paul Ross",
     author_email='apaulross@gmail.com',
