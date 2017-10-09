@@ -195,4 +195,4 @@ The Python SkipList can be used with user defined objects with a user defined so
     assert str(sl.at(1)) == 'Pan, Peter' 
 
 
-The Python SkipList is **not** thread safe when used with type ``object``.
+The Python SkipList is thread safe when used with type ``object``.
