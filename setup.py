@@ -1,6 +1,8 @@
 #!/bin/env python
 import os
-from distutils.core import setup, Extension
+
+from setuptools import setup, find_packages
+from distutils.core import Extension
 
 # Makefile:
 # CFLAGS = -Wall -Wextra
@@ -27,23 +29,24 @@ if DEBUG:
 else:
     extra_compile_args.extend(['-O2', '-DNDEBUG'])
 
-orderedstructs = Extension("orderedstructs",
-                             sources=[
-                                      'src/cpy/cOrderedStructs.cpp',
-                                      'src/cpy/OrderedStructs.cpp',
-                                      'src/cpy/cSkipList.cpp',
-                                      'src/cpy/cmpPyObject.cpp',
-                                      'src/cpp/SkipList.cpp',
-                                      ],
-                             include_dirs=[
-                                '.',
-                                '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
-                             ],
-                             library_dirs=[os.getcwd(), ],
-                             extra_compile_args=extra_compile_args,
-                             extra_link_args=['-lstdc++'],
-                             language='c++11',
-                             )
+orderedstructs = Extension(
+    "orderedstructs",
+    sources=[
+        'src/cpy/cOrderedStructs.cpp',
+        'src/cpy/OrderedStructs.cpp',
+        'src/cpy/cSkipList.cpp',
+        'src/cpy/cmpPyObject.cpp',
+        'src/cpp/SkipList.cpp',
+    ],
+    include_dirs=[
+        '.',
+        '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
+    ],
+    library_dirs=[os.getcwd(), ],
+    extra_compile_args=extra_compile_args,
+    extra_link_args=['-lstdc++'],
+    language='c++11',
+)
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -55,6 +58,7 @@ requirements = [
 ]
 
 setup_requirements = [
+    'pytest-runner',
 ]
 
 test_requirements = [
@@ -72,6 +76,7 @@ setup(
     author="Paul Ross",
     author_email='apaulross@gmail.com',
     url='https://github.com/paulross/skiplist',
+#     packages=find_packages('src'),
     license="MIT License",
     keywords=['orderedstructs', 'SkipList'],
     classifiers=[
@@ -87,7 +92,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-#     test_suite='tests',
-#     tests_require=test_requirements,
-#     setup_requires=setup_requirements,
+    test_suite='tests',
+    tests_require=test_requirements,
+    setup_requires=setup_requirements,
 )

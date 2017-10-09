@@ -67,7 +67,9 @@ def test_insert_and_remove():
         threading.Thread(
             name='insert_remove[{:6d}]'.format((i + 2) * 1000),
             target=insert_and_remove_TotalOrdered,
-            args=(sl, (i + 2) * 1000, NUM_INSERTS)) for i in range(16)]
+            args=(sl, (i + 2) * 1000, NUM_INSERTS)
+        ) for i in range(16)
+    ]
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')
@@ -100,7 +102,83 @@ def test_insert_has_remove():
         threading.Thread(
             name='insert_remove[{:6d}]'.format((i + 2) * 1000),
             target=insert_has_remove_TotalOrdered,
-            args=(sl, (i + 2) * 1000, NUM_INSERTS)) for i in range(16)]
+            args=(sl, (i + 2) * 1000, NUM_INSERTS)
+        ) for i in range(16)
+    ]
+    for thread in threads:
+        thread.start()
+    logging.debug('Waiting for worker threads')
+    main_thread = threading.currentThread()
+    for t in threading.enumerate():
+        if t is not main_thread:
+            t.join()
+    logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
+
+def insert_has_remove_int(sl, value, count):
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    for _i in range(count):
+        assert sl.lacks_integrity() == 0
+        sl.insert(value)
+        assert sl.lacks_integrity() == 0
+        assert sl.has(value)
+        removed_value = sl.remove(value)
+        assert id(value) == id(removed_value)
+        assert not sl.has(value)
+        assert sl.lacks_integrity() == 0
+    logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
+ 
+def test_insert_has_remove_int():
+    """Tests multi-threaded insert()/has()/remove() of integers converted to
+    native C++ objects."""
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    sl = orderedstructs.SkipList(object)
+    # Load SkipList with one value
+    sl.insert(1000)
+    NUM_INSERTS = 10000
+    threads = [
+        threading.Thread(
+            name='insert_remove[{:6d}]'.format((i + 2) * 1000),
+            target=insert_has_remove_int,
+            args=(sl, (i + 2) * 1000, NUM_INSERTS)
+        ) for i in range(16)
+    ]
+    for thread in threads:
+        thread.start()
+    logging.debug('Waiting for worker threads')
+    main_thread = threading.currentThread()
+    for t in threading.enumerate():
+        if t is not main_thread:
+            t.join()
+    logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
+
+def insert_has_remove_float(sl, value, count):
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    for _i in range(count):
+        assert sl.lacks_integrity() == 0
+        sl.insert(value)
+        assert sl.lacks_integrity() == 0
+        assert sl.has(value)
+        removed_value = sl.remove(value)
+        assert id(value) == id(removed_value)
+        assert not sl.has(value)
+        assert sl.lacks_integrity() == 0
+    logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
+ 
+def test_insert_has_remove_float():
+    """Tests multi-threaded insert()/has()/remove() of floats converted to
+    native C++ objects."""
+    logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
+    sl = orderedstructs.SkipList(object)
+    # Load SkipList with one value
+    sl.insert(1000.0)
+    NUM_INSERTS = 10000
+    threads = [
+        threading.Thread(
+            name='insert_remove[{:6d}]'.format((i + 2) * 1000),
+            target=insert_has_remove_float,
+            args=(sl, float((i + 2) * 1000), NUM_INSERTS)
+        ) for i in range(16)
+    ]
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')

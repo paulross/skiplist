@@ -41,6 +41,11 @@ __pycache__
 *.pyc
 .hypothesis
 
+.eggs
+*.egg
+dist/
+orderedstructs.egg-info/
+
 .project
 .pydevproject
 
