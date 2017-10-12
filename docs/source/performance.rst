@@ -218,7 +218,7 @@ The C++ code is capable of multi-threading support where a single SkipList can b
 
 Test C++ execution code can be run by invoking the the makefile thus:
 
-.. code-block:: sh
+.. code-block:: console
 
     $ cd src/cpp
     $ make release CXXFLAGS=-DSKIPLIST_THREAD_SUPPORT
@@ -236,8 +236,10 @@ Test C++ execution code can be run by invoking the the makefile thus:
     Bye, bye!
 
 .. NOTE::
-    If you omit ``CXXFLAGS=-DSKIPLIST_THREAD_SUPPORT`` then the threaded tests will be omitted::
+    If you omit ``CXXFLAGS=-DSKIPLIST_THREAD_SUPPORT`` then the threaded tests will be omitted:
         
+    .. code-block:: console
+    
         $ make release
         $ ./SkipList_R.exe
                        ...
