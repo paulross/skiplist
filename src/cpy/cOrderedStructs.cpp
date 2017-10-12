@@ -141,12 +141,9 @@ initorderedstructs(void)
 {
     PyObject* module = NULL;
     struct module_state *st = NULL;
+    PyObject *class_dict = NULL;
+    PyObject *thread_safe = NULL;
     
-    // Prepare every type in the modules, else segfaults!
-    SkipListType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&SkipListType) < 0) {
-        goto except;
-    }
 #ifdef WITH_THREAD
     if (! PyEval_ThreadsInitialized()) {
         PyEval_InitThreads();
@@ -162,10 +159,28 @@ initorderedstructs(void)
     if (module == NULL) {
         goto except;
     }
+    // Prepare every type in the modules, else segfaults!
+    // SkipListType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&SkipListType) < 0) {
+        goto except;
+    }
     Py_INCREF(&SkipListType);
     if (PyModule_AddObject(module, "SkipList", (PyObject *)&SkipListType)) {
         goto except;
     }
+    // Set read only class attribute with threading support.
+    class_dict = SkipListType.tp_dict;
+#ifdef WITH_THREAD
+    thread_safe = Py_True;
+#else
+    thread_safe = Py_False;
+#endif
+    // PyDict_SetItemString will incref the value
+    if (thread_safe == NULL
+        || PyDict_SetItemString(class_dict, "thread_safe", thread_safe) < 0) {
+        return NULL;
+    }
+    
     st = GETSTATE(module);
     if (st == NULL) {
         goto except;

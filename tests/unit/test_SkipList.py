@@ -1,5 +1,11 @@
 import itertools
 
+try:
+    import _thread
+    HAS_THREADING = True
+except ImportError:
+    HAS_THREADING = False
+
 import pytest
 
 import orderedstructs
@@ -17,6 +23,13 @@ def test_module():
     attrs = ('__version__',) + tuple([a for a in dir(orderedstructs) if a.startswith('__build')])
     for attr_name in attrs:
         print('{:16}:'.format(attr_name), getattr(orderedstructs, attr_name))
+
+def test_thread_safe():
+    assert orderedstructs.SkipList.thread_safe == HAS_THREADING
+
+def test_thread_safe_read_only():
+    with pytest.raises(TypeError):
+        orderedstructs.SkipList.thread_safe = False
 
 @pytest.mark.parametrize('typ', [int_type, float, bytes])
 def test_ctor(typ):
