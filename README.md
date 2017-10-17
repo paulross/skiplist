@@ -66,7 +66,7 @@ To run the C++ functional tests with agressive internal integrity checks:
 
     $ cd <skiplist>/src/cpp
     $ make debug
-    $ ./SkipList_R.exe
+    $ ./SkipList_D.exe
 
 To run all the C++ functional and performance tests for a thread safe SkipList:
 
@@ -138,10 +138,10 @@ The C++ SkipList is thread safe when compiled with the macro ``SKIPLIST_THREAD_S
 
 An example of using a SkipList of always ordered floats:
 
-    import cSkipList
+    import orderedstructs
     
     # Declare with a type. Supported types are long/float/bytes/object.
-    sl = cSkipList.PySkipList(float)
+    sl = orderedstructs.SkipList(float)
     
     sl.insert(42.0)
     sl.insert(21.0)
@@ -186,9 +186,9 @@ The Python SkipList can be used with user defined objects with a user defined so
         def __str__(self):
             return '{}, {}'.format(self.last_name, self.first_name)
 
-    import cSkipList
+    import orderedstructs
     
-    sl = cSkipList.PySkipList(object)
+    sl = orderedstructs.SkipList(object)
 
     sl.insert(Person('Peter', 'Pan'))
     sl.insert(Person('Alan', 'Pan'))
