@@ -93,8 +93,9 @@ struct module_state {
  * 0.1.0 Initial release.
  * 0.2.0 Module now orderedstructs.
  * 0.3.0 Allows storing of PyObject* and rich comparison.
+ * 0.3.1 Support Python 3.7, 3.8 and 3.9.
  */
-static const char *MODULE_VERSION = "0.3.0";
+static const char *MODULE_VERSION = "0.3.1";
 
 static const char* MODULE_BUILD_DOCS = "Initial standard build";
 
