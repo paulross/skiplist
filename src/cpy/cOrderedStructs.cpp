@@ -145,9 +145,13 @@ initorderedstructs(void)
     PyObject *thread_safe = NULL;
     
 #ifdef WITH_THREAD
+// From Python 3.7 onwards Py_Initialise() sets up the threads.
+// PyEval_ThreadsInitialised() is deprecated.
+#if PY_MAJOR_VERSION < 3 || PY_MINOR_VERSION < 7
     if (! PyEval_ThreadsInitialized()) {
         PyEval_InitThreads();
     }
+#endif
 #endif
 #if PY_MAJOR_VERSION >= 3
     module = PyModule_Create(&orderedstructs_moduledef);

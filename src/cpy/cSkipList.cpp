@@ -1366,6 +1366,10 @@ PyTypeObject SkipListType = {
     0,                         /* tp_del */
     0,                         /* tp_version_tag */
 #if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 4
-    0,                         /* tp_tp_finalize */
+    0,                         /* tp_finalize */
+#endif
+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 8
+    0,                         /* tp_vectorcall */
 #endif
 };
+
