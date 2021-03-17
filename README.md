@@ -43,7 +43,7 @@ This SkipList requires:
 
 ## Python
 
-This SkipList supports Python 2.7 and 3.6 (and, probably, some earlier Python 3 versions).
+This SkipList supports Python 2.7 and 3.6, 3.7, 3.8, 3.9 (and, probably, some earlier Python 3 versions).
 
     $ cd <skiplist>
     $ python setup.py install
