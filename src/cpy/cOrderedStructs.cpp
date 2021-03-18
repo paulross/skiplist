@@ -94,8 +94,9 @@ struct module_state {
  * 0.2.0 Module now orderedstructs.
  * 0.3.0 Allows storing of PyObject* and rich comparison.
  * 0.3.1 Support Python 3.7, 3.8 and 3.9.
+ * 0.3.2 Fix lambda segfault issues with Python 3.8 and 3.9.
  */
-static const char *MODULE_VERSION = "0.3.1";
+static const char *MODULE_VERSION = "0.3.2";
 
 static const char* MODULE_BUILD_DOCS = "Initial standard build";
 
