@@ -5,7 +5,6 @@ Created on 21 Dec 2015
 '''
 import itertools
 import random
-import time
 
 import hypothesis
 import hypothesis.strategies as hst
@@ -14,7 +13,6 @@ from . import seed_tree
 
 def test_time_to_depth_dict():
     for depth in range(1, 10):
-        t = time.clock()
         seed_tree.find_seeds_for_sequences(depth,
                                            seed_tree.RANDOM_SEED,
                                            seed_tree.FAIR_COIN)
@@ -59,6 +57,8 @@ def test_three_over_four_sided_coin():
 
 HYPOTHESIS_STD_DEPTH = 8
 
+
+@hypothesis.settings(deadline=None)
 @hypothesis.given(hst.lists(hst.lists(hst.booleans(),
                                       min_size=1,
                                       max_size=HYPOTHESIS_STD_DEPTH)))
@@ -69,7 +69,8 @@ def test_hypothesis_has(lst):
     for seq in lst:
         assert tuple(seq) in seed_dict
 
-        
+
+@hypothesis.settings(deadline=None)
 @hypothesis.given(hst.lists(hst.lists(hst.booleans(),
                                       min_size=1,
                                       max_size=HYPOTHESIS_STD_DEPTH)))

@@ -1,4 +1,5 @@
 import itertools
+import sys
 
 try:
     import _thread
@@ -38,7 +39,10 @@ def test_ctor(typ):
 def test_ctor_raises_no_type():
     with pytest.raises(TypeError) as err:
         orderedstructs.SkipList()
-    assert err.value.args[0] == "Required argument 'value_type' (pos 1) not found"
+    if sys.version_info.major == 3 and sys.version_info.minor >= 8:
+        assert err.value.args[0] == "__init__() missing required argument 'value_type' (pos 1)"
+    else:
+        assert err.value.args[0] == "Required argument 'value_type' (pos 1) not found"
 
 def test_ctor_raises_not_a_type():
     with pytest.raises(ValueError) as err:

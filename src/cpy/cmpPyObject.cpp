@@ -18,6 +18,18 @@ bool cmpPyObject::operator()(PyObject *a, PyObject *b) const {
     assert(b);
 
     if (cmp_func) {
+#if SKIPLIST_TRACE_CMPPYOBJECT_REF_COUNTS
+        printf("cmp_func: %p", this);
+        PyObject_Print(cmp_func, stdout, Py_PRINT_RAW);
+        printf(" ref count=%ld", cmp_func->ob_refcnt);
+        printf("\n");
+        printf("a: ");
+        PyObject_Print(a, stdout, Py_PRINT_RAW);
+        printf("\n");
+        printf("b: ");
+        PyObject_Print(b, stdout, Py_PRINT_RAW);
+        printf("\n");
+#endif
         PyObject *py_result = PyObject_CallFunctionObjArgs(cmp_func, a, b, NULL);
         if (! py_result) {
             throw std::invalid_argument("Skip list: Compare function fails.");

@@ -20,6 +20,7 @@ extra_compile_args = [
     # We implement mutex with Python's thread locking so we don't want the
     # overhead of C++'s thread locking as well.
     '-USKIPLIST_THREAD_SUPPORT',
+    '-Wno-stdlibcxx-not-found',
 ]
 
 DEBUG = False
@@ -27,7 +28,7 @@ DEBUG = False
 if DEBUG:
     extra_compile_args.extend(['-g3', '-O0', '-DDEBUG=1'])
 else:
-    extra_compile_args.extend(['-O2', '-DNDEBUG'])
+    extra_compile_args.extend(['-g3', '-O2', '-DNDEBUG'])
 
 orderedstructs = Extension(
     "orderedstructs",
@@ -44,7 +45,7 @@ orderedstructs = Extension(
     ],
     library_dirs=[os.getcwd(), ],
     extra_compile_args=extra_compile_args,
-    extra_link_args=['-lstdc++'],
+    extra_link_args=['-lc++'],
     language='c++11',
 )
 
