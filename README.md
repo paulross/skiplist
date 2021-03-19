@@ -53,6 +53,13 @@ This SkipList requires:
 
 This SkipList supports Python 2.7 and 3.6, 3.7, 3.8, 3.9 (and, probably, some earlier Python 3 versions).
 
+### From PyPi
+
+    $ pip install orderedstructs
+
+### From source
+
+    $ git clone https://github.com/paulross/skiplist.git
     $ cd <skiplist>
     $ python setup.py install
 
