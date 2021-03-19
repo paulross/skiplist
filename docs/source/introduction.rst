@@ -36,13 +36,6 @@ This project contains a SkipList implementation in C++ with Python bindings with
   For example see :ref:`rolling-median-mp-shared-memory-label`.
 * This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`.
 
-
-* No capacity restrictions apart from available memory.
-* Works with any C++ type <T> that has meaningful comparison operators.
-* The underlying C++ SkipList is thread safe and has exhaustive internal integrity checks.
-* The Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
-* This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`
-
 There are a some novel features to this implementation:
 
 * A SkipList is a probabilistic data structure but we have deterministic tests that work for any (sane) random number generator, see: :ref:`testing_a_probabilistic_structure`
