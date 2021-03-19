@@ -35,8 +35,6 @@ public:
         if (cmp_func) {
             printf(" ref count was=%ld", cmp_func->ob_refcnt);
             Py_XINCREF(cmp_func);
-//            Py_XINCREF(cmp_func);
-//            Py_XINCREF(cmp_func);
             int err = PyObject_Print(cmp_func, stdout, Py_PRINT_RAW);
             printf(" err=%d ref count now=%ld", err, cmp_func->ob_refcnt);
         } else {
