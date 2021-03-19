@@ -19,8 +19,8 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_size_of.dat" using 1:2 via a,b
 
-set terminal svg size 750,500           # choose the file format
-set output "perf_size_of.svg"   # choose the output device
+set terminal png size 750,500           # choose the file format
+set output "perf_size_of.png"   # choose the output device
 
 plot "perf_size_of.dat" using 1:3 t "Bytes/Node <double>" with linespoints axes x1y1 pt 5 lw 2#, \
     "perf_size_of.dat" using 1:5 t "Factor * sizeof(char)" with linespoints axes x1y1 pt 12 lw 2#,

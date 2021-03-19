@@ -9,16 +9,17 @@ SkipList documentation
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-   
-   introduction
-   design
-   performance
-   rolling_median
-   visualisations
-   biased_coins
-   test_notes
-   api
+    :maxdepth: 2
+
+    introduction
+    design
+    performance
+    rolling_median
+    visualisations
+    biased_coins
+    test_notes
+    api
+    reference
    
 Indices and tables
 ==================

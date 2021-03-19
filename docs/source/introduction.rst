@@ -13,13 +13,29 @@
 Introduction
 ======================================
 
-A SkipList behaves as a sorted list with, typically, O(log(n)) cost for insertion, look-up and removal. This makes it ideal for such operations as computing the rolling median of a large dataset.
+A SkipList behaves as a sorted list with, typically, O(log(n)) cost for insertion, look-up and removal.
+This makes it ideal for such operations as computing the rolling median of a large dataset.
 
-A SkipList is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists. These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list. It is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in. As such SkipList is an alternative to binary tree, Wikipedia has a introductory page on `SkipLists <https://en.wikipedia.org/wiki/Skip_list>`_ .
+A SkipList is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists.
+These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list.
+It is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in.
+As such SkipList is an alternative to binary tree, Wikipedia has a introductory page on `SkipLists <https://en.wikipedia.org/wiki/Skip_list>`_ .
 
 An advantage claimed for SkipLists are that the insert and remove logic is simpler (however I do not subscribe to this). The drawbacks of a SkipList include its larger space requirements and its O(log(N)) lookup behaviour compared to other, more restricted and specialised, data structures that may have either faster runtime behaviour or lower space requirements or both.
 
 This project contains a SkipList implementation in C++ with Python bindings with:
+
+
+* No capacity restrictions apart from available memory.
+* Works with any C++ type <T> that has meaningful comparison operators.
+* The C++ SkipList can be compiled as thread safe.
+* The Python SkipList is thread safe.
+* The SkipList has exhaustive internal integrity checks.
+* Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
+* With Python 3.8+ SkipLists can be combined with the `multiprocessing.shared_memory <https://docs.python.org/3/library/multiprocessing.shared_memory.html#module-multiprocessing.shared_memory>`_ module for concurrent operation on large arrays.
+  For example see :ref:`rolling-median-mp-shared-memory-label`.
+* This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`.
+
 
 * No capacity restrictions apart from available memory.
 * Works with any C++ type <T> that has meaningful comparison operators.

@@ -11,8 +11,8 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_index.dat" using 1:2 via a,b
 
-set terminal svg size 750,500           # choose the file format
-set output "perf_index.svg"   # choose the output device
+set terminal png size 750,500           # choose the file format
+set output "perf_index.png"   # choose the output device
 
 plot "perf_index.dat" using 1:2 t "index()" with linespoints pt 2 lw 2
 

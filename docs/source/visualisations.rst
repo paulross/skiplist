@@ -13,7 +13,8 @@
 Visualising a Skip List
 ===============================================
 
-If the skip list is compiled with ``INCLUDE_METHODS_THAT_USE_STREAMS`` defined both the ``HeadNode`` and ``Node`` gain the methods ``dotFile`` and ``dotFileFinalise``.These can be used to write out the current state of the skip list to sdtout in DOT (GraphViz) format. These can be converted to SVG or PNG using dot.
+If the skip list is compiled with ``INCLUDE_METHODS_THAT_USE_STREAMS`` defined both the ``HeadNode`` and ``Node`` gain the methods ``dotFile`` and ``dotFileFinalise``.
+These can be used to write out the current state of the skip list to sdtout in DOT (GraphViz) format. These can be converted to SVG or PNG using dot.
 
 Multiple snapshots of the same skiplist can be taken and plotted in the same graph. Each snapshot is denoted by a number.
 
@@ -28,7 +29,8 @@ Function              Description
 Simple Example
 ----------------------------
 
-This takes a single snapshot of the skip list. Create a skip list and insert 5 values into it. Then call ``dotFile()`` to write out the state of the skip list stdout and ``dotFinalise()`` to complete the graph.
+This takes a single snapshot of the skip list. Create a skip list and insert 5 values into it.
+Then call ``dotFile()`` to write out the state of the skip list stdout and ``dotFinalise()`` to complete the graph.
 
 .. code-block:: cpp
 
@@ -49,11 +51,13 @@ This takes a single snapshot of the skip list. Create a skip list and insert 5 v
 
 Saving stdout to a text file, say *doc_simple.dot* then running this on the command line::
 
-    dot -odoc_simple.svg -Tsvg doc_simple.dot
+.. code-block:: bash
+
+    dot -odoc_simple.png -png doc_simple.dot
 
 Will produce something like this SVG diagram:
 
-.. image:: visualisations/doc_simple.svg
+.. image:: visualisations/doc_simple.png
     :width: 800
 
 
@@ -83,16 +87,16 @@ Multiple snapshots can also be created showing how the skiplist grows and shrink
 
 Saving this output to a text file, say *doc_insert.dot* then running this on the command line::
 
-    dot -odoc_insert.svg -Tsvg doc_insert.dot
+    dot -odoc_insert.png -Tpng doc_insert.dot
 
-Will produce this [*doc_insert.svg*]:
+Will produce this [*doc_insert.png*]:
 
-.. image:: visualisations/doc_insert.svg
+.. image:: visualisations/doc_insert.png
     :width: 800
 
 .. doc_insert_remove.
 .. 
-.. .. image:: visualisations/doc_insert_remove.svg
+.. .. image:: visualisations/doc_insert_remove.png
 ..     :width: 640
 
 ---------------------------------------------------------------
@@ -127,5 +131,5 @@ This visualisation is produced by this code:
 
 Produces this image, note how the shape of the skip list nodes changes with repeated inserts.
 
-.. image:: visualisations/doc_insert_remove_repeat.svg
+.. image:: visualisations/doc_insert_remove_repeat.png
     :width: 500

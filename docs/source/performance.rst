@@ -55,7 +55,7 @@ These operations depend on the size of the SkipList. For one containing 1 millio
 Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in the middle of the list, both as time in (ns) and rate per second.
 The test function is ``perf_single_ins_rem_middle_vary_length()``.
 
-.. image:: plots/perf_ins_rem_mid.svg
+.. image:: plots/perf_ins_rem_mid.png
     :width: 640
 
 This shows good O(log(n)) behaviour where n is the SkipList size.
@@ -74,14 +74,14 @@ Here is plot of the time taken to execute ``at()`` or ``has()`` on a SkipList of
 The test functions are respectively ``perf_at_in_one_million()`` and ``perf_has_in_one_million()``.
 
 
-.. image:: plots/perf_at_has.svg
+.. image:: plots/perf_at_has.png
     :width: 640
 
 This shows fairly decent O(log(n))'ish type behaviour.
 
 The ``index(value)`` method has similar behavour:
 
-.. image:: plots/perf_index.svg
+.. image:: plots/perf_index.png
     :width: 640
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -90,7 +90,7 @@ Rolling Median
 
 Here is a plot of the time taken to compute a rolling median on one million values using different window sizes. The number of results is 1e6 - window size. This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``. A window size of 1000 and 1m values (the size of the SkipList) takes around 1 second or 1000 ns /value.
 
-.. image:: plots/perf_roll_med_odd_index_wins.svg
+.. image:: plots/perf_roll_med_odd_index_wins.png
     :width: 640
 
 The test function is ``perf_roll_med_odd_index_wins()``.
@@ -136,7 +136,7 @@ Total memory allocation is a function of a number of factors:
 
 The following graph shows the ``size_of()`` a SkipList of doubles of varying lengths with a fair coin. The Y axis is the ``size_of()`` divided by the length of the SkipList in bytes per node. Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double. The test name is ``perf_size_of()``.
 
-.. image:: plots/perf_size_of.svg
+.. image:: plots/perf_size_of.png
     :width: 640
 
 
@@ -146,7 +146,7 @@ Height Distribution
 
 This graph shows the height growth of the SkipList where the height is the number of additional coarse linked lists. It should grow in a log(n) fashion and it does. It is not monotonic as this SkipList is a probabilistic data structure.
 
-.. image:: plots/perf_height_size.svg
+.. image:: plots/perf_height_size.png
     :width: 640
 
 
@@ -185,7 +185,7 @@ Time Performance
 
 The following graph plots the time cost of ``at(middle)``, ``has(middle_value)``, ``insert(), at(), remove()`` and the rolling median (window size 101) all on a 1 million long SkipList of doubles against ``p()`` the probability of the coin toss being heads. The time cost is normalised to ``p(0.5)``.
 
-.. image:: plots/biased_coin_effect.svg
+.. image:: plots/biased_coin_effect.png
     :width: 640
 
 Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the performance would deteriorate. If ``p()`` was zero the SkipList would be, effectively, a singly linked list with O(n) search performance. I do not understand why the rolling median performance appears to improve slightly when the rolling median is really just an ``insert(), at(), remove()`` operation.
@@ -202,7 +202,7 @@ Space Performance
 
 Different values of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists created. In practice a reduction of ``p()`` provides some small space improvement.
 
-.. image:: plots/biased_coin_effect_size_of.svg
+.. image:: plots/biased_coin_effect_size_of.png
     :width: 640
 
 If the SkipList was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)`` or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case, to use anything but ``p(0.5)``.
@@ -271,7 +271,7 @@ The sheer act of using ``-DSKIPLIST_THREAD_SUPPORT`` will introduce a mutex into
 
 In the graph below the X axis is the number of times the task is repeated (sequentially). The left Y axis is the total execution time with the SkipList in the main thread. The right Y axis is the ratio: time with ``-DSKIPLIST_THREAD_SUPPORT`` / time without ``-DSKIPLIST_THREAD_SUPPORT``
 
-.. image:: plots/perf_cpp_threaded_vs_single.svg
+.. image:: plots/perf_cpp_threaded_vs_single.png
     :width: 640
 
 The overhead of using ``-DSKIPLIST_THREAD_SUPPORT`` is about 0% to 15%.
@@ -285,7 +285,7 @@ The SkipList is compiled with ``-DSKIPLIST_THREAD_SUPPORT`` and we repeat the ta
 
 In the graph below the red line is the time for the sequential result, this is the same as the red line in the graph above. The green line is time taken to repeat the task n times using n threads sharing the same SkipList inserting and removing values simultaneously. The blue line is the ratio of the: threaded solution / sequential solution.
 
-.. image:: plots/perf_cpp_threaded_fixed_size.svg
+.. image:: plots/perf_cpp_threaded_fixed_size.png
     :width: 640
 
 The execution time of the threaded solution is near linear with the amount of threads each solving the same task.

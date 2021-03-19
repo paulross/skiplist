@@ -2,13 +2,18 @@
 
 This project contains a SkipList implementation in C++ with Python bindings.
 
-A SkipList behaves as an always sorted list with, typically, O(log(n)) cost for insertion, look-up and removal. This makes it ideal for such operations as computing the rolling median of a large dataset.
+A SkipList behaves as an always sorted list with, typically, O(log(n)) cost for insertion, look-up and removal.
+This makes it ideal for such operations as computing the rolling median of a large dataset.
 
 See the full documentation on this project at [ReadTheDocs](http://skiplist.readthedocs.io/en/latest/index.html).
 
-A SkipList is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists. These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list. It is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in. As such SkipList is an alternative to binary tree, Wikipedia has a introductory page on [SkipLists](<https://en.wikipedia.org/wiki/Skip_list>).
+A SkipList is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists.
+These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list.
+It is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in.
+As such SkipList is an alternative to binary tree, Wikipedia has a introductory page on [SkipLists](<https://en.wikipedia.org/wiki/Skip_list>).
 
-An advantage claimed for SkipLists are that the insert and remove logic is simpler (however I do not subscribe to this). The drawbacks of a SkipList include its larger space requirements and its O(log(N)) lookup behaviour compared to other, more restricted and specialised, data structures that may have either faster runtime behaviour or lower space requirements or both.
+An advantage claimed for SkipLists are that the insert and remove logic is simpler (however I do not subscribe to this).
+The drawbacks of a SkipList include its larger space requirements and its O(log(N)) lookup behaviour compared to other, more restricted and specialised, data structures that may have either faster runtime behaviour or lower space requirements or both.
 
 This project contains a SkipList implementation in C++ with Python bindings with:
 
@@ -17,8 +22,11 @@ This project contains a SkipList implementation in C++ with Python bindings with
 * The C++ SkipList can be compiled as thread safe.
 * The Python SkipList is thread safe.
 * The SkipList has exhaustive internal integrity checks.
-* The Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
-* This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`
+* Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
+* With Python 3.8+ SkipLists can be combined with the [multiprocessing.shared_memory](https://docs.python.org/3/library/multiprocessing.shared_memory.html#module-multiprocessing.shared_memory) module for concurrent operation on large arrays.
+  For example [concurrent rolling medians](http://skiplist.readthedocs.io/en/latest/rolling_median.html#in-python-with-multiprocessing-shared-memory).
+* This implementation is extensively performance tested in C++ and Python.
+
 
 There are a some novel features to this implementation:
 
@@ -160,7 +168,8 @@ An example of using a SkipList of always ordered floats:
     sl.size()    # 2
     sl.at(1)     # 84.0
 
-The Python SkipList can be used with user defined objects with a user defined sort order. In this example the last name of the person takes precedence over the first name:
+The Python SkipList can be used with user defined objects with a user defined sort order.
+In this example the last name of the person takes precedence over the first name:
 
     import functools
     
@@ -197,4 +206,5 @@ The Python SkipList can be used with user defined objects with a user defined so
     assert str(sl.at(1)) == 'Pan, Peter' 
 
 
-The Python SkipList is thread safe when using any acceptable Python type even if that type has user defined comparison methods. This uses Pythons mutex machinery which is independent of C++ mutexes.
+The Python SkipList is thread safe when using any acceptable Python type even if that type has user defined comparison methods.
+This uses Pythons mutex machinery which is independent of C++ mutexes.
