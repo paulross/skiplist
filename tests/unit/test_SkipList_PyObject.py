@@ -1,21 +1,24 @@
 """Some specific PyObject* tests"""
 import sys
 
+import psutil
 import pytest
 
 import orderedstructs
 
 from .SkipList_common import TotalOrdered, OrderedLt, Person
 
+
 def test_ordered_person():
     sl = orderedstructs.SkipList(object)
     sl.insert(Person('Peter', 'Pan'))
     sl.insert(Person('Alan', 'Pan'))
     assert sl.size() == 2
-    assert str(sl.at(0)) == 'Pan, Alan' 
-    assert str(sl.at(1)) == 'Pan, Peter' 
+    assert str(sl.at(0)) == 'Pan, Alan'
+    assert str(sl.at(1)) == 'Pan, Peter'
 
-#---- id() tests -------
+
+# ---- id() tests -------
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_insert_remove_id_is_same(cls):
     """Check that an insert followed by a remove refers to the same Python object."""
@@ -25,7 +28,8 @@ def test_ordered_insert_remove_id_is_same(cls):
     obj_remove = sl.remove(obj_insert)
     assert id(obj_remove) == id(obj_insert)
 
-@pytest.mark.parametrize('cls', [TotalOrdered, ])#OrderedLt])
+
+@pytest.mark.parametrize('cls', [TotalOrdered, ])  # OrderedLt])
 def test_ordered_insert_remove_diff_id_is_same(cls):
     """Check that an insert followed by a remove of an equivalent object
     returns the originally inserted Python object."""
@@ -38,9 +42,11 @@ def test_ordered_insert_remove_diff_id_is_same(cls):
     assert obj_to_remove == obj_insert
     obj_remove = sl.remove(obj_to_remove)
     assert id(obj_remove) == id(obj_insert)
-#---- END: id() tests -------
 
-#---- Refcount tests -------
+
+# ---- END: id() tests -------
+
+# ---- Refcount tests -------
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_refcount_insert(cls):
     """Reference count is incremented on insert."""
@@ -49,6 +55,7 @@ def test_ordered_refcount_insert(cls):
     rc = sys.getrefcount(obj)
     sl.insert(obj)
     assert sys.getrefcount(obj) == rc + 1
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_refcount_remove(cls):
@@ -60,6 +67,7 @@ def test_ordered_refcount_remove(cls):
     sl.remove(obj)
     assert sys.getrefcount(obj) == rc
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_refcount_after_del(cls):
     """Reference count is maintained after insert and then dealloc."""
@@ -69,6 +77,7 @@ def test_ordered_refcount_after_del(cls):
     sl.insert(obj)
     del sl
     assert sys.getrefcount(obj) == rc
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_refcount_has(cls):
@@ -80,6 +89,7 @@ def test_ordered_refcount_has(cls):
     assert sys.getrefcount(obj) == rc + 1
     assert sl.has(obj)
     assert sys.getrefcount(obj) == rc + 1
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_refcount_at(cls):
@@ -93,7 +103,8 @@ def test_ordered_refcount_at(cls):
     assert id(obj_at) == id(obj)
     assert sys.getrefcount(obj) == rc + 2
 
-#---- END: Refcount tests -------
+
+# ---- END: Refcount tests -------
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_insert(cls):
@@ -104,7 +115,8 @@ def test_ordered_insert(cls):
         sl.insert(obj)
         assert sl.lacks_integrity() == 0
 
-@pytest.mark.parametrize('cls', [TotalOrdered, ])#OrderedLt])
+
+@pytest.mark.parametrize('cls', [TotalOrdered, ])  # OrderedLt])
 def test_ordered_insert_remove(cls):
     sl = orderedstructs.SkipList(object)
     for i in range(8):
@@ -117,7 +129,8 @@ def test_ordered_insert_remove(cls):
         obj = cls(i)
         removed_obj = sl.remove(obj)
         assert removed_obj == obj
-        
+
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_size(cls):
     sl = orderedstructs.SkipList(object)
@@ -128,6 +141,7 @@ def test_ordered_size(cls):
         assert sl.lacks_integrity() == 0
         assert sl.size() == i + 1
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_has(cls):
     """Insert an object and check the object is there."""
@@ -135,6 +149,7 @@ def test_ordered_has(cls):
     obj = cls(0)
     sl.insert(obj)
     assert sl.has(obj)
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_has_same_value_diff_id(cls):
@@ -147,6 +162,7 @@ def test_ordered_has_same_value_diff_id(cls):
     assert id(obj_a) != id(obj_b)
     assert sl.has(obj_b)
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_at(cls):
     sl = orderedstructs.SkipList(object)
@@ -154,6 +170,7 @@ def test_ordered_at(cls):
     sl.insert(obj)
     obj_at = sl.at(0)
     assert id(obj_at) == id(obj)
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_index(cls):
@@ -168,58 +185,58 @@ def test_ordered_index(cls):
     assert idx == 0
 
 
-
 @pytest.mark.parametrize('obj0, obj1, method', [
-                                 (0, 0.0, 'insert'),
-                                 (0.0, 0, 'insert'),
-                                 (0, 0.0, 'index'),
-                                 (0.0, 0, 'index'),
-                                 (0, 0.0, 'remove'),
-                                 (0.0, 0, 'remove'),
-                                 (0, 0.0, 'has'),
-                                 (0.0, 0, 'has'),
-                                 ])
+    (0, 0.0, 'insert'),
+    (0.0, 0, 'insert'),
+    (0, 0.0, 'index'),
+    (0.0, 0, 'index'),
+    (0, 0.0, 'remove'),
+    (0.0, 0, 'remove'),
+    (0, 0.0, 'has'),
+    (0.0, 0, 'has'),
+])
 def test_mixed_types_succeeds(obj0, obj1, method):
     sl = orderedstructs.SkipList(object)
     sl.insert(obj0)
     getattr(sl, method)(obj1)
 
+
 # NOTE: Can not compare int/float and complex
-@pytest.mark.skipif(sys.version_info.major==2, reason='Requires Python 3')
+@pytest.mark.skipif(sys.version_info.major == 2, reason='Requires Python 3')
 @pytest.mark.parametrize('obj0, obj1, method', [
-                                 (TotalOrdered(0), 0.0, 'insert'),
-                                 (0.0, TotalOrdered(0), 'insert'),
-                                 (OrderedLt(0), 0.0, 'insert'),
-                                 (0.0, OrderedLt(0), 'insert'),
-                                 (0, (1+2j), 'insert'),
-                                 ((1+2j), 0, 'insert'),
-                                 (0.0, (1+2j), 'insert'),
-                                 ((1+2j), 0.0, 'insert'),
-                                 (TotalOrdered(0), 0.0, 'index'),
-                                 (0.0, TotalOrdered(0), 'index'),
-                                 (OrderedLt(0), 0.0, 'index'),
-                                 (0.0, OrderedLt(0), 'index'),
-                                 (0, (1+2j), 'index'),
-                                 ((1+2j), 0, 'index'),
-                                 (0.0, (1+2j), 'index'),
-                                 ((1+2j), 0.0, 'index'),
-                                 (TotalOrdered(0), 0.0, 'remove'),
-                                 (0.0, TotalOrdered(0), 'remove'),
-                                 (OrderedLt(0), 0.0, 'remove'),
-                                 (0.0, OrderedLt(0), 'remove'),
-                                 (0, (1+2j), 'remove'),
-                                 ((1+2j), 0, 'remove'),
-                                 (0.0, (1+2j), 'remove'),
-                                 ((1+2j), 0.0, 'remove'),
-                                 (TotalOrdered(0), 0.0, 'has'),
-                                 (0.0, TotalOrdered(0), 'has'),
-                                 (OrderedLt(0), 0.0, 'has'),
-                                 (0.0, OrderedLt(0), 'has'),
-                                 (0, (0+0j), 'has'),
-                                 ((0+0j), 0, 'has'),
-                                 (0.0, (0+0j), 'has'),
-                                 ((0+0j), 0.0, 'has'),
-                                 ])
+    (TotalOrdered(0), 0.0, 'insert'),
+    (0.0, TotalOrdered(0), 'insert'),
+    (OrderedLt(0), 0.0, 'insert'),
+    (0.0, OrderedLt(0), 'insert'),
+    (0, (1 + 2j), 'insert'),
+    ((1 + 2j), 0, 'insert'),
+    (0.0, (1 + 2j), 'insert'),
+    ((1 + 2j), 0.0, 'insert'),
+    (TotalOrdered(0), 0.0, 'index'),
+    (0.0, TotalOrdered(0), 'index'),
+    (OrderedLt(0), 0.0, 'index'),
+    (0.0, OrderedLt(0), 'index'),
+    (0, (1 + 2j), 'index'),
+    ((1 + 2j), 0, 'index'),
+    (0.0, (1 + 2j), 'index'),
+    ((1 + 2j), 0.0, 'index'),
+    (TotalOrdered(0), 0.0, 'remove'),
+    (0.0, TotalOrdered(0), 'remove'),
+    (OrderedLt(0), 0.0, 'remove'),
+    (0.0, OrderedLt(0), 'remove'),
+    (0, (1 + 2j), 'remove'),
+    ((1 + 2j), 0, 'remove'),
+    (0.0, (1 + 2j), 'remove'),
+    ((1 + 2j), 0.0, 'remove'),
+    (TotalOrdered(0), 0.0, 'has'),
+    (0.0, TotalOrdered(0), 'has'),
+    (OrderedLt(0), 0.0, 'has'),
+    (0.0, OrderedLt(0), 'has'),
+    (0, (0 + 0j), 'has'),
+    ((0 + 0j), 0, 'has'),
+    (0.0, (0 + 0j), 'has'),
+    ((0 + 0j), 0.0, 'has'),
+])
 def test_fails_with_no_comparison(obj0, obj1, method):
     sl = orderedstructs.SkipList(object)
     sl.insert(obj0)
@@ -227,9 +244,9 @@ def test_fails_with_no_comparison(obj0, obj1, method):
         getattr(sl, method)(obj1)
 
 
-#==== Bespoke comparison function fails ====
+# ==== Bespoke comparison function fails ====
 
-#---- Bespoke non-object and comparison function fails ----
+# ---- Bespoke non-object and comparison function fails ----
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_given_cmp_function_int_fails(cls):
@@ -244,7 +261,8 @@ def test_given_cmp_function_int_fails(cls):
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList(int_type, lambda x, y: x < y)
     assert err.value.args[0] == \
-        'Can not specify comparison function with type "long".'
+           'Can not specify comparison function with type "long".'
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_given_cmp_function_float_fails(cls):
@@ -253,7 +271,8 @@ def test_given_cmp_function_float_fails(cls):
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList(float, lambda x, y: x < y)
     assert err.value.args[0] == \
-        'Can not specify comparison function with type "float".'
+           'Can not specify comparison function with type "float".'
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_given_cmp_function_bytes_fails(cls):
@@ -262,11 +281,12 @@ def test_given_cmp_function_bytes_fails(cls):
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList(bytes, lambda x, y: x < y)
     assert err.value.args[0] == \
-        'Can not specify comparison function with type "bytes".'
+           'Can not specify comparison function with type "bytes".'
 
-#---- END: Bespoke non-object and comparison function fails ----
 
-#---- Bespoke comparison function wrong signature ----
+# ---- END: Bespoke non-object and comparison function fails ----
+
+# ---- Bespoke comparison function wrong signature ----
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_not_a_function(cls):
     """Test of passing in a non-callable.
@@ -274,7 +294,8 @@ def test_ordered_cmp_not_a_function(cls):
     with pytest.raises(ValueError) as err:
         orderedstructs.SkipList(object, 14)
     assert err.value.args[0] == \
-        'Argument "cmp_func" to __init__ must be a callable object not an "int" object.'
+           'Argument "cmp_func" to __init__ must be a callable object not an "int" object.'
+
 
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_lambda_too_few_arguments(cls):
@@ -293,6 +314,7 @@ def test_ordered_cmp_function_lambda_too_few_arguments(cls):
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_lambda_too_many_arguments(cls):
     """Test of passing in a lambda with too many arguments.
@@ -310,13 +332,16 @@ def test_ordered_cmp_function_lambda_too_many_arguments(cls):
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_local_too_few_arguments(cls):
     """Test of passing in a callable with too few arguments.
     This can be not be detected at instantiation time,
     only when a comparison method is called."""
+
     def cmp(x):
         return x < 0
+
     sl = orderedstructs.SkipList(object, cmp)
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
@@ -329,13 +354,16 @@ def test_ordered_cmp_function_local_too_few_arguments(cls):
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
 
+
 @pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
 def test_ordered_cmp_function_local_too_many_arguments(cls):
     """Test of passing in a callable with too many arguments.
     This can be not be detected at instantiation time,
     only when a comparison method is called."""
+
     def cmp(x, y, z):
         return x + y + z < 0
+
     sl = orderedstructs.SkipList(object, cmp)
     sl.insert(4.0)
     with pytest.raises(TypeError) as err:
@@ -348,11 +376,12 @@ def test_ordered_cmp_function_local_too_many_arguments(cls):
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
 
-#---- END: Bespoke comparison function wrong signature ----
 
-#==== END: Bespoke comparison function fails ====
+# ---- END: Bespoke comparison function wrong signature ----
 
-@pytest.mark.parametrize('cls', [TotalOrdered,])
+# ==== END: Bespoke comparison function fails ====
+
+@pytest.mark.parametrize('cls', [TotalOrdered, ])
 def test_ordered_insert_remove_cmp_reversed(cls):
     sl = orderedstructs.SkipList(object, lambda x, y: y < x)
     for i in range(8):
@@ -365,5 +394,26 @@ def test_ordered_insert_remove_cmp_reversed(cls):
         obj = cls(7 - i)
         removed_obj = sl.remove(obj)
         assert removed_obj == obj
-        
+
+
+@pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
+def test_memory_management(cls):
+    """Check for memory leaks."""
+    SIZE = 1024
+    proc = psutil.Process()
+    rss = proc.memory_info().rss
+    print(f'RSS: {rss:12,d} at start of test.')
+    sl = orderedstructs.SkipList(object)
+    for i in range(SIZE):
+        sl.insert(cls(i))
+    assert sl.size() == SIZE
+    rss = proc.memory_info().rss
+    print(f'RSS: {rss:12,d} skip list loaded.')
+    for i in range(SIZE):
+        sl.remove(cls(i))
+    rss = proc.memory_info().rss
+    print(f'RSS: {rss:12,d} skip list empty.')
+    assert 0
+
+
 

@@ -76,8 +76,8 @@ def _setup_skiplist_with_class(cls: typing.Type, n: int) -> orderedstructs.SkipL
 
 
 # Make formatted strings so that the test name sorts nicely.
-SKIPLIST_LENGTHS_FLOATS = tuple(f'{2 ** i:8d}' for i in range(1, 24, 2))
-SKIPLIST_LENGTHS_FOR_PYTHON_SKIPLISTS = tuple(f'{2**i:8d}' for i in range(1, 18, 2))
+SKIPLIST_LENGTHS_FLOATS = tuple(f'{2 ** i:8d}' for i in range(5, 24, 2))
+SKIPLIST_LENGTHS_FOR_PYTHON_SKIPLISTS = tuple(f'{2**i:8d}' for i in range(5, 20, 2))
 
 
 def _test_float_has(skip_list: orderedstructs.SkipList, value: float) -> bool:

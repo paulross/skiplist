@@ -1,3 +1,4 @@
 hypothesis
+psutil
 pytest
 pytest-benchmark
