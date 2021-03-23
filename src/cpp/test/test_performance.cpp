@@ -24,6 +24,8 @@
 static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
 
 int perf_single_insert_remove() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     int num = GLOBAL_REPEAT_COUNT;
     OrderedStructs::SkipList::HeadNode<double> sl;
     
@@ -47,6 +49,8 @@ int perf_single_insert_remove() {
 
 /* Insert to create a large skiplist no deletion. */
 int perf_large_skiplist_ins_only() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SIZE = GLOBAL_REPEAT_COUNT;
     int COUNT = 1;
     OrderedStructs::SkipList::HeadNode<double> sl;
@@ -77,6 +81,8 @@ int perf_large_skiplist_ins_only() {
 /* Insert into a large skiplist then remove everything and delete it
  * many times. */
 int perf_large_skiplist_ins_rem() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SIZE = 1024 * 1024;
     int COUNT = 1;
     OrderedStructs::SkipList::HeadNode<double> sl;
@@ -112,6 +118,8 @@ int perf_large_skiplist_ins_rem() {
 /* Create a large skip list then time how long it takes to insert and remove
  * a value at the mid point. */
 int perf_single_ins_rem_middle() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
@@ -148,6 +156,8 @@ int perf_single_ins_rem_middle() {
 /* Create a large skip list then time how long it takes to insert and remove
  * a value at the mid point for various length skip lists. */
 int perf_single_ins_rem_middle_vary_length() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
     
@@ -186,6 +196,8 @@ int perf_single_ins_rem_middle_vary_length() {
 
 /* Performance of calling at() on the middle value of a 1M long skip list. */
 int perf_single_at_middle() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
@@ -221,6 +233,8 @@ int perf_single_at_middle() {
 
 /* Performance of calling has() on the middle value of a 1M long skip list. */
 int perf_single_has_middle() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;
@@ -258,6 +272,8 @@ int perf_single_has_middle() {
 /* Performance of calling insert(), at(), remove() on the middle value
  * of a 1M long skip list. */
 int perf_single_ins_at_rem_middle() {
+    // This test is meaningless if assert is defined because of the integrity checks.
+    assert(0);
     size_t SKIPLIST_SIZE = 1024 * 1024;
     int REPEAT_COUNT = GLOBAL_REPEAT_COUNT;
     int result = 0;

@@ -19,7 +19,7 @@ This makes it ideal for such operations as computing the rolling median of a lar
 A SkipList is implemented as a singly linked list of ordered nodes where each node participates in a subset of, sparser, linked lists.
 These additional 'sparse' linked lists provide rapid indexing and mutation of the underlying linked list.
 It is a probabilistic data structure using a random function to determine how many 'sparse' linked lists any particular node participates in.
-As such SkipList is an alternative to binary tree, Wikipedia has a introductory page on `SkipLists <https://en.wikipedia.org/wiki/Skip_list>`_ .
+As such SkipList is an alternative to binary tree, Wikipedia has an introductory page on `SkipLists <https://en.wikipedia.org/wiki/Skip_list>`_ .
 
 An advantage claimed for SkipLists are that the insert and remove logic is simpler (however I do not subscribe to this). The drawbacks of a SkipList include its larger space requirements and its O(log(N)) lookup behaviour compared to other, more restricted and specialised, data structures that may have either faster runtime behaviour or lower space requirements or both.
 

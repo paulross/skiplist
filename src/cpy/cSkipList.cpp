@@ -362,7 +362,7 @@ finally:
 
 /* Sets value to the size of the skiplist as a size_t.
  * Returns 0 on success, non-zero on failure. */
-static size_t
+static int
 _size(SkipList *self, Py_ssize_t &value) {
     int err_code = 0;
 
@@ -801,9 +801,18 @@ finally:
     return ret_val;
 }
 
+/* Used by tp_as_sequence to implement len() support. */
+Py_ssize_t SkipList_length(PyObject *self) {
+    Py_ssize_t ret_val = 0;
+
+    if (_size((SkipList*)self, ret_val)) {
+        PyErr_BadInternalCall();
+    }
+    return ret_val;
+}
+
 static PyObject *
-SkipList_size(SkipList *self)
-{
+SkipList_size(SkipList *self) {
     PyObject *ret_val = NULL;
 
     assert(self && self->pSl_void);
@@ -1264,6 +1273,36 @@ finally:
     return ret_val;
 }
 
+/* Note that this is very similar to SkipList_size(). */
+static PyObject *
+SkipList_size_of(SkipList *self) {
+    PyObject *ret_val = NULL;
+    
+    assert(self && self->pSl_void);
+    ASSERT_TYPE_IN_RANGE;
+    assert(! PyErr_Occurred());
+    
+    switch (self->_data_type) {
+        case TYPE_LONG:
+            ret_val = PyLong_FromSsize_t(self->pSl_long->size_of());
+            break;
+        case TYPE_DOUBLE:
+            ret_val = PyLong_FromSsize_t(self->pSl_double->size_of());
+            break;
+        case TYPE_BYTES:
+            ret_val = PyLong_FromSsize_t(self->pSl_bytes->size_of());
+            break;
+        case TYPE_OBJECT:
+            // No need to get the GIL as no Python code being called.
+            ret_val = PyLong_FromSize_t(self->pSl_object->size_of());
+            break;
+        default:
+            PyErr_BadInternalCall();
+            break;
+    }
+    return ret_val;
+}
+
 static PyMethodDef SkipList_methods[] = {
     {"has", (PyCFunction)SkipList_has, METH_O,
         "Return True if the value is in the skip list, False otherwise."
@@ -1278,8 +1317,13 @@ static PyMethodDef SkipList_methods[] = {
         "Return the index of the given value."
         " Will raise a ValueError if not found."
     },
+    /* __len__ is an alias to this. */
     {"size", (PyCFunction)SkipList_size, METH_NOARGS,
      "Return the number of elements in the skip list."
+    },
+    /* __sizeof__ is an alias to this. */
+    {"size_of", (PyCFunction)SkipList_size_of, METH_NOARGS,
+        "Return the number of elements in the skip list."
     },
     {"height", (PyCFunction)SkipList_height, METH_NOARGS,
         "Return the height of the skip list head node."
@@ -1306,7 +1350,19 @@ static PyMethodDef SkipList_methods[] = {
     {"node_width", (PyCFunction)SkipList_node_width, METH_VARARGS | METH_KEYWORDS,
         "Return the width of node at the given index and level."
     },
+    /* This calls the underlying .size_of() method.
+     * Usage: sys.getsizeof(object)
+     */
+    {"__sizeof__", (PyCFunction)SkipList_size_of, METH_NOARGS,
+        "Return the size of the skiplist in bytes."
+    },
     {NULL, NULL, 0, NULL}  /* Sentinel */
+};
+
+
+/* Support for len(). */
+static PySequenceMethods SkipList_SequenceMethods = {
+    .sq_length = &SkipList_length
 };
 
 static char _py_skip_list_docs[] =
@@ -1319,14 +1375,14 @@ PyTypeObject SkipListType = {
     .tp_name = ORDERED_STRUCTS_MODULE_NAME ".SkipList",
     .tp_basicsize = sizeof(SkipList),
     .tp_dealloc = (destructor)SkipList_dealloc,
-    /* TODO: implement: tp_as_sequence
-     * PySequenceMethods.sq_length,
-     * PySequenceMethods.sq_item  etc. */
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_doc = _py_skip_list_docs,
     .tp_methods = SkipList_methods,
     .tp_members = SkipList_members,
     .tp_init = (initproc)SkipList_init,
     .tp_new = SkipList_new,
+    /* TODO: in tp_as_sequence implement
+     * PySequenceMethods.sq_item  etc. */
+    .tp_as_sequence = &SkipList_SequenceMethods
 };
 

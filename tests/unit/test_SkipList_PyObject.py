@@ -396,24 +396,41 @@ def test_ordered_insert_remove_cmp_reversed(cls):
         assert removed_obj == obj
 
 
-@pytest.mark.parametrize('cls', [TotalOrdered, OrderedLt])
-def test_memory_management(cls):
-    """Check for memory leaks."""
-    SIZE = 1024
+@pytest.mark.slow
+@pytest.mark.parametrize(
+    'cls, size, rounds, expected_getsizeof, maximum_increase_at_empty',
+    (
+        (int, 1024**2, 8, 88e6, 10e6),
+        (float, 1024**2, 8, 88e6, 10e6),
+        (TotalOrdered, 1024 * 256, 8, 22e6, 24e6),
+        (OrderedLt, 1024 * 256, 8, 22e6, 16e6),
+    )
+)
+def test_memory_management_python_objects(cls, size, rounds, expected_getsizeof, maximum_increase_at_empty):
+    """Check for memory usage and recovery (no leaks)."""
+    print()
+    # SIZE = 1024 * 100
+    # ROUNDS = 1
     proc = psutil.Process()
-    rss = proc.memory_info().rss
-    print(f'RSS: {rss:12,d} at start of test.')
-    sl = orderedstructs.SkipList(object)
-    for i in range(SIZE):
-        sl.insert(cls(i))
-    assert sl.size() == SIZE
-    rss = proc.memory_info().rss
-    print(f'RSS: {rss:12,d} skip list loaded.')
-    for i in range(SIZE):
-        sl.remove(cls(i))
-    rss = proc.memory_info().rss
-    print(f'RSS: {rss:12,d} skip list empty.')
-    assert 0
-
-
-
+    rss_start = proc.memory_info().rss
+    print(f'RSS: {rss_start:12,d} at start of test.')
+    for round in range(rounds):
+        sl = orderedstructs.SkipList(object)
+        for i in range(size):
+            sl.insert(cls(i))
+        assert sl.size() == size
+        rss_peak = proc.memory_info().rss
+        print(
+            f'RSS: {rss_peak:12,d}'
+            f' Change {rss_peak - rss_start:+12,d} skip list loaded'
+            f' round {round:4d} sys.getsizeof(sl) {sys.getsizeof(sl):+12,d}.'
+        )
+        # Should be within 10% say
+        assert abs(sys.getsizeof(sl) - expected_getsizeof) < 0.1 * expected_getsizeof
+        for i in range(size):
+            sl.remove(cls(i))
+        assert sl.size() == 0
+        del sl
+    rss_end = proc.memory_info().rss
+    print(f'RSS: {rss_end:12,d} Change {rss_end - rss_start:+12,d} skip list empty.')
+    assert rss_end - rss_start < maximum_increase_at_empty

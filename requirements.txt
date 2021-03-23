@@ -1,4 +1,7 @@
-hypothesis
-psutil
-pytest
-pytest-benchmark
+hypothesis~=6.8.1
+psutil~=5.8.0
+pytest~=6.2.2
+pytest-benchmark[histogram]
+
+setuptools~=54.1.2
+orderedstructs~=0.3.2.dev1

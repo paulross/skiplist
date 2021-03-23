@@ -45,7 +45,8 @@ logging.basicConfig(level=logging.DEBUG,
 #             lacks_integrity = sl.lacks_integrity()
 #             assert lacks_integrity == 0, 'lacks_integrity is {}'.format(lacks_integrity)
 #     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
- 
+
+
 def insert_and_remove_TotalOrdered(sl, value, count):
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     to_value = TotalOrdered(value)
@@ -57,6 +58,7 @@ def insert_and_remove_TotalOrdered(sl, value, count):
         assert id(to_value) == id(removed_value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
+
 
 def test_insert_and_remove():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
@@ -79,6 +81,7 @@ def test_insert_and_remove():
             t.join()
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
+
 def insert_has_remove_TotalOrdered(sl, value, count):
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     to_value = TotalOrdered(value)
@@ -92,7 +95,8 @@ def insert_has_remove_TotalOrdered(sl, value, count):
         assert not sl.has(to_value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
- 
+
+
 def test_insert_has_remove():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(object)
@@ -114,6 +118,7 @@ def test_insert_has_remove():
             t.join()
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
+
 def insert_has_remove_int(sl, value, count):
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     for _i in range(count):
@@ -126,7 +131,8 @@ def insert_has_remove_int(sl, value, count):
         assert not sl.has(value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
- 
+
+
 def test_insert_has_remove_int():
     """Tests multi-threaded insert()/has()/remove() of integers converted to
     native C++ objects."""
@@ -151,6 +157,7 @@ def test_insert_has_remove_int():
             t.join()
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
+
 def insert_has_remove_float(sl, value, count):
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     for _i in range(count):
@@ -163,7 +170,8 @@ def insert_has_remove_float(sl, value, count):
         assert not sl.has(value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
- 
+
+
 def test_insert_has_remove_float():
     """Tests multi-threaded insert()/has()/remove() of floats converted to
     native C++ objects."""
@@ -187,6 +195,7 @@ def test_insert_has_remove_float():
         if t is not main_thread:
             t.join()
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
+
 
 if __name__ == '__main__':
     test_insert_and_remove()
