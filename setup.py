@@ -59,7 +59,6 @@ requirements = [
 ]
 
 setup_requirements = [
-    'pytest-runner',
 ]
 
 test_requirements = [
@@ -69,7 +68,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.2',
+    version='0.3.3',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,

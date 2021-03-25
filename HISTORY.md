@@ -1,5 +1,9 @@
 # History
 
+## 0.3.3 (2021-03-25)
+
+* Add Python benchmarks, fix some build issues.
+
 ## 0.3.2 (2021-03-18)
 
 * Fix lambda issues with Python 3.8, 3.9.

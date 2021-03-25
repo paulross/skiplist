@@ -1,0 +1,19 @@
+include HISTORY.md
+include LICENSE
+
+include src/cpp/HeadNode.h
+include src/cpp/IntegrityEnums.h
+include src/cpp/Node.h
+include src/cpp/NodeRefs.h
+include src/cpp/RollingMedian.h
+include src/cpp/SkipList.cpp
+include src/cpp/SkipList.h
+
+include src/cpy/OrderedStructs.cpp
+include src/cpy/OrderedStructs.h
+include src/cpy/cOrderedStructs.cpp
+include src/cpy/cOrderedStructs.h
+include src/cpy/cSkipList.cpp
+include src/cpy/cSkipList.h
+include src/cpy/cmpPyObject.cpp
+include src/cpy/cmpPyObject.h
