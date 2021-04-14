@@ -1220,41 +1220,32 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
     switch (self->_data_type) {
         case TYPE_LONG:
             height = self->pSl_long->height(index);
-            break;
-        case TYPE_DOUBLE:
-            height = self->pSl_double->height(index);
-            break;
-        case TYPE_BYTES:
-            height = self->pSl_bytes->height(index);
-            break;
-        case TYPE_OBJECT:
-            {
-                AcquireLock _lock(self);
-                height = self->pSl_object->height(index);
+            if (_check_index_against_size("Level", level, height)) {
+                goto except;
             }
-            break;
-        default:
-            PyErr_BadInternalCall();
-            goto except;
-            break;
-    }
-    if (_check_index_against_size("Level", level, height)) {
-        goto except;
-    }
-    /* Get width. */
-    switch (self->_data_type) {
-        case TYPE_LONG:
             ret_val = PyLong_FromSsize_t(self->pSl_long->width(index, level));
             break;
         case TYPE_DOUBLE:
+            height = self->pSl_double->height(index);
+            if (_check_index_against_size("Level", level, height)) {
+                goto except;
+            }
             ret_val = PyLong_FromSsize_t(self->pSl_double->width(index, level));
             break;
         case TYPE_BYTES:
+            height = self->pSl_bytes->height(index);
+            if (_check_index_against_size("Level", level, height)) {
+                goto except;
+            }
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->width(index, level));
             break;
         case TYPE_OBJECT:
             {
                 AcquireLock _lock(self);
+                height = self->pSl_object->height(index);
+                if (_check_index_against_size("Level", level, height)) {
+                    goto except;
+                }
                 ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
             }
             break;
