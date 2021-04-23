@@ -27,10 +27,8 @@ import contextlib
 import io
 import logging
 import multiprocessing
-import os
 import sys
 import time
-import timeit
 import typing
 from multiprocessing import shared_memory
 
@@ -76,7 +74,8 @@ def np_data_read_only(a: np.ndarray) -> bool:
 
 def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_index: int,
                              write_array: np.ndarray) -> int:
-    """Computes a rolling median of given column and writes out the results to the write array."""
+    """Computes a rolling median of given column and writes out the results to the write array.
+    Called by a child process."""
     assert read_array.ndim == 2
     assert write_array.ndim == 2
     assert read_array.shape == write_array.shape
@@ -107,8 +106,8 @@ class SharedMemoryArraySpecification(typing.NamedTuple):
 
     def __str__(self):
         return (
-            f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype} name "{self.name}" nbytes {self.nbytes}'
-            f' buffer id 0x{id(self.shm)}>'
+            f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype} name "{self.name}"'
+            f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
         )
 
     def close(self) -> None:
@@ -213,10 +212,10 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
 @pytest.mark.parametrize(
     'rows, columns, window_length, processes',
     (
-        (1000, 10, 21, 1),
+            (1000, 10, 21, 1),
     )
 )
-def test_compute_rolling_median_2d_mp(rows, columns, window_length, processes):
+def _test_compute_rolling_median_2d_mp(rows, columns, window_length, processes):
     read_array = np.random.random((rows, columns))
     tim_start = time.perf_counter()
     result = compute_rolling_median_2d_mp(read_array, window_length, processes)
@@ -227,14 +226,14 @@ def test_compute_rolling_median_2d_mp(rows, columns, window_length, processes):
 @pytest.mark.parametrize(
     'rows, columns, process_range',
     (
-        (100, 4, range(1, 5)),
-        (1000, 4, range(1, 5)),
-        (10000, 4, range(1, 5)),
-        (100000, 4, range(1, 5)),
-        (1000000, 4, range(1, 5)),
+            (100, 4, range(1, 5)),
+            (1000, 4, range(1, 5)),
+            (10000, 4, range(1, 5)),
+            (100000, 4, range(1, 5)),
+            (1000000, 4, range(1, 5)),
     )
 )
-def test_compute_rolling_median_2d_mp_time(rows, columns, process_range):
+def _test_rm_2d_mp_time(rows, columns, process_range):
     read_array = np.random.random((rows, columns))
     print()
     for p in process_range:
@@ -244,6 +243,57 @@ def test_compute_rolling_median_2d_mp_time(rows, columns, process_range):
         print(f'Rows: {rows:8d} Columns: {columns:8d} Processes: {p:8d} Time: {tim_exec:8.3f}')
     assert 0
 
+
+@pytest.mark.parametrize(
+    'start_rows, end_rows, process_range',
+    (
+            (64, 1024 ** 2, range(1, 17)),
+    )
+)
+def test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
+    rows = start_rows
+    columns = 16
+    print()
+    print(f'{"rows":8} {"columns":8} {"processes":8} {"tim_exec":8}')
+    # results is {rows : {processes : time, ...}, ...}
+    results = {}
+    while rows <= end_rows:
+        read_array = np.random.random((rows, columns))
+        for p in process_range:
+            tim_start = time.perf_counter()
+            _result = compute_rolling_median_2d_mp(read_array, 21, p)
+            tim_exec = time.perf_counter() - tim_start
+            print(f'{rows:8d} {columns:8d} {p:8d} {tim_exec:8.3f}')
+            if rows not in results:
+                results[rows] = {}
+            results[rows][p] = tim_exec
+        rows *= 2
+    # gnuplot dat output
+    print()
+    print('# Raw times')
+    print(f'# {"Rows":6}', end='')
+    for p in process_range:
+        s = f'p={p}'
+        print(f' {s:>8}', end='')
+    print()
+    for row in sorted(results.keys()):
+        print(f'# {row:<8d}', end='')
+        for p in sorted(results[row].keys()):
+            print(f' {results[row][p]:8.3f}', end='')
+        print()
+    print()
+    print('# Speedup factor over a single process.')
+    print(f'# {"Rows":6}', end='')
+    for p in process_range:
+        s = f'p={p}'
+        print(f' {s:>8}', end='')
+    print()
+    for row in sorted(results.keys()):
+        print(f'{row:<8d}', end='')
+        for p in sorted(results[row].keys()):
+            print(f' {results[row][1] / results[row][p]:8.3f}', end='')
+        print()
+    assert 0
 
 
 def main() -> int:  # pragma: no cover
@@ -264,7 +314,8 @@ def main() -> int:  # pragma: no cover
     timings: typing.Dict[int, float] = {}
     for p in range(1, 17):
         t_start = time.perf_counter()
-        write_array = compute_rolling_median_2d_mp(read_array, window_length=ROLLING_MEDIAN_WINDOW_SIZE, num_processes=p)
+        write_array = compute_rolling_median_2d_mp(read_array, window_length=ROLLING_MEDIAN_WINDOW_SIZE,
+                                                   num_processes=p)
         t_elapsed = time.perf_counter() - t_start
         timings[p] = t_elapsed
     print(f'Array shape {read_array.shape} size {read_array_size:,d}')
