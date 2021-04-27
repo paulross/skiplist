@@ -79,6 +79,8 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
     assert read_array.ndim == 2
     assert write_array.ndim == 2
     assert read_array.shape == write_array.shape
+    proc = psutil.Process()
+    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
     skip_list = orderedstructs.SkipList(float)
     write_count = 0
     for i in range(len(read_array)):
@@ -90,7 +92,17 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
             write_count += 1
         else:
             median = np.nan
+        if i == 0:
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
+        if i == 1024**2 // 2:
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
         write_array[i, column_index] = median
+        if i == 0:
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
+        if i == 1024**2 // 2:
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
+    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
+    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
     return write_count
 
 
@@ -133,10 +145,15 @@ def compute_rolling_median_2d_from_index(read_array_spec: SharedMemoryArraySpeci
                                          write_array_spec: SharedMemoryArraySpecification) -> int:
     """Computes a rolling median of the 2D read array and window length and writes it to the 2D write array.
     This is invoked as a child process."""
+    proc = psutil.Process()
+    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} START.')
     with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
         with recover_array_from_shared_memory_and_close(write_array_spec) as write_array:
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
             write_count = rolling_median_of_column(read_array, window_length, column_index, write_array)
-            return write_count
+            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
+    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} DONE.')
+    return write_count
 
 
 @contextlib.contextmanager
@@ -187,11 +204,12 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
         num_processes = read_array.shape[1]
     logger.info('compute_rolling_median_2d(): array shape %s window length %d with %d processes', read_array.shape,
                 window_length, num_processes)
-    logger.info(f'Process memory RSS: {psutil.Process().memory_info().rss:,d}')
+    proc = psutil.Process()
+    logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} START')
     logger.info(f'read_array data @ 0x{np_data_pointer(read_array):x}')
     with create_read_shared_memory_array_spec_close_unlink(read_array) as read_array_spec:
         with create_write_shared_memory_array_spec_close_unlink(read_array) as write_array_spec:
-            logger.info(f'Process memory RSS: {psutil.Process().memory_info().rss:,d} - after creating read+write shm.')
+            logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} - after creating read+write shm')
             mp_pool = multiprocessing.Pool(processes=num_processes)
             tasks = []
             for column_index in range(read_array.shape[1]):
@@ -201,9 +219,8 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
             logger.debug(f'compute_rolling_median_2d(): Results: {results}')
             write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
             logger.info(f'write_array data @ 0x{np_data_pointer(write_array):x}')
-            logger.info(
-                f'Process memory RSS: {psutil.Process().memory_info().rss:,d} - before closing and unlinking read+write shm.')
-    logger.info(f'Process memory RSS: {psutil.Process().memory_info().rss:,d}')
+            logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} - before closing and unlinking read+write shm.')
+    logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} DONE')
     logger.info('compute_rolling_median_2d(): DONE array shape %s window length %d with %d processes', read_array.shape,
                 window_length, num_processes)
     return write_array
@@ -250,7 +267,7 @@ def _test_rm_2d_mp_time(rows, columns, process_range):
             (64, 1024 ** 2, range(1, 17)),
     )
 )
-def test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
+def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
     rows = start_rows
     columns = 16
     print()
@@ -312,11 +329,13 @@ def main() -> int:  # pragma: no cover
     read_array = np.random.random((ROWS, COLUMNS))
     read_array_size = read_array.size
     timings: typing.Dict[int, float] = {}
-    for p in range(1, 17):
+    for p in range(1, 2): # 17):
+        logger.info(f' Processes {p} '.center(75, '-'))
         t_start = time.perf_counter()
         write_array = compute_rolling_median_2d_mp(read_array, window_length=ROLLING_MEDIAN_WINDOW_SIZE,
                                                    num_processes=p)
         t_elapsed = time.perf_counter() - t_start
+        logger.info(f' DONE Processes {p} '.center(75, '-'))
         timings[p] = t_elapsed
     print(f'Array shape {read_array.shape} size {read_array_size:,d}')
     time_1_cpu = timings[1]

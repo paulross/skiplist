@@ -167,6 +167,8 @@ Pictorially:
     Copies output SharedMemory to a new numpy array
     Releases both SharedMemory resources.
 
+Code
+^^^^^^
 
 First let's write some code that wraps the low level ``multiprocessing.shared_memory.SharedMemory`` class that can be used by the parent process.
 This is a dataclass that records essential information about the array and includes the ``SharedMemory`` object itself.
@@ -332,16 +334,23 @@ Finally here is the code for the parent process that puts this all together:
         # Limit number of processes if the number of columns is small.
         if read_array.shape[1] < num_processes:
             num_processes = read_array.shape[1]
+        # Create the read and write shared memory context managers
         with create_read_shared_memory_array_spec_close_unlink(read_array) as read_array_spec:
             with create_write_shared_memory_array_spec_close_unlink(read_array) as write_array_spec:
+                # Set up the multiprocessing pool.
                 mp_pool = multiprocessing.Pool(processes=num_processes)
                 tasks = []
                 for column_index in range(read_array.shape[1]):
                     tasks.append((read_array_spec, window_length, column_index, write_array_spec))
+                # Run compute_rolling_median_2d_from_index() on the pool
                 pool_apply = [mp_pool.apply_async(compute_rolling_median_2d_from_index, t) for t in tasks]
                 results = [r.get() for r in pool_apply]
+                # Extract the result as a numpy array.
                 write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
         return write_array
+
+Performance
+^^^^^^^^^^^^
 
 Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times:
 
@@ -355,3 +364,340 @@ Comparing the **speed** of execution compared to a single process gives:
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 columns.
 The number of processes equal to the number of CPUs is optimum.
+
+Memory Usage
+^^^^^^^^^^^^
+
+
+
+.. list-table:: ``multiprocessing.shared_memory`` **Memory Usage**
+    :widths: 30 10 10 10 50
+    :header-rows: 1
+
+    * - Action
+      - Process
+      - Process RSS (Mb)
+      - Delta RSS (Mb)
+      - Notes
+    * - Parent start
+      - Parent
+      - 30
+      -
+      - Normal Python executable.
+    * - Create numpy array
+      - Parent
+      - 130
+      - +100
+      - Cost of creating a 100Mb numpy array.
+    * - Create read shared memory
+      - Parent
+      - 225
+      - +95
+      -
+    * - Create write shared memory
+      - Parent
+      - 225
+      - 0
+      - No immediate memory hit.
+    * - Child start
+      - Child
+      - 23
+      -
+      - Normal Python executable.
+    * - Rolling median start
+      - Child
+      - 23
+      - +0
+      -
+    * - Rolling median first quarter completed
+      - Child
+      - 71
+      - +48
+      - Writing one quarter of a 100Mb array.
+    * - Rolling median half completed
+      - Child
+      - 119
+      - +48
+      - Writing another quarter of a 100Mb array.
+    * - Rolling median three quarters completed
+      - Child
+      - 166
+      - +47
+      - Writing another quarter of a 100Mb array.
+    * - Rolling median complete
+      - Child
+      - 214
+      - +48
+      - Writing last quarter of a 100Mb array.
+    * - Close write shared memory
+      - Child
+      - 119
+      - -95
+      -
+    * - Close read shared memory
+      - Child
+      - 23
+      - -96
+      -
+    * - After unlink write array spec.
+      - Parent
+      - 321
+      - +96
+      - Children have written to write array.
+    * - After unlink read array spec.
+      - Parent
+      - 226
+      - -95
+      - Discard read array shared memory.
+    * - After unlink read array spec.
+      - Parent
+      - 35
+      - -191
+      - Back to standard executable
+
+
+.. list-table:: ``multiprocessing.shared_memory`` **Memory Usage** Single Process
+    :widths: 30 10 10 10 10 50
+    :header-rows: 1
+
+    * - Action
+      - Parent RSS
+      - dRSS
+      - Child RSS
+      - dRSS
+      - Notes
+    * - Parent start
+      - 30
+      - +30
+      -
+      -
+      - Normal Python executable.
+    * - Create numpy array
+      - 130
+      - +100
+      - 
+      - 
+      - Cost of creating a 100Mb numpy array.
+    * - Create read shared memory
+      - 225
+      - +95
+      - 
+      - 
+      - 
+    * - Create write shared memory
+      - 225
+      - 0
+      - 
+      - 
+      - No immediate memory hit.
+    * - Child start
+      -
+      -
+      - 23
+      -
+      - Normal Python executable.
+    * - Rolling median start
+      -
+      -
+      - 23
+      - +0
+      -
+    * - Rolling median first quarter completed
+      -
+      -
+      - 71
+      - +48
+      - Writing one quarter of a 100Mb array.
+    * - Rolling median half completed
+      -
+      -
+      - 119
+      - +48
+      - Writing another quarter of a 100Mb array.
+    * - Rolling median three quarters completed
+      -
+      -
+      - 166
+      - +47
+      - Writing another quarter of a 100Mb array.
+    * - Rolling median complete
+      -
+      -
+      - 214
+      - +48
+      - Writing last quarter of a 100Mb array.
+    * - Close write shared memory
+      -
+      -
+      - 119
+      - -95
+      -
+    * - Close read shared memory
+      -
+      -
+      - 23
+      - -96
+      -
+    * - After unlink write array spec.
+      - 321
+      - +96
+      -
+      -
+      - Children have written to write array.
+    * - After unlink read array spec.
+      - 226
+      - -95
+      -
+      -
+      - Discard read array shared memory.
+    * - After unlink read array spec.
+      - 35
+      - -191
+      -
+      -
+      - Back to standard executable
+
+
+Here is the breakdown of the RSS memory profile of processing a 6m long two column numpy array (100Mb) with a parent [P] and two child processes [0] and [1]:
+The change in RSS is indicated by "∆".
+
+.. list-table:: ``multiprocessing.shared_memory`` Memory Usage With Two Processes
+    :widths: 50 10 10 10 10 10 10 50
+    :header-rows: 1
+
+    * - Action
+      - [P]
+      - ∆
+      - [0]
+      - ∆
+      - [1]
+      - ∆
+      - Notes
+    * - Parent start
+      - 30
+      - +30
+      -
+      -
+      -
+      -
+      - Normal Python executable.
+    * - Create numpy array
+      - 130
+      - +100
+      -
+      -
+      -
+      -
+      - Cost of creating a 100Mb numpy array.
+    * - Create read shared memory
+      - 225
+      - +95
+      -
+      -
+      -
+      -
+      -
+    * - Create write shared memory
+      - 225
+      - 0
+      -
+      -
+      -
+      -
+      - No immediate memory cost.
+    * - Child start
+      -
+      -
+      - 23
+      - +23
+      - 23
+      - +23
+      - Normal Python executable.
+    * - Rolling median start
+      -
+      -
+      - 23
+      - +0
+      - 23
+      - +0
+      -
+    * - Rolling median 25%
+      -
+      -
+      - 71
+      - +48
+      - 71
+      - +48
+      -
+    * - Rolling median 50%
+      -
+      -
+      - 119
+      - +48
+      - 119
+      - +48
+      -
+    * - Rolling median 75%
+      -
+      -
+      - 166
+      - +47
+      - 166
+      - +47
+      -
+    * - Rolling median complete
+      -
+      -
+      - 214
+      - +48
+      - 214
+      - +48
+      -
+    * - Close write shared memory
+      -
+      -
+      - 119
+      - -95
+      - 119
+      - -95
+      -
+    * - Close read shared memory
+      -
+      -
+      - 23
+      - -96
+      - 23
+      - -96
+      -
+    * - After unlink write array spec.
+      - 321
+      - +96
+      -
+      -
+      -
+      -
+      - Children have written to write array.
+    * - After unlink read array spec.
+      - 226
+      - -95
+      -
+      -
+      -
+      -
+      - Discard read array shared memory.
+    * - All done.
+      - 227
+      - 0
+      -
+      -
+      -
+      -
+      - See note below.
+
+.. note::
+
+    There is an interesting quirk here, the array is 6m rows with 2 columns and has a residual memory of 227Mb.
+    This is not reduced by a ``gc.collect()``.
+    This does not increase if the same function calls are repeated.
+    If the array is changed to *16m* rows, 2 columns (260Mb) the residual memory is 35Mb, typical for a minimal Python process.
+

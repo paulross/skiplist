@@ -2,7 +2,7 @@ set logscale x
 set grid
 set title "Computing a Rolling Median with multiprocessing SharedMemory. 4 CPUs"
 
-set logscale y
+#set logscale y
 set xlabel "Number of rows (16 columns)"
 set ylabel "Speed compared to a Single Process"
 #set yrange [0:1600]
