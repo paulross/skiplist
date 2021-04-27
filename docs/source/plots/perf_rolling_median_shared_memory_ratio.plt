@@ -15,6 +15,8 @@ set ylabel "Speed compared to a Single Process"
 set pointsize 1
 set datafile separator whitespace
 
+set key left
+
 set terminal png size 750,500           # choose the file format
 set output "perf_rolling_median_shared_memory_ratio.png"   # choose the output device
 

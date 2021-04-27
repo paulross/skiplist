@@ -167,6 +167,12 @@ Pictorially:
     Copies output SharedMemory to a new numpy array
     Releases both SharedMemory resources.
 
+.. note::
+
+    This solution assumes that you are given a numpy array that you need to process.
+    An alternative solution is to create a shared memory object, create an empty numpy array that uses the shared memory buffer, populate that buffer and pass the buffer to the child processes.
+    This would save the cost, in time and memory, of the first copy operation.
+
 Code
 ^^^^^^
 
@@ -352,7 +358,8 @@ Finally here is the code for the parent process that puts this all together:
 Performance
 ^^^^^^^^^^^^
 
-Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times:
+Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
+Mac OS X with 4 cores and hyper-threading:
 
 .. image:: plots/perf_rolling_median_shared_memory.png
     :width: 640
@@ -362,204 +369,63 @@ Comparing the **speed** of execution compared to a single process gives:
 .. image:: plots/perf_rolling_median_shared_memory_ratio.png
     :width: 640
 
-Clearly there is some overhead so it is not really worth doing this for less that 10,000 columns.
-The number of processes equal to the number of CPUs is optimum.
+Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
+The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
 
 Memory Usage
 ^^^^^^^^^^^^
 
+What I would expect in processing a 100Mb numpy array.
 
-
-.. list-table:: ``multiprocessing.shared_memory`` **Memory Usage**
-    :widths: 30 10 10 10 50
+.. list-table:: Expected ``multiprocessing.shared_memory`` Memory Usage With 100 Mb numpy array
+    :widths: 50 30 30
     :header-rows: 1
 
     * - Action
-      - Process
-      - Process RSS (Mb)
-      - Delta RSS (Mb)
-      - Notes
-    * - Parent start
-      - Parent
-      - 30
-      -
-      - Normal Python executable.
-    * - Create numpy array
-      - Parent
-      - 130
+      - Memory Delta (Mb)
+      - Total Memory (Mb)
+    * - Create a 'read' numpy array.
       - +100
-      - Cost of creating a 100Mb numpy array.
-    * - Create read shared memory
-      - Parent
-      - 225
-      - +95
-      -
-    * - Create write shared memory
-      - Parent
-      - 225
-      - 0
-      - No immediate memory hit.
-    * - Child start
-      - Child
-      - 23
-      -
-      - Normal Python executable.
-    * - Rolling median start
-      - Child
-      - 23
-      - +0
-      -
-    * - Rolling median first quarter completed
-      - Child
-      - 71
-      - +48
-      - Writing one quarter of a 100Mb array.
-    * - Rolling median half completed
-      - Child
-      - 119
-      - +48
-      - Writing another quarter of a 100Mb array.
-    * - Rolling median three quarters completed
-      - Child
-      - 166
-      - +47
-      - Writing another quarter of a 100Mb array.
-    * - Rolling median complete
-      - Child
-      - 214
-      - +48
-      - Writing last quarter of a 100Mb array.
-    * - Close write shared memory
-      - Child
-      - 119
-      - -95
-      -
-    * - Close read shared memory
-      - Child
-      - 23
-      - -96
-      -
-    * - After unlink write array spec.
-      - Parent
-      - 321
-      - +96
-      - Children have written to write array.
-    * - After unlink read array spec.
-      - Parent
-      - 226
-      - -95
-      - Discard read array shared memory.
-    * - After unlink read array spec.
-      - Parent
-      - 35
-      - -191
-      - Back to standard executable
-
-
-.. list-table:: ``multiprocessing.shared_memory`` **Memory Usage** Single Process
-    :widths: 30 10 10 10 10 50
-    :header-rows: 1
-
-    * - Action
-      - Parent RSS
-      - dRSS
-      - Child RSS
-      - dRSS
-      - Notes
-    * - Parent start
-      - 30
-      - +30
-      -
-      -
-      - Normal Python executable.
-    * - Create numpy array
-      - 130
+      - 100
+    * - Create  a 'read' shared memory object.
       - +100
-      - 
-      - 
-      - Cost of creating a 100Mb numpy array.
-    * - Create read shared memory
-      - 225
-      - +95
-      - 
-      - 
-      - 
-    * - Create write shared memory
-      - 225
-      - 0
-      - 
-      - 
-      - No immediate memory hit.
-    * - Child start
-      -
-      -
-      - 23
-      -
-      - Normal Python executable.
-    * - Rolling median start
-      -
-      -
-      - 23
-      - +0
-      -
-    * - Rolling median first quarter completed
-      -
-      -
-      - 71
-      - +48
-      - Writing one quarter of a 100Mb array.
-    * - Rolling median half completed
-      -
-      -
-      - 119
-      - +48
-      - Writing another quarter of a 100Mb array.
-    * - Rolling median three quarters completed
-      -
-      -
-      - 166
-      - +47
-      - Writing another quarter of a 100Mb array.
-    * - Rolling median complete
-      -
-      -
-      - 214
-      - +48
-      - Writing last quarter of a 100Mb array.
-    * - Close write shared memory
-      -
-      -
-      - 119
-      - -95
-      -
-    * - Close read shared memory
-      -
-      -
-      - 23
-      - -96
-      -
-    * - After unlink write array spec.
-      - 321
-      - +96
-      -
-      -
-      - Children have written to write array.
-    * - After unlink read array spec.
-      - 226
-      - -95
-      -
-      -
-      - Discard read array shared memory.
-    * - After unlink read array spec.
-      - 35
-      - -191
-      -
-      -
-      - Back to standard executable
+      - 200
+    * - Copy the 'read' array into 'read' shared memory.
+      - 0 or very small.
+      - 200
+    * - Create  a 'write' shared memory object.
+      - +100
+      - 300
+    * - Calculate the rolling median and write into the 'write' shared memory object.
+      - 0 or very small.
+      - 300
+    * - Create an empty 'write' numpy array.
+      - +100
+      - 400
+    * - Copy the 'write' shared memory into the 'write' numpy array.
+      - 0 or very small.
+      - 400
+    * - Unlink the 'read' shared memory
+      - -100
+      - 300
+    * - Unlink the 'write' shared memory.
+      - -100
+      - 200
+    * - Delete the 'read' numpy array when de-referenced.
+      - -100
+      - 100
+    * - Delete the 'write' numpy array when de-referenced.
+      - -100
+      - Nominal.
 
+Here are the actual results running on Mac OS X.
+Two things are noticeable:
 
-Here is the breakdown of the RSS memory profile of processing a 6m long two column numpy array (100Mb) with a parent [P] and two child processes [0] and [1]:
-The change in RSS is indicated by "∆".
+* Creating the shared memory object has no memory cost. It is only when data is copied into it that the memory is allocated and that is incremental.
+* The RSS shown here is collected from ``psutil`` and it looks like this is including shared memory so there may be double counting here. ``psutil`` can not identify shared memory on Mac OS X, it can on Linux.
+
+Here is the breakdown of the RSS memory profile of processing a numpy array with 6m rows with 2 columns (100Mb) with a parent [P] and two child processes [0] and [1].
+The change in RSS is indicated by "∆" (if non-zero).
 
 .. list-table:: ``multiprocessing.shared_memory`` Memory Usage With Two Processes
     :widths: 50 10 10 10 10 10 10 50
@@ -590,6 +456,14 @@ The change in RSS is indicated by "∆".
       -
       - Cost of creating a 100Mb numpy array.
     * - Create read shared memory
+      - 130
+      -
+      -
+      -
+      -
+      -
+      - No immediate memory cost.
+    * - Copy numpy array into shared memory
       - 225
       - +95
       -
@@ -599,7 +473,7 @@ The change in RSS is indicated by "∆".
       -
     * - Create write shared memory
       - 225
-      - 0
+      -
       -
       -
       -
@@ -617,9 +491,9 @@ The change in RSS is indicated by "∆".
       -
       -
       - 23
-      - +0
+      -
       - 23
-      - +0
+      -
       -
     * - Rolling median 25%
       -
@@ -628,7 +502,7 @@ The change in RSS is indicated by "∆".
       - +48
       - 71
       - +48
-      -
+      - Incremental memory increase, similar to copy on write.
     * - Rolling median 50%
       -
       -
@@ -652,7 +526,7 @@ The change in RSS is indicated by "∆".
       - +48
       - 214
       - +48
-      -
+      - Peak figure, it looks like the RSS for the child processes is including both shared  memory areas (192Mb).
     * - Close write shared memory
       -
       -
@@ -668,7 +542,7 @@ The change in RSS is indicated by "∆".
       - -96
       - 23
       - -96
-      -
+      - Child process now using the normal memory for a Python process.
     * - After unlink write array spec.
       - 321
       - +96
@@ -676,7 +550,7 @@ The change in RSS is indicated by "∆".
       -
       -
       -
-      - Children have written to write array.
+      - Children have written to write array which is now included in the parent memory RSS.
     * - After unlink read array spec.
       - 226
       - -95
@@ -684,15 +558,15 @@ The change in RSS is indicated by "∆".
       -
       -
       -
-      - Discard read array shared memory.
-    * - All done.
+      - Discard read array shared memory. Numpy read and write arrays still exist, 100Mb each.
+    * - Parent process ends.
       - 227
-      - 0
       -
       -
       -
       -
-      - See note below.
+      -
+      - Read array and write array discarded. See note below.
 
 .. note::
 

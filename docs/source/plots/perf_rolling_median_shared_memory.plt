@@ -15,6 +15,8 @@ set ylabel "Time to Compute a Rolling Median (s)"
 set pointsize 1
 set datafile separator whitespace
 
+set key left
+
 set terminal png size 750,500           # choose the file format
 set output "perf_rolling_median_shared_memory.png"   # choose the output device
 

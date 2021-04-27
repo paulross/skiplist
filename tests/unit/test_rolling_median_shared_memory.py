@@ -72,6 +72,11 @@ def np_data_read_only(a: np.ndarray) -> bool:
     return a.__array_interface__["data"][1]
 
 
+def _print(*args, **kwargs):
+    pass
+    # print(*args, **kwargs)
+    
+
 def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_index: int,
                              write_array: np.ndarray) -> int:
     """Computes a rolling median of given column and writes out the results to the write array.
@@ -80,7 +85,7 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
     assert write_array.ndim == 2
     assert read_array.shape == write_array.shape
     proc = psutil.Process()
-    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
+    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
     skip_list = orderedstructs.SkipList(float)
     write_count = 0
     for i in range(len(read_array)):
@@ -93,16 +98,16 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
         else:
             median = np.nan
         if i == 0:
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
         if i == 1024**2 // 2:
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
         write_array[i, column_index] = median
         if i == 0:
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
         if i == 1024**2 // 2:
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
-    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
-    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
+    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
+    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
     return write_count
 
 
@@ -146,13 +151,13 @@ def compute_rolling_median_2d_from_index(read_array_spec: SharedMemoryArraySpeci
     """Computes a rolling median of the 2D read array and window length and writes it to the 2D write array.
     This is invoked as a child process."""
     proc = psutil.Process()
-    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} START.')
+    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} START.')
     with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
         with recover_array_from_shared_memory_and_close(write_array_spec) as write_array:
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
             write_count = rolling_median_of_column(read_array, window_length, column_index, write_array)
-            print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
-    print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} DONE.')
+            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
+    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} DONE.')
     return write_count
 
 
@@ -252,22 +257,23 @@ def _test_compute_rolling_median_2d_mp(rows, columns, window_length, processes):
 )
 def _test_rm_2d_mp_time(rows, columns, process_range):
     read_array = np.random.random((rows, columns))
-    print()
+    _print()
     for p in process_range:
         tim_start = time.perf_counter()
         result = compute_rolling_median_2d_mp(read_array, 21, p)
         tim_exec = time.perf_counter() - tim_start
-        print(f'Rows: {rows:8d} Columns: {columns:8d} Processes: {p:8d} Time: {tim_exec:8.3f}')
+        _print(f'Rows: {rows:8d} Columns: {columns:8d} Processes: {p:8d} Time: {tim_exec:8.3f}')
     assert 0
 
 
 @pytest.mark.parametrize(
     'start_rows, end_rows, process_range',
     (
-            (64, 1024 ** 2, range(1, 17)),
+            (64, 10 * 1024 ** 2, range(1, 17)),
+            # (64, 1024, range(1, 17)),
     )
 )
-def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
+def test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
     rows = start_rows
     columns = 16
     print()
@@ -337,10 +343,10 @@ def main() -> int:  # pragma: no cover
         t_elapsed = time.perf_counter() - t_start
         logger.info(f' DONE Processes {p} '.center(75, '-'))
         timings[p] = t_elapsed
-    print(f'Array shape {read_array.shape} size {read_array_size:,d}')
+    _print(f'Array shape {read_array.shape} size {read_array_size:,d}')
     time_1_cpu = timings[1]
     for p in sorted(timings.keys()):
-        print(
+        _print(
             f'compute_rolling_median():'
             f' Processes: {p:2d}'
             f' Time: {timings[p]:8.3f} (s)'
@@ -348,7 +354,7 @@ def main() -> int:  # pragma: no cover
             f' rate {read_array_size / timings[p]:14,.0f} values/s'
             f' c.f. one CPU {time_1_cpu / timings[p]:8.3f}'
         )
-    print('Bye, bye!')
+    _print('Bye, bye!')
     return 0
 
 
