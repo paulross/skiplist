@@ -1,5 +1,5 @@
 """
-Not really a test, more of an exploration.
+Not really a test, more of an exploration. Python 3.8+
 
 Example output::
 
@@ -32,6 +32,7 @@ import multiprocessing
 import sys
 import time
 import typing
+# Python 3.8+
 from multiprocessing import shared_memory
 
 import numpy as np

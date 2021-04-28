@@ -71,6 +71,8 @@ create_bdist_wheel() {
     pip install -r requirements.txt
     echo "---> Result of pip install:"
     pip list
+    echo "---> Running python setup.py develop:"
+    python setup.py develop
     echo "---> Running tests:"
     pytest tests
     echo "---> Running setup for bdist_wheel:"
