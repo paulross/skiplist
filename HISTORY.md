@@ -1,5 +1,9 @@
 # History
 
+## 0.3.4 (2021-04-28)
+
+* Improve documentation mainly around multiprocessing.shared_memory and tests.
+
 ## 0.3.3 (2021-03-25)
 
 * Add Python benchmarks, fix some build issues.

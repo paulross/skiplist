@@ -96,8 +96,9 @@ struct module_state {
  * 0.3.1 Support Python 3.7, 3.8 and 3.9.
  * 0.3.2 Fix lambda segfault issues with Python 3.8 and 3.9.
  * 0.3.3 Add Python benchmarks, fix some build issues.
+ * 0.3.4 Improve documentation mainly around multiprocessing.shared_memory and tests.
  */
-static const char *MODULE_VERSION = "0.3.3";
+static const char *MODULE_VERSION = "0.3.4";
 
 static const char* MODULE_BUILD_DOCS = "Initial standard build";
 
