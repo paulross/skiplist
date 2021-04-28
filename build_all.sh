@@ -74,7 +74,8 @@ create_bdist_wheel() {
     echo "---> Running python setup.py develop:"
     python setup.py develop
     echo "---> Running tests:"
-    pytest tests
+    # Fail fast with -x
+    pytest tests -x
     echo "---> Running setup for bdist_wheel:"
     python setup.py bdist_wheel
   done
