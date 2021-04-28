@@ -1,4 +1,6 @@
 """
+Not really a test, more of an exploration.
+
 Example output::
 
 2021-04-23 10:49:39,638 - mp_rolling_median_three.py#206  -  7114 - (MainThread) - INFO     - CPU count 8
@@ -273,7 +275,7 @@ def _test_rm_2d_mp_time(rows, columns, process_range):
             # (64, 1024, range(1, 17)),
     )
 )
-def test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
+def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
     rows = start_rows
     columns = 16
     print()

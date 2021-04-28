@@ -14,6 +14,8 @@ set -o pipefail # don't hide errors within pipes
 #PYTHON_VERSIONS=('3.6')
 PYTHON_VERSIONS=('3.6' '3.7' '3.8' '3.9')
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
+# Used for venvs
+PROJECT_NAME="SkipList"
 
 #printf "%-8s %8s %10s %10s %12s\n" "Ext" "Files" "Lines" "Words" "Bytes"
 
@@ -27,7 +29,7 @@ create_virtual_environments() {
   deactivate_virtual_environment
   for version in ${PYTHON_VERSIONS[*]}; do
     echo "---> For Python version ${version}"
-    venv_path="${PYTHON_VENV_ROOT}/SkipList_${version}"
+    venv_path="${PYTHON_VENV_ROOT}/${PROJECT_NAME}_${version}"
     if [ ! -d "${venv_path}" ]; then
       # Control will enter here if directory not exists.
       echo "---> Creating virtual environment at: ${venv_path}"
@@ -40,7 +42,7 @@ remove_virtual_environments() {
   deactivate_virtual_environment
   for version in ${PYTHON_VERSIONS[*]}; do
     echo "---> For Python version ${version}"
-    venv_path="${PYTHON_VENV_ROOT}/SkipList_${version}"
+    venv_path="${PYTHON_VENV_ROOT}/${PROJECT_NAME}_${version}"
     if [ -d "${venv_path}" ]; then
       # Control will enter here if directory exists.
       echo "---> Removing virtual environment at: ${venv_path}"
@@ -54,7 +56,7 @@ create_bdist_wheel() {
   for version in ${PYTHON_VERSIONS[*]}; do
     echo "---> For Python version ${version}"
     deactivate_virtual_environment
-    venv_path="${PYTHON_VENV_ROOT}/SkipList_${version}"
+    venv_path="${PYTHON_VENV_ROOT}/${PROJECT_NAME}_${version}"
     if [ ! -d "${venv_path}" ]; then
       # Control will enter here if directory doesn't exist.
       echo "---> Creating virtual environment at: ${venv_path}"
@@ -69,8 +71,8 @@ create_bdist_wheel() {
     pip install -r requirements.txt
     echo "---> Result of pip install:"
     pip list
-#    echo "---> Running tests:"
-#    pytest tests
+    echo "---> Running tests:"
+    pytest tests
     echo "---> Running setup for bdist_wheel:"
     python setup.py bdist_wheel
   done

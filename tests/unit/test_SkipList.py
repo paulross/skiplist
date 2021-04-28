@@ -738,3 +738,55 @@ def test_integer___sizeof__():
         print(f'i={i} sys.getsizeof(sl) {sys.getsizeof(sl)} delta = {sys.getsizeof(sl) - prev_size_of}')
         assert sys.getsizeof(sl) - prev_size_of > 0
         prev_size_of = sys.getsizeof(sl)
+
+
+def test_dot_file():
+    sl = orderedstructs.SkipList(float)
+    sl.insert(42.0)
+    sl.insert(21.0)
+    sl.insert(84.0)
+    dot_bytes: bytes = sl.dot_file()
+    expected = """digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "{ 1 | <f2> 0x7f8a68d86280} | { 1 | <f1> 0x7f8a68d86280}"
+shape = "record"
+];
+"HeadNode0":f1 -> "node00x7f8a68d86280":w1 [];
+"HeadNode0":f2 -> "node00x7f8a68d86280":w2 [];
+
+"node00x7f8a68d86280" [
+label = " { <w2> 2 | <f2> 0x7f8a68d9dcc0 } | { <w1> 1 | <f1> 0x7f8a68d44ec0 } | <f0> 21"
+shape = "record"
+];
+"node00x7f8a68d86280":f1 -> "node00x7f8a68d44ec0":w1 [];
+"node00x7f8a68d86280":f2 -> "node00x7f8a68d9dcc0":w2 [];
+"node00x7f8a68d44ec0" [
+label = " { <w1> 1 | <f1> 0x7f8a68d9dcc0 } | <f0> 42"
+shape = "record"
+];
+"node00x7f8a68d44ec0":f1 -> "node00x7f8a68d9dcc0":w1 [];
+"node00x7f8a68d9dcc0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 84"
+shape = "record"
+];
+"node00x7f8a68d9dcc0":f1 -> "node00x0":w1 [];
+"node00x7f8a68d9dcc0":f2 -> "node00x0":w2 [];
+
+"node00x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+node0 [shape=record, label = "<f0> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+}
+"""
+    # Node IDs are arbitrary.
+    assert len(dot_bytes.decode('ascii')) == len(expected)

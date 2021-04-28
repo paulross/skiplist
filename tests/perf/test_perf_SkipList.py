@@ -73,6 +73,8 @@ STD_SKIP_LIST_LENGTH = 1000 * 1000
 STD_TIMEIT_COUNT = 1000 * 1000
 MAX_FUNCTION_NAME_LENGTH = 90
 
+
+@pytest.mark.slow
 def test_at_integer():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.at({})'.format(length // 2), _setup_integers(length))
@@ -81,7 +83,9 @@ def test_at_integer():
     fn_name = inspect.getframeinfo(inspect.currentframe()).function
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
-    
+
+
+@pytest.mark.slow
 def test_at_float():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.at({})'.format(length // 2), _setup_floats(length))
@@ -91,6 +95,8 @@ def test_at_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_at_object_int():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.at({})'.format(length // 2), _setup_objects('int', length))
@@ -100,6 +106,8 @@ def test_at_object_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_at_object_float():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.at({})'.format(length // 2), _setup_objects('float', length))
@@ -109,6 +117,8 @@ def test_at_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_has_integer():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.has({}({}))'.format(int_type_str, length // 2),
@@ -119,6 +129,8 @@ def test_has_integer():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_has_float():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.has({})'.format(float(length / 2)), _setup_floats(length))
@@ -128,6 +140,8 @@ def test_has_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_has_object_int():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.has({}({}))'.format(int_type_str, length // 2),
@@ -138,6 +152,8 @@ def test_has_object_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_has_object_float():
     length = STD_SKIP_LIST_LENGTH
     t = timeit.Timer('sl.has({})'.format(float(length / 2)),
@@ -148,6 +164,8 @@ def test_has_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_index_mid_int():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
@@ -160,6 +178,8 @@ def test_index_mid_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
      
+
+@pytest.mark.slow
 def test_index_mid_float():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
@@ -172,6 +192,8 @@ def test_index_mid_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
      
+
+@pytest.mark.slow
 def test_index_mid_object_int():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
@@ -184,6 +206,8 @@ def test_index_mid_object_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
      
+
+@pytest.mark.slow
 def test_index_mid_object_float():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
@@ -196,6 +220,8 @@ def test_index_mid_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
      
+
+@pytest.mark.slow
 def test_index_mid_object_TotalOrdered():
     length = STD_SKIP_LIST_LENGTH
     cmdS = [
@@ -209,7 +235,9 @@ def test_index_mid_object_TotalOrdered():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
 # IARM - insert_at_remove_mid
+@pytest.mark.slow
 def test_IARM_integer():
     """Declaring a Skiplist with Python integers insert in the middle,
     call at() then remove."""
@@ -226,6 +254,8 @@ def test_IARM_integer():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_IARM_float():
     """Declaring a Skiplist with Python floats insert in the middle,
     call at() then remove."""
@@ -242,6 +272,8 @@ def test_IARM_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_IARM_object_int():
     """Declaring a Skiplist with Python objects insert in the middle,
     call at() then remove."""
@@ -258,6 +290,8 @@ def test_IARM_object_int():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
     
+
+@pytest.mark.slow
 def test_IARM_object_float():
     """Declaring a Skiplist with Python objects insert floats in the middle,
     call at() then remove."""
@@ -274,6 +308,8 @@ def test_IARM_object_float():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_IARM_object_TotalOrdered():
     """Declaring a Skiplist with Python objects that have total ordering insert
     in the middle, call at() then remove."""
@@ -290,6 +326,8 @@ def test_IARM_object_TotalOrdered():
     print('{:>{width}s}'.format(fn_name, width=(MAX_FUNCTION_NAME_LENGTH - len(fn_name))),
           '{:6.0f} (ns) '.format(1e9 * tim / num_timeits), end='')
 
+
+@pytest.mark.slow
 def test_IARM_object_TotalOrdered_user_cmp():
     """Declaring a Skiplist with Python objects that have user defined
     comparison insert in the middle, call at() then remove."""

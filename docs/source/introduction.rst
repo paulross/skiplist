@@ -33,7 +33,7 @@ This project contains a SkipList implementation in C++ with Python bindings with
 * The SkipList has exhaustive internal integrity checks.
 * Python SkipLists can be long/float/bytes/object types, the latter can have user defined comparison functions.
 * With Python 3.8+ SkipLists can be combined with the `multiprocessing.shared_memory <https://docs.python.org/3/library/multiprocessing.shared_memory.html#module-multiprocessing.shared_memory>`_ module for concurrent operation on large arrays.
-  For example see :ref:`rolling-median-mp-shared-memory-label`.
+  For example see :ref:`rolling-median-mp-shared-memory-label` which speeds up a rolling median near linearly with the number of cores.
 * This implementation is extensively performance tested in C++ and Python, see :ref:`performance-label`.
 
 There are a some novel features to this implementation:
@@ -66,7 +66,8 @@ This SkipList requires:
 Python
 --------------------------------------
 
-This SkipList supports Python 2.7 and 3.6, 3.7, 3.8, 3.9 (and, probably, some earlier Python 3 versions).
+This SkipList version supports Python 3.6, 3.7, 3.8, 3.9 (and, probably, some earlier Python 3 versions).
+Earlier versions supported Python 2.7, this version might still do that.
 
 .. code-block:: sh
 

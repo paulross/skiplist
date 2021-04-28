@@ -1314,7 +1314,7 @@ static PyMethodDef SkipList_methods[] = {
     },
     /* __sizeof__ is an alias to this. */
     {"size_of", (PyCFunction)SkipList_size_of, METH_NOARGS,
-        "Return the number of elements in the skip list."
+        "Return an estimate of the number of bytes of memory used by the skip list."
     },
     {"height", (PyCFunction)SkipList_height, METH_NOARGS,
         "Return the height of the skip list head node."

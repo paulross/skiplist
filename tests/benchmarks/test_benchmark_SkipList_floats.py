@@ -11,6 +11,7 @@ import pytest
 import orderedstructs
 
 
+# The iar (insert, at, remove) tests are more representative.
 ONLY_BENCHMARK_INSERT_AT_REMOVE = True
 
 def _setup_skiplist(typ: typing.Type, n: int) -> orderedstructs.SkipList:

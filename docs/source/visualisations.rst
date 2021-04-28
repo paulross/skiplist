@@ -26,7 +26,7 @@ Function              Description
 ===================== ==============================================================================
 
 ----------------------------
-Simple Example
+Simple Example in C++
 ----------------------------
 
 This takes a single snapshot of the skip list. Create a skip list and insert 5 values into it.
@@ -38,22 +38,22 @@ Then call ``dotFile()`` to write out the state of the skip list stdout and ``dot
 
     void doc_insert_simple() {
         OrderedStructs::SkipList::HeadNode<int> sl;
-        
+
         sl.insert(42);
         sl.insert(84);
         sl.insert(21);
         sl.insert(100);
         sl.insert(12);
-        
+
         sl.dotFile(std::cout);
         sl.dotFileFinalise(std::cout);
     }
 
-Saving stdout to a text file, say *doc_simple.dot* then running this on the command line::
+Saving ``stdout`` to a text file, say *doc_simple.dot* then running this on the command line:
 
 .. code-block:: bash
 
-    dot -odoc_simple.png -png doc_simple.dot
+    dot -odoc_simple.png -Tpng doc_simple.dot
 
 Will produce something like this SVG diagram:
 
@@ -61,11 +61,11 @@ Will produce something like this SVG diagram:
     :width: 800
 
 
-----------------------------
 Inserting the Values 0 to 7
 ----------------------------
 
-Multiple snapshots can also be created showing how the skiplist grows and shrinks. This diagram was created with the following C++ code:
+Multiple snapshots can also be created showing how the skiplist grows and shrinks.
+This diagram was created with the following C++ code:
 
 .. code-block:: cpp
 
@@ -99,7 +99,6 @@ Will produce this [*doc_insert.png*]:
 .. .. image:: visualisations/doc_insert_remove.png
 ..     :width: 640
 
----------------------------------------------------------------
 Inserting the Values 0 to 3 and Removing them Multiple Times
 ---------------------------------------------------------------
 
@@ -133,3 +132,81 @@ Produces this image, note how the shape of the skip list nodes changes with repe
 
 .. image:: visualisations/doc_insert_remove_repeat.png
     :width: 500
+
+----------------------------
+Simple Example in Python
+----------------------------
+
+The Python interface is via a single function ``.dot_file()`` that returns a bytes object that is suitable for saving as a .dot file.
+
+.. code-block:: python
+
+    import cSkipList
+
+    sl = cSkipList.PySkipList(float)
+
+    sl.insert(42.0)
+    sl.insert(21.0)
+    sl.insert(84.0)
+
+    dot_bytes = sl.dot_file()
+
+    with open('doc_simple_py.dot', 'w') as dot_file:
+        dot_file.write(dot_bytes.decode('ascii'))
+
+*doc_simple_py.dot* will look something like:
+
+.. code-block:: text
+
+    digraph SkipList {
+    label = "SkipList."
+    graph [rankdir = "LR"];
+    node [fontsize = "12" shape = "ellipse"];
+    edge [];
+
+    subgraph cluster0 {
+    style=dashed
+    label="Skip list iteration 0"
+
+    "HeadNode0" [
+    label = "{ 1 | <f2> 0x7f8a68d86280} | { 1 | <f1> 0x7f8a68d86280}"
+    shape = "record"
+    ];
+    "HeadNode0":f1 -> "node00x7f8a68d86280":w1 [];
+    "HeadNode0":f2 -> "node00x7f8a68d86280":w2 [];
+
+    "node00x7f8a68d86280" [
+    label = " { <w2> 2 | <f2> 0x7f8a68d9dcc0 } | { <w1> 1 | <f1> 0x7f8a68d44ec0 } | <f0> 21"
+    shape = "record"
+    ];
+    "node00x7f8a68d86280":f1 -> "node00x7f8a68d44ec0":w1 [];
+    "node00x7f8a68d86280":f2 -> "node00x7f8a68d9dcc0":w2 [];
+    "node00x7f8a68d44ec0" [
+    label = " { <w1> 1 | <f1> 0x7f8a68d9dcc0 } | <f0> 42"
+    shape = "record"
+    ];
+    "node00x7f8a68d44ec0":f1 -> "node00x7f8a68d9dcc0":w1 [];
+    "node00x7f8a68d9dcc0" [
+    label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 84"
+    shape = "record"
+    ];
+    "node00x7f8a68d9dcc0":f1 -> "node00x0":w1 [];
+    "node00x7f8a68d9dcc0":f2 -> "node00x0":w2 [];
+
+    "node00x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+    }
+
+    node0 [shape=record, label = "<f0> | ", style=invis, width=0.01];
+    node0:f0 -> HeadNode0 [style=invis];
+    }
+
+Running:
+
+.. code-block:: bash
+
+    dot -odoc_simple_py.png -Tpng doc_simple_py.dot
+
+Will produce something like this:
+
+.. image:: visualisations/doc_simple_py.png
+    :width: 640

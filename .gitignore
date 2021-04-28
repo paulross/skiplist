@@ -60,3 +60,6 @@ tmp/
 # PyCharm
 .idea/
 
+# Benchmarks
+.benchmarks/*
+benchmark_*.svg

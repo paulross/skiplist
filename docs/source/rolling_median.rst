@@ -20,9 +20,10 @@ A powerful use case for a skip list is in the computation of a rolling fraction,
 
 Here is a reasonable C++ attempt at doing that with the arguments:
 
-* ``data`` - A vector of data of type ``T``.
+* ``data`` - A vector of data of type ``T`` of length ``L``.
 * ``win_length`` - a 'window' size. The median is computed over this number of values.
-* ``result`` - a destination vector for the result. This will end up with ``count - win_length`` values.
+* ``result`` - a destination vector for the result.
+  This will either end up with ``L - win_length`` values, alternatively is will be ``L`` long and start with ``win_length`` ``NaN`` s.
 
 Rolling median code using a skip list might look like this, error checking is omitted:
 
@@ -85,7 +86,8 @@ The above code assumes that if the window length is even that the median is at `
 Rolling Median in Python
 ----------------------------------------
 
-Here is an example of computing a rolling median of a ``numpy`` 1D array:
+Here is an example of computing a rolling median of a ``numpy`` 1D array.
+This creates an array with the same length as the input starting with ``window_length`` ``NaN`` s:
 
 .. code-block:: python
 
@@ -376,6 +378,7 @@ Memory Usage
 ^^^^^^^^^^^^
 
 What I would expect in processing a 100Mb numpy array.
+Values are in Mb.
 
 .. list-table:: Expected ``multiprocessing.shared_memory`` Memory Usage With 100 Mb numpy array
     :widths: 50 30 30
@@ -425,19 +428,20 @@ Two things are noticeable:
 * The RSS shown here is collected from ``psutil`` and it looks like this is including shared memory so there may be double counting here. ``psutil`` can not identify shared memory on Mac OS X, it can on Linux.
 
 Here is the breakdown of the RSS memory profile of processing a numpy array with 6m rows with 2 columns (100Mb) with a parent [P] and two child processes [0] and [1].
-The change in RSS is indicated by "∆" (if non-zero).
+The change in RSS is indicated by "d" (if non-zero).
+Values are in Mb.
 
 .. list-table:: ``multiprocessing.shared_memory`` Memory Usage With Two Processes
     :widths: 50 10 10 10 10 10 10 50
     :header-rows: 1
 
     * - Action
-      - [P]
-      - ∆
-      - [0]
-      - ∆
-      - [1]
-      - ∆
+      - P
+      - dP
+      - 0
+      - d0
+      - 1
+      - d1
       - Notes
     * - Parent start
       - 30
@@ -543,14 +547,38 @@ The change in RSS is indicated by "∆" (if non-zero).
       - 23
       - -96
       - Child process now using the normal memory for a Python process.
+    * - After child processes complete.
+      - 227
+      - +2
+      -
+      -
+      -
+      -
+      - Children have written to write shared memory which is now included in the parent memory RSS.
+    * - After creating empty numpy write array.
+      - 227
+      -
+      -
+      -
+      -
+      -
+      - NOTE: Buffer is lazily allocated.
+    * - After writing write shared memory to numpy write array.
+      - 419
+      - +192
+      -
+      -
+      -
+      -
+      - Not sure why this twice what is expected (100Mb).
     * - After unlink write array spec.
       - 321
-      - +96
+      - -98
       -
       -
       -
       -
-      - Children have written to write array which is now included in the parent memory RSS.
+      -
     * - After unlink read array spec.
       - 226
       - -95
