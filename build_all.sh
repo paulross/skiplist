@@ -65,7 +65,7 @@ create_bdist_wheel() {
     # https://stackoverflow.com/questions/42997258/virtualenv-activate-script-wont-run-in-bash-script-with-set-euo
     set +u
     source "${venv_path}/bin/activate"
-    set +u
+    set -u
     echo "---> Installing everything via pip:"
     pip install -U pip setuptools wheel
     pip install -r requirements.txt
