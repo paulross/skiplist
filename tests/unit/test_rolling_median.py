@@ -81,7 +81,7 @@ def test_simple_array(input_vector, window_length, expected):
         (
             [0.0, 1.0, math.nan, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0],
             5,
-            'Can not work with something that does not compare equal to itself.',
+            'Can not insert a NaN with error "Can not work with something that does not compare equal to itself."',
         ),
     )
 )
