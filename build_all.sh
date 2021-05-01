@@ -20,15 +20,18 @@ PROJECT_NAME="SkipList"
 #printf "%-8s %8s %10s %10s %12s\n" "Ext" "Files" "Lines" "Words" "Bytes"
 
 deactivate_virtual_environment() {
+  # https://stackoverflow.com/questions/42997258/virtualenv-activate-script-wont-run-in-bash-script-with-set-euo
+  set +u
   if command -v deactivate &>/dev/null; then
     deactivate
   fi
+  set -u
 }
 
 create_virtual_environments() {
   deactivate_virtual_environment
   for version in ${PYTHON_VERSIONS[*]}; do
-    echo "---> For Python version ${version}"
+    echo "---> Create virtual environment for Python version ${version}"
     venv_path="${PYTHON_VENV_ROOT}/${PROJECT_NAME}_${version}"
     if [ ! -d "${venv_path}" ]; then
       # Control will enter here if directory not exists.
