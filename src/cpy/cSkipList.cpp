@@ -321,7 +321,7 @@ SkipList_has(SkipList *self, PyObject *arg)
                     self->pSl_double->has(PyFloat_AS_DOUBLE(arg)));
             } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                PyErr_Format(PyExc_ValueError, "Can not has() a NaN with error \"%s\"", err.message().c_str());
                 return NULL;
             }
             break;
@@ -756,7 +756,7 @@ SkipList_index(SkipList *self, PyObject *arg)
                                             );
             } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                PyErr_Format(PyExc_ValueError, "Can not index a NaN with error \"%s\"", err.message().c_str());
                 goto except;
             } catch (OrderedStructs::SkipList::ValueError &err) {
                 PyErr_SetString(PyExc_ValueError, err.message().c_str());
@@ -899,7 +899,7 @@ SkipList_insert(SkipList *self, PyObject *arg) {
                 self->pSl_double->insert(PyFloat_AS_DOUBLE(arg));
             } catch (OrderedStructs::SkipList::FailedComparison &err) {
                 /* This will happen if arg is a NaN. */
-                PyErr_SetString(PyExc_ValueError, err.message().c_str());
+                PyErr_Format(PyExc_ValueError, "Can not insert a NaN with error \"%s\"", err.message().c_str());
                 return NULL;
             }
             break;
@@ -970,8 +970,13 @@ _remove_double(SkipList *self, PyObject *arg) {
     try {
         value = self->pSl_double->remove(value);
     } catch (OrderedStructs::SkipList::ValueError &err) {
+        // Value not present.
         // For whatever reason PyErr_Format does not support doubles
         PyErr_SetString(PyExc_ValueError, err.message().c_str());
+        return NULL;
+    } catch (OrderedStructs::SkipList::FailedComparison &err) {
+        // Catch NaN Remove
+        PyErr_Format(PyExc_ValueError, "Can not remove a NaN with error \"%s\"", err.message().c_str());
         return NULL;
     }
     return PyFloat_FromDouble(value);

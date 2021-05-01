@@ -1,4 +1,5 @@
 import itertools
+import math
 import sys
 
 try:
@@ -158,7 +159,7 @@ def test_single_insert_float_NaN_raises():
     with pytest.raises(ValueError) as err:
         sl.insert(math_nan)
     assert err.value.args[0] == \
-           'Can not work with something that does not compare equal to itself.'
+           'Can not insert a NaN with error "Can not work with something that does not compare equal to itself."'
     assert sl.lacks_integrity() == 0
 
 
@@ -168,7 +169,7 @@ def test_has_float_NaN_raises():
     with pytest.raises(ValueError) as err:
         sl.has(math_nan)
     assert err.value.args[0] == \
-           'Can not work with something that does not compare equal to itself.'
+           'Can not has() a NaN with error "Can not work with something that does not compare equal to itself."'
     assert sl.lacks_integrity() == 0
 
 
@@ -790,3 +791,19 @@ node0:f0 -> HeadNode0 [style=invis];
 """
     # Node IDs are arbitrary, also the output varies with Python versions so just check that there is something.
     assert len(dot_bytes.decode('ascii')) > 0
+
+
+def test_node_remove_nan_raises():
+    sl = orderedstructs.SkipList(float)
+    with pytest.raises(ValueError) as err:
+        sl.remove(math.nan)
+    assert err.value.args[0] == \
+           'Can not remove a NaN with error "Can not work with something that does not compare equal to itself."'
+
+
+def test_node_index_nan_raises():
+    sl = orderedstructs.SkipList(float)
+    with pytest.raises(ValueError) as err:
+        sl.index(math.nan)
+    assert err.value.args[0] == \
+           'Can not index a NaN with error "Can not work with something that does not compare equal to itself."'
