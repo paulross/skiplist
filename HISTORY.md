@@ -1,5 +1,9 @@
 # History
 
+## 0.3.5 (2021-05-02)
+
+* Fix uncaught exception when trying to remove a NaN.
+
 ## 0.3.4 (2021-04-28)
 
 * Improve documentation mainly around multiprocessing.shared_memory and tests.
