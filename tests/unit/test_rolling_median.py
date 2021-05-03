@@ -166,7 +166,7 @@ def test_forward_fill(input_vector, expected):
 def rolling_median_with_nan_forward_fill(vector: typing.List[float], window_length: int) -> typing.List[float]:
     """Computes a rolling median of a vector of floats and returns the results. NaNs will be forward filled."""
     forward_fill(vector)
-    return rolling_median_with_nan(vector, window_length)
+    return rolling_median_no_nan(vector, window_length)
 
 
 @pytest.mark.parametrize(
@@ -175,16 +175,16 @@ def rolling_median_with_nan_forward_fill(vector: typing.List[float], window_leng
         (
             [0.0, math.nan, 2.0, 3.0, 4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
             5,
-            [math.nan, math.nan, math.nan, math.nan, math.nan, 3.0, 4.0, math.nan, 4.0, 5.0, ],
+            [math.nan, math.nan, math.nan, math.nan, math.nan, 2.0, 3.0, 4.0, 5.0, 6.0],
         ),
         (
             [0.0, math.nan, 2.0, math.nan, 4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
             5,
-            [math.nan, math.nan, math.nan, math.nan, math.nan, 4.0, 5.0, math.nan, 5.0, 5.0, ],
+            [math.nan, math.nan, math.nan, math.nan, math.nan, 2.0, 2.0, 4.0, 5.0, 6.0, ],
         ),
     )
 )
 def test_simple_array_works_with_nan_ffill(input_vector, window_length, expected):
-    result = rolling_median_with_nan(input_vector, window_length)
+    result = rolling_median_with_nan_forward_fill(input_vector, window_length)
     print(result)
     assert lists_are_equal(result, expected)

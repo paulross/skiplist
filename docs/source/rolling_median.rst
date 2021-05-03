@@ -603,3 +603,125 @@ Values are in Mb.
     This does not increase if the same function calls are repeated.
     If the array is changed to *16m* rows, 2 columns (260Mb) the residual memory is 35Mb, typical for a minimal Python process.
 
+
+Handling NaNs
+-----------------------------------------
+
+`Not-a-number <https://en.wikipedia.org/wiki/NaN>`_ (NaN) values can not be inserted into a Skip List as they are not comparable to anything (including themselves).
+An attempt to call ``insert()``, ``index()``, ``has()``, ``remove()`` with a NaN will raise an error.
+In C++ this will throw a ``OrderedStructs::SkipList::FailedComparison``.
+In Python it will raise a ``ValueError``.
+This section looks at handling NaNs in Python.
+
+Here are several ways of handling NaNs:
+
+* Propogate the Exception.
+* Make the Median NaN.
+* Forward Filling.
+
+Propogate the Exception
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a rolling median that will raise a ``ValueError`` if there is a NaN in the input.
+
+.. code-block:: python
+
+    def rolling_median_no_nan(vector: typing.List[float],
+                              window_length: int) -> typing.List[float]:
+        """Computes a rolling median of a vector of floats and returns the results.
+        NaNs will throw an exception."""
+        skip_list = orderedstructs.SkipList(float)
+        ret: typing.List[float] = []
+        for i in range(len(vector)):
+            value = vector[i]
+            skip_list.insert(float(value))
+            if i >= window_length:
+                median = skip_list.at(window_length // 2)
+                skip_list.remove(vector[i - window_length])
+            else:
+                median = math.nan
+            ret.append(median)
+        return ret
+
+
+Make the Median NaN
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a rolling median that will make the median NaN if there is a NaN in the input.
+Incidentally this is the approach that numpy takes.
+
+.. code-block:: python
+
+    def rolling_median_with_nan(vector: typing.List[float],
+                                window_length: int) -> typing.List[float]:
+        """Computes a rolling median of a vector of floats and returns the results.
+        NaNs will be consumed."""
+        skip_list = orderedstructs.SkipList(float)
+        ret: typing.List[float] = []
+        for i in range(len(vector)):
+            value = vector[i]
+            if math.isnan(value):
+                median = math.nan
+            else:
+                skip_list.insert(float(value))
+                if i >= window_length:
+                    median = skip_list.at(window_length // 2)
+                    remove_value = vector[i - window_length]
+                    if not math.isnan(remove_value):
+                        skip_list.remove(remove_value)
+                else:
+                    median = math.nan
+            ret.append(median)
+        return ret
+
+The first row is the input, the second the output. Window length is 5:
+
+.. code-block:: python
+
+    [0.0,      math.nan,      2.0,      3.0,      4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
+    [math.nan, math.nan, math.nan, math.nan, math.nan, 3.0, 4.0, math.nan, 4.0, 5.0],
+
+Forward Filling
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Another approach is to replace the NaN with the previous value.
+This is *very popular* in FinTech and is commonly know as *Forward Filling*.
+Here is an implementation:
+
+.. code-block:: python
+
+    def forward_fill(vector: typing.List[float]) -> None:
+        """Forward fills NaNs in-place."""
+        previous_value = math.nan
+        for i in range(len(vector)):
+            value = vector[i]
+            if math.isnan(value):
+                vector[i] = previous_value
+            if not math.isnan(value):
+                previous_value = value
+
+    def rolling_median_with_nan_forward_fill(vector: typing.List[float],
+                                             window_length: int) -> typing.List[float]:
+        """Computes a rolling median of a vector of floats and returns the results.
+        NaNs will be forward filled."""
+        forward_fill(vector)
+        return rolling_median_no_nan(vector, window_length)
+
+The first row is the input, the second the output. Window length is 5:
+
+.. code-block:: python
+
+    [0.0,      math.nan,      2.0,      3.0,      4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
+    [math.nan, math.nan, math.nan, math.nan, math.nan, 2.0, 3.0,      4.0, 5.0, 6.0],
+
+Another example, the first row is the input, the second the output. Window length is 5:
+
+.. code-block:: python
+
+    [0.0,      math.nan,      2.0, math.nan,      4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
+    [math.nan, math.nan, math.nan, math.nan, math.nan, 2.0, 2.0,      4.0, 5.0, 6.0],
+
+
+There is no 'right way' to handle NaNs.
+They are always problematic.
+For example what is the 'right way' to sort a sequence of values that may include NaNs?
