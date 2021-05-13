@@ -10,5 +10,6 @@ gnuplot -p perf_cpp_threaded_fixed_size.plt
 gnuplot -p perf_cpp_threaded_vari_size.plt
 gnuplot -p perf_cpp_threaded_vs_single.plt
 gnuplot -p perf_roll_median_shared_memory.plt
-gnuplot -p perf_roll_median_shared_memory_ratio.plt
+gnuplot -p perf_rolling_median_shared_memory_ratio.plt
+gnuplot -p perf_rolling_median_shared_memory_ratio_by_col.plt
 echo "All plots done"
