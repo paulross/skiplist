@@ -30,7 +30,7 @@ extra_compile_args = [
 if os.environ.get("USING_GCC"):
     extra_compile_args.append('-Wno-unknown-pragmas')
     extra_compile_args.append('-Wno-cast-function-type')
-    extra_compile_args.append('-Wno-missing-field_initialisers')
+    extra_compile_args.append('-Wno-missing-field_initializers')
 
 DEBUG = False
 
