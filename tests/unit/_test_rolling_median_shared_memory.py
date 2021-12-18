@@ -28,6 +28,7 @@ Process finished with exit code 0
 import contextlib
 import io
 import logging
+import math
 import multiprocessing
 import sys
 import time
@@ -268,24 +269,49 @@ def _test_rm_2d_mp_time(rows, columns, process_range):
         _print(f'Rows: {rows:8d} Columns: {columns:8d} Processes: {p:8d} Time: {tim_exec:8.3f}')
     assert 0
 
+# s = 10 * 1024 ** 2 * 16
+# f'{s:,d}'
+# '167,772,160'
+# f'{s*8:,d}'
+# '1,342,177,280'
+NUMPY_SIZE = 8 * 1024 ** 2 * 16
+NUMPY_SIZE = 10 * 1024 ** 2 * 16
 
 @pytest.mark.parametrize(
-    'start_rows, end_rows, process_range',
+    'min_size, max_size, columns, process_range',
     (
-            (64, 10 * 1024 ** 2, range(1, 17)),
-            # (64, 1024, range(1, 17)),
+        # (1024, NUMPY_SIZE, 16, 16),
+        # (1024, NUMPY_SIZE, 1024, 16),
+        (1024, NUMPY_SIZE, 16 * 1024, 16),
     )
 )
-def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
-    rows = start_rows
-    columns = 16
+def test_rm_2d_mp_time_b(min_size, max_size, columns, max_processes):
+    rm_2d_mp_time_b(min_size, max_size, columns, max_processes)
+    assert 0
+
+
+def rm_2d_mp_time_b(row_range, columns, max_processes):
+    """"""
+    # NUM_POINTS = 8
+    # rows = min_size // columns
+    # rows_max = max_size // columns
+    # rows_inc = 2**int(0.5 + (int(math.log2(rows_max)) - int(math.log2(rows))) / NUM_POINTS)
+    # rows_inc = max(rows_inc, 2)
     print()
+    print(
+        f'Rows {row_range}'
+        f' columns {columns}'
+        f' max processes {max_processes}'
+    )
     print(f'{"rows":8} {"columns":8} {"processes":8} {"tim_exec":8}')
     # results is {rows : {processes : time, ...}, ...}
     results = {}
-    while rows <= end_rows:
+    processes = set()
+    tim_overall = time.perf_counter()
+    for rows in row_range:
         read_array = np.random.random((rows, columns))
-        for p in process_range:
+        p = 1
+        while p <= max_processes:
             tim_start = time.perf_counter()
             _result = compute_rolling_median_2d_mp(read_array, 21, p)
             tim_exec = time.perf_counter() - tim_start
@@ -293,24 +319,28 @@ def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
             if rows not in results:
                 results[rows] = {}
             results[rows][p] = tim_exec
-        rows *= 2
-    # gnuplot dat output
+            processes.add(p)
+            p *= 2
+        # rows *= rows_inc
+        # if rows > 64:
+        #     break
     print()
-    print('# Raw times')
+    # gnuplot dat output
+    print(f'# Raw times columns={columns}')
     print(f'# {"Rows":6}', end='')
-    for p in process_range:
+    for p in sorted(processes):
         s = f'p={p}'
         print(f' {s:>8}', end='')
     print()
     for row in sorted(results.keys()):
-        print(f'# {row:<8d}', end='')
+        print(f'{row:<8d}', end='')
         for p in sorted(results[row].keys()):
             print(f' {results[row][p]:8.3f}', end='')
         print()
     print()
-    print('# Speedup factor over a single process.')
+    print(f'# Speedup factor over a single process. columns={columns}')
     print(f'# {"Rows":6}', end='')
-    for p in process_range:
+    for p in processes:
         s = f'p={p}'
         print(f' {s:>8}', end='')
     print()
@@ -319,10 +349,12 @@ def _test_rm_2d_mp_time_b(start_rows, end_rows, process_range):
         for p in sorted(results[row].keys()):
             print(f' {results[row][1] / results[row][p]:8.3f}', end='')
         print()
-    assert 0
+    tim_exec_overall = time.perf_counter() - tim_overall
+    print(f'Overall time: {tim_exec_overall:8.3f}')
+    return results
 
 
-def main() -> int:  # pragma: no cover
+def experiment() -> int:  # pragma: no cover
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(filename)24s#%(lineno)-4d - %(process)5d - (%(threadName)-10s) - %(levelname)-8s - %(message)s',
                         stream=sys.stdout)
@@ -358,6 +390,46 @@ def main() -> int:  # pragma: no cover
             f' c.f. one CPU {time_1_cpu / timings[p]:8.3f}'
         )
     _print('Bye, bye!')
+    return 0
+
+
+def range_power(minimum, maximum, multiplier):
+    value = minimum
+    while value <= maximum:
+        yield value
+        value *= multiplier
+
+def dump_results(results):
+    # results is {columns : {rows : {processes : time, ...}, ...}, ...}
+    # Make a gnuplot table
+    rows = set()
+    for columns in results:
+        rows |= set(results[columns].keys())
+    processes = set()
+    for columns in results:
+        for rows in results[columns]:
+            processes |= set(results[columns][rows].keys())
+    # Now arrange in a table
+    for row_count in sorted(rows):
+        for column_count in sorted(results.keys()):
+            tim_unity = results[column_count][row_count][1]
+            for process_count in sorted(processes):
+                try:
+                    tim = results[column_count][row_count][process_count]
+                except KeyError:
+                    tim = math.nan
+
+
+def main() -> int:  # pragma: no cover
+    # experiment()
+    # pytest.main()
+    print(f'NUMPY_SIZE: {NUMPY_SIZE:,d}')
+    # results is {columns : {rows : {processes : time, ...}, ...}, ...}
+    results = {}
+    results[16]         = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
+    results[1024]       = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
+    results[64 * 1024]  = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
+    dump_results(results)
     return 0
 
 
