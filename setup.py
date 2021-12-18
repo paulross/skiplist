@@ -24,8 +24,10 @@ extra_compile_args = [
     '-Wno-stdlibcxx-not-found',
 ]
 
-# For GCC
-if distutils.ccompiler.get_default_compiler() == 'gcc':
+# Horrible hack to support GCC
+# To activate this you need to set the USING_GCC environment variable or call
+# USING_GCC=1 python setup.py ...
+if os.environ.get("USING_GCC"):
     extra_compile_args.append('-Wno-unknown-pragmas')
     extra_compile_args.append('-Wno-cast-function-type')
 
