@@ -1,5 +1,11 @@
 # History
 
+## 0.3.6 (2021-12-18)
+
+* Add documentation on NaN in rolling median.
+* Add plots using shared_memory.
+* Add Python 3.10 support.
+
 ## 0.3.5 (2021-05-02)
 
 * Fix uncaught exception when trying to remove a NaN.

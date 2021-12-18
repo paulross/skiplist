@@ -309,7 +309,10 @@ def test_ordered_cmp_function_lambda_too_few_arguments(cls):
     if sys.version_info.major == 2:
         exp = '<lambda>() takes exactly 1 argument (2 given)'
     elif sys.version_info.major == 3:
-        exp = '<lambda>() takes 1 positional argument but 2 were given'
+        if sys.version_info.minor >= 10:
+            exp = 'test_ordered_cmp_function_lambda_too_few_arguments.<locals>.<lambda>() takes 1 positional argument but 2 were given'
+        else:
+            exp = '<lambda>() takes 1 positional argument but 2 were given'
     else:
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
@@ -327,7 +330,10 @@ def test_ordered_cmp_function_lambda_too_many_arguments(cls):
     if sys.version_info.major == 2:
         exp = '<lambda>() takes exactly 3 arguments (2 given)'
     elif sys.version_info.major == 3:
-        exp = "<lambda>() missing 1 required positional argument: 'z'"
+        if sys.version_info.minor >= 10:
+            exp = "test_ordered_cmp_function_lambda_too_many_arguments.<locals>.<lambda>() missing 1 required positional argument: 'z'"
+        else:
+            exp = "<lambda>() missing 1 required positional argument: 'z'"
     else:
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
@@ -349,7 +355,10 @@ def test_ordered_cmp_function_local_too_few_arguments(cls):
     if sys.version_info.major == 2:
         exp = 'cmp() takes exactly 1 argument (2 given)'
     elif sys.version_info.major == 3:
-        exp = 'cmp() takes 1 positional argument but 2 were given'
+        if sys.version_info.minor >= 10:
+            exp = 'test_ordered_cmp_function_local_too_few_arguments.<locals>.cmp() takes 1 positional argument but 2 were given'
+        else:
+            exp = 'cmp() takes 1 positional argument but 2 were given'
     else:
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp
@@ -371,7 +380,10 @@ def test_ordered_cmp_function_local_too_many_arguments(cls):
     if sys.version_info.major == 2:
         exp = "cmp() takes exactly 3 arguments (2 given)"
     elif sys.version_info.major == 3:
-        exp = "cmp() missing 1 required positional argument: 'z'"
+        if sys.version_info.minor >= 10:
+            exp = "test_ordered_cmp_function_local_too_many_arguments.<locals>.cmp() missing 1 required positional argument: 'z'"
+        else:
+            exp = "cmp() missing 1 required positional argument: 'z'"
     else:
         assert 0, 'Unsupported Python version.'
     assert err.value.args[0] == exp

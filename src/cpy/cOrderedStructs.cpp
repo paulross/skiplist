@@ -98,6 +98,7 @@ struct module_state {
  * 0.3.3 (2021-03-25) Add Python benchmarks, fix some build issues.
  * 0.3.4 (2021-04-28) Improve documentation mainly around multiprocessing.shared_memory and tests.
  * 0.3.5 (2021-05-02) Fix uncaught exception when trying to remove a NaN.
+ * 0.3.6 (2021-12-18) Documentation and test only.
  */
 static const char *MODULE_VERSION = "0.3.4";
 
