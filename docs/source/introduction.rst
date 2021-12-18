@@ -66,13 +66,19 @@ This SkipList requires:
 Python
 --------------------------------------
 
-This SkipList version supports Python 3.6, 3.7, 3.8, 3.9 (and, probably, some earlier Python 3 versions).
+This SkipList version supports Python 3.6, 3.7, 3.8, 3.9, 3.10 (and, probably, some earlier Python 3 versions).
 Earlier versions supported Python 2.7, this version might still do that.
 
 .. code-block:: sh
 
     $ cd <skiplist>
     $ python setup.py install
+
+If you are on a platform that uses GCC you will need to set the environment variable ``USING_GCC`` before invoking ``setup.py`` thus::
+
+.. code-block:: sh
+
+    $ USING_GCC=1 python setup.py install
 
 ======================================
 Testing
