@@ -322,6 +322,7 @@
 #define INCLUDE_METHODS_THAT_USE_STREAMS
 //#undef INCLUDE_METHODS_THAT_USE_STREAMS
 
+#include <functional>
 #include <vector>
 #include <set> // Used for HeadNode::_lacksIntegrityNodeReferencesNotInList()
 #include <string> // Used for class Exception

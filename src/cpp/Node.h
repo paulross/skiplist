@@ -9,8 +9,6 @@
 #ifndef SkipList_Node_h
 #define SkipList_Node_h
 
-#include <functional>
-
 #include "IntegrityEnums.h"
 
 #if __cplusplus < 201103L

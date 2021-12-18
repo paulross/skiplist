@@ -1358,7 +1358,18 @@ static PyMethodDef SkipList_methods[] = {
 
 /* Support for len(). */
 static PySequenceMethods SkipList_SequenceMethods = {
-    .sq_length = &SkipList_length
+    &SkipList_length,   /* sq_length */
+    0,                  /* sq_concat */
+    0,                  /* sq_repeat */
+    0,                  /* sq_item */
+    0,                  /* sq_slice */
+    0,                  /* sq_ass_item */
+    0,                  /* sq_ass_slice */
+    0,                  /* sq_contains */
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 6
+    0,                  /* sq_inplace_concat */
+    0,                  /* sq_inplace_repeat */
+#endif
 };
 
 static char _py_skip_list_docs[] =
@@ -1371,14 +1382,14 @@ PyTypeObject SkipListType = {
     .tp_name = ORDERED_STRUCTS_MODULE_NAME ".SkipList",
     .tp_basicsize = sizeof(SkipList),
     .tp_dealloc = (destructor)SkipList_dealloc,
+    /* TODO: in tp_as_sequence implement
+     * PySequenceMethods.sq_item  etc. */
+    .tp_as_sequence = &SkipList_SequenceMethods,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_doc = _py_skip_list_docs,
     .tp_methods = SkipList_methods,
     .tp_members = SkipList_members,
     .tp_init = (initproc)SkipList_init,
-    .tp_new = SkipList_new,
-    /* TODO: in tp_as_sequence implement
-     * PySequenceMethods.sq_item  etc. */
-    .tp_as_sequence = &SkipList_SequenceMethods
+    .tp_new = SkipList_new
 };
 

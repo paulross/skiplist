@@ -2,6 +2,7 @@
 import os
 
 from setuptools import setup, find_packages
+import distutils
 from distutils.core import Extension
 
 # Makefile:
@@ -22,6 +23,11 @@ extra_compile_args = [
     '-USKIPLIST_THREAD_SUPPORT',
     '-Wno-stdlibcxx-not-found',
 ]
+
+# For GCC
+if distutils.ccompiler.get_default_compiler() == 'gcc':
+    extra_compile_args.append('-Wno-unknown-pragmas')
+    extra_compile_args.append('-Wno-cast-function-type')
 
 DEBUG = False
 
@@ -45,7 +51,7 @@ orderedstructs = Extension(
     ],
     library_dirs=[os.getcwd(), ],
     extra_compile_args=extra_compile_args,
-    extra_link_args=['-lc++'],
+    extra_link_args=['-lstdc++'],
     language='c++11',
 )
 
@@ -68,7 +74,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.6',
+    version='0.3.7',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,

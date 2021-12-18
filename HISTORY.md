@@ -1,5 +1,9 @@
 # History
 
+## 0.3.7 (2021-12-18)
+
+* Fix build on GCC (Issue #8).
+
 ## 0.3.6 (2021-12-18)
 
 * Add documentation on NaN in rolling median.
