@@ -517,7 +517,7 @@ _at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
-    assert(dest.size() == count);
+    assert(dest.size() == static_cast<unsigned long>(count));
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -544,7 +544,7 @@ _at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
-    assert(dest.size() == count);
+    assert(dest.size() == static_cast<unsigned long>(count));
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -571,7 +571,7 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
-    assert(dest.size() == count);
+    assert(dest.size() == static_cast<unsigned long>(count));
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
@@ -598,7 +598,7 @@ _at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
         PyErr_SetString(PyExc_IndexError, err.message().c_str());
         return NULL;
     }
-    assert(dest.size() == count);
+    assert(dest.size() == static_cast<unsigned long>(count));
     ret_val = PyTuple_New(count);
     if (! ret_val) {
         PyErr_SetString(PyExc_MemoryError, "Could not create tuple.");
