@@ -77,7 +77,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.9',
+    version='0.3.11',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,
