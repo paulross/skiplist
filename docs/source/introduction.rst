@@ -73,7 +73,7 @@ This SkipList version supports Python 3.7, 3.8, 3.9, 3.10, 3.11 (and, probably, 
     $ cd <skiplist>
     $ python setup.py install
 
-If you are on a platform that uses GCC you will need to set the environment variable ``USING_GCC`` before invoking ``setup.py`` thus::
+If you are on a platform that uses GCC you will need to set the environment variable ``USING_GCC`` before invoking ``setup.py`` thus:
 
 .. code-block:: sh
 
