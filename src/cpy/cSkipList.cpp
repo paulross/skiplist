@@ -212,7 +212,7 @@ finally:
 }
 
 static void
-_decref_all_contents(SkipList *self) {
+decref_all_contents(SkipList *self) {
     assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_OBJECT);
     
@@ -238,7 +238,7 @@ SkipList_dealloc(SkipList *self)
             case TYPE_OBJECT:
                 {
                     AcquireLock _lock(self);
-                    _decref_all_contents(self);
+                    decref_all_contents(self);
                     delete self->pSl_object;
                 }
                 break;
@@ -267,7 +267,7 @@ static PyMemberDef SkipList_members[] = {
  * function is known.
  */
 static PyObject *
-_has_object(SkipList *self, PyObject *arg) {
+has_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
     AcquireLock _lock(self);
 
@@ -337,7 +337,7 @@ SkipList_has(SkipList *self, PyObject *arg)
                                                            ));
             break;
         case TYPE_OBJECT:
-            ret_val = _has_object(self, arg);
+            ret_val = has_object(self, arg);
             if (! ret_val) {
                 assert(PyErr_Occurred());
                 goto except;
@@ -363,7 +363,7 @@ finally:
 /* Sets value to the size of the skiplist as a size_t.
  * Returns 0 on success, non-zero on failure. */
 static int
-_size(SkipList *self, Py_ssize_t &value) {
+get_size(SkipList *self, Py_ssize_t &value) {
     int err_code = 0;
 
     ASSERT_TYPE_IN_RANGE;
@@ -395,7 +395,7 @@ _size(SkipList *self, Py_ssize_t &value) {
  * Returns 0 if index in range, non-zero otherwise.
  */
 static int
-_check_index_against_size(const char *prefix, long index, Py_ssize_t size) {
+check_index_against_size(const char *prefix, long index, Py_ssize_t size) {
     if ((index < 0 && index + size < 0) || (index >= 0 && index >= size)) {
         if (index > 0) {
             PyErr_Format(PyExc_IndexError,
@@ -455,11 +455,11 @@ SkipList_at(SkipList *self, PyObject *arg) {
         }
     }
 #endif
-    if (_size(self, size)) {
+    if (get_size(self, size)) {
         PyErr_BadInternalCall();
         goto except;
     }
-    if (_check_index_against_size("Index", index, size)) {
+    if (check_index_against_size("Index", index, size)) {
         assert(PyErr_Occurred());
         goto except;
     }
@@ -503,7 +503,7 @@ finally:
 }
 
 static PyObject*
-_at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
+at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_LONG> dest;
 
@@ -530,7 +530,7 @@ _at_sequence_long(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
+at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_DOUBLE> dest;
 
@@ -557,7 +557,7 @@ _at_sequence_double(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
+at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_BYTES> dest;
 
@@ -584,7 +584,7 @@ _at_sequence_bytes(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
 }
 
 static PyObject*
-_at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
+at_sequence_object(SkipList *self, Py_ssize_t index, Py_ssize_t count) {
     PyObject *ret_val = NULL;
     std::vector<TYPE_TYPE_OBJECT> dest;
     
@@ -638,11 +638,11 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
         goto except;
     }
     Py_ssize_t size;
-    if (_size(self, size)) {
+    if (get_size(self, size)) {
         PyErr_BadInternalCall();
         goto except;
     }
-    if (_check_index_against_size("Index", index, size)) {
+    if (check_index_against_size("Index", index, size)) {
         goto except;
     }
     if (index < 0) {
@@ -655,19 +655,19 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
     ASSERT_TYPE_IN_RANGE;
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret = _at_sequence_long(self, index, count);
+            ret = at_sequence_long(self, index, count);
             if (! ret) {
                 goto except;
             }
             break;
         case TYPE_DOUBLE:
-            ret = _at_sequence_double(self, index, count);
+            ret = at_sequence_double(self, index, count);
             if (! ret) {
                 goto except;
             }
             break;
         case TYPE_BYTES:
-            ret = _at_sequence_bytes(self, index, count);
+            ret = at_sequence_bytes(self, index, count);
             if (! ret) {
                 goto except;
             }
@@ -675,7 +675,7 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs)
         case TYPE_OBJECT:
             {
                 AcquireLock _lock(self);
-                ret = _at_sequence_object(self, index, count);
+                ret = at_sequence_object(self, index, count);
                 if (! ret) {
                     goto except;
                 }
@@ -697,7 +697,7 @@ finally:
 }
 
 static PyObject *
-_index_object(SkipList *self, PyObject *arg) {
+index_object(SkipList *self, PyObject *arg) {
     PyObject *ret_val = NULL;
     AcquireLock _lock(self);
 
@@ -780,7 +780,7 @@ SkipList_index(SkipList *self, PyObject *arg)
             }
             break;
         case TYPE_OBJECT:
-            ret_val = _index_object(self, arg);
+            ret_val = index_object(self, arg);
             if (! ret_val) {
                 goto except;
             }
@@ -805,7 +805,7 @@ finally:
 Py_ssize_t SkipList_length(PyObject *self) {
     Py_ssize_t ret_val = 0;
 
-    if (_size((SkipList*)self, ret_val)) {
+    if (get_size((SkipList *) self, ret_val)) {
         PyErr_BadInternalCall();
     }
     return ret_val;
@@ -937,7 +937,7 @@ SkipList_insert(SkipList *self, PyObject *arg) {
 
 /******* Type specific implementations of remove() ********/
 static PyObject *
-_remove_long(SkipList *self, PyObject *arg) {
+remove_long(SkipList *self, PyObject *arg) {
     if (! PyLong_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be long not \"%s\" type",
@@ -959,7 +959,7 @@ _remove_long(SkipList *self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_double(SkipList *self, PyObject *arg) {
+remove_double(SkipList *self, PyObject *arg) {
     if (! PyFloat_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be float not \"%s\" type",
@@ -983,7 +983,7 @@ _remove_double(SkipList *self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_bytes(SkipList *self, PyObject *arg) {
+remove_bytes(SkipList *self, PyObject *arg) {
     if (! PyBytes_Check(arg)) {
         PyErr_Format(PyExc_TypeError,
                      "Type must be bytes not \"%s\" type",
@@ -1003,7 +1003,7 @@ _remove_bytes(SkipList *self, PyObject *arg) {
 }
 
 static PyObject *
-_remove_object(SkipList *self, PyObject *arg) {
+remove_object(SkipList *self, PyObject *arg) {
     PyObject *value = NULL;
     
     // NOTE: On insert() we Py_INCREF'd the value to keep it alive in
@@ -1037,16 +1037,16 @@ SkipList_remove(SkipList *self, PyObject *arg)
     
     switch (self->_data_type) {
         case TYPE_LONG:
-            ret_val = _remove_long(self, arg);
+            ret_val = remove_long(self, arg);
             break;
         case TYPE_DOUBLE:
-            ret_val = _remove_double(self, arg);
+            ret_val = remove_double(self, arg);
             break;
         case TYPE_BYTES:
-            ret_val = _remove_bytes(self, arg);
+            ret_val = remove_bytes(self, arg);
             break;
         case TYPE_OBJECT:
-            ret_val = _remove_object(self, arg);
+            ret_val = remove_object(self, arg);
             break;
         default:
             PyErr_BadInternalCall();
@@ -1147,11 +1147,11 @@ SkipList_node_height(SkipList *self, PyObject *args, PyObject *kwargs)
         assert(PyErr_Occurred());
         goto except;
     }
-    if (_size(self, size)) {
+    if (get_size(self, size)) {
         PyErr_BadInternalCall();
         goto except;
     }
-    if (_check_index_against_size("Index", index, size)) {
+    if (check_index_against_size("Index", index, size)) {
         goto except;
     }
     if (index < 0) {
@@ -1210,11 +1210,11 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
         assert(PyErr_Occurred());
         goto except;
     }
-    if (_size(self, size)) {
+    if (get_size(self, size)) {
         PyErr_BadInternalCall();
         goto except;
     }
-    if (_check_index_against_size("Index", index, size)) {
+    if (check_index_against_size("Index", index, size)) {
         goto except;
     }
     if (index < 0) {
@@ -1225,21 +1225,21 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
     switch (self->_data_type) {
         case TYPE_LONG:
             height = self->pSl_long->height(index);
-            if (_check_index_against_size("Level", level, height)) {
+            if (check_index_against_size("Level", level, height)) {
                 goto except;
             }
             ret_val = PyLong_FromSsize_t(self->pSl_long->width(index, level));
             break;
         case TYPE_DOUBLE:
             height = self->pSl_double->height(index);
-            if (_check_index_against_size("Level", level, height)) {
+            if (check_index_against_size("Level", level, height)) {
                 goto except;
             }
             ret_val = PyLong_FromSsize_t(self->pSl_double->width(index, level));
             break;
         case TYPE_BYTES:
             height = self->pSl_bytes->height(index);
-            if (_check_index_against_size("Level", level, height)) {
+            if (check_index_against_size("Level", level, height)) {
                 goto except;
             }
             ret_val = PyLong_FromSsize_t(self->pSl_bytes->width(index, level));
@@ -1248,7 +1248,7 @@ SkipList_node_width(SkipList *self, PyObject *args, PyObject *kwargs)
             {
                 AcquireLock _lock(self);
                 height = self->pSl_object->height(index);
-                if (_check_index_against_size("Level", level, height)) {
+                if (check_index_against_size("Level", level, height)) {
                     goto except;
                 }
                 ret_val = PyLong_FromSsize_t(self->pSl_object->width(index, level));
@@ -1372,7 +1372,7 @@ static PySequenceMethods SkipList_SequenceMethods = {
 #endif
 };
 
-static char _py_skip_list_docs[] =
+static char py_skip_list_docs[] =
 "SkipList - An implementation of a skip list for floats, longs, bytes and"
 " Python objects."
 ;
@@ -1386,7 +1386,7 @@ PyTypeObject SkipListType = {
      * PySequenceMethods.sq_item  etc. */
     .tp_as_sequence = &SkipList_SequenceMethods,
     .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-    .tp_doc = _py_skip_list_docs,
+    .tp_doc = py_skip_list_docs,
     .tp_methods = SkipList_methods,
     .tp_members = SkipList_members,
     .tp_init = (initproc)SkipList_init,
