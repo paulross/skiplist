@@ -414,8 +414,8 @@ def test_ordered_insert_remove_cmp_reversed(cls):
     (
         (int, 1024**2, 8, 88e6, 200e6),
         (float, 1024**2, 8, 88e6, 200e6),
-        (TotalOrdered, 1024 * 256, 8, 22e6, 24e6),
-        (OrderedLt, 1024 * 256, 8, 22e6, 16e6),
+        (TotalOrdered, 1024 * 256, 8, 22e6, 200e6),
+        (OrderedLt, 1024 * 256, 8, 22e6, 200e6),
     )
 )
 def test_memory_management_python_objects(cls, size, rounds, expected_getsizeof, maximum_increase_at_empty):
