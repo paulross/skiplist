@@ -75,7 +75,7 @@ def test_insert_and_remove():
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')
-    main_thread = threading.currentThread()
+    main_thread = threading.current_thread()
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()
@@ -112,7 +112,7 @@ def test_insert_has_remove():
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')
-    main_thread = threading.currentThread()
+    main_thread = threading.current_thread()
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()
@@ -151,7 +151,7 @@ def test_insert_has_remove_int():
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')
-    main_thread = threading.currentThread()
+    main_thread = threading.current_thread()
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()
@@ -190,7 +190,7 @@ def test_insert_has_remove_float():
     for thread in threads:
         thread.start()
     logging.debug('Waiting for worker threads')
-    main_thread = threading.currentThread()
+    main_thread = threading.current_thread()
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()

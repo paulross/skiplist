@@ -13,7 +13,7 @@ CXX_FILES := main.cpp	SkipList.cpp	test/test_documentation.cpp	test/test_functio
 OBJS := $(patsubst %.c, %.o, $(CXX_FILES))
 INCLUDES = -I . -I test/
 #CXX = g++
-override CXXFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c++11
+override CXXFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c++17
 CXXFLAGS_RELEASE = $(CXXFLAGS) -O2 -DNDEBUG
 CXXFLAGS_DEBUG = $(CXXFLAGS) -g3 -O0 -DDEBUG=1
 LDFLAGS = 

@@ -13,13 +13,9 @@ import orderedstructs
 
 ONLY_BENCHMARK_INSERT_AT_REMOVE = True
 
-# Python 3
+# Python 3 only
+assert sys.version_info[0] == 3
 int_type = int
-# Python 2
-if sys.version_info[0] == 2:
-    int_type = long
-    # int_type_str = 'long'
-
 
 def _setup_skiplist_int_as_object(n: int) -> orderedstructs.SkipList:
     """Returns a skiplist of a particular type of length n."""

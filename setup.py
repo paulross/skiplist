@@ -16,7 +16,7 @@ extra_compile_args = [
     '-Wfatal-errors',
     # Some internal Python library code does not like this.
     '-Wno-c++11-compat-deprecated-writable-strings',
-    '-std=c++11',
+    '-std=c++17',
     '-Isrc/cpp',
     # We implement mutex with Python's thread locking so we don't want the
     # overhead of C++'s thread locking as well.
@@ -50,12 +50,12 @@ orderedstructs = Extension(
     ],
     include_dirs=[
         '.',
-        '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
+        # '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1',
     ],
     library_dirs=[os.getcwd(), ],
     extra_compile_args=extra_compile_args,
     extra_link_args=['-lstdc++'],
-    language='c++11',
+    language='c++17',
 )
 
 with open('README.md') as readme_file:
@@ -77,7 +77,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.7',
+    version='0.3.8',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,
@@ -88,22 +88,19 @@ setup(
 #     packages=find_packages('src'),
     license="MIT License",
     keywords=['orderedstructs', 'SkipList'],
+    # See: https://pypi.org/classifiers/
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     test_suite='tests',
     tests_require=test_requirements,

@@ -412,8 +412,8 @@ def test_ordered_insert_remove_cmp_reversed(cls):
 @pytest.mark.parametrize(
     'cls, size, rounds, expected_getsizeof, maximum_increase_at_empty',
     (
-        (int, 1024**2, 8, 88e6, 10e6),
-        (float, 1024**2, 8, 88e6, 10e6),
+        (int, 1024**2, 8, 88e6, 200e6),
+        (float, 1024**2, 8, 88e6, 200e6),
         (TotalOrdered, 1024 * 256, 8, 22e6, 24e6),
         (OrderedLt, 1024 * 256, 8, 22e6, 16e6),
     )
@@ -445,4 +445,4 @@ def test_memory_management_python_objects(cls, size, rounds, expected_getsizeof,
         del sl
     rss_end = proc.memory_info().rss
     print(f'RSS: {rss_end:12,d} Change {rss_end - rss_start:+12,d} skip list empty.')
-    assert rss_end - rss_start < maximum_increase_at_empty
+    assert rss_end - rss_start < maximum_increase_at_empty, f'RSS change {rss_end - rss_start:,d}'

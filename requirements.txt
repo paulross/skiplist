@@ -1,4 +1,5 @@
 pytest
 hypothesis
 psutil
-# pytest-benchmark[histogram]
+pytest-benchmark
+pytest-benchmark[histogram]

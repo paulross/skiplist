@@ -8,12 +8,9 @@ import pytest
 
 import orderedstructs
 
-if sys.version_info[0] == 3:
-    int_type = int
-    int_type_str = 'int'
-elif sys.version_info[0] == 2:
-    int_type = long    
-    int_type_str = 'long'
+assert sys.version_info[0] == 3
+int_type = int
+int_type_str = 'int'
 
 def _setup_skiplist(typ, n):
     return '\n'.join([
