@@ -3,7 +3,7 @@
 ## 0.3.8 (2023-08-28)
 
 * Add cmake build.
-* Support for Python 3.7, 3.7, 3.8, 3.9, 3.10, 3.11.
+* Support for Python 3.7, 3.8, 3.9, 3.10, 3.11.
 * Remove mention of Python 2.
 
 ## 0.3.7 (2021-12-18)
