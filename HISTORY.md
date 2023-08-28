@@ -1,6 +1,10 @@
 # History
 
 
+## 0.3.9 (2023-08-28)
+
+* Minor fixes missed in 0.3.8 release.
+
 ## 0.3.8 (2023-08-28)
 
 * Add cmake build.
