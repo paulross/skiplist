@@ -3,3 +3,4 @@ hypothesis
 psutil
 pytest-benchmark
 pytest-benchmark[histogram]
+sphinx
