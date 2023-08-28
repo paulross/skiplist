@@ -32,6 +32,7 @@
 
 doc/sphinx/build/*
 docs/build/*
+docs/doxygen
 skiplist.xcodeproj/*
 build/*
 

@@ -1,10 +1,19 @@
-//
-//  HeadNode.h
-//  SkipList
-//
-//  Created by Paul Ross on 03/12/2015.
-//  Copyright (c) 2017 Paul Ross. All rights reserved.
-//
+/************************** HeadNode *******************************
+ * @file
+ *
+ * A HeadNode is a skip list. This is the single node leading to all
+ * other nodes.
+ *
+ * Example:
+ *  SkipList::HeadNode<double> sl;
+ *  for (int i = 0; i < 100; ++i) sl.insert(i * 22.0 / 7.0);
+ *  sl.size(); // 100
+ *  sl.at(50); // Value of 50 pi
+ *  sl.remove(sl.at(50)); // Remove 50 pi
+ *
+ * Created by Paul Ross on 03/12/2015.
+ * Copyright (c) 2017 Paul Ross. All rights reserved.
+ */
 
 #ifndef SkipList_HeadNode_h
 #define SkipList_HeadNode_h
@@ -20,19 +29,6 @@
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
 
 #include "IntegrityEnums.h"
-
-/************************** HeadNode *******************************
- * A HeadNode is a skip list. This is the single node leading to all
- * other nodes.
- *
- * Example:
- *  SkipList::HeadNode<double> sl;
- *  for (int i = 0; i < 100; ++i) sl.insert(i * 22.0 / 7.0);
- *  sl.size(); // 100
- *  sl.at(50); // Value of 50 pi
- *  sl.remove(sl.at(50)); // Remove 50 pi
- *
- */
 
 #pragma mark -
 #pragma mark class HeadNode definition

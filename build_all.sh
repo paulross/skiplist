@@ -11,8 +11,8 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
+# Takes about 5 to 10 minutes per Python version.
 PYTHON_VERSIONS=('3.6' '3.7' '3.8' '3.9' '3.10' '3.11')
-#PYTHON_VERSIONS=('3.11')
 # Used for venvs
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
 PROJECT_NAME="SkipList"
@@ -114,7 +114,7 @@ create_documentation() {
   pip list
   echo "---> Building documentation:"
   cd docs
-  make html latexpdf
+  ./build_docs.sh
   cd ..
 }
 
