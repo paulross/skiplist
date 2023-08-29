@@ -1,6 +1,10 @@
 # History
 
 
+## 0.3.12 (2023-08-29)
+
+* Minor fixes to the documentation and examples.
+
 ## 0.3.11 (2023-08-28)
 
 * Minor fixes missed in 0.3.10 release.

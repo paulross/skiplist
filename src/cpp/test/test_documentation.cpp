@@ -15,7 +15,7 @@
 
 /********************** Documentation ***************************/
 
-/* Print out the height compared with the lenght of the skip list
+/* Print out the height compared with the length of the skip list
  */
 int doc_height_trend(size_t level) {
     std::cout << "" << __FUNCTION__ << std::endl;

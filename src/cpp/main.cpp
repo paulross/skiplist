@@ -36,9 +36,47 @@ void test_clock_resolution() {
     std::cout << "CLOCKS_PER_SEC: " << CLOCKS_PER_SEC << std::endl;
 }
 
+#include "SkipList.h"
+
+int test_example_introduction_A(void) {
+    int ret = 0;
+    // Declare with any type that has sane comparison.
+    OrderedStructs::SkipList::HeadNode<double> sl;
+
+    sl.insert(42.0);
+    sl.insert(21.0);
+    sl.insert(84.0);
+
+    sl.has(42.0); // true
+    if (!sl.has(42.0)) {
+        ret |= 1;
+    }
+    sl.size();    // 3
+    if (sl.size() != 3) {
+        ret |= 2;
+    }
+    sl.at(1);     // 42.0, throws OrderedStructs::SkipList::IndexError if index out of range
+    if (sl.at(1) != 42.0) {
+        ret |= 4;
+    }
+    sl.remove(21.0); // throws OrderedStructs::SkipList::ValueError if value not present
+
+    sl.size();    // 2
+    if (sl.size() != 2) {
+        ret |= 8;
+    }
+    sl.at(1);     // 84.0
+    if (sl.at(1) != 84.0) {
+        ret |= 16;
+    }
+    return ret;
+}
+
 int test_all() {
     int result = 0;
     
+    result |= test_example_introduction_A();
+
     result |= test_functional_all();
     result |= test_rolling_median_all();
     result |= test_documentation_all();
