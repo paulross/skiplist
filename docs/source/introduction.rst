@@ -41,6 +41,14 @@ There are a some novel features to this implementation:
 * A SkipList is a probabilistic data structure but we have deterministic tests that work for any (sane) random number generator, see: :ref:`testing_a_probabilistic_structure`
 * This SkipList can dynamically generate visualisations of its current internal state, see: :ref:`skiplist-visualisation-label`
 
+================
+Project
+================
+
+* `GitHub <https://github.com/paulross/skiplist/>`_
+* `PyPi <https://pypi.org/project/orderedstructs/>`_
+* `Read The Docs <https://skiplist.readthedocs.io/en/latest/>`_
+
 ============
 Credits
 ============
