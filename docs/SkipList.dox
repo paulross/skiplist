@@ -2220,8 +2220,7 @@ INCLUDE_FILE_PATTERNS  =
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 PREDEFINED             = PY_THREAD_SAFE \
-                         SVF_THREAD_SAFE \
-                         SVFS_THREAD_SAFE \
+                         SKIPLIST_THREAD_SUPPORT \
                          DEBUG
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

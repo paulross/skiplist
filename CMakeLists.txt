@@ -4,6 +4,8 @@ project(SkipList)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_C_FLAGS "-std=c99")
 
+add_compile_definitions(SKIPLIST_THREAD_SUPPORT)
+
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("debug build")
     add_compile_definitions(DEBUG)
@@ -77,7 +79,6 @@ IF(PYTHONLIBS_FOUND)
 ELSE()
     MESSAGE(FATAL_ERROR "Unable to find Python libraries.")
 ENDIF()
-
 
 target_link_libraries(SkipList ${PYTHON_LIBRARIES})
 

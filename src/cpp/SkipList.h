@@ -1,34 +1,63 @@
-//
-//  SkipList.h
-//  SkipList
-//
-//  Created by Paul Ross on 15/11/2015.
-//  Copyright (c) 2017 Paul Ross. All rights reserved.
-//
-
 #ifndef __SkipList__SkipList__
 #define __SkipList__SkipList__
 
-/******************* SkipList Documentation *******************
+/**
+ * @file
+ *
+ * Project: skiplist
+ *
+ * Created by Paul Ross on 15/11/2015.
+ *
+ * Copyright (c) 2015-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2017-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
  *
  * General
  * =======
  * This is a generic skip list implementation for any type T.
  * There only restriction on the size of this skip list is the available memory.
- * A skip list is a singly linked list of ordered nodes with a series of other, coarser, lists that reference a subset of nodes in order.
- * 'Level' is an size_t that specifies the linked list, level 0 is the linked list to every node.
- * The list at level 1 links (ideally) to every other node.
- * The list at level 2 links (ideally) to every fourth node and so on.
+ *
+ * A skip list is a singly linked list of ordered nodes with a series of other, coarser, lists that reference a subset
+ * of nodes in order.
+ * 'Level' is an size_t that specifies the coarseness of the linked list, level 0 is the linked list to every node.
+ *
+ * Typically:
+ * - The list at level 1 links (ideally) to every other node.
+ * - The list at level 2 links (ideally) to every fourth node and so on.
+ *
  * In general the list at level n links (ideally) to every 2**n node.
  *
  * These additional lists allow rapid location, insertion and removal of nodes.
- * These lists are created and updated in a probabilistic manner and this is achieved at node creation time by tossing a virtual coin.
+ * These lists are created and updated in a probabilistic manner and this is achieved at node creation time by tossing a
+ * virtual coin.
  * These lists are not explicit, they are implied by the references between Nodes at a particular level.
  *
  * Skip lists are alternatives to balanced trees for operations such as a rolling median.
  * The disadvantages of skip lists are:
     - Less space efficient than balanced trees (see 'Space Complexity' below).
-    - performance is similar to balanced trees except finding the mid-point which is O(log(N)) for a skip list compared with O(1) for a balanced tree.
+    - performance is similar to balanced trees except finding the mid-point which is @c O(log(N)) for a skip list compared with @cc O(1) for a balanced tree.
  *
  * The advantages claimed for skip lists are:
     - The insert() and remove() logic is simpler (I do not subscribe to this).
@@ -38,49 +67,60 @@
  *
  * C++
  * ---
+ * @code
  * #include "SkipList.h"
- * SkipList::HeadNode<double> sl;
+ *
+ * OrderedStructs::SkipList::HeadNode<double> sl;
+ *
  * sl.insert(42.0);
  * sl.insert(21.0);
  * sl.insert(84.0);
  * sl.has(42.0) // true
  * sl.size() // 3
  * sl.at(1) // 42.0
+ * @endcode
  *
  * Python
  * ------
- * from ahl.numpy import cSkipList
- * sl = cSkipList.SkipList(float)
+ * @code
+ * import orderedstructs
+ *
+ * sl = orderedstructs.SkipList(float)
  * sl.insert(42.0)
  * sl.insert(21.0)
  * sl.insert(84.0)
- * sl.has(42.0) // True
- * sl.size() // 3
- * sl.at(1) // 42.0
+ * sl.has(42.0) # True
+ * sl.size() # 3
+ * sl.at(1) # 42.0
+ * @endcode
  *
  * Design
  * ======
  *
  * This skip list design has the coarser lists implemented as optional additional links between the nodes themselves.
  * The drawing below shows a well formed skip list with a head node ('HED') linked to the ordered nodes A to H.
- 
+ *
+ * @code
+ *
  | 5 E |------------------------------------->| 4 0 |---------------------------->| NULL |
  | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |---------->| NULL |
  | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
  | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |  |  H  |
- 
+ * @endcode
+ *
  * Each node has a stack of values that consist of a 'width' and a reference to another node (or NULL).
  * At the lowest level is a singly linked list and all widths are 1.
  * At level 1 the links are (ideally) to every other node and at level 2 the links are (ideally) to every fourth node.
  * The 'widths' at each node/level specify how many level 0 nodes the node reference skips over.
  * The widths are used to rapidly index into the skip list starting from the highest level and working down.
  *
- * To understand how the skip list is maintained, consider insertion; before inserting node 'E' the skip list would look like this:
- 
+ * To understand how the skip list is maintained, consider insertion; before inserting node 'E' the skip list would look
+ * like this:
+ * @code
  | 1 A |->| 2 C |---------->| 3 G |------------------->| 2 0 |---------->| NULL |
  | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
  | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  F  |  |  G  |  |  H  |
- 
+ * @endcode
  * Inserting 'E' means:
  * - Finding where 'E' should be inserted (after 'D').
  * - Creating node 'E' with a random height (heads/heads/tails so 3 high).
@@ -109,35 +149,44 @@
  * Then C[1]/E[1] are swapped so that the pointers and widths are correct.
  * And so on until HED is reached, in this case a new level is added and HED[2] swapped with E[2].
  *
- * A similar procedure will be followed, in reverse, when removing E to restore the state of the skip list to the picture above.
+ * A similar procedure will be followed, in reverse, when removing E to restore the state of the skip list to the
+ * picture above.
  *
  * Algorithms
  * ==========
- * There doesn't seem to be much literature that I could find about the algorithms used for a skip list so these have all been invented here.
+ * There doesn't seem to be much literature that I could find about the algorithms used for a skip list so these have
+ * all been invented here.
+ *
  * In these descriptions:
- * 'right' is used to mean move to a higher ordinal node.
- * 'left' means to move to a lower ordinal node.
- * 'up' means to move to a coarser grained list, 'top' is the highest.
- * 'down' means to move to a finer grained list, 'bottom' is the level 0.
+ *
+ * - 'right' is used to mean move to a higher ordinal node.
+ * - 'left' means to move to a lower ordinal node.
+ * - 'up' means to move to a coarser grained list, 'top' is the highest.
+ * - 'down' means to move to a finer grained list, 'bottom' is the level 0.
  *
  * has(T &val) const;
  * ------------------
  * This returns true/false is the skip list has the value val.
- * Starting at the highest possible level search rightwards until a larger value is encountered, then drop down. At level 0 return true if the Node value is the supplied value.
- * This is O(log(N)) for well formed skip lists.
+ * Starting at the highest possible level search rightwards until a larger value is encountered, then drop down.
+ * At level 0 return true if the Node value is the supplied value.
+ * This is @c O(log(N)) for well formed skip lists.
  *
  * at(size_t index) const;
  * -----------------------
  * This returns the value of type T at the given index.
- * The algorithm is similar to has(T &val) but the search moves rightwards if the width is less than the index and decrementing the index by the width.
+ * The algorithm is similar to has(T &val) but the search moves rightwards if the width is less than the index and
+ * decrementing the index by the width.
+ *
  * If progress can not be made to the right, drop down a level.
  * If the index is 0 return the node value.
- * This is O(log(N)) for well formed skip lists.
+ * This is @c O(log(N)) for well formed skip lists.
  *
  * insert(T &val)
  * --------------
- * Finding the place to insert a node follows the has(T &val) algorithm to find the place in the skip list to create a new node.
+ * Finding the place to insert a node follows the has(T &val) algorithm to find the place in the skip list to create a
+ * new node.
  * Inserts of duplicate values are made after any existing duplicate values.
+ *
  * All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
  * The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes {width, Node<T>*} data.
  * Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin until 'tails' is found.
@@ -162,20 +211,26 @@
     Both HeadNode and Node classes have one of these to manage their references.
  *
  * Node<T> - This represents a single value in the skip list.
-    The height of a Node is determined at construction by tossing a virtual coin, this determines how many coarser lists this node participates in.
+    The height of a Node is determined at construction by tossing a virtual coin, this determines how many coarser
+    lists this node participates in.
     A Node has a SwappableNodeRefStack object and a value of type T.
  *
  * HeadNode<T> - There is one of these per skip list and this provides the API to the entire skip list.
-    The height of the HeadNode expands and contracts as required when Nodes are inserted or removed (it is the height of the highest Node).
-    A HeadNode has a SwappableNodeRefStack object and an independently maintained count of the number of Node objects in the skip list.
+    The height of the HeadNode expands and contracts as required when Nodes are inserted or removed (it is the height
+    of the highest Node).
+    A HeadNode has a SwappableNodeRefStack object and an independently maintained count of the number of Node objects
+    in the skip list.
  *
- * A Node and HeadNode have specialised methods such as has(), at(), insert(), remove() that traverse the skip list recursively.
+ * A Node and HeadNode have specialised methods such as has(), at(), insert(), remove() that traverse the skip lis
+ * recursively.
  *
  * Other Files of Significance
  * ---------------------------
- * SkipList.cpp exposes the random number generator (rand()) and seeder (srand()) so that they can be accessed by CPython for deterministic testing.
+ * SkipList.cpp exposes the random number generator (rand()) and seeder (srand()) so that they can be accessed
+ * CPython for deterministic testing.
  *
- * cSkipList.h/.cpp contains a CPython module with a SkipList implementation for a number of builtin Python types.
+ * cSkipList.h and cSkipList.cpp contains a CPython module with a SkipList implementation for a number of builtin
+ * Python types.
  *
  * IntegrityEnums.h has definitions of error codes that can be created by the skip list integrity checking functions.
  *
@@ -336,8 +391,10 @@
 #endif // DEBUG
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
+
 #include <iostream>
 #include <sstream>
+
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
 
 //#define SKIPLIST_THREAD_SUPPORT
@@ -347,58 +404,80 @@
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
 #include <thread>
 #endif
+
 #include <mutex>
+
 #endif
 
 namespace OrderedStructs {
-namespace SkipList {
+    namespace SkipList {
 
 /************************ Exceptions ****************************/
-class Exception : public std::exception {
-  public:
-    explicit Exception(const std::string &in_msg) : msg(in_msg) {}
-    const std::string &message() const { return msg; }
-    virtual ~Exception() throw() {}
-  protected:
-    std::string msg;
-};
 
-class IndexError : public Exception {
-  public:
-    explicit IndexError(const std::string &in_msg) : Exception(in_msg) {}
-};
+/**
+ * Base exception class for all exceptions in OrderedStructs::SkipList
+ */
+        class Exception : public std::exception {
+        public:
+            explicit Exception(const std::string &in_msg) : msg(in_msg) {}
 
-class ValueError : public Exception {
-  public:
-    explicit ValueError(const std::string &in_msg) : Exception(in_msg) {}
-};
+            const std::string &message() const { return msg; }
 
-/* Used for NaN detection where value != value */
-class FailedComparison : public Exception {
-public:
-    explicit FailedComparison(const std::string &in_msg) : Exception(in_msg) {}
-};
-    
-// This throws an IndexError when the index value >= size.
-// If possible the error will have an informative message.
-void _throw_exceeds_size(size_t size);
+            virtual ~Exception() throw() {}
+
+        protected:
+            std::string msg;
+        };
+
+/**
+ * Specialised exception case for an index out of range error.
+ */
+        class IndexError : public Exception {
+        public:
+            explicit IndexError(const std::string &in_msg) : Exception(in_msg) {}
+        };
+
+/**
+ * Specialised exception for an value error where the given value does not exist in the Skip List.
+ */
+        class ValueError : public Exception {
+        public:
+            explicit ValueError(const std::string &in_msg) : Exception(in_msg) {}
+        };
+
+/** Specialised exception used for NaN detection where value != value */
+        class FailedComparison : public Exception {
+        public:
+            explicit FailedComparison(const std::string &in_msg) : Exception(in_msg) {}
+        };
+
+/**
+ * This throws an IndexError when the index value >= the size of Skip List.
+ * If INCLUDE_METHODS_THAT_USE_STREAMS is defined then the error will have an informative message.
+ *
+ * @param index The
+ */
+        void _throw_exceeds_size(size_t index);
 
 /************************ END: Exceptions ****************************/
 
-/* Toss a coin. */
-bool tossCoin();
-/* Seed the random number generator for coin tosses. */
-void seedRand(unsigned seed);
+        bool tossCoin();
+
+        /** Seed the random number generator for coin tosses. */
+        void seedRand(unsigned seed);
 
 #ifdef SKIPLIST_THREAD_SUPPORT
-    extern std::mutex gSkipListMutex;
+        /**
+         * Mutex used in a multi-threaded environment.
+         */
+        extern std::mutex gSkipListMutex;
 #endif
-    
+
 #include "NodeRefs.h"
 #include "Node.h"
 #include "HeadNode.h"
 
-} // namespace SkipList
+    } // namespace SkipList
 } // namespace OrderedStructs
 
 #endif /* defined(__SkipList__SkipList__) */

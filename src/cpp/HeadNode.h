@@ -1,18 +1,35 @@
-/************************** HeadNode *******************************
+/**
  * @file
  *
- * A HeadNode is a skip list. This is the single node leading to all
- * other nodes.
- *
- * Example:
- *  SkipList::HeadNode<double> sl;
- *  for (int i = 0; i < 100; ++i) sl.insert(i * 22.0 / 7.0);
- *  sl.size(); // 100
- *  sl.at(50); // Value of 50 pi
- *  sl.remove(sl.at(50)); // Remove 50 pi
+ * Project: skiplist
  *
  * Created by Paul Ross on 03/12/2015.
- * Copyright (c) 2017 Paul Ross. All rights reserved.
+ *
+ * Copyright (c) 2015-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2017-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
  */
 
 #ifndef SkipList_HeadNode_h
@@ -33,6 +50,25 @@
 #pragma mark -
 #pragma mark class HeadNode definition
 
+/** HeadNode
+ *
+ * A HeadNode is a skip list. This is the single node leading to all other nodes.
+ *
+ * Example:
+ * @code
+ *      OrderedStructs::SkipList::HeadNode<double> sl;
+ *      for (int i = 0; i < 100; ++i) {
+ *          sl.insert(i * 22.0 / 7.0);
+ *      }
+ *      sl.size(); // 100
+ *      sl.at(50); // Value of 50 pi
+ *      sl.remove(sl.at(50)); // Remove 50 pi
+ * @endcode
+ *
+ * Created by Paul Ross on 03/12/2015.
+ *
+ * Copyright (c) 2017 Paul Ross. All rights reserved.
+ */
 template <typename T, typename _Compare=std::less<T>>
 class HeadNode {
 public:
@@ -46,16 +82,15 @@ public:
     // Returns true if the value is present in the skip list.
     bool has(const T &value) const;
     // Returns the value at the index in the skip list.
-    // Will throw a SkipList::IndexError if index out of range.
+    // Will throw an OrderedStructs::SkipList::IndexError if index out of range.
     const T &at(size_t index) const;
     // Find the value at index and write count values to dest.
     // Will throw a SkipList::IndexError if any index out of range.
     // This is useful for rolling median on even length lists where
     // the caller might want to implement the mean of two values.
-    // Will throw a SkipList::IndexError if index or index + count is out of range.
     void at(size_t index, size_t count, std::vector<T> &dest) const;
     // Computes index of the first occurrence of a value
-    // Will raise a ValueError if the value does not exist in the skip list
+    // Will throw a ValueError if the value does not exist in the skip list
     size_t index(const T& value) const;
     // Number of values in the skip list.
     size_t size() const;
@@ -126,6 +161,14 @@ private:
 
 #pragma mark class HeadNode public const methods
 
+/**
+ * Returns true if the value is present in the skip list.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value Value to check if it is in the Skip List.
+ * @return true if in the Skip List.
+ */
 template <typename T, typename _Compare>
 bool HeadNode<T, _Compare>::has(const T &value) const {
     _throwIfValueDoesNotCompare(value);
@@ -141,6 +184,19 @@ bool HeadNode<T, _Compare>::has(const T &value) const {
     return false;
 }
 
+/**
+ * Returns the value at a particular index.
+ * Will throw an OrderedStructs::SkipList::IndexError if index out of range.
+ *
+ * If @ref SKIPLIST_THREAD_SUPPORT is defined this will block.
+ *
+ * See _throw_exceeds_size() that does the throw.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param index The index.
+ * @return The value at that index.
+ */
 template <typename T, typename _Compare>
 const T &HeadNode<T, _Compare>::at(size_t index) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -151,6 +207,20 @@ const T &HeadNode<T, _Compare>::at(size_t index) const {
     return pNode->value();
 }
 
+/**
+ * Find the count number of value starting at index and write them to dest.
+ *
+ * Will throw a OrderedStructs::SkipList::IndexError if any index out of range.
+ *
+ * This is useful for rolling median on even length lists where the caller might want to implement the mean of two
+ * values.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param index The index.
+ * @param count The number of values to retrieve.
+ * @param dest The vector of values
+ */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::at(size_t index, size_t count,
                                std::vector<T> &dest) const {
@@ -172,9 +242,15 @@ void HeadNode<T, _Compare>::at(size_t index, size_t count,
     }
 }
 
-/* Returns the index of the first occurence of the value.
- * Will throw a ValueError if not found.
- * Will throw a FailedComparison if the value is not comparable.
+/**
+ * Computes index of the first occurrence of a value
+ * Will throw a OrderedStructs::SkipList::ValueError if the value does not exist in the skip list
+ * Will throw a OrderedStructs::SkipList::FailedComparison if the value is not comparable.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value The value to search for.
+ * @return
  */
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::index(const T& value) const {
@@ -196,6 +272,13 @@ size_t HeadNode<T, _Compare>::index(const T& value) const {
     return 0;
 }
 
+/**
+ * Return the number of values in the Skip List.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return The number of values in the Skip List.
+ */
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::size() const {
     return _count;
@@ -210,6 +293,16 @@ size_t HeadNode<T, _Compare>::height() const {
     return val;
 }
 
+/**
+ * Return the number of linked lists that the node at index has.
+ *
+ * Will throw a OrderedStructs::SkipList::IndexError if the index out of range.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param idx The index of the Skip List node.
+ * @return The number of linked lists that the node at the index has.
+ */
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::height(size_t idx) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -412,8 +505,8 @@ void HeadNode<T, _Compare>::_throwValueErrorNotFound(const T &value) const {
 
 /** Checks that the value == value
  * This will throw a FailedComparison if that is not the case, for example NaN
- * NOTE: the Node class is (should be) not directly accessible by the user
- * so we can just assert(value == value) in Node.
+ *
+ * @note the Node class is (should be) not directly accessible by the user so we can just assert(value == value) in Node.
  */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {

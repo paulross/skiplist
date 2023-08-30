@@ -1,47 +1,106 @@
-//
-//  test_concurrent.cpp
-//  skiplist
-//
-//  Created by Paul Ross on 17/08/2017.
-//  Copyright (c) 2017 Paul Ross. All rights reserved.
-//
+/**
+ * @file
+ *
+ * Project: skiplist
+ *
+ * Concurrency Tests.
+ *
+ * Created by Paul Ross on 17/08/2017.
+ *
+ * Copyright (c) 2017-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2017-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
+ */
 
 #include <iomanip>
 #include <thread>
 
 #include "test_print.h"
 #include "test_concurrent.h"
-#include "../SkipList.h"
+#include "SkipList.h"
 
 
-/******************** Concurrency Tests **************************/
+/**
+ * Insert a value into a Skip List.
+ *
+ * @tparam T Type of values in the Skip List.
+ * @param psl Pointer to the Skip List.
+ * @param value Value to insert.
+ */
 template<typename T>
-void
+static void
 insert_value(OrderedStructs::SkipList::HeadNode<T> *psl, const T &value) {
     psl->insert(value);
 }
 
+/**
+ * Insert a value into a Skip List, check it is there then remove it.
+ *
+ * @tparam T Type of values in the Skip List.
+ * @param psl Pointer to the Skip List.
+ * @param value Value to insert.
+ */
 template<typename T>
-void
+static void
 insert_has_remove(OrderedStructs::SkipList::HeadNode<T> *psl, const T &value) {
     psl->insert(value);
     psl->has(value);
     psl->remove(value);
 }
 
+/**
+ * Insert a value into a Skip List, check it is there then remove it @c count times.
+ *
+ * @tparam T Type of values in the Skip List.
+ * @param psl Pointer to the Skip List.
+ * @param value Value to insert.
+ * @param count Number of times to repeat the insert/add/remove.
+ */
 template<typename T>
-void insert_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
-                             const T &value,
-                             const size_t &count) {
+static void
+insert_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
+                        const T &value,
+                        const size_t &count) {
     for (size_t i = 0; i < count; ++i) {
         insert_has_remove(psl, value);
     }
 }
 
+/**
+ * Insert a value into a Skip List @c count times, check it is there then remove it @c count times.
+ *
+ * @tparam T Type of values in the Skip List.
+ * @param psl Pointer to the Skip List.
+ * @param value Value to insert.
+ * @param count Number of times to repeat the insert/remove.
+ */
 template<typename T>
-void insert_count_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
-                                   const T &value,
-                                   const size_t &count) {
+static void
+insert_count_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
+                              const T &value,
+                              const size_t &count) {
     for (size_t i = 0; i < count; ++i) {
         psl->insert(value);
     }
@@ -51,7 +110,12 @@ void insert_count_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
     }
 }
 
-int test_single_thread_insert() {
+/**
+ * Functional test of a single insert of a value with a single thread.
+ *
+ * @return -1 if compiled without thread support. Otherwise 0 on success, non-zero on failure.
+ */
+static int test_single_thread_insert() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
@@ -65,7 +129,12 @@ int test_single_thread_insert() {
     return -1; // N/A
 }
 
-int test_two_thread_insert_has_remove() {
+/**
+ * Functional test of a single insert/has/remove with a single Skip List with two threads.
+ *
+ * @return -1 if compiled without thread support. Otherwise 0 on success, non-zero on failure.
+ */
+static int test_two_thread_insert_has_remove() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
@@ -81,13 +150,18 @@ int test_two_thread_insert_has_remove() {
     return -1; // N/A
 }
 
-int test_two_thread_insert_multi_count() {
+/**
+ * Functional test of a multiple insert/has/remove with a single Skip List with two threads.
+ *
+ * @return -1 if compiled without thread support. Otherwise 0 on success, non-zero on failure.
+ */
+static int test_two_thread_insert_multi_count() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
 
-    std::thread t0(insert_count_has_remove_count<double>, &sl, 1.0, 1024*128);
-    std::thread t1(insert_count_has_remove_count<double>, &sl, 2.0, 1024*128);
+    std::thread t0(insert_count_has_remove_count<double>, &sl, 1.0, 1024 * 128);
+    std::thread t1(insert_count_has_remove_count<double>, &sl, 2.0, 1024 * 128);
     t0.join();
     t1.join();
     result |= sl.lacksIntegrity();
@@ -97,17 +171,48 @@ int test_two_thread_insert_multi_count() {
     return -1; // N/A
 }
 
-int _test_perf_multi_threads(
+/// Size of the test Skip List.
+const size_t SKIPLIST_FIXED_LENGTH = 1024 * 16;
+/// Number of threads < this number, increment is x2.
+const size_t SKIPLIST_MAX_THREADS = 128;
+
+/**
+ * Create a @c OrderedStructs::SkipList::HeadNode<double> then create the given number of threads each of which calls
+ * insert_count_has_remove_count() with the given count.
+ *
+ * This then reports the total time taken in us and the rate which is <tt>thread_count * count / total time</tt>
+ *
+ * Example output where the count is fixed at @ref SKIPLIST_FIXED_LENGTH :
+ *
+ * @code
+    test_perf_multi_threads_fixed_length(): threads:    1 SkiplistSize:    16384 time:         8673 (us) rate    1.889e+06 /s
+    test_perf_multi_threads_fixed_length(): threads:    2 SkiplistSize:    16384 time:        71462 (us) rate    4.585e+05 /s
+    test_perf_multi_threads_fixed_length(): threads:    4 SkiplistSize:    16384 time:       687167 (us) rate    9.537e+04 /s
+    test_perf_multi_threads_fixed_length(): threads:    8 SkiplistSize:    16384 time:      2328498 (us) rate    5.629e+04 /s
+    test_perf_multi_threads_fixed_length(): threads:   16 SkiplistSize:    16384 time:      2729010 (us) rate    9.606e+04 /s
+    test_perf_multi_threads_fixed_length(): threads:   32 SkiplistSize:    16384 time:     10644947 (us) rate    4.925e+04 /s
+    test_perf_multi_threads_fixed_length(): threads:   64 SkiplistSize:    16384 time:     15568317 (us) rate    6.735e+04 /s
+ * @endcode
+ *
+ * This shows that whilst the total time increases strongly with the number of threads the rate/thread approaches an
+ * asymptotic value, although one that is significantly lower than the single threaded value.
+ *
+ * @param caller_name Name of the caller function, the test name.
+ * @param thread_count Number of threads to create.
+ * @param count Number of insertions into the Skip List.
+ * @return -1 if compiled without thread support. Otherwise 0 on success, non-zero on failure.
+ */
+static int _test_perf_multi_threads(
 #ifdef SKIPLIST_THREAD_SUPPORT
-                             const char* caller_name,
-                             size_t thread_count,
-                             size_t skiplist_size
+        const char *caller_name,
+        size_t thread_count,
+        size_t count
 #else
-                             const char* /* Unused */,
-                             size_t /* Unused */,
-                             size_t /* Unused */
+        const char* /* Unused */,
+        size_t /* Unused */,
+        size_t /* Unused */
 #endif
-                             ) {
+) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
@@ -115,49 +220,65 @@ int _test_perf_multi_threads(
 
     time_t start = clock();
     for (size_t i = 0; i < thread_count; ++i) {
-        threads.push_back(std::thread(
-                insert_count_has_remove_count<double>, &sl, i, skiplist_size)
-        );
+        threads.push_back(std::thread(insert_count_has_remove_count<double>, &sl, i, count));
     }
     for (auto &t: threads) {
         t.join();
     }
+    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+    uint32_t exec_us = exec + 0.5;
     result |= sl.lacksIntegrity();
     result |= sl.size() != 0;
-    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << std::setw(FUNCTION_WIDTH) << caller_name << "():";
     std::cout << " threads: " << std::setw(4) << thread_count;
-    std::cout << " SkiplistSize: " << std::setw(8) << skiplist_size;
+    std::cout << " SkiplistSize: " << std::setw(8) << count;
     std::cout << " time: ";
-    std::cout << std::setw(12) << exec;
+    std::cout << std::setw(12) << exec_us;
     std::cout << " (us)";
     std::cout << " rate " << std::setw(12);
-    std::cout << thread_count * skiplist_size / (exec / 1e6) << " /s";
+    std::cout << thread_count * count / (exec / 1e6) << " /s";
     std::cout << std::endl;
     return result;
 #endif // SKIPLIST_THREAD_SUPPORT
     return -1; // N/A
 }
 
-const size_t SKIPLIST_FIXED_LENGTH = 1024 * 16;
-// Number of threads < this number, increment is x2.
-const size_t SKIPLIST_MAX_THREADS = 128;
-
-int test_perf_multi_threads_vary_length() {
+/**
+ * Test insert/at/remove on a single Skip List in a multi-threaded environment.
+ * Number of threads is from 1 to < SKIPLIST_MAX_THREADS
+ *
+ * The repeat count is adjusted for the number of threads to be:
+ * @code SKIPLIST_FIXED_LENGTH * 4 / number_of_threads @endcode
+ *
+ * This calls _test_perf_multi_threads() that does most of the work.
+ *
+ * @return 0 on success, non-zero on failure.
+ */
+static int test_perf_multi_threads_vary_length() {
     int result = 0;
 
-    for (size_t t = 1; t < SKIPLIST_MAX_THREADS; t *=2) {
+    for (size_t t = 1; t < SKIPLIST_MAX_THREADS; t *= 2) {
         result |= _test_perf_multi_threads(__FUNCTION__,
                                            t,
-                                           SKIPLIST_FIXED_LENGTH * 4 / t);
+                                           SKIPLIST_FIXED_LENGTH / t);
     }
     return result;
 }
 
+/**
+ * Test insert/at/remove on a single Skip List in a multi-threaded environment.
+ * Number of threads is from 1 to < SKIPLIST_MAX_THREADS
+ *
+ * The repeat count is constant at SKIPLIST_FIXED_LENGTH so, inevitably the more threads the longer the execution time.
+ *
+ * This calls _test_perf_multi_threads() that does most of the work.
+ *
+ * @return 0 on success, non-zero on failure.
+ */
 int test_perf_multi_threads_fixed_length() {
     int result = 0;
 
-    for (size_t t = 1; t < SKIPLIST_MAX_THREADS; t *=2) {
+    for (size_t t = 1; t < SKIPLIST_MAX_THREADS; t *= 2) {
         result |= _test_perf_multi_threads(__FUNCTION__,
                                            t,
                                            SKIPLIST_FIXED_LENGTH);
@@ -165,35 +286,56 @@ int test_perf_multi_threads_fixed_length() {
     return result;
 }
 
-int _test_perf_single_thread(const char* caller_name,
+/**
+ * Test insert/at/remove on a single Skip List in a single-threaded environment.
+ *
+ * The repeat count is constant at SKIPLIST_FIXED_LENGTH.
+ *
+ * This is comparable with test_perf_single_thread_fixed_length()
+ *
+ * @return 0 on success, non-zero on failure.
+ */
+int _test_perf_single_thread(const char *caller_name,
                              size_t repeat_count,
-                             size_t skiplist_size) {
+                             size_t count) {
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
 
     time_t start = clock();
     for (size_t i = 0; i < repeat_count; ++i) {
-        insert_count_has_remove_count<double>(&sl, i, skiplist_size);
+        insert_count_has_remove_count<double>(&sl, i, count);
     }
+    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+    uint32_t exec_us = exec + 0.5;
     result |= sl.lacksIntegrity();
     result |= sl.size() != 0;
-    double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << std::setw(FUNCTION_WIDTH) << caller_name << "():";
     std::cout << "   count: " << std::setw(4) << repeat_count;
-    std::cout << " SkiplistSize: " << std::setw(8) << skiplist_size;
+    std::cout << " SkiplistSize: " << std::setw(8) << count;
     std::cout << " time: ";
-    std::cout << std::setw(12) << exec;
+    std::cout << std::setw(12) << exec_us;
     std::cout << " (us)";
     std::cout << " rate " << std::setw(12);
-    std::cout << repeat_count * skiplist_size / (exec / 1e6) << " /s";
+    std::cout << repeat_count * count / (exec / 1e6) << " /s";
     std::cout << std::endl;
     return result;
 }
 
+/**
+ * Test insert/at/remove on a single Skip List in a single-threaded environment.
+ *
+ * The repeat count is constant at SKIPLIST_FIXED_LENGTH .
+ *
+ * This calls _test_perf_single_thread() that does most of the work.
+ *
+ * This is comparable with test_perf_multi_threads_fixed_length()
+ *
+ * @return 0 on success, non-zero on failure.
+ */
 int test_perf_single_thread_fixed_length() {
     int result = 0;
 
-    for (size_t c = 1; c < SKIPLIST_MAX_THREADS; c *=2) {
+    for (size_t c = 1; c < SKIPLIST_MAX_THREADS; c *= 2) {
         result |= _test_perf_single_thread(__FUNCTION__,
                                            c,
                                            SKIPLIST_FIXED_LENGTH);
@@ -204,6 +346,11 @@ int test_perf_single_thread_fixed_length() {
 
 /***************** END: Concurrency Tests ************************/
 
+/**
+ * Run all concurrency tests.
+ *
+ * @return 0 on success, non-zero on failure.
+ */
 int test_concurrent_all() {
     int result = 0;
     result |= print_result("test_single_thread_insert",
