@@ -137,7 +137,7 @@ def test_insert_has_remove_int():
     """Tests multi-threaded insert()/has()/remove() of integers converted to
     native C++ objects."""
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
-    sl = orderedstructs.SkipList(object)
+    sl = orderedstructs.SkipList(int)
     # Load SkipList with one value
     sl.insert(1000)
     NUM_INSERTS = 10000
@@ -176,7 +176,7 @@ def test_insert_has_remove_float():
     """Tests multi-threaded insert()/has()/remove() of floats converted to
     native C++ objects."""
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
-    sl = orderedstructs.SkipList(object)
+    sl = orderedstructs.SkipList(float)
     # Load SkipList with one value
     sl.insert(1000.0)
     NUM_INSERTS = 10000

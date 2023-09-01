@@ -1,10 +1,38 @@
-//
-//  test_documentation.cpp
-//  skiplist
-//
-//  Created by Paul Ross on 13/07/2016.
-//  Copyright (c) 2016 Paul Ross. All rights reserved.
-//
+/**
+ * @file
+ *
+ * Project: skiplist
+ *
+ * Documentation Tests.
+ *
+ * Created by Paul Ross on 13/07/2016.
+ *
+ * Copyright (c) 2016-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
+ */
 #include <iostream>
 #include <iomanip>
 
@@ -15,7 +43,11 @@
 
 /********************** Documentation ***************************/
 
-/* Print out the height compared with the length of the skip list
+/**
+ * Print out the height compared with the length of the skip list
+ *
+ * @param level The level to go to.
+ * @return Zero.
  */
 int doc_height_trend(size_t level) {
     std::cout << "" << __FUNCTION__ << std::endl;
@@ -42,6 +74,11 @@ int doc_height_trend(size_t level) {
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
+/**
+ * Print out a simple DOT file on stdout.
+ *
+ * @return Zero.
+ */
 int doc_simple_dot() {
     int result = 0;
     std::stringstream ostr;

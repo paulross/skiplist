@@ -74,7 +74,8 @@ int test_example_introduction_A(void) {
 
 int test_all() {
     int result = 0;
-    
+
+#if 1
     result |= test_example_introduction_A();
 
     result |= test_functional_all();
@@ -82,8 +83,11 @@ int test_all() {
     result |= test_documentation_all();
     // Performance tests are very slow if DEBUG as checking
     // integrity is very expensive for large data sets.
+#endif
+#if 1
 #ifndef DEBUG
     result |= test_performance_all();
+#endif // DEBUG
 #endif
     // test_concurrent_all() only executes performance tests #ifndef DEBUG
     result |= test_concurrent_all();

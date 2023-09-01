@@ -52,9 +52,10 @@
 
 /** HeadNode
  *
- * A HeadNode is a skip list. This is the single node leading to all other nodes.
+ * @brief A HeadNode is a skip list. This is the single node leading to all other content Nodes.
  *
  * Example:
+ *
  * @code
  *      OrderedStructs::SkipList::HeadNode<double> sl;
  *      for (int i = 0; i < 100; ++i) {
@@ -67,11 +68,19 @@
  *
  * Created by Paul Ross on 03/12/2015.
  *
- * Copyright (c) 2017 Paul Ross. All rights reserved.
+ * Copyright (c) 2015-2023 Paul Ross. All rights reserved.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
  */
 template <typename T, typename _Compare=std::less<T>>
 class HeadNode {
 public:
+    /**
+     * Constructor for and Empty Skip List.
+     *
+     * @param cmp The comparison function for comparing Node values.
+     */
     HeadNode(_Compare cmp=_Compare()) : _count(0), _compare(cmp) {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
         _dot_file_subgraph = 0;
@@ -139,19 +148,19 @@ protected:
     IntegrityCheck _lacksIntegrityNodeReferencesNotInList() const;
     IntegrityCheck _lacksIntegrityOrder() const;
 protected:
-    // Number of nodes in the list
+    /// Number of nodes in the list.
     size_t _count;
-    // My node references, the size of this is the largest height in the list
+    /// My node references, the size of this is the largest height in the list
     SwappableNodeRefStack<T, _Compare> _nodeRefs;
-    // Comparison function
+    /// Comparison function.
     _Compare _compare;
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    // Used to count how many sub-graphs have been plotted
+    /// Used to count how many sub-graphs have been plotted
     mutable size_t _dot_file_subgraph;
 #endif
 
 private:
-    // Prevent cctor and operator=
+    /// Prevent cctor and operator=
     HeadNode(const HeadNode &that);
     HeadNode &operator=(const HeadNode &that) const;
 };
@@ -313,11 +322,22 @@ size_t HeadNode<T, _Compare>::height(size_t idx) const {
     return pNode->height();
 }
 
+/**
+ * The skip width of the Node at index has at the given level.
+ * Will throw an IndexError if the index is out of range.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param idx The index.
+ * @param level The level.
+ * @return Width of Node.
+ */
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::width(size_t idx, size_t level) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
+    // Will throw if out of range.
     const Node<T, _Compare> *pNode = _nodeAt(idx);
     assert(pNode);
     if (level >= pNode->height()) {
@@ -326,6 +346,15 @@ size_t HeadNode<T, _Compare>::width(size_t idx, size_t level) const {
     return pNode->nodeRefs()[level].width;
 }
 
+/**
+ * Find the Node at the given index.
+ * Will throw an IndexError if the index is out of range.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param idx The index.
+ * @return The Node.
+ */
 template <typename T, typename _Compare>
 const Node<T, _Compare> *HeadNode<T, _Compare>::_nodeAt(size_t idx) const {
     if (idx < _count) {
@@ -347,6 +376,13 @@ const Node<T, _Compare> *HeadNode<T, _Compare>::_nodeAt(size_t idx) const {
 
 #pragma mark class HeadNode public non-const methods
 
+/**
+ * Insert a value.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value
+ */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::insert(const T &value) {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -423,8 +459,13 @@ void HeadNode<T, _Compare>::insert(const T &value) {
 #endif
 }
 
-/*
+/**
  * Adjust references >= level for removal of the node pNode.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param level Current level.
+ * @param pNode Node to swap references with.
  */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
@@ -458,6 +499,15 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
     }
 }
 
+/**
+ * Remove a Node with a value.
+ * May throw a ValueError if the value is not found.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value The value in the Node to remove.
+ * @return The value removed.
+ */
 template <typename T, typename _Compare>
 T HeadNode<T, _Compare>::remove(const T &value) {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -491,6 +541,13 @@ T HeadNode<T, _Compare>::remove(const T &value) {
     return ret_val;
 }
 
+/**
+ * Throw a ValueError in a consistent fashion.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value The value to put into the ValueError.
+ */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_throwValueErrorNotFound(const T &value) const {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
@@ -503,10 +560,16 @@ void HeadNode<T, _Compare>::_throwValueErrorNotFound(const T &value) const {
     throw ValueError(err_msg);
 }
 
-/** Checks that the value == value
- * This will throw a FailedComparison if that is not the case, for example NaN
+/**
+ * Checks that the value == value.
+ * This will throw a FailedComparison if that is not the case, for example NaN.
  *
- * @note the Node class is (should be) not directly accessible by the user so we can just assert(value == value) in Node.
+ * @note
+ * The Node class is (should be) not directly accessible by the user so we can just assert(value == value) in Node.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param value
  */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
@@ -516,8 +579,13 @@ void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
     }
 }
 
-/* This tests that at every level >= 0 the sequence of node pointers
+/**
+ * This tests that at every level >= 0 the sequence of node pointers
  * at that level does not contain a cyclic reference.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return An IntegrityCheck enum.
  */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
@@ -541,8 +609,13 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
     return INTEGRITY_SUCCESS;
 }
 
-/* This tests that at every level > 0 the node to node width is the same
+/**
+ * This tests that at every level > 0 the node to node width is the same
  * as the accumulated node to node widths at level - 1.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return An IntegrityCheck enum.
  */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
@@ -574,6 +647,13 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
     return INTEGRITY_SUCCESS;
 }
 
+/**
+ * This tests the integrity of each Node.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return An IntegrityCheck enum.
+ */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityNodeReferencesNotInList() const {
     assert(_nodeRefs.height());
@@ -603,9 +683,14 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityNodeReferencesNotInList() c
     return INTEGRITY_SUCCESS;
 }
 
-/* Integrity check. Traverse the lowest level and check that the ordering
+/**
+ * Integrity check. Traverse the lowest level and check that the ordering
  * is correct according to the compare function. The HeadNode checks that the
  * Node(s) have correctly applied the compare function.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return An IntegrityCheck enum.
  */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityOrder() const {
@@ -625,6 +710,14 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityOrder() const {
     return INTEGRITY_SUCCESS;
 }
 
+/**
+ * Full integrity check.
+ * This calls the other integrity check functions.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return An IntegrityCheck enum.
+ */
 template <typename T, typename _Compare>
 IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -677,7 +770,13 @@ IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
     return INTEGRITY_SUCCESS;
 }
 
-// Returns an estimate of the memory usage of an instance
+/**
+ * Returns an estimate of the memory usage of an instance.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @return The size of the memory estimate.
+ */
 template <typename T, typename _Compare>
 size_t HeadNode<T, _Compare>::size_of() const {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -696,6 +795,13 @@ size_t HeadNode<T, _Compare>::size_of() const {
     return ret_val;
 }
 
+/**
+ * Destructor.
+ * This deletes all Nodes.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ */
 template <typename T, typename _Compare>
 HeadNode<T, _Compare>::~HeadNode() {
     // Hmm could this deadlock?
@@ -719,6 +825,13 @@ HeadNode<T, _Compare>::~HeadNode() {
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
+/**
+ * Create a DOT file of the internal representation.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param os Where to write the DOT file.
+ */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
@@ -790,6 +903,13 @@ void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
     _dot_file_subgraph += 1;
 }
 
+/**
+ * Finalise the DOT file of the internal representation.
+ *
+ * @tparam T Type of the values in the Skip List.
+ * @tparam _Compare Compare function.
+ * @param os Where to write the DOT file.
+ */
 template <typename T, typename _Compare>
 void HeadNode<T, _Compare>::dotFileFinalise(std::ostream &os) const {
 #ifdef SKIPLIST_THREAD_SUPPORT

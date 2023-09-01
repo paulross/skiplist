@@ -10,16 +10,6 @@
 <title>SkipList</title>
 <polygon fill="white" stroke="none" points="-4,4 -4,-1234.5 1341.25,-1234.5 1341.25,4 -4,4"/>
 <text text-anchor="middle" x="668.62" y="-7.2" font-family="Times,serif" font-size="14.00">SkipList.</text>
-<g id="clust6" class="cluster">
-<title>cluster5</title>
-<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-449.5 47,-580.5 983,-580.5 983,-449.5 47,-449.5"/>
-<text text-anchor="middle" x="515" y="-563.2" font-family="Times,serif" font-size="14.00">Skip list iteration 5</text>
-</g>
-<g id="clust7" class="cluster">
-<title>cluster6</title>
-<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-310.5 47,-441.5 1122.62,-441.5 1122.62,-310.5 47,-310.5"/>
-<text text-anchor="middle" x="584.81" y="-424.2" font-family="Times,serif" font-size="14.00">Skip list iteration 6</text>
-</g>
 <g id="clust1" class="cluster">
 <title>cluster0</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="46.88,-1144.5 46.88,-1222.5 167.12,-1222.5 167.12,-1144.5 46.88,-1144.5"/>
@@ -44,6 +34,16 @@
 <title>cluster4</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-588.5 47,-719.5 843,-719.5 843,-588.5 47,-588.5"/>
 <text text-anchor="middle" x="445" y="-702.2" font-family="Times,serif" font-size="14.00">Skip list iteration 4</text>
+</g>
+<g id="clust6" class="cluster">
+<title>cluster5</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-449.5 47,-580.5 983,-580.5 983,-449.5 47,-449.5"/>
+<text text-anchor="middle" x="515" y="-563.2" font-family="Times,serif" font-size="14.00">Skip list iteration 5</text>
+</g>
+<g id="clust7" class="cluster">
+<title>cluster6</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-310.5 47,-441.5 1122.62,-441.5 1122.62,-310.5 47,-310.5"/>
+<text text-anchor="middle" x="584.81" y="-424.2" font-family="Times,serif" font-size="14.00">Skip list iteration 6</text>
 </g>
 <g id="clust8" class="cluster">
 <title>cluster7</title>

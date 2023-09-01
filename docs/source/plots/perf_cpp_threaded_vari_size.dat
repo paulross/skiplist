@@ -7,7 +7,7 @@
 #     test_perf_multi_threads_vary_length(): threads:   16 SkiplistSize:     4096 time:       645359 (us) rate       101550 /s
 #     test_perf_multi_threads_vary_length(): threads:   32 SkiplistSize:     2048 time:       642494 (us) rate       102003 /s
 #     test_perf_multi_threads_vary_length(): threads:   64 SkiplistSize:     1024 time:       561190 (us) rate       116780 /s
-#     test_perf_multi_threads_vary_length(): PASS
+#     test_perf_insert_count_has_remove_count_multi_threads_vary_length(): PASS
 #
 #   i Skiplist Size  Threaded (ms)
 1	65536	96.405

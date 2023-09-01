@@ -1,10 +1,38 @@
-
-//  Node.h
-//  SkipList
-//
-//  Created by Paul Ross on 03/12/2015.
-//  Copyright (c) 2017 Paul Ross. All rights reserved.
-//
+/**
+ * @file
+ *
+ * Project: skiplist
+ *
+ * Concurrency Tests.
+ *
+ * Created by Paul Ross on 03/12/2015.
+ *
+ * Copyright (c) 2015-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2015-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
+ */
 
 #ifndef SkipList_Node_h
 #define SkipList_Node_h
@@ -19,13 +47,19 @@
 #pragma mark -
 #pragma mark class Node definition
 
+/**
+ * @brief A single node in a Skip List containing a value and references to other downstream Node objects.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ */
 template <typename T, typename _Compare>
 class Node {
 public:
     Node(const T &value, _Compare _cmp);
     // Const methods
     //
-    // Returns the node value
+    /// Returns the node value
     const T &value() const { return _value; }
     // Returns true if the value is present in the skip list from this node onwards.
     bool has(const T &value) const;
@@ -34,7 +68,7 @@ public:
     const Node<T, _Compare> *at(size_t idx) const;
     // Computes index of the first occurrence of a value
     bool index(const T& value, size_t &idx, size_t level) const;
-    // Number of linked lists that this node engages in, minimum 1.
+    /// Number of linked lists that this node engages in, minimum 1.
     size_t height() const { return _nodeRefs.height(); }
     // Return the pointer to the next node at level 0
     const Node<T, _Compare> *next() const;
@@ -45,8 +79,9 @@ public:
     const Node<T, _Compare> *pNode(size_t level) const;
     
     // Non-const methods
-    // Get a reference to the node references
+    /// Get a reference to the node references
     SwappableNodeRefStack<T, _Compare> &nodeRefs() { return _nodeRefs; }
+    /// Get a reference to the node references
     const SwappableNodeRefStack<T, _Compare> &nodeRefs() const { return _nodeRefs; }
     // Insert a node
     Node<T, _Compare> *insert(const T &value);
@@ -81,6 +116,15 @@ private:
 #pragma mark -
 #pragma mark class Node implementation
 
+/**
+ * Constructor.
+ * This also creates a SwappableNodeRefStack of random height by tossing a virtual coin.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param value The value of the Node.
+ * @param _cmp The comparison function.
+ */
 template <typename T, typename _Compare>
 Node<T, _Compare>::Node(const T &value, _Compare _cmp) : \
     _value(value), _compare(_cmp) {
@@ -89,6 +133,14 @@ Node<T, _Compare>::Node(const T &value, _Compare _cmp) : \
     } while (tossCoin());
 }
 
+/**
+ * Returns true if the value is present in the skip list from this node onwards.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param value The value to look for.
+ * @return true if the value is present in the skip list from this node onwards.
+ */
 template <typename T, typename _Compare>
 bool Node<T, _Compare>::has(const T &value) const {
     assert(_nodeRefs.height());
@@ -106,10 +158,15 @@ bool Node<T, _Compare>::has(const T &value) const {
     return !_compare(value, _value) && !_compare(_value, value);
 }
 
-/* Return a pointer to the n'th node.
- * Start (or continue) from the highest level, drop down a level if not
- * found.
+/**
+ * Return a pointer to the n'th node.
+ * Start (or continue) from the highest level, drop down a level if not found.
  * Return nullptr if not found at level 0.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param idx The index from hereon. If zero return this.
+ * @return Pointer to the Node or nullptr.
  */
 template <typename T, typename _Compare>
 const Node<T, _Compare> *Node<T, _Compare>::at(size_t idx) const {
@@ -125,6 +182,16 @@ const Node<T, _Compare> *Node<T, _Compare>::at(size_t idx) const {
     return nullptr;
 }
 
+/**
+ * Computes index of the first occurrence of a value.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param value The value to find.
+ * @param idx The current index, this will be updated.
+ * @param level The current level to search from.
+ * @return true if found, false otherwise.
+ */
 template <typename T, typename _Compare>
 bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
     assert(_nodeRefs.height());
@@ -161,24 +228,55 @@ bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
     return false;
 }
 
+/**
+ * Return the pointer to the next node at level 0.
+ * 
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @return The next node at level 0.
+ */
 template <typename T, typename _Compare>
 const Node<T, _Compare> *Node<T, _Compare>::next() const {
     assert(_nodeRefs.height());
     return _nodeRefs[0].pNode;
 }
 
+/**
+ * Return the width at given level.
+ * 
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param level The requested level.
+ * @return The width. 
+ */
 template <typename T, typename _Compare>
 size_t Node<T, _Compare>::width(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].width;
 }
 
+/**
+ * Return the node pointer at given level, only used for HeadNode integrity checks.
+ * 
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param level The requested level. 
+ * @return The Node.
+ */
 template <typename T, typename _Compare>
 const Node<T, _Compare> *Node<T, _Compare>::pNode(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].pNode;
 }
 
+/**
+ * Insert a new node with a value.
+ * 
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param value The value of the Node to insert.
+ * @return Pointer to the new Node or nullptr on failure.
+ */
 template <typename T, typename _Compare>
 Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     assert(_nodeRefs.height());
@@ -271,6 +369,15 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     return pNode;
 }
 
+/**
+ * Adjust the Node references.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param level The level of the caller's node.
+ * @param pNode The Node to swap references with.
+ * @return The Node with swapped references.
+ */
 template <typename T, typename _Compare>
 Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode) {
     assert(pNode);
@@ -302,6 +409,16 @@ Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Comp
     return pNode;
 }
 
+/**
+ * Remove a Node with the given value to be removed.
+ * The return value must be deleted, the other Nodes have been adjusted as required.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param call_level Level the caller Node is at.
+ * @param value Value of the detached Node to remove.
+ * @return A pointer to the Node to be free'd or nullptr on failure.
+ */
 template <typename T, typename _Compare>
 Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
                          const T &value) {
@@ -339,13 +456,28 @@ Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
     return nullptr;
 }
 
-/* This checks the internal concistency of a Node. It returns 0
+/*
+ * This checks the internal concistency of a Node. It returns 0
  * if succesful, non-zero on error. The tests are:
  *
  * - Height must be >= 1
  * - Height must not exceed HeadNode height.
  * - NULL pointer must not have a non-NULL above them.
  * - Node pointers must not be self-referential.
+ */
+/**
+ * This checks the internal concistency of a Node. It returns 0
+ * if succesful, non-zero on error. The tests are:
+ *
+ * - Height must be >= 1
+ * - Height must not exceed HeadNode height.
+ * - NULL pointer must not have a non-NULL above them.
+ * - Node pointers must not be self-referential.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param headnode_height Height of HeadNode.
+ * @return An IntegrityCheck enum.
  */
 template <typename T, typename _Compare>
 IntegrityCheck Node<T, _Compare>::lacksIntegrity(size_t headnode_height) const {
@@ -380,6 +512,14 @@ IntegrityCheck Node<T, _Compare>::lacksIntegrity(size_t headnode_height) const {
     return INTEGRITY_SUCCESS;
 }
 
+/**
+ * Checks that this Node is in the set held by the HeadNode.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param nodeSet Set of Nodes held by the HeadNode.
+ * @return An IntegrityCheck enum.
+ */
 template <typename T, typename _Compare>
 IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const Node<T, _Compare>*> &nodeSet) const {
     size_t level = 0;
@@ -392,7 +532,13 @@ IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const N
     return INTEGRITY_SUCCESS;
 }
 
-// Returns an estimate of the memory usage of an instance
+/**
+ * Returns an estimate of the memory usage of an instance.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @return The memory estimate of this Node.
+ */
 template <typename T, typename _Compare>
 size_t Node<T, _Compare>::size_of() const {
     // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
@@ -403,6 +549,14 @@ size_t Node<T, _Compare>::size_of() const {
 
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
 
+/**
+ * Writes out this Node address.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param os Where to write.
+ * @param suffix The suffix (node number).
+ */
 template <typename T, typename _Compare>
 void Node<T, _Compare>::writeNode(std::ostream &os, size_t suffix) const {
     os << "\"node";
@@ -410,6 +564,14 @@ void Node<T, _Compare>::writeNode(std::ostream &os, size_t suffix) const {
     os << std::hex << this << std::dec << "\"";
 }
 
+/**
+ * Writes out a fragment of a DOT file representing this Node.
+ *
+ * @tparam T The type of the Skip List Node values.
+ * @tparam _Compare A comparison function for type T.
+ * @param os Wheere to write.
+ * @param suffix The node number.
+ */
 template <typename T, typename _Compare>
 void Node<T, _Compare>::dotFile(std::ostream &os, size_t suffix) const {
     assert(_nodeRefs.height());
@@ -445,5 +607,4 @@ void Node<T, _Compare>::dotFile(std::ostream &os, size_t suffix) const {
 
 /************************** END: Node *******************************/
 
-
-#endif
+#endif // SkipList_Node_h

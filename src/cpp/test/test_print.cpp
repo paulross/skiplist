@@ -42,7 +42,7 @@
 
 #include "test_print.h"
 
-const int FUNCTION_WIDTH = 40;
+const int FUNCTION_WIDTH = 50;
 
 /**
  * Print the result of a test function.

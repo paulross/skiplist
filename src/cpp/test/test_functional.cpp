@@ -521,6 +521,7 @@ int test_index_large() {
 //    }
 //};
 
+/** @brief Creates a comparison function that return the inverse of std::less to create a decreasing Skip List. */
 template <typename T>
 struct reversed {
     bool operator()(const T &a, const T &b) const {
@@ -528,11 +529,12 @@ struct reversed {
     }
 };
 
-struct reversed_double {
-    bool operator()(const double &a, const double &b) const {
-        return b < a;
-    }
-};
+///** @brief Creates a comparison function that return the inverse of std::less for doubles */
+//struct reversed_double {
+//    bool operator()(const double &a, const double &b) const {
+//        return b < a;
+//    }
+//};
 
 int test_reversed_simple_insert() {
     int result = 0;

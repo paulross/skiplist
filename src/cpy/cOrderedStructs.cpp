@@ -18,6 +18,9 @@ static char toss_coin_docs[] = \
 "Toss a coin and return True/False."
 " This calls OrderedStructs::SkipList::tossCoin().";
 
+/**
+ * Virtual toss of a coin.
+ */
 static PyObject *
 toss_coin(PyObject */* mod */) {
     return PyBool_FromLong(OrderedStructs::SkipList::tossCoin());
@@ -27,6 +30,9 @@ static char seed_rand_docs[] = \
 "Seed the random number generator."
 " This calls OrderedStructs::SkipList::seedRand().";
 
+/**
+ * Seed the random number generator.
+ */
 static PyObject *
 seed_rand(PyObject */* mod */, PyObject * arg) {
 #if PY_MAJOR_VERSION == 3
@@ -65,6 +71,9 @@ long_max_value(PyObject */* mod */) {
     return PyLong_FromLongLong(LLONG_MAX);
 }
 
+/**
+ * CPython orderedstructs package methods.
+ */
 static PyMethodDef orderedstructsmodule_methods[] = {
         {"toss_coin", (PyCFunction) toss_coin,      METH_NOARGS, toss_coin_docs},
         {"seed_rand", (PyCFunction) seed_rand,      METH_O,      seed_rand_docs},
@@ -81,6 +90,7 @@ static char c_skip_list_docs[] =
         "\nseed_rand(int) - Seed the random number generator."
         "\ntoss_coin() - Toss a coin using the random number generator and return True/False.";
 
+/** @brief Wrapper of module state for Python 2 and 3. */
 struct module_state {
     PyObject *error;
 };

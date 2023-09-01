@@ -2221,6 +2221,8 @@ INCLUDE_FILE_PATTERNS  =
 
 PREDEFINED             = PY_THREAD_SAFE \
                          SKIPLIST_THREAD_SUPPORT \
+                         WITH_THREAD \
+                         INCLUDE_METHODS_THAT_USE_STREAMS \
                          DEBUG
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

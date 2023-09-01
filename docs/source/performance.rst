@@ -226,8 +226,8 @@ Test C++ execution code can be run by invoking the the makefile thus:
                    ...
                    test_single_thread_insert(): PASS
            test_two_thread_insert_has_remove(): PASS
-          test_two_thread_insert_multi_count(): PASS
-         test_perf_multi_threads_vary_length(): threads:    1 SkiplistSize:   131072 time:       180145 (us) rate       727592 /s
+          test_two_thread_insert_count_has_remove_count(): PASS
+         test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:    1 SkiplistSize:   131072 time:       180145 (us) rate       727592 /s
                                                 ...
         test_perf_single_thread_fixed_length(): PASS
     
@@ -245,7 +245,7 @@ Test C++ execution code can be run by invoking the the makefile thus:
                        ...
                        test_single_thread_insert(): N/A
                test_two_thread_insert_has_remove(): N/A
-              test_two_thread_insert_multi_count(): N/A
+              test_two_thread_insert_count_has_remove_count(): N/A
                 
 
 ----------------------------------------------------------------
@@ -281,18 +281,23 @@ The overhead of using ``-DSKIPLIST_THREAD_SUPPORT`` is about 0% to 15%.
 A Multi Threaded Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The SkipList is compiled with ``-DSKIPLIST_THREAD_SUPPORT`` and we repeat the task in 1, 2, 4, ... 64 new threads simultaneously where they share the same SkipList and observe both how the total execution time grows and how it compares with the same task repeated sequentially in a single (main) thread. The test function is ``test_perf_multi_threads_fixed_length()``.
+Here is a multi-threaded simulation of the operations typical of rolling median on a shared Skip List.
+Each thread:
 
-In the graph below the red line is the time for the sequential result, this is the same as the red line in the graph above. The green line is time taken to repeat the task n times using n threads sharing the same SkipList inserting and removing values simultaneously. The blue line is the ratio of the: threaded solution / sequential solution.
+- Inserts a value at the mid-point of the same Skip List using ``insert()``.
+- Checks it has that value using ``has()``.
+- Removes that value using ``remove()``
 
-.. image:: plots/perf_cpp_threaded_fixed_size.png
+Each of these operations obtains a lock on the Skip List.
+
+Then repeating the task in 1, 2, 4, ... 128 new threads simultaneously where they share the same Skip List.
+The test function is ``_test_perf_sim_rolling_median_multi_thread()``.
+
+In the graph below the Y-axis shows the cost for each insert/has/remove operation in microseconds against the number of
+threads contending for the Skip List.
+
+.. image:: plots/perf_cpp_threaded_sim_rolling_median.png
     :width: 640
-
-The execution time of the threaded solution is near linear with the amount of threads each solving the same task.
-
-Running the task once in a single thread only takes a little longer than the sequential solution (as seen above). As soon as contention is introduced by having two threads sharing the same SkipList then the execution time goes up by around 6 fold (the blue line above). So once there is contention the performance does deteriorate significantly, this is only to be expected.
-
-However increasing the number of threads up to 64 does not hugely affect this ratio. 64 simultaneous threads each doing the same task on a shared SkipList takes about 9.5x the time of doing the same work by repeating the task sequentially 64 times. So the performance does not deteriorate despite the huge increase in contention, this is rather unexpected.
 
 ===============================
 Detailed Performance

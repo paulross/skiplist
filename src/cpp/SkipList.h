@@ -33,6 +33,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  * @endcode
+ */
+
+/** @mainpage
  *
  * General
  * =======
@@ -57,7 +60,8 @@
  * Skip lists are alternatives to balanced trees for operations such as a rolling median.
  * The disadvantages of skip lists are:
     - Less space efficient than balanced trees (see 'Space Complexity' below).
-    - performance is similar to balanced trees except finding the mid-point which is @c O(log(N)) for a skip list compared with @cc O(1) for a balanced tree.
+    - performance is similar to balanced trees except finding the mid-point which is @c O(log(N)) for a skip list
+        compared with @c O(1) for a balanced tree.
  *
  * The advantages claimed for skip lists are:
     - The insert() and remove() logic is simpler (I do not subscribe to this).
@@ -116,11 +120,15 @@
  *
  * To understand how the skip list is maintained, consider insertion; before inserting node 'E' the skip list would look
  * like this:
+ *
  * @code
+ *
  | 1 A |->| 2 C |---------->| 3 G |------------------->| 2 0 |---------->| NULL |
  | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
  | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  F  |  |  G  |  |  H  |
+ *
  * @endcode
+ *
  * Inserting 'E' means:
  * - Finding where 'E' should be inserted (after 'D').
  * - Creating node 'E' with a random height (heads/heads/tails so 3 high).
@@ -143,11 +151,12 @@
  *
  * Recursive Unwinding
  * -------------------
- * The remaining operations are done as recursion unwinds.
- * D[0] and C[0] update E[1] with their cumulative width (2).
- * C[1] adds 1 to width (a new node is inserted) then subtracts E[1].
- * Then C[1]/E[1] are swapped so that the pointers and widths are correct.
- * And so on until HED is reached, in this case a new level is added and HED[2] swapped with E[2].
+ * The remaining operations are done as recursion unwinds:
+ *
+ * - D[0] and C[0] update E[1] with their cumulative width (2).
+ * - C[1] adds 1 to width (a new node is inserted) then subtracts E[1].
+ * - Then C[1]/E[1] are swapped so that the pointers and widths are correct.
+ * - And so on until HED is reached, in this case a new level is added and HED[2] swapped with E[2].
  *
  * A similar procedure will be followed, in reverse, when removing E to restore the state of the skip list to the
  * picture above.
@@ -185,20 +194,24 @@
  * --------------
  * Finding the place to insert a node follows the has(T &val) algorithm to find the place in the skip list to create a
  * new node.
- * Inserts of duplicate values are made after any existing duplicate values.
+ * A duplicate value is inserted after any existing duplicate values.
  *
- * All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
- * The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes {width, Node<T>*} data.
- * Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin until 'tails' is found.
- * This node initially has all node references to be to itself (this), and the widths set to 1 for level 0 and 0 for the remaining levels, they will be used to sum the widths at one level down.
- * On recursion ('left') each node adds its width to the new node at the level above the current level.
- * On moving up a level the current node swaps its width and node pointer with the new node at that new level.
+ * - All nodes are inserted at level 0 even if the insertion point can be seen at a higher level.
+ * - The search for an insertion location creates a recursion stack that, when unwound, updates the traversed nodes
+ *      <tt>{width, Node<T>*}</tt> data.
+ * - Once an insert position is found a Node is created whose height is determined by repeatedly tossing a virtual coin
+ *      until a 'tails' is thrown.
+ * - This node initially has all node references to be to itself (this), and the widths set to 1 for level 0 and 0 for
+ *      the remaining levels, they will be used to sum the widths at one level down.
+ * - On recursion ('left') each node adds its width to the new node at the level above the current level.
+ * - On moving up a level the current node swaps its width and node pointer with the new node at that new level.
  *
  * remove(T &val)
  * --------------
  *
  * If there are duplicate values the last one is removed first, this is for symmetry with insert().
- * Essentially this is the same as insert() but once the node is found the insert() updating algorithm is reversed and the node deleted.
+ * Essentially this is the same as insert() but once the node is found the insert() updating algorithm is reversed and
+ * the node deleted.
  *
  * Code Layout
  * ===========
@@ -206,20 +219,26 @@
  *
  * The classes are:
  *
- * SwappableNodeRefStack<T> - A simple bookkeeping class that has a vector of [{skip_width, Node<T>*}, ...]
-    This vector can be expanded or contracted at will.
-    Both HeadNode and Node classes have one of these to manage their references.
+ * <tt>SwappableNodeRefStack</tt>
  *
- * Node<T> - This represents a single value in the skip list.
-    The height of a Node is determined at construction by tossing a virtual coin, this determines how many coarser
-    lists this node participates in.
-    A Node has a SwappableNodeRefStack object and a value of type T.
+ * This is simple bookkeeping class that has a vector of <tt>[{skip_width, Node<T>*}, ...]</tt>.
+ * This vector can be expanded or contracted at will.
+ * Both HeadNode and Node classes have one of these to manage their references.
  *
- * HeadNode<T> - There is one of these per skip list and this provides the API to the entire skip list.
-    The height of the HeadNode expands and contracts as required when Nodes are inserted or removed (it is the height
-    of the highest Node).
-    A HeadNode has a SwappableNodeRefStack object and an independently maintained count of the number of Node objects
-    in the skip list.
+ * <tt>Node</tt>
+ *
+ * This represents a single value in the skip list.
+ * The height of a Node is determined at construction by tossing a virtual coin, this determines how many coarser
+ * lists this node participates in.
+ * A Node has a SwappableNodeRefStack object and a value of type T.
+ *
+ * <tt>HeadNode</tt>
+ *
+ * There is one of these per skip list and this provides the API to the entire skip list.
+ * The height of the HeadNode expands and contracts as required when Nodes are inserted or removed (it is the height
+ * of the highest Node).
+ * A HeadNode has a SwappableNodeRefStack object and an independently maintained count of the number of Node objects
+ * in the skip list.
  *
  * A Node and HeadNode have specialised methods such as has(), at(), insert(), remove() that traverse the skip lis
  * recursively.
@@ -241,19 +260,27 @@
  * ---------------
  * Copying operations are (mostly) prohibited for performance reasons.
  * The only class that allows copying is struct NodeRef that contains fundamental types.
- * All other classes declare their copying operation private and unimplemented (rather than using C++11 delete) for compatibility with older compilers.
+ * All other classes declare their copying operation private and unimplemented (rather than using C++11 delete) for
+ * compatibility with older compilers.
  *
  * Reverse Loop of Unsigned int
  * ----------------------------
  * In a lot of the code we have to count down from some value to 0
  * with a size_t (an unsigned integer type) The idiom used is this:
  *
- * for (size_t l = height(); l-- > 0;) {
+ * @code
+ *
+ *  for (size_t l = height(); l-- > 0;) {
+ *      // ...
+ *  }
+ *
+ * @endcode
  *
  * The "l-- > 0" means test l against 0 then decrement it.
  * l will thus start at the value height() - 1 down to 0 then exit the loop.
- * NOTE: If l is declared before the loop it will have the maximum value
- * of a size_t unless a break statement is encountered.
+ *
+ * @note If l is declared before the loop it will have the maximum value of a size_t unless a break statement is
+ * encountered.
  *
  * Roads not Travelled
  * ===================
@@ -267,13 +294,20 @@
  *
  * Adversarial Users
  * -----------------
- * If the user knows the behaviour of the random number generator it is possible that they can change the order of insertion to create a poor distribution of nodes which will make operations tend to O(N) rather than O(log(N)).
+ * If the user knows the behaviour of the random number generator it is possible that they can change the order of
+ * insertion to create a poor distribution of nodes which will make operations tend to O(N) rather than O(log(N)).
  *
  * Probability != 0.5
  * ------------------
  * This implementation uses a fair coin to decide the height of the node.
- * Some literature suggests other values such as p = 0.25 might be more efficient. Some experiments seem to show that this is the case with this implementation.
- * Here are some results when using a vector of 1 million doubles and a sliding window of 101 where each value is inserted and removed and the cental value recovered:
+ *
+ * Some literature suggests other values such as p = 0.25 might be more efficient.
+ * Some experiments seem to show that this is the case with this implementation.
+ * Here are some results when using a vector of 1 million doubles and a sliding window of 101 where each value is
+ * inserted and removed and the cental value recovered:
+ *
+ * @code
+ *
     Probability calculation        p    Time compared to p = 0.5
      rand() < RAND_MAX / 16;    0.0625   90%
      rand() < RAND_MAX / 8;     0.125    83%
@@ -282,98 +316,129 @@
      rand() > RAND_MAX / 4;     0.75    143%
      rand() > RAND_MAX / 8;     0.875   201%
  *
+ * @endcode
+ *
  * Optimisation: Re-index Nodes on Complete Traversal
  * --------------------------------------------------
- * TODO: Re-index Nodes on Complete Traversal ???
+ *
+ * @todo Re-index Nodes on Complete Traversal ???
  *
  * Optimisation: Reuse removed nodes for insert()
  * ----------------------------------------------
- * TODO: Reuse removed nodes for insert() ???
+ * @todo Reuse removed nodes for insert() ???
  *
  * Reference Counting
  * ------------------
- * Some time (and particularly space) improvement could be obtained by reference counting nodes so that duplicate values could be eliminated.
- * Since the primary use case for this skip list is for computing the rolling median of doubles the chances of duplicates are slim.
- * For int, long and string there is a higher probability so reference counting might be implemented in the future if these types become commonly used.
+ * Some time (and particularly space) improvement could be obtained by reference counting nodes so that duplicate
+ * values could be eliminated.
+ * Since the primary use case for this skip list is for computing the rolling median of doubles the chances of
+ * duplicates are slim.
+ * For int, long and string there is a higher probability so reference counting might be implemented in the future if
+ * these types become commonly used.
  *
- * Use and Array of {skip_width, Node<T>*} rather than a vector
- * ------------------------------------------------------------
- * Less space would be used for each Node if the SwappableNodeRefStack used a dynamically allocated array of [{skip_width, Node<T>*}, ...] rather than a vector.
+ * Use and Array of <tt>{skip_width, Node<T>*}</tt> rather than a vector
+ * ----------------------------------------------------------------------
+ *
+ * Less space would be used for each Node if the SwappableNodeRefStack used a dynamically allocated array of
+ * <tt>[{skip_width, Node<T>*}, ...]</tt> rather than a vector.
  *
  * Performance
  * ===========
+ *
  * Reference platform: Macbook Pro, 13" running OS X 10.9.5. LLVM version 6.0 targeting x86_64-apple-darwin13.4.0
  * Compiled with -Os (small fast).
  *
  * Performance of at() and has()
  * -----------------------------
+ *
  * Performance is O(log(N)) where N is the position in the skip list.
+ *
  * On the reference platform this tests as t = 200 log2(N) in nanoseconds for skip lists of doubles.
- * This factor of 200 can be between 70 and 500 for the same data but different indices because of the probabilistic nature of a skip list.
+ * This factor of 200 can be between 70 and 500 for the same data but different indices because of the probabilistic
+ * nature of a skip list.
  * For example finding the mid value of 1M doubles takes 3 to 4 microseconds.
- * NOTE: On Linux RHEL5 with -O3 this is much faster with t = 12 log2(N)
+ *
+ * @note
+ * On Linux RHEL5 with -O3 this is much faster with t = 12 log2(N)
  * [main.cpp perf_at_in_one_million(), main.cpp perf_has_in_one_million()]
  *
  * Performance of insert() and remove()
  * ------------------------------------
- * A test that inserts then removes a single value in an empty list takes 440 nanoseconds (around 2.3 million per second).
+ * A test that inserts then removes a single value in an empty list takes 440 nanoseconds (around 2.3 million per
+ * second).
  * This should be fast as the search space is small.
- * NOTE: Linux RHEL5 with -O3 this is 4.2 million per second.
- * [main.cpp perf_single_insert_remove()]
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is 4.2 million per second. [main.cpp perf_single_insert_remove()]
  * 
  * A test that inserts 1M doubles into a skip list (no removal) takes 0.9 seconds (around 1.1 million per second).
- * NOTE: Linux RHEL5 with -O3 this is similar.
- * [main.cpp perf_large_skiplist_ins_only()]
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is similar. [main.cpp perf_large_skiplist_ins_only()]
  *
  * A test that inserts 1M doubles into a skip list then removes all of them takes 1.0 seconds (around 1 million per second).
- * NOTE: Linux RHEL5 with -O3 this is similar.
- * [main.cpp perf_large_skiplist_ins_rem()]
  *
- * A test that creates a skip list of 1M doubles then times how long it takes to insert and remove a value at the mid-point takes 1.03 microseconds per item (around 1 million per second).
- * NOTE: Linux RHEL5 with -O3 this is around 0.8 million per second.
- * [main.cpp perf_single_ins_rem_middle()]
+ * @note
+ * Linux RHEL5 with -O3 this is similar. [main.cpp perf_large_skiplist_ins_rem()]
  *
- * A test that creates a skip list of 1M doubles then times how long it takes to insert a value, find the value at the mid point then remove that value (using insert()/at()/remove()) takes 1.2 microseconds per item (around 0.84 million per second).
- * NOTE: Linux RHEL5 with -O3 this is around 0.7 million per second.
- * [main.cpp perf_single_ins_at_rem_middle()]
+ * A test that creates a skip list of 1M doubles then times how long it takes to insert and remove a value at the
+ * mid-point takes 1.03 microseconds per item (around 1 million per second).
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is around 0.8 million per second. [main.cpp perf_single_ins_rem_middle()]
+ *
+ * A test that creates a skip list of 1M doubles then times how long it takes to insert a value, find the value at the
+ * mid point then remove that value (using insert()/at()/remove()) takes 1.2 microseconds per item (around 0.84 million
+ * per second).
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is around 0.7 million per second. [main.cpp perf_single_ins_at_rem_middle()]
  *
  * Performance of a rolling median
  * -------------------------------
- * On the reference platform a rolling median (using insert()/at()/remove()) on 1M random values takes about 0.93 seconds.
- * NOTE: Linux RHEL5 with -O3 this is about 0.7 seconds.
+ * On the reference platform a rolling median (using insert()/at()/remove()) on 1M random values takes about 0.93
+ * seconds.
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is about 0.7 seconds.
  * [main.cpp perf_1m_median_values(), main.cpp perf_1m_medians_1000_vectors(), main.cpp perf_simulate_real_use()]
  *
- * The window size makes little difference, a rolling median on 1m items with a window size of 1 takes 0.491 seconds, with a window size of 524288 it takes 1.03 seconds.
- * NOTE: Linux RHEL5 with -O3 this is about 0.5 seconds.
- * [main.cpp perf_roll_med_odd_index_wins()]
+ * The window size makes little difference, a rolling median on 1m items with a window size of 1 takes 0.491 seconds,
+ * with a window size of 524288 it takes 1.03 seconds.
+ *
+ * @note
+ * Linux RHEL5 with -O3 this is about 0.5 seconds. [main.cpp perf_roll_med_odd_index_wins()]
  *
  * Space Complexity
  * ----------------
  * Given:
- * t = sizeof(T) ~ typ. 8 bytes for a double
- * v = sizeof(std::vector<struct NodeRef<T>>) ~ typ. 32 bytes
- * p = sizeof(Node<T>*) ~ typ. 8 bytes
- * e = sizeof(struct NodeRef<T>) ~ typ. 8 + p = 16 bytes
  *
- * Then each node: is t + v bytes
+ * - t = sizeof(T) ~ typ. 8 bytes for a double
+ * - v = sizeof(std::vector<struct NodeRef<T>>) ~ typ. 32 bytes
+ * - p = sizeof(Node<T>*) ~ typ. 8 bytes
+ * - e = sizeof(struct NodeRef<T>) ~ typ. 8 + p = 16 bytes
+ *
+ * Then each node: is t + v bytes.
+ *
  * Linked list at level 0 is e bytes per node.
+ *
  * Linked list at level 1 is, typically, e / 2 bytes per node and so on.
+ *
  * So the totality of linked lists is about 2e bytes per node.
+ *
  * The total is N * (t + v + 2 * e) which for T as a double is typically 72 bytes per item.
+ *
  * In practice this has been measured on the reference platform as a bit larger at 86.0 Mb for 1024*1024 doubles.
  *
  ***************** END: SkipList Documentation *****************/
 
-// SkipList Documentation
-//
-
-// Defined if you want the SkipList to have methods that can output
-// to stream (for debugging for example).
-// Defining this will mean that classes grow methods that use streams.
-// Undef this if you want a smaller binary in production as using streams
-// adds typically around 30kb to the binary.
-// However you may loose useful information such as formatted
-// exception messages with extra data.
+/// Defined if you want the SkipList to have methods that can output
+/// to stream (for debugging for example).
+/// Defining this will mean that classes grow methods that use streams.
+/// Undef this if you want a smaller binary in production as using streams
+/// adds typically around 30kb to the binary.
+/// However you may loose useful information such as formatted
+/// exception messages with extra data.
 #define INCLUDE_METHODS_THAT_USE_STREAMS
 //#undef INCLUDE_METHODS_THAT_USE_STREAMS
 
@@ -404,18 +469,22 @@
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
 #include <thread>
 #endif
-
 #include <mutex>
-
 #endif
 
+/**
+ * @brief Namespace for all the C++ ordered structures.
+ */
 namespace OrderedStructs {
+    /**
+     * @brief Namespace for the C++ Slip List.
+     */
     namespace SkipList {
 
 /************************ Exceptions ****************************/
 
 /**
- * Base exception class for all exceptions in OrderedStructs::SkipList
+ * @brief Base exception class for all exceptions in the OrderedStructs::SkipList namespace.
  */
         class Exception : public std::exception {
         public:
@@ -430,7 +499,7 @@ namespace OrderedStructs {
         };
 
 /**
- * Specialised exception case for an index out of range error.
+ * @brief Specialised exception case for an index out of range error.
  */
         class IndexError : public Exception {
         public:
@@ -438,14 +507,14 @@ namespace OrderedStructs {
         };
 
 /**
- * Specialised exception for an value error where the given value does not exist in the Skip List.
+ * @brief Specialised exception for an value error where the given value does not exist in the Skip List.
  */
         class ValueError : public Exception {
         public:
             explicit ValueError(const std::string &in_msg) : Exception(in_msg) {}
         };
 
-/** Specialised exception used for NaN detection where value != value */
+/** @brief Specialised exception used for NaN detection where value != value (example NaNs). */
         class FailedComparison : public Exception {
         public:
             explicit FailedComparison(const std::string &in_msg) : Exception(in_msg) {}
@@ -453,9 +522,9 @@ namespace OrderedStructs {
 
 /**
  * This throws an IndexError when the index value >= the size of Skip List.
- * If INCLUDE_METHODS_THAT_USE_STREAMS is defined then the error will have an informative message.
+ * If @ref INCLUDE_METHODS_THAT_USE_STREAMS is defined then the error will have an informative message.
  *
- * @param index The
+ * @param index The out of range index.
  */
         void _throw_exceeds_size(size_t index);
 

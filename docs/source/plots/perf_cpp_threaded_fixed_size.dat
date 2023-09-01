@@ -8,7 +8,7 @@
 #    test_perf_multi_threads_fixed_length(): threads:   16 SkiplistSize:    16384 time:  2.65152e+06 (us) rate      98865.5 /s
 #    test_perf_multi_threads_fixed_length(): threads:   32 SkiplistSize:    16384 time:  5.43397e+06 (us) rate      96483.4 /s
 #    test_perf_multi_threads_fixed_length(): threads:   64 SkiplistSize:    16384 time:  1.15628e+07 (us) rate      90685.4 /s
-#    test_perf_multi_threads_fixed_length(): PASS
+#    test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): PASS
 #    test_perf_single_thread_fixed_length():   count:    1 SkiplistSize:    16384 time:        18105 (us) rate       904943 /s
 #    test_perf_single_thread_fixed_length():   count:    2 SkiplistSize:    16384 time:        38577 (us) rate       849418 /s
 #    test_perf_single_thread_fixed_length():   count:    4 SkiplistSize:    16384 time:        77811 (us) rate       842246 /s

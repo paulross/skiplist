@@ -9,6 +9,7 @@
 #ifndef skiplist_cOrderedStructs_h
 #define skiplist_cOrderedStructs_h
 
+/// CPython package name.
 #define ORDERED_STRUCTS_MODULE_NAME "orderedstructs"
 
 

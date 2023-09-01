@@ -30,6 +30,16 @@
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-727.5 47,-858.5 700.75,-858.5 700.75,-727.5 47,-727.5"/>
 <text text-anchor="middle" x="373.88" y="-841.2" font-family="Times,serif" font-size="14.00">Skip list iteration 3</text>
 </g>
+<g id="clust5" class="cluster">
+<title>cluster4</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-588.5 47,-719.5 838.88,-719.5 838.88,-588.5 47,-588.5"/>
+<text text-anchor="middle" x="442.94" y="-702.2" font-family="Times,serif" font-size="14.00">Skip list iteration 4</text>
+</g>
+<g id="clust6" class="cluster">
+<title>cluster5</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-449.5 47,-580.5 977.75,-580.5 977.75,-449.5 47,-449.5"/>
+<text text-anchor="middle" x="512.38" y="-563.2" font-family="Times,serif" font-size="14.00">Skip list iteration 5</text>
+</g>
 <g id="clust7" class="cluster">
 <title>cluster6</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-310.5 47,-441.5 1117.75,-441.5 1117.75,-310.5 47,-310.5"/>
@@ -44,16 +54,6 @@
 <title>cluster8</title>
 <polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-32.5 47,-163.5 1324.75,-163.5 1324.75,-32.5 47,-32.5"/>
 <text text-anchor="middle" x="685.88" y="-146.2" font-family="Times,serif" font-size="14.00">Skip list iteration 8</text>
-</g>
-<g id="clust5" class="cluster">
-<title>cluster4</title>
-<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-588.5 47,-719.5 838.88,-719.5 838.88,-588.5 47,-588.5"/>
-<text text-anchor="middle" x="442.94" y="-702.2" font-family="Times,serif" font-size="14.00">Skip list iteration 4</text>
-</g>
-<g id="clust6" class="cluster">
-<title>cluster5</title>
-<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="47,-449.5 47,-580.5 977.75,-580.5 977.75,-449.5 47,-449.5"/>
-<text text-anchor="middle" x="512.38" y="-563.2" font-family="Times,serif" font-size="14.00">Skip list iteration 5</text>
 </g>
 <!-- HeadNode0 -->
 <g id="node1" class="node">

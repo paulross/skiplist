@@ -1,0 +1,21 @@
+#        test_perf_sim_rolling_median_single_thread(): threads:    1 SkiplistSize:  1000000 repeat_count:    10000 total time:        11192 (us) per op:       1.1192 (us) rate       893495 /s
+#        test_perf_sim_rolling_median_single_thread(): PASS
+#        _test_perf_sim_rolling_median_multi_thread(): threads:    1 SkiplistSize:  1000000 repeat_count:    10000 total time:         5194 (us) per op:       0.5194 (us) rate   1.9253e+06 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:    2 SkiplistSize:  1000000 repeat_count:    10000 total time:        59067 (us) per op:      2.95335 (us) rate       338599 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:    4 SkiplistSize:  1000000 repeat_count:    10000 total time:       606969 (us) per op:      15.1742 (us) rate      65901.2 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:    8 SkiplistSize:  1000000 repeat_count:    10000 total time:      1432511 (us) per op:      17.9064 (us) rate        55846 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:   16 SkiplistSize:  1000000 repeat_count:    10000 total time:      5998827 (us) per op:      37.4927 (us) rate      26671.9 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:   32 SkiplistSize:  1000000 repeat_count:    10000 total time:     11501035 (us) per op:      35.9407 (us) rate      27823.6 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:   64 SkiplistSize:  1000000 repeat_count:    10000 total time:     25126630 (us) per op:      39.2604 (us) rate        25471 /s
+#        _test_perf_sim_rolling_median_multi_thread(): threads:  128 SkiplistSize:  1000000 repeat_count:    10000 total time:     49198706 (us) per op:      38.4365 (us) rate      26016.9 /s
+#         test_perf_sim_rolling_median_multi_thread(): PASS
+#
+# Threads   Time per insert/at/remove
+1    0.5194 # (us) rate   1.9253e+06 /s
+2   2.95335 # (us) rate       338599 /s
+4   15.1742 # (us) rate      65901.2 /s
+8   17.9064 # (us) rate        55846 /s
+16  37.4927 # (us) rate      26671.9 /s
+32  35.9407 # (us) rate      27823.6 /s
+64  39.2604 # (us) rate        25471 /s
+128 38.4365 # (us) rate      26016.9 /s

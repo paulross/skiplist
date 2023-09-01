@@ -15,7 +15,7 @@
 #include <Python.h>
 #include <string>
 
-/* Roll our own RTTI */
+/** Roll our own RTTI for specific types. */
 enum KeyDataType {
     TYPE_ZERO = 0,
     TYPE_LONG,
@@ -26,25 +26,30 @@ enum KeyDataType {
     TYPE_OVERFLOW
 };
 
-/* Define these as an attempt to reduce C&P errors in very similar code. */
-typedef long long   TYPE_TYPE_LONG;
-typedef double      TYPE_TYPE_DOUBLE;
-/* Note: We use a std::string but store bytes in it.
+/** Define these as an attempt to reduce C&P errors in very similar code. */
+typedef long long TYPE_TYPE_LONG;
+/** Define these as an attempt to reduce C&P errors in very similar code. */
+typedef double TYPE_TYPE_DOUBLE;
+/** Note: We use a std::string but store bytes in it.
  * So we have to be careful not to treat data as a NTS.
  */
 typedef std::string TYPE_TYPE_BYTES;
-typedef PyObject* TYPE_TYPE_OBJECT;
+/** A Python object. */
+typedef PyObject *TYPE_TYPE_OBJECT;
 
+/** Range assert macro */
 #define ASSERT_TYPE_IN_RANGE assert(self->_data_type > TYPE_ZERO && self->_data_type < TYPE_OVERFLOW)
 
-/* Returns a std::string from the contents of a bytes object.
+/**
+ * Returns a std::string from the contents of a bytes object.
  * This includes any '\0' characters in the content.
  */
-std::string bytes_as_std_string(PyObject *arg);
-/* Returns a new PyBytesObject from a std::string.
+std::string bytes_as_std_string(PyObject * arg);
+
+/**
+ * Returns a new PyBytesObject from a std::string.
  * This includes any '\0' characters in the content.
  */
 PyObject *std_string_as_bytes(const std::string &str);
-
 
 #endif
