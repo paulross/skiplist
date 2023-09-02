@@ -1,10 +1,43 @@
-//
-//  test_performance.cpp
-//  skiplist
-//
-//  Created by Paul Ross on 13/07/2016.
-//  Copyright (c) 2016 Paul Ross. All rights reserved.
-//
+/**
+ * @file
+ *
+ * Project: skiplist
+ *
+ * Performance tests on a Skip List.
+ *
+ * These should have a corresponding test_... which checks correctness.
+ * The perf_... version should do no checking but aim for maximum performance
+ * however assert(! sl.lacksIntegrity()); is encouraged as that will get
+ * stripped out in release builds where performance is really tested.
+ *
+ * Created by Paul Ross on 13/07/2016.
+ *
+ * Copyright (c) 2016-2023 Paul Ross. All rights reserved.
+ *
+ * @code
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Paul Ross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * @endcode
+ */
 
 #include <iostream>
 #include <iomanip>
@@ -14,15 +47,19 @@
 
 #include "../SkipList.h"
 
-/******************* Performance Tests **************************
- * These should have a corresponding test_... which checks correctness.
- * The perf_... version should do no checking but aim for maximum performance
- * however assert(! sl.lacksIntegrity()); is encouraged as that will get
- * stripped out in release builds where performance is really tested.
- */
 
+/** @brief The number of times to repeat a test to get an accurate performance figure. */
 static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
 
+/**
+ * @brief Test the performance of inserting and removing a value into a Skip List.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * This test is meaningless [will \c assert(0) ] if assert is defined because of the integrity checks.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int perf_single_insert_remove() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
