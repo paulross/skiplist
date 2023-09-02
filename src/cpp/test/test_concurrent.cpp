@@ -245,6 +245,7 @@ static int _test_perf_insert_count_has_remove_count_multi_threads(
     return -1; // N/A
 }
 
+#ifndef DEBUG
 /**
  * Test insert/at/remove on a single Skip List in a multi-threaded environment.
  * Number of threads is from 1 to < SKIPLIST_MAX_THREADS
@@ -266,6 +267,7 @@ static int test_perf_insert_count_has_remove_count_multi_threads_vary_length() {
     }
     return result;
 }
+#endif
 
 /**
  * Test insert/at/remove on a single Skip List in a multi-threaded environment.
@@ -377,6 +379,7 @@ int test_perf_sim_rolling_median_single_thread() {
     return result;
 }
 
+#ifndef DEBUG
 static int _test_perf_sim_rolling_median_multi_thread(size_t thread_count) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
@@ -417,7 +420,9 @@ static int _test_perf_sim_rolling_median_multi_thread(size_t thread_count) {
 #endif // SKIPLIST_THREAD_SUPPORT
     return -1; // N/A
 }
+#endif
 
+#ifndef DEBUG
 static int test_perf_sim_rolling_median_multi_thread() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
@@ -428,7 +433,7 @@ static int test_perf_sim_rolling_median_multi_thread() {
 #endif // SKIPLIST_THREAD_SUPPORT
     return -1; // N/A
 }
-
+#endif
 /***************** END: Concurrency Tests ************************/
 
 /**

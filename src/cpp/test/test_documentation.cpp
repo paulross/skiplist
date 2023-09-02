@@ -49,7 +49,7 @@
  * @param level The level to go to.
  * @return Zero.
  */
-int doc_height_trend(size_t level) {
+static int test_doc_height_trend(size_t level) {
     std::cout << "" << __FUNCTION__ << std::endl;
     std::cout << "Comparing the Height of HeadNode with the length of the skip list:" << std::endl;
     std::cout << std::setw(4) << "i";
@@ -79,7 +79,7 @@ int doc_height_trend(size_t level) {
  *
  * @return Zero.
  */
-int doc_simple_dot() {
+static int tests_doc_simple_dot() {
     int result = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
@@ -102,7 +102,12 @@ int doc_simple_dot() {
     return result;
 }
 
-int doc_insert() {
+/**
+ * Create a Skip List, populate it and print the DOT file to stdout.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+static int test_doc_insert() {
     int result = 0;
     int NUM = 8;
     std::stringstream ostr;
@@ -121,7 +126,12 @@ int doc_insert() {
     return result;
 }
 
-int doc_insert_remove() {
+/**
+ * Create a Skip List, populate it, remove items and print the DOT file to stdout.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+static int test_doc_insert_remove() {
     int result = 0;
     int NUM = 4;
     std::stringstream ostr;
@@ -145,7 +155,12 @@ int doc_insert_remove() {
     return result;
 }
 
-int doc_insert_remove_repeat() {
+/**
+ * Create a Skip List, repeatedly populate it and print the DOT file to stdout.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+static int test_doc_insert_remove_repeat() {
     int result = 0;
     int NUM = 4;
     int REPEAT_COUNT = 4;
@@ -176,16 +191,21 @@ int doc_insert_remove_repeat() {
 
 /******************* END: Documentation *************************/
 
+/**
+ * Run all the documentation tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_documentation_all() {
     int result = 0;
     
-    result |= print_result("doc_height_trend", doc_height_trend(20));
+    result |= print_result("test_doc_height_trend", test_doc_height_trend(20));
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
-    result |= print_result("doc_simple_dot", doc_simple_dot());
-    result |= print_result("doc_insert", doc_insert());
-    result |= print_result("doc_insert_remove", doc_insert_remove());
-    result |= print_result("doc_insert_remove_repeat",
-                           doc_insert_remove_repeat());
+    result |= print_result("tests_doc_simple_dot", tests_doc_simple_dot());
+    result |= print_result("test_doc_insert", test_doc_insert());
+    result |= print_result("test_doc_insert_remove", test_doc_insert_remove());
+    result |= print_result("test_doc_insert_remove_repeat",
+                           test_doc_insert_remove_repeat());
 #endif
     return result;
 }
