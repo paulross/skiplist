@@ -3,7 +3,7 @@
  *
  * Project: skiplist
  *
- * Functional Tests.
+ * Basic functional tests on a Skip List. Most of these are with a \c SkipList<double>
  *
  * Created by Paul Ross on 13/07/2016.
  *
@@ -43,21 +43,26 @@
 /******************* Functional Tests **************************/
 
 /**
- * Test the integrity of a Skip List after a single insert.
+ * @brief Test the integrity of a Skip List after a single insert.
  *
  * @return Zero on success, non-zero on failure.
  */
-OrderedStructs::SkipList::IntegrityCheck test_very_simple_insert() {
-    OrderedStructs::SkipList::IntegrityCheck result;
+int test_very_simple_insert() {
+    int result = 0;
     
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
-    result = sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
 // Need int as OrderedStructs::SkipList::IntegrityCheck can not use |=
+/**
+ * @brief Test the integrity of a Skip List after a multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_simple_insert() {
     int result = 0;
     std::stringstream ostr;
@@ -66,19 +71,23 @@ int test_simple_insert() {
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
+/**
+ * @brief Test the integrity of a Skip List after a single insert and remove.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_insert_and_remove_same() {
     int result = 0;
     std::stringstream ostr;
@@ -87,12 +96,17 @@ int test_insert_and_remove_same() {
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(42.0) != 42.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
+/**
+ * @brief Test the integrity of a Skip List after a multiple inserts and removes.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_insert_remove_multiple() {
     int result = 0;
     std::stringstream ostr;
@@ -101,30 +115,35 @@ int test_insert_remove_multiple() {
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(42.0) != 42.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(84.0) != 84.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(21.0) != 21.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(12.0) != 12.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.remove(100.0) != 100.0;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
-/* For many different seeds insert 128 random values then remove them
+/**
+ * @brief For many different seeds insert 128 random values then remove them
  * in reverse order.
+ *
+ * Test the integrity of the Skip List throughout.
+ *
+ * @return Zero on success, non-zero on failure.
  */
 int test_ins_rem_rand() {
     int result = 0;
@@ -142,7 +161,7 @@ int test_ins_rem_rand() {
             value = rand() % LENGTH;
             values.push_back(value);
             sl.insert(value);
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
             if (result) {
                 break;
             }
@@ -152,7 +171,7 @@ int test_ins_rem_rand() {
             ostr << "# Removing value " << value << std::endl;
             result |= sl.remove(value) != value;
             values.pop_back();
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
             if (result) {
                 break;
             }
@@ -167,6 +186,11 @@ int test_ins_rem_rand() {
     return result;
 }
 
+/**
+ * @brief Test the integrity of a Skip List after multiple insert then multiple removes.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_insert_n_numbers_same(int n, double value) {
     int result = 0;
     
@@ -174,15 +198,20 @@ int test_insert_n_numbers_same(int n, double value) {
     OrderedStructs::SkipList::HeadNode<double> sl;
     for (int i = 0; i < n; ++i) {
         sl.insert(value);
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     }
     for (int i = 0; i < n; ++i) {
         result |= sl.remove(value) != value;
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     }
     return result;
 }
 
+/**
+ * @brief Test \c .at() and the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_at() {
     int result = 0;
     std::stringstream ostr;
@@ -190,17 +219,17 @@ int test_at() {
     
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     // Test at()
     result |= sl.at(0) != 12.0;
     result |= sl.at(1) != 21.0;
@@ -210,22 +239,29 @@ int test_at() {
     return result;
 }
 
+/**
+ * @brief Test \c .at() \b fails by raising a \c OrderedStructs::SkipList::IndexError
+ *
+ * Also test the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_at_fails() {
     int result = 0;
     
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     try {
         sl.at(-1);
         result |= 1;
@@ -241,7 +277,13 @@ int test_at_fails() {
     return result;
 }
 
-// Test at(size_t index, size_t count, T *dest)
+/**
+ * @brief Test <tt>at(size_t index, size_t count, T *dest)</tt>.
+ *
+ * Also tests the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_at_dest() {
     int result = 0;
     
@@ -249,11 +291,11 @@ int test_at_dest() {
     OrderedStructs::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(4.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(8.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.at(0, 2, dest);
     
     result |= dest.size() != 2;
@@ -262,7 +304,13 @@ int test_at_dest() {
     return result;
 }
 
-// Test at(size_t index, size_t count, T *dest)
+/**
+ * @brief Test <tt>at(size_t index, size_t count, T *dest)</tt> \b fails throwing a \c OrderedStructs::SkipList::IndexError
+ *
+ * Also tests the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_at_dest_fails() {
     int result = 0;
     
@@ -270,11 +318,11 @@ int test_at_dest_fails() {
     OrderedStructs::SkipList::HeadNode<double> sl;
     std::vector<double> dest;
     
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(4.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(8.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     
     try {
         sl.at(0, 3, dest);
@@ -295,6 +343,11 @@ int test_at_dest_fails() {
     return result;
 }
 
+/**
+ * @brief Test \c .has() and the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_has() {
     int result = 0;
     std::stringstream ostr;
@@ -302,17 +355,17 @@ int test_has() {
     
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     // Test at()
     result |= ! sl.has(12.0);
     result |= ! sl.has(21.0);
@@ -322,33 +375,47 @@ int test_has() {
     return result;
 }
 
+/**
+ * @brief Test \c .has() \b fails.
+ *
+ * Also tests the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_has_not() {
     int result = 0;
     
     srand(1);
     OrderedStructs::SkipList::HeadNode<double> sl;
     result |= sl.has(-1);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(21.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(100.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(12.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.has(-1);
     return result;
 }
 
+/**
+ * @brief Test \c .remove() \b fails throwing a \c OrderedStructs::SkipList::ValueError
+ *
+ * Also tests the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_remove_fails() {
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(42.0);
     try {
         sl.remove(84.0);
@@ -361,6 +428,13 @@ int test_remove_fails() {
     return result;
 }
 
+/**
+ * @brief Test \c .at() on a larger Skip List with different seeds.
+ *
+ * Also tests the integrity of a Skip List after multiple inserts.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_at_large() {
     int result = 0;
     int SEED  = 128 + 1;
@@ -371,7 +445,7 @@ int test_at_large() {
         OrderedStructs::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         }
         for (int i = 0; i < LENGTH; ++i) {
             int val = sl.at(i);
@@ -381,6 +455,13 @@ int test_at_large() {
     return result;
 }
 
+/**
+ * @brief Test \c .insert() \c .at() \c .remove() on a larger Skip List with different seeds.
+ *
+ * Also tests the integrity of a Skip List after each call.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_ins_at_rem_with_srand() {
     int result = 0;
     int SEED  = 128 + 1;
@@ -391,37 +472,53 @@ int test_ins_at_rem_with_srand() {
         OrderedStructs::SkipList::HeadNode<int> sl;
         for (int i = 0; i < LENGTH; ++i) {
             sl.insert(i * 2);
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         }
         for (int i = 0; i < LENGTH; ++i) {
             result |= sl.at(i) != i * 2;
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         }
         for (int i = 0; i < LENGTH; ++i) {
             result |= sl.remove(i * 2.0) != i * 2.0;
-            result |= sl.lacksIntegrity();
+            result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         }
+        result |= sl.size() != 0;
     }
     return result;
 }
 
-/* Functional tests that correspond to performance tests. */
+/**
+ * @brief Test \c .insert() \c .remove() on a large Skip List.
+ *
+ * Also tests the integrity of a Skip List after each call.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_single_insert_remove() {
     int num = 1000 * 1000;
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
-    
+
     srand(1);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     for (int i = 0; i < num; ++i) {
         sl.insert(42.0);
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         result |= sl.remove(42.0) != 42.0;
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
+        result |= sl.size() != 0;
     }
+    result |= sl.size() != 0;
     return result;
 }
 
+/**
+ * @brief Test \c .insert() \c .remove() in the middle of a medium sized Skip List.
+ *
+ * Also tests the integrity of a Skip List after each call.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_single_ins_rem_middle() {
     int NUM = 1000; // * 1000;
     size_t SIZE = 1000;//24;
@@ -430,24 +527,32 @@ int test_single_ins_rem_middle() {
     OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     for (size_t i = 0; i < SIZE; ++i) {
         sl.insert(i);
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
+        result |= sl.size() != i + 1;
     }
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
+    result |= sl.size() != SIZE;
     for (int i = 0; i < NUM; ++i) {
         sl.insert(val);
-        result = sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
         result |= sl.remove(val) != val;
-        result |= sl.lacksIntegrity();
+        result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     }
     return result;
 }
 
-/* Insert 1m doubles for memory measurement. */
+/**
+ * @brief Tests insert 1m duplicate doubles for memory measurement.
+ *
+ * Also tests the integrity of a Skip List after each call.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_insert_one_million() {
-    int num = 1024 * 1024;
+    size_t num = 1024 * 1024;
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
     
@@ -455,32 +560,42 @@ int test_insert_one_million() {
     std::string in;
     //    std::cout << "Ready? ";
     //    std::cin >> in;
-    result |= sl.lacksIntegrity();
-    for (int i = 0; i < num; ++i) {
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
+    for (size_t i = 0; i < num; ++i) {
         sl.insert(42.0);
+        result |= sl.size() != i + 1;
     }
+    result |= sl.size() != num;
     //    std::cout << "Complete...";
     //    std::cin >> in;
     return result;
 }
 
-/* Insert 1m doubles for memory measurement. */
+/**
+ * @brief Tests inserting a NaN double throws a \c OrderedStructs::SkipList::FailedComparison
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_insert_nan_throws() {
     int result = 0;
     OrderedStructs::SkipList::HeadNode<double> sl;
     
     srand(1);
     std::string in;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     try {
         sl.insert(std::numeric_limits<double>::quiet_NaN());
         result |= 1;
     } catch (OrderedStructs::SkipList::FailedComparison &err) {}
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
-/* Test basic use of index() */
+/**
+ * @brief Tests basic use of \c .index() on a small Skip List.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_index_basic_7_node() {
     size_t NUM = 8;
     int result = 0;
@@ -488,18 +603,22 @@ int test_index_basic_7_node() {
     
     srand(1);
     std::string in;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     for (size_t i = 0; i < NUM; ++i) {
         sl.insert(i);
     }
     for (size_t i = 0; i < NUM; ++i) {
         result |= sl.index(i) != i;
     }
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
-/* Test index() throws with out of range values. */
+/**
+ * @brief Tests \c .index() throws a \c OrderedStructs::SkipList::ValueError with a non-existent value.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_index_throws() {
     int NUM = 8;
     int result = 0;
@@ -507,7 +626,7 @@ int test_index_throws() {
     
     srand(1);
     std::string in;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     for (int i = 0; i < NUM; ++i) {
         sl.insert(i);
     }
@@ -521,11 +640,18 @@ int test_index_throws() {
         result |= 1;
     } catch (OrderedStructs::SkipList::ValueError &err) {}
     result |= idx;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
 /* Use of index() on a large number of integers. */
+/**
+ * @brief Tests \c .index() throws a \c OrderedStructs::SkipList::ValueError with a non-existent value.
+ *
+ * Medium sized Skip List.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_index_large() {
     size_t NUM = 1024 * 128;
     int result = 0;
@@ -533,28 +659,20 @@ int test_index_large() {
     
     srand(1);
     std::string in;
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     for (size_t i = 0; i < NUM; ++i) {
         sl.insert(i);
     }
     for (size_t i = 0; i < NUM; ++i) {
         result |= sl.index(i) != i;
     }
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     return result;
 }
 
 /******* Functional Tests with compare() specified **************/
 
-/* Creates a comparison function that return the inverse of std::less */
-//template <typename T>
-//struct reversed : std::binary_function<T, T, bool> {
-//    bool operator()(const T &a, const T &b) const {
-//        return b < a;
-//    }
-//};
-
-/** @brief Creates a comparison function that return the inverse of std::less to create a decreasing Skip List. */
+/** @brief Creates a comparison function that return the inverse of \c std::less to create a decreasing Skip List. */
 template <typename T>
 struct reversed {
     bool operator()(const T &a, const T &b) const {
@@ -562,26 +680,22 @@ struct reversed {
     }
 };
 
-///** @brief Creates a comparison function that return the inverse of std::less for doubles */
-//struct reversed_double {
-//    bool operator()(const double &a, const double &b) const {
-//        return b < a;
-//    }
-//};
-
+/**
+ * @brief Test a Skip List with a comparison function that gives decreasing order.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_reversed_simple_insert() {
     int result = 0;
     std::stringstream ostr;
     ostr << "# " << __FUNCTION__ << std::endl;
     
     srand(1);
-//    struct reversed<double> cmp;
-//    OrderedStructs::SkipList::HeadNode<double, reversed_double> sl;
     OrderedStructs::SkipList::HeadNode<double, reversed<double>> sl;
     sl.insert(42.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     sl.insert(84.0);
-    result |= sl.lacksIntegrity();
+    result |= sl.lacksIntegrity() != OrderedStructs::SkipList::INTEGRITY_SUCCESS;
     result |= sl.at(0) != 84.0;
     result |= sl.index(84.0) != 0;
     result |= sl.at(1) != 42.0;
@@ -593,6 +707,11 @@ int test_reversed_simple_insert() {
 
 /***************** END: Functional Tests ************************/
 
+/**
+ * @brief All functional tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_functional_all() {
     int result = 0;
     
