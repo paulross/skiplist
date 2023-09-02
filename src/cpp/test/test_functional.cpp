@@ -57,7 +57,6 @@ int test_very_simple_insert() {
     return result;
 }
 
-// Need int as OrderedStructs::SkipList::IntegrityCheck can not use |=
 /**
  * @brief Test the integrity of a Skip List after a multiple inserts.
  *
