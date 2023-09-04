@@ -15,6 +15,12 @@
 
 /******************* Rolling Median Tests ****************************/
 
+/**
+ * @brief Test a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_roll_med_simple() {
     const int COUNT = 20;
     const int WIN_LENGTH = 5;
@@ -42,6 +48,12 @@ int test_roll_med_simple() {
     return result;
 }
 
+/**
+ * @brief Test a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size. Even length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_roll_med_even_win() {
     const int COUNT = 20;
     const int WIN_LENGTH = 4;
@@ -69,6 +81,12 @@ int test_roll_med_even_win() {
     return result;
 }
 
+/**
+ * @brief Test a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size. Even length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_roll_med_even_mean() {
     const int COUNT = 20;
     const int WIN_LENGTH = 4;
@@ -95,6 +113,12 @@ int test_roll_med_even_mean() {
     return result;
 }
 
+/**
+ * @brief Test a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size. Odd length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int perf_roll_med_odd_index() {
     const int COUNT = 1000000;
     const int WIN_LENGTH = 101;
@@ -125,6 +149,12 @@ int perf_roll_med_odd_index() {
     return result;
 }
 
+/**
+ * @brief Test the performance of a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size. Odd length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int perf_roll_med_odd_index_wins() {
     const size_t COUNT = 1000000;
     const int DEST_STRIDE = 1;
@@ -160,6 +190,11 @@ int perf_roll_med_odd_index_wins() {
 
 /******************* END: Rolling Median Tests ************************/
 
+/**
+ * @brief Test all rolling median tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_rolling_median_all() {
     int result = 0;
     

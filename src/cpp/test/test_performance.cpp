@@ -47,7 +47,6 @@
 
 #include "../SkipList.h"
 
-
 /** @brief The number of times to repeat a test to get an accurate performance figure. */
 static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
 
@@ -56,9 +55,7 @@ static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
  *
  * This writes the performance figures to \c stdout
  *
- * This test is meaningless [will \c assert(0) ] if assert is defined because of the integrity checks.
- *
- * @return Zero on success, non-zero on failure.
+ * @return Zero.
  */
 int perf_single_insert_remove() {
     // This test is meaningless if assert is defined because of the integrity checks.
@@ -84,7 +81,13 @@ int perf_single_insert_remove() {
     return 0;
 }
 
-/* Insert to create a large skiplist no deletion. */
+/**
+ * @brief Test the performance of \c insert() to create a large Skip List with no deletion.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_large_skiplist_ins_only() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -115,8 +118,13 @@ int perf_large_skiplist_ins_only() {
     return 0;
 }
 
-/* Insert into a large skiplist then remove everything and delete it
- * many times. */
+/**
+ * @brief Test the performance of \c insert() into a large skiplist then \c remove() many times.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_large_skiplist_ins_rem() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -152,8 +160,13 @@ int perf_large_skiplist_ins_rem() {
     return 0;
 }
 
-/* Create a large skip list then time how long it takes to insert and remove
- * a value at the mid point. */
+/**
+ * @brief Create a large skip list then time how long it takes to insert and remove a value at the mid point.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_single_ins_rem_middle() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -190,8 +203,14 @@ int perf_single_ins_rem_middle() {
     return result;
 }
 
-/* Create a large skip list then time how long it takes to insert and remove
- * a value at the mid point for various length skip lists. */
+/**
+ * @brief Create a large skip list then time how long it takes to insert and remove a value at the mid point for various
+ * length skip lists.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_single_ins_rem_middle_vary_length() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -231,7 +250,13 @@ int perf_single_ins_rem_middle_vary_length() {
     return result;
 }
 
-/* Performance of calling at() on the middle value of a 1M long skip list. */
+/**
+ * @brief Performance of calling \c at() on the middle value of a 1M long skip list.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_single_at_middle() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -268,6 +293,13 @@ int perf_single_at_middle() {
     return result;
 }
 
+/**
+ * @brief Performance of calling \c has() on the middle value of a 1M long skip list.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 /* Performance of calling has() on the middle value of a 1M long skip list. */
 int perf_single_has_middle() {
     // This test is meaningless if assert is defined because of the integrity checks.
@@ -306,8 +338,13 @@ int perf_single_has_middle() {
     return result;
 }
 
-/* Performance of calling insert(), at(), remove() on the middle value
- * of a 1M long skip list. */
+/**
+ * @brief Performance of calling \c insert(), \c at(), \c remove() on the middle value of a 1M long skip list.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_single_ins_at_rem_middle() {
     // This test is meaningless if assert is defined because of the integrity checks.
     assert(0);
@@ -346,6 +383,15 @@ int perf_single_ins_at_rem_middle() {
     return result;
 }
 
+/**
+ * @brief Performance of calling a rolling median of 100 values in a 10,000 long skip list.
+ *
+ * This requires an \c insert(), \c at() and \c remove() on the middle value.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_median_sliding_window() {
     srand(1);
     size_t VECTOR_LENGTH = 10000;
@@ -376,8 +422,15 @@ int perf_median_sliding_window() {
     return 0;
 }
 
-/* Simulates a rolling median on 1 vector of 1000000 prices,
- * window size of 101. */
+/**
+ * @brief Simulates a rolling median on single vector of 1000000 prices, window size of 101.
+ *
+ * This requires an \c insert(), \c at() and \c remove() on the middle value.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_1m_median_values() {
     srand(1);
     size_t NUMBER_VECTORS = 1;
@@ -412,8 +465,15 @@ int perf_1m_median_values() {
     return 0;
 }
 
-/* Simulates a rolling median on 1000 vectors of 1000 prices,
- * window size of 101. */
+/**
+ * @brief Simulates a rolling median on 1000 vectors of 1000 prices, window size of 101.
+ *
+ * This requires an \c insert(), \c at() and \c remove() on the middle value.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_1m_medians_1000_vectors() {
     srand(1);
     size_t NUMBER_VECTORS = 1000;
@@ -448,8 +508,15 @@ int perf_1m_medians_1000_vectors() {
     return 0;
 }
 
-/* Simulates a rolling median on 8000 vectors of 8000 prices,
- * window size of 200. */
+/**
+ * @brief Simulates a rolling median on 8000 vectors of 8000 prices, window size of 200.
+ *
+ * This requires an \c insert(), \c at() and \c remove() on the middle value.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_simulate_real_use() {
     srand(1);
     size_t NUMBER_VECTORS = 8000;
@@ -484,6 +551,13 @@ int perf_simulate_real_use() {
     return 0;
 }
 
+/**
+ * @brief Performance of \c at() in various positions on a vector 1m long.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_at_in_one_million() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
@@ -508,6 +582,13 @@ int perf_at_in_one_million() {
     return result;
 }
 
+/**
+ * @brief Performance of \c has() in various positions on a vector 1m long.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_has_in_one_million_vary_length() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
@@ -531,7 +612,13 @@ int perf_has_in_one_million_vary_length() {
     return result;
 }
 
-/* Tests the size_of() function on a skip list of length up to 1M. */
+/**
+ * @brief Tests the performance of \c size_of() function on a skip list of doubles length up to 1M.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_size_of_double_vary_length() {
     size_t NUM = 1024 * 1024;
     int result = 0;
@@ -558,7 +645,13 @@ int perf_size_of_double_vary_length() {
     return result;
 }
 
-/* Tests the size_of() function on a skip list of length up to 1M. */
+/**
+ * @brief Tests the performance of \c size_of() function on a skip list of chars length up to 1M.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_size_of_char_vary_length() {
     size_t NUM = 1024 * 1024;
     int result = 0;
@@ -585,7 +678,13 @@ int perf_size_of_char_vary_length() {
     return result;
 }
 
-/* Tests the size_of() function on a skip list of length up to 1M. */
+/**
+ * @brief Tests the \c size_of() function on a skip list of length 1M.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_size_of_1m() {
     size_t NUM = 1024 * 1024;
     int result = 0;
@@ -610,6 +709,13 @@ int perf_size_of_1m() {
     return result;
 }
 
+/**
+ * @brief Tests the \c index() function on a skip list of length 1M.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_index() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
@@ -630,6 +736,13 @@ int perf_index() {
     return result;
 }
 
+/**
+ * @brief Tests the \c size_of() function on a skip lists of variable length up to 1M doubles.
+ *
+ * This writes the performance figures to \c stdout
+ *
+ * @return Zero.
+ */
 int perf_index_vary_length() {
     size_t NUM = 1024 * 1024;
     size_t REPEAT = 1000000;
@@ -655,6 +768,11 @@ int perf_index_vary_length() {
 
 /******************* END: Performance Tests **************************/
 
+/**
+ * @brief Runs all the basic performance tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int perf_skiplist() {
     int result = 0;
     
@@ -678,6 +796,11 @@ int perf_skiplist() {
     return result;
 }
 
+/**
+ * @brief Runs all the basic size tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int perf_size() {
     int result = 0;
     
@@ -688,9 +811,12 @@ int perf_size() {
     return result;
 }
 
-/* This function call justs tests a subset of the performance.
+/**
+ * @brief This function call just tests a subset of the performance.
  * This subset is the one we are interested in when exploring the effect
  * of an unfair coin.
+ *
+ * @return Zero on success, non-zero on failure.
  */
 int perf_skiplist_unfair_coin() {
     int result = 0;
@@ -704,6 +830,11 @@ int perf_skiplist_unfair_coin() {
     return result;
 }
 
+/**
+ * @brief Runs all the performance tests.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
 int test_performance_all() {
     int result = 0;
     
@@ -712,6 +843,3 @@ int test_performance_all() {
 //    result |= perf_skiplist_unfair_coin();
     return result;
 }
-
-
-
