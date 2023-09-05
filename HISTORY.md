@@ -1,5 +1,8 @@
 # History
 
+## 0.3.13 (2023-09-05)
+
+* Documentation improvements.
 
 ## 0.3.12 (2023-08-29)
 
