@@ -23,7 +23,7 @@ add_compile_options(
 )
 
 link_directories(
-        /Library/Frameworks/Python.framework/Versions/3.11/lib
+        /Library/Frameworks/Python.framework/Versions/3.10/lib
 )
 
 add_executable(
@@ -67,19 +67,27 @@ include_directories(
         src/cpy
 )
 
-FIND_PACKAGE(PythonLibs 3.11 REQUIRED)
-IF(PYTHONLIBS_FOUND)
-    message(status "    Python libraries: ${PYTHON_LIBRARIES}")
-    message(status " Python include dirs: ${PYTHON_INCLUDE_DIRS}")
-    message(status "      Python version: ${PYTHONLIBS_VERSION_STRING}")
-    message(status "      Python library: ${PYTHON_LIBRARY}")
-    message(status "  Python include dir: ${PYTHON_INCLUDE_DIR}")
-    message(status " Python include dirs: ${PYTHON_INCLUDE_DIRs}")
-    INCLUDE_DIRECTORIES("${PYTHON_INCLUDE_DIRS}")
-ELSE()
+FIND_PACKAGE (Python3 3.10 EXACT REQUIRED COMPONENTS Interpreter Development)
+#FIND_PACKAGE(PythonLibs 3.11 EXACT REQUIRED)
+#SET(PythonLibs_DIR "/Library/Frameworks/Python.framework/Versions/3.8")
+#FIND_PACKAGE(PythonLibs 3.8 REQUIRED PATHS ("/Library/Frameworks/Python.framework/Versions/3.8"))
+#FindPythonLibs()
+IF (Python3_FOUND)
+    INCLUDE_DIRECTORIES("${Python3_INCLUDE_DIRS}")
+    get_filename_component(PYTHON_LINK_DIRECTORY ${PYTHON_LIBRARY} DIRECTORY)
+    # See: https://cmake.org/cmake/help/latest/module/FindPython3.html#module:FindPython3
+    message("Python3_VERSION:           ${Python3_VERSION}")
+    message("Python3_EXECUTABLE:        ${Python3_EXECUTABLE}")
+    message("Python3_INTERPRETER_ID:    ${Python3_INTERPRETER_ID}")
+    message("Python3_INCLUDE_DIRS:      ${Python3_INCLUDE_DIRS}")
+    message("Python3_STDLIB:            ${Python3_STDLIB}")
+    message("Python3_STDARCH:           ${Python3_STDARCH}")
+    message("Python3_LINK_OPTIONS:      ${Python3_LINK_OPTIONS}")
+    message("Python3_LIBRARIES:         ${Python3_LIBRARIES}")
+ELSE ()
     MESSAGE(FATAL_ERROR "Unable to find Python libraries.")
-ENDIF()
+ENDIF ()
 
-target_link_libraries(SkipList ${PYTHON_LIBRARIES})
+target_link_libraries(SkipList ${Python3_LIBRARIES})
 
 target_compile_options(SkipList PRIVATE -Wall -Wextra -Wno-c99-extensions -pedantic)# -Werror)
