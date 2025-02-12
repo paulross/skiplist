@@ -16,7 +16,7 @@ extra_compile_args = [
     '-Wfatal-errors',
     # Some internal Python library code does not like this.
     '-Wno-c++11-compat-deprecated-writable-strings',
-    '-std=c++17',
+    '-std=c++20',
     '-Isrc/cpp',
     # We implement mutex with Python's thread locking so we don't want the
     # overhead of C++'s thread locking as well.
@@ -55,7 +55,7 @@ orderedstructs = Extension(
     library_dirs=[os.getcwd(), ],
     extra_compile_args=extra_compile_args,
     extra_link_args=['-lstdc++'],
-    language='c++17',
+    language='c++20',
 )
 
 with open('README.md') as readme_file:
@@ -77,7 +77,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.14',
+    version='0.3.15',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,

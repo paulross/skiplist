@@ -1437,7 +1437,7 @@ static char py_skip_list_docs[] =
         " Python objects.";
 
 PyTypeObject SkipListType = {
-        PyVarObject_HEAD_INIT(NULL, 0)
+        .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
         .tp_name = ORDERED_STRUCTS_MODULE_NAME ".SkipList",
         .tp_basicsize = sizeof(SkipList),
         .tp_dealloc = (destructor) SkipList_dealloc,
