@@ -44,14 +44,14 @@ Originally written by Paul Ross with credits to: Wilfred Hughes (AHL), Luke Sewe
 
 This SkipList requires:
 
-* A C++11 compiler.
+* A C++20 compiler.
 * ``-I<skiplist>/src/cpp`` as an include path.
 * ``<skiplist>/src/cpp/SkipList.cpp`` to be compiled/linked.
 * The macro ``SKIPLIST_THREAD_SUPPORT`` set if you want a thread safe SkipList using C++ mutexes.
 
 ## Python
 
-This SkipList version supports Python 3.7, 3.8, 3.9, 3.10, 3.11 (and, probably, some earlier Python 3 versions).
+This SkipList version supports Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13 (and, probably, some earlier Python 3 versions).
 
 ### From PyPi
 

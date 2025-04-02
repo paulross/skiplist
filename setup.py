@@ -16,7 +16,7 @@ extra_compile_args = [
     '-Wfatal-errors',
     # Some internal Python library code does not like this.
     '-Wno-c++11-compat-deprecated-writable-strings',
-    '-std=c++17',
+    '-std=c++20',
     '-Isrc/cpp',
     # We implement mutex with Python's thread locking so we don't want the
     # overhead of C++'s thread locking as well.
@@ -55,7 +55,7 @@ orderedstructs = Extension(
     library_dirs=[os.getcwd(), ],
     extra_compile_args=extra_compile_args,
     extra_link_args=['-lstdc++'],
-    language='c++17',
+    language='c++20',
 )
 
 with open('README.md') as readme_file:
@@ -77,7 +77,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.3.13',
+    version='0.3.15',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,
@@ -85,6 +85,7 @@ setup(
     author="Paul Ross",
     author_email='apaulross@gmail.com',
     url='https://github.com/paulross/skiplist',
+    download_url='https://pypi.org/project/orderedstructs/',
 #     packages=find_packages('src'),
     license="MIT License",
     keywords=['orderedstructs', 'SkipList'],
@@ -95,12 +96,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
     ],
     test_suite='tests',
     tests_require=test_requirements,

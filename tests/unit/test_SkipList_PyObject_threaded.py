@@ -127,7 +127,9 @@ def insert_has_remove_int(sl, value, count):
         assert sl.lacks_integrity() == 0
         assert sl.has(value)
         removed_value = sl.remove(value)
-        assert id(value) == id(removed_value)
+        assert removed_value == value
+        # It seems that this check can not be relied on in a multithreaded environment
+        # assert id(value) == id(removed_value)
         assert not sl.has(value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
@@ -139,7 +141,8 @@ def test_insert_has_remove_int():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(int)
     # Load SkipList with one value
-    sl.insert(1000)
+    initial_value = 1000
+    sl.insert(initial_value)
     NUM_INSERTS = 10000
     threads = [
         threading.Thread(
@@ -155,6 +158,8 @@ def test_insert_has_remove_int():
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()
+    assert len(sl) == 1
+    assert sl.has(initial_value)
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
 
@@ -166,7 +171,9 @@ def insert_has_remove_float(sl, value, count):
         assert sl.lacks_integrity() == 0
         assert sl.has(value)
         removed_value = sl.remove(value)
-        assert id(value) == id(removed_value)
+        assert removed_value == value
+        # It seems that this check can not be relied on in a multithreaded environment
+        # assert id(value) == id(removed_value)
         assert not sl.has(value)
         assert sl.lacks_integrity() == 0
     logging.debug('  Ending: {}()'.format(sys._getframe().f_code.co_name))
@@ -178,6 +185,7 @@ def test_insert_has_remove_float():
     logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(float)
     # Load SkipList with one value
+    initial_value = 1000.0
     sl.insert(1000.0)
     NUM_INSERTS = 10000
     threads = [
@@ -194,6 +202,8 @@ def test_insert_has_remove_float():
     for t in threading.enumerate():
         if t is not main_thread:
             t.join()
+    assert len(sl) == 1
+    assert sl.has(initial_value)
     logging.debug('Ending: {}()'.format(sys._getframe().f_code.co_name))
 
 

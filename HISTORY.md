@@ -1,5 +1,15 @@
 # History
 
+## 0.3.15 (2025-02-12)
+
+* Minor fix to support C++20 (credit https://github.com/wdhongtw for issue #11 https://github.com/paulross/skiplist/issues/11).
+* Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13.
+
+## 0.3.14 (2024-08-02)
+
+* Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13.
+* Drop support for Python 3.7.
+
 ## 0.3.13 (2023-09-05)
 
 * Documentation improvements.
