@@ -163,11 +163,19 @@ htmlhelp_basename = 'SkipListdoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
-# The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+latex_elements = {
+    # The paper size ('letterpaper' or 'a4paper').
+    # Default is 'letterpaper'
+    'papersize': 'a4paper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+    # The font size ('10pt', '11pt' or '12pt').
+    # Default is '10pt'
+    #'pointsize': '10pt',
+
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
+    'preamble': r'''\usepackage{lscape}''',
+}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
