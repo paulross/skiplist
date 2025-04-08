@@ -257,6 +257,8 @@ void TestResultS::dump_header(std::ostream &os) const {
     os << "REGEX_TAIL: ";
     os << "\"TAIL:" << REGEX_SPACE_ANYTHING;
     os << "\"" << std::endl;
+    os << "#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11";
+    os << std::endl;
     os << "HEAD: ";
     os << std::setw(4) << "Fail";
     os << std::setw(8) << "Scale";

@@ -988,7 +988,7 @@ int perf_roll_med_by_win_size(size_t test_count, size_t repeat, TestResultS &tes
 }
 #endif
 
-int perf_test_node_height_growth(size_t test_count, size_t repeat, TestResultS &test_results) {
+int perf_test_node_height_growth(size_t repeat, TestResultS &test_results) {
     int result = 0;
 
     for (size_t sl_length = 1; sl_length < 1 << 20; sl_length *= 2) {
@@ -1004,7 +1004,7 @@ int perf_test_node_height_growth(size_t test_count, size_t repeat, TestResultS &
             if (i == 0) {
                 std::cout << __FUNCTION__ << "[" << sl_length << "] Sample height = " << sl.height() << std::endl;
             }
-            test_result.execTimeAdd(0, sl.height(), test_count, sl_length);
+            test_result.execTimeAdd(0, sl.height(), repeat, sl_length);
         }
         test_results.push_back(test_result);
     }
@@ -1054,7 +1054,7 @@ int perf_skiplist() {
 #if 0
     result |= perf_roll_med_by_win_size(10, 5, perf_test_results);
 #endif
-    result |= perf_test_node_height_growth(100, 10, perf_test_results);
+    result |= perf_test_node_height_growth(20, perf_test_results);
 
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
