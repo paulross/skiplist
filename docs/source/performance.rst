@@ -38,13 +38,18 @@ The time performance tests are run as follows:
 
 The ouptut is a combination of test results, performance results and dot visualisations
 
-If multi-threaded support is enabled (see :ref:`multi-threaded-performance` below) the execution time including the multi-threaded tests takes about three minutes. With single threaded support the tests take around two minutes. If the debug version is built the performance tests are omitted as the cost of integrity checking at every step is very high which would make the performance test data irrelevant.
+If multi-threaded support is enabled (see :ref:`multi-threaded-performance` below) the execution time including the
+multi-threaded tests takes about three minutes. With single threaded support the tests take around two minutes.
+If the debug version is built the performance tests are omitted as the cost of integrity checking at every step is very
+high which would make the performance test data irrelevant.
 
 ====================================
 Time Performance
 ====================================
 
-The performance test mostly work on a SkipList of type ``double`` that has 1 million values. Test on a couple of modern 64 bit OS's [Linux, Mac OS X] show that the cost of SkipList operations is typically as follows.
+The performance test mostly work on a SkipList of type ``double`` that has 1 million values.
+Test on a couple of modern 64 bit OS's [Linux, Mac OS X] show that the cost of SkipList operations is typically as
+follows.
 
 -------------------------------------------------
 Mutating operations: ``insert()``, ``remove()``
