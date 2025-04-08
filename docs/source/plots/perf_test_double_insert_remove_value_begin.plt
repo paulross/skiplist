@@ -4,9 +4,9 @@ set grid
 set logscale x
 set xlabel "Size of SkipList"
 
-set logscale y
 set ylabel "Time per Item (ns)"
-# set yrange [8:35]
+# set logscale y
+set yrange [0:1000]
 # set yrange [0.001:10]
 # set ytics 8,35,3
 
@@ -44,15 +44,11 @@ set output "images/perf_test_double_insert_remove_value_begin.png"   # choose th
 
 plot "dat/perf_test_double_insert_remove_value_begin.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) \
         t "Beginning" with candlesticks whiskerbars 0.5, \
+        "dat/perf_test_double_insert_remove_value_end.dat" using 3:(277 + 125.85 / 20 * log($3) / log(2)) t "Beginning" with lines, \
         "dat/perf_test_double_insert_remove_value_mid.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) \
         t "Middle" with candlesticks whiskerbars 0.5, \
+        "dat/perf_test_double_insert_remove_value_end.dat" using 3:(264 + 310 / 20 * log($3) / log(2)) t "Middle" with lines, \
         "dat/perf_test_double_insert_remove_value_end.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) \
-        t "End" with candlesticks whiskerbars 0.5#,\
-    "dat/test_py_dict_to_cpp_std_unordered_map_vector_char_multiple_std_vector_char_128.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) \
-        t "Python dict, bytes length 128" with candlesticks whiskerbars 0.5,\
-    "dat/test_py_dict_to_cpp_std_unordered_map_vector_char_multiple_std_vector_char_1024.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) \
-        t "Python dict, bytes length 1024" with candlesticks whiskerbars 0.5,\
-    "dat/test_py_dict_to_cpp_std_unordered_map_vector_char_multiple_std_vector_char_2.dat" using 3:(rate_1_000_000($3) * 1e9) t sprintf("Guide: %.3f µs + 1m objects/s", latency*1e9) with lines dashtype 2 lw 2, \
-    "dat/test_py_dict_to_cpp_std_unordered_map_vector_char_multiple_std_vector_char_2.dat" using 3:(rate_10_000_000($3) * 1e9) t sprintf("Guide: %.3f µs + 10m objects/s", latency*1e9) with lines dashtype 2 lw 2
-
+        t "End" with candlesticks whiskerbars 0.5, \
+        "dat/perf_test_double_insert_remove_value_end.dat" using 3:(287 + 143 / 20 * log($3) / log(2)) t "End" with lines
 reset
