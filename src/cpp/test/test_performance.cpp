@@ -42,11 +42,12 @@
 #include <iostream>
 #include <iomanip>
 
+#include "RollingMedian.h"
 #include "TestFramework.h"
 #include "test_performance.h"
 #include "test_print.h"
 
-#include "../SkipList.h"
+//#include "../SkipList.h"
 
 /** @brief The number of times to repeat a test to get an accurate performance figure. */
 static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
@@ -767,47 +768,231 @@ int perf_index_vary_length() {
     return result;
 }
 
-size_t NUM = 1024 * 1024;
-
-int perf_test_double_insert_remove_value(
-        TestResultS &test_results, size_t test_count, size_t repeat, double value
-        ) {
+int perf_test_double_insert_remove_value(std::string function, size_t test_count, size_t repeat, size_t sl_length, double value, TestResultS &test_results) {
     std::ostringstream title;
-    title << __FUNCTION__ << "[" << test_count << "]";
+    title << function << "[" << sl_length << "]";
     TestResult test_result(title.str());
 
     int result = 0;
 
-    // Creatw and populate a skiplist of 1m doubles
-    OrderedStructs::SkipList::HeadNode<double> sl;
-    srand(1);
-    for (size_t i = 0; i < NUM; ++i) {
-        sl.insert(i);
-    }
-
     for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate a SkipList of sl_length doubles
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        for (size_t i = 0; i < sl_length; ++i) {
+            sl.insert(i);
+        }
         ExecClock exec_clock;
         for (size_t j = 0; j < test_count; ++j) {
             sl.insert(value);
             sl.remove(value);
         }
         double exec_time = exec_clock.seconds();
-        test_result.execTimeAdd(0, exec_time, test_count, NUM);
+        if (i == 0) {
+            std::cout << function << "[" << sl_length << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, sl_length);
     }
     test_results.push_back(test_result);
     return result;
 }
 
-int perf_test_double_insert_remove_begin(TestResultS &test_results, size_t test_count, size_t repeat) {
-    return perf_test_double_insert_remove_value(test_results, test_count, repeat, 0.0);
+int perf_test_double_insert_remove_value_begin(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 20) {
+        result |= perf_test_double_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 0.0, test_results);
+        sl_length *= 2;
+    }
+    return result;
 }
 
-int perf_test_double_insert_remove_mid(TestResultS &test_results, size_t test_count, size_t repeat) {
-    return perf_test_double_insert_remove_value(test_results, test_count, repeat, NUM / 2);
+int perf_test_double_insert_remove_value_mid(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 20) {
+        result |= perf_test_double_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, sl_length / 2.0, test_results);
+        sl_length *= 2;
+    }
+    return result;
 }
 
-int perf_test_double_insert_remove_end(TestResultS &test_results, size_t test_count, size_t repeat) {
-    return perf_test_double_insert_remove_value(test_results, test_count, repeat, NUM);
+int perf_test_double_insert_remove_value_end(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 20) {
+        result |= perf_test_double_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, sl_length, test_results);
+        sl_length *= 2;
+    }
+    return result;
+}
+
+int perf_test_double_at_1m(size_t test_count, size_t repeat, size_t index, TestResultS &test_results) {
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << index << "]";
+    TestResult test_result(title.str());
+
+    int result = 0;
+
+    for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate a SkipList of sl_length doubles
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        for (size_t i = 0; i <= 1 << 20; ++i) {
+            sl.insert(i);
+        }
+        ExecClock exec_clock;
+        for (size_t j = 0; j < test_count; ++j) {
+            sl.at(index);
+        }
+        double exec_time = exec_clock.seconds();
+        if (i == 0) {
+            std::cout << __FUNCTION__ << "[" << index << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)" << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, index);
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+int perf_test_double_at_1m_all(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t index_value = 1;
+    int result = 0;
+    while (index_value <= 1 << 20) {
+        result |= perf_test_double_at_1m(test_count, repeat, index_value, test_results);
+        index_value *= 2;
+    }
+    return result;
+}
+
+int perf_test_double_has_1m(size_t test_count, size_t repeat, size_t value, TestResultS &test_results) {
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << value << "]";
+    TestResult test_result(title.str());
+    double double_value = value;
+
+    int result = 0;
+
+    for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate a SkipList of sl_length doubles
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        for (size_t i = 0; i <= 1 << 20; ++i) {
+            sl.insert(i);
+        }
+        ExecClock exec_clock;
+        for (size_t j = 0; j < test_count; ++j) {
+            sl.has(double_value);
+        }
+        double exec_time = exec_clock.seconds();
+        if (i == 0) {
+            std::cout << __FUNCTION__ << "[" << value << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)" << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, value);
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+int perf_test_double_has_1m_all(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t index_value = 1;
+    int result = 0;
+    while (index_value <= 1 << 20) {
+        result |= perf_test_double_has_1m(test_count, repeat, index_value, test_results);
+        index_value *= 2;
+    }
+    return result;
+}
+
+int perf_test_double_index_1m(size_t test_count, size_t repeat, size_t value, TestResultS &test_results) {
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << value << "]";
+    TestResult test_result(title.str());
+    double double_value = value;
+
+    int result = 0;
+
+    for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate a SkipList of sl_length doubles
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        for (size_t i = 0; i <= 1 << 20; ++i) {
+            sl.insert(i);
+        }
+        ExecClock exec_clock;
+        for (size_t j = 0; j < test_count; ++j) {
+            sl.index(double_value);
+        }
+        double exec_time = exec_clock.seconds();
+        if (i == 0) {
+            std::cout << __FUNCTION__ << "[" << value << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)" << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, value);
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+int perf_test_double_index_1m_all(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t index_value = 1;
+    int result = 0;
+    while (index_value <= 1 << 20) {
+        result |= perf_test_double_index_1m(test_count, repeat, index_value, test_results);
+        index_value *= 2;
+    }
+    return result;
+}
+
+// Tests evaluating a rolling median on 1m doubles with different window lengths.
+int perf_roll_med_odd_index_wins(size_t test_count, size_t repeat, TestResultS &test_results) {
+    int result = 0;
+    double *src = new double[1 << 20];
+    for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate an array of 1m random doubles
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        for (size_t i = 0; i < 1 << 20; ++i) {
+            src[i] = rand();
+        }
+        for (size_t win_len = 1; win_len < 1 << 20; win_len *= 2) {
+            ExecClock exec_clock;
+            result |= OrderedStructs::RollingMedian::even_odd_index(src, 1, COUNT,
+                                                               win, dest, DEST_STRIDE);
+
+
+        }
+
+    const size_t COUNT = 1000000;
+    const int DEST_STRIDE = 1;
+    double *src = new double[COUNT];
+    int result = 0;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src[i] = 2.0 * i;
+    }
+    // Loop over this data for various window sizes from 1 to 524288
+    for (size_t win = 1; win < COUNT; win *= 2) {
+        size_t dest_size = OrderedStructs::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
+        double *dest = new double[dest_size];
+        srand(1);
+        time_t start = clock();
+        result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
+                                                           win, dest, DEST_STRIDE);
+        double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+        std::cout << " vectors length: " << std::setw(8) << COUNT;
+        std::cout << " window width: " << std::setw(6) << win;
+        std::cout << " time: ";
+        std::cout << exec / 1e3;
+        std::cout << " (ms)";
+        std::cout << std::endl;
+        delete [] dest;
+    }
+    delete [] src;
+    return result;
 }
 
 /******************* END: Performance Tests **************************/
@@ -819,7 +1004,8 @@ int perf_test_double_insert_remove_end(TestResultS &test_results, size_t test_co
  */
 int perf_skiplist() {
     int result = 0;
-    
+
+#if 0
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
@@ -836,15 +1022,21 @@ int perf_skiplist() {
     result |= perf_has_in_one_million_vary_length();
     result |= perf_index();
     result |= perf_index_vary_length();
+#endif
 
+#if 1
     // Multiple statistical tests
     TestResultS perf_test_results;
-    result |= perf_test_double_insert_remove_begin(perf_test_results, 10, 5);
-    result |= perf_test_double_insert_remove_mid(perf_test_results, 10, 5);
-    result |= perf_test_double_insert_remove_end(perf_test_results, 10, 5);
+    result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
+    result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
+    result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
+    result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
+    result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
+    result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
     perf_test_results.dump_tail(std::cout);
+#endif
 
     return result;
 }
@@ -892,7 +1084,9 @@ int test_performance_all() {
     int result = 0;
     
     result |= perf_skiplist();
+#if 0
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
     return result;
+#endif
 }

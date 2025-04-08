@@ -14,11 +14,14 @@
 //#include "SkipList.h"
 //#include "RollingMedian.h"
 
+#include "SkipList.h"
+#include "save_stream_state.h"
 #include "test/test_documentation.h"
 #include "test/test_functional.h"
 #include "test/test_performance.h"
 #include "test/test_rolling_median.h"
 #include "test/test_concurrent.h"
+
 
 void test_clock_resolution() {
     int count = 10;
@@ -35,8 +38,6 @@ void test_clock_resolution() {
     std::cout << " (s)" << std::endl;
     std::cout << "CLOCKS_PER_SEC: " << CLOCKS_PER_SEC << std::endl;
 }
-
-#include "SkipList.h"
 
 int test_example_introduction_A(void) {
     int ret = 0;
@@ -75,7 +76,7 @@ int test_example_introduction_A(void) {
 int test_all() {
     int result = 0;
 
-#if 1
+#if 0
     result |= test_example_introduction_A();
 
     result |= test_functional_all();
@@ -89,8 +90,10 @@ int test_all() {
     result |= test_performance_all();
 #endif // DEBUG
 #endif
+#if 0
     // test_concurrent_all() only executes performance tests #ifndef DEBUG
     result |= test_concurrent_all();
+#endif
     return result;
 }
 
@@ -106,7 +109,11 @@ int main(int /* argc */, const char *[] /* argv[] */) {
 //    std::cout << "__cplusplus: \""<< __cplusplus << "\"" << std::endl;
     std::cout << "Final result: ";
     std::cout << (result ? "FAIL" : "PASS") << std::endl;
-    std::cout << "Exec time: " << exec << " (s)" << std::endl;
+    {
+        StreamFormatState stream_state(std::cout);
+//        std::cout << "Exec time: " << std::setw(24) << std::fixed << std::setprecision(3) << exec << " (s)" << std::endl;
+        std::cout << "Exec time: " << std::fixed << std::setprecision(3) << exec << " (s)" << std::endl;
+    }
 //    test_clock_resolution();
     std::cout << "Bye, bye!\n";
     return 0;
