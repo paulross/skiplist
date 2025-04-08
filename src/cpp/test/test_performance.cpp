@@ -42,12 +42,12 @@
 #include <iostream>
 #include <iomanip>
 
-#include "RollingMedian.h"
+//#include "RollingMedian.h"
 #include "TestFramework.h"
 #include "test_performance.h"
 #include "test_print.h"
 
-//#include "../SkipList.h"
+#include "../SkipList.h"
 
 /** @brief The number of times to repeat a test to get an accurate performance figure. */
 static int GLOBAL_REPEAT_COUNT = 1000 * 1000;
@@ -946,52 +946,68 @@ int perf_test_double_index_1m_all(size_t test_count, size_t repeat, TestResultS 
     return result;
 }
 
+// Weird linker failure
+#if 0
 // Tests evaluating a rolling median on 1m doubles with different window lengths.
-int perf_roll_med_odd_index_wins(size_t test_count, size_t repeat, TestResultS &test_results) {
+int perf_roll_med_by_win_size(size_t test_count, size_t repeat, TestResultS &test_results) {
     int result = 0;
-    double *src = new double[1 << 20];
-    for (size_t i = 0; i < repeat; ++i) {
-        // Create and populate an array of 1m random doubles
-        OrderedStructs::SkipList::HeadNode<double> sl;
-        for (size_t i = 0; i < 1 << 20; ++i) {
-            src[i] = rand();
-        }
-        for (size_t win_len = 1; win_len < 1 << 20; win_len *= 2) {
-            ExecClock exec_clock;
-            result |= OrderedStructs::RollingMedian::even_odd_index(src, 1, COUNT,
-                                                               win, dest, DEST_STRIDE);
-
-
-        }
-
-    const size_t COUNT = 1000000;
     const int DEST_STRIDE = 1;
-    double *src = new double[COUNT];
+    const size_t ARRAY_SIZE = 1 << 20;
+    // Create and populate an array of 1m random doubles
+    double *src = new double[ARRAY_SIZE];
+    for (size_t i = 0; i < ARRAY_SIZE; ++i) {
+        src[i] = rand();
+    }
+    for (size_t win_length = 1; win_length < 1 << 20; win_length *= 2) {
+        std::ostringstream title;
+        title << __FUNCTION__ << "[" << win_length << "]";
+        TestResult test_result(title.str());
+
+        size_t dest_size = OrderedStructs::RollingMedian::dest_size(ARRAY_SIZE, win_length, DEST_STRIDE);
+        double *dest = new double[dest_size];
+//        double *dest = new double[ARRAY_SIZE];
+        for (size_t r = 0; r < repeat; ++r) {
+                ExecClock exec_clock;
+                for (size_t t = 0; t < test_count; ++t) {
+                    result |= OrderedStructs::RollingMedian::even_odd_index(src, 1, ARRAY_SIZE,
+                                                                            win_length, dest, DEST_STRIDE);
+                }
+                double exec_time = exec_clock.seconds();
+                if (r == 0) {
+                    std::cout << __FUNCTION__ << "[" << win_length << "] Sample time/op = "
+                              << 1e9 * exec_time / test_count << "(ns)"
+                              << std::endl;
+                }
+                test_result.execTimeAdd(0, exec_time, test_count, win_length);
+        }
+        delete[] dest;
+        test_results.push_back(test_result);
+    }
+    delete[] src;
+    return result;
+}
+#endif
+
+int perf_test_node_height_growth(size_t test_count, size_t repeat, TestResultS &test_results) {
     int result = 0;
 
-    // Create source data
-    for (size_t i = 0; i < COUNT; ++i) {
-        src[i] = 2.0 * i;
+    for (size_t sl_length = 1; sl_length < 1 << 20; sl_length *= 2) {
+        std::ostringstream title;
+        title << __FUNCTION__ << "[" << sl_length << "]";
+        TestResult test_result(title.str());
+        for (size_t i = 0; i < repeat; ++i) {
+            // Create and populate a SkipList of sl_length doubles
+            OrderedStructs::SkipList::HeadNode<double> sl;
+            for (size_t i = 0; i <= sl_length; ++i) {
+                sl.insert(i);
+            }
+            if (i == 0) {
+                std::cout << __FUNCTION__ << "[" << sl_length << "] Sample height = " << sl.height() << std::endl;
+            }
+            test_result.execTimeAdd(0, sl.height(), test_count, sl_length);
+        }
+        test_results.push_back(test_result);
     }
-    // Loop over this data for various window sizes from 1 to 524288
-    for (size_t win = 1; win < COUNT; win *= 2) {
-        size_t dest_size = OrderedStructs::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
-        double *dest = new double[dest_size];
-        srand(1);
-        time_t start = clock();
-        result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
-                                                           win, dest, DEST_STRIDE);
-        double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
-        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
-        std::cout << " vectors length: " << std::setw(8) << COUNT;
-        std::cout << " window width: " << std::setw(6) << win;
-        std::cout << " time: ";
-        std::cout << exec / 1e3;
-        std::cout << " (ms)";
-        std::cout << std::endl;
-        delete [] dest;
-    }
-    delete [] src;
     return result;
 }
 
@@ -1027,12 +1043,19 @@ int perf_skiplist() {
 #if 1
     // Multiple statistical tests
     TestResultS perf_test_results;
+#if 0
     result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
     result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
+#endif
+#if 0
+    result |= perf_roll_med_by_win_size(10, 5, perf_test_results);
+#endif
+    result |= perf_test_node_height_growth(100, 10, perf_test_results);
+
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
     perf_test_results.dump_tail(std::cout);
@@ -1087,6 +1110,6 @@ int test_performance_all() {
 #if 0
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
-    return result;
 #endif
+    return result;
 }
