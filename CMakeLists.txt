@@ -59,7 +59,7 @@ add_executable(
         src/cpy/cSkipList.h
         src/cpy/OrderedStructs.cpp
         src/cpy/OrderedStructs.h
-)
+        src/cpp/test/TestFramework.cpp src/cpp/test/TestFramework.h src/cpp/test/save_stream_state.h)
 
 include_directories(
         src/cpp

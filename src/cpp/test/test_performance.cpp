@@ -42,6 +42,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include "TestFramework.h"
 #include "test_performance.h"
 #include "test_print.h"
 
@@ -766,6 +767,49 @@ int perf_index_vary_length() {
     return result;
 }
 
+size_t NUM = 1024 * 1024;
+
+int perf_test_double_insert_remove_value(
+        TestResultS &test_results, size_t test_count, size_t repeat, double value
+        ) {
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << test_count << "]";
+    TestResult test_result(title.str());
+
+    int result = 0;
+
+    // Creatw and populate a skiplist of 1m doubles
+    OrderedStructs::SkipList::HeadNode<double> sl;
+    srand(1);
+    for (size_t i = 0; i < NUM; ++i) {
+        sl.insert(i);
+    }
+
+    for (size_t i = 0; i < repeat; ++i) {
+        ExecClock exec_clock;
+        for (size_t j = 0; j < test_count; ++j) {
+            sl.insert(value);
+            sl.remove(value);
+        }
+        double exec_time = exec_clock.seconds();
+        test_result.execTimeAdd(0, exec_time, test_count, NUM);
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+int perf_test_double_insert_remove_begin(TestResultS &test_results, size_t test_count, size_t repeat) {
+    return perf_test_double_insert_remove_value(test_results, test_count, repeat, 0.0);
+}
+
+int perf_test_double_insert_remove_mid(TestResultS &test_results, size_t test_count, size_t repeat) {
+    return perf_test_double_insert_remove_value(test_results, test_count, repeat, NUM / 2);
+}
+
+int perf_test_double_insert_remove_end(TestResultS &test_results, size_t test_count, size_t repeat) {
+    return perf_test_double_insert_remove_value(test_results, test_count, repeat, NUM);
+}
+
 /******************* END: Performance Tests **************************/
 
 /**
@@ -792,7 +836,16 @@ int perf_skiplist() {
     result |= perf_has_in_one_million_vary_length();
     result |= perf_index();
     result |= perf_index_vary_length();
-    
+
+    // Multiple statistical tests
+    TestResultS perf_test_results;
+    result |= perf_test_double_insert_remove_begin(perf_test_results, 10, 5);
+    result |= perf_test_double_insert_remove_mid(perf_test_results, 10, 5);
+    result |= perf_test_double_insert_remove_end(perf_test_results, 10, 5);
+    perf_test_results.dump_header(std::cout);
+    perf_test_results.dump_tests(std::cout);
+    perf_test_results.dump_tail(std::cout);
+
     return result;
 }
 
@@ -840,6 +893,6 @@ int test_performance_all() {
     
     result |= perf_skiplist();
     result |= perf_size();
-//    result |= perf_skiplist_unfair_coin();
+    result |= perf_skiplist_unfair_coin();
     return result;
 }
