@@ -12,7 +12,7 @@ set datafile separator "\t"
 #fit cost(x) "perf_roll_med_odd_index_wins.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "perf_roll_med_odd_index_wins.png"   # choose the output device
+set output "images/perf_roll_med_odd_index_wins.png"   # choose the output device
 
-plot "perf_roll_med_odd_index_wins.dat" using 1:2 t "Rolling Median" with linespoints pt 1 lw 2
+plot "dat/perf_roll_med_odd_index_wins.dat" using 1:2 t "Rolling Median" with linespoints pt 1 lw 2
 reset

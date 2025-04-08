@@ -14,14 +14,14 @@ set datafile separator "\t"
 #fit cost(x) "biased_coin_effect.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "biased_coin_effect.png"   # choose the output device
+set output "images/biased_coin_effect.png"   # choose the output device
 
 # pt is pointtype
 # lt is linetype
-plot "biased_coin_effect.dat" using 1:7  t "at()" with linespoints pt 1 lt 1 lw 2, \
-    "biased_coin_effect.dat" using 1:8 t "has()" with linespoints pt 2 lt 2 lw 2, \
-    "biased_coin_effect.dat" using 1:9 t "insert()+at()+remove()" with linespoints pt 3 lt 3 lw 2, \
-    "biased_coin_effect.dat" using 1:10 t "rolling median" with linespoints pt 7 lt 7 lw 2
+plot "dat/biased_coin_effect.dat" using 1:7  t "at()" with linespoints pt 1 lt 1 lw 2, \
+    "dat/biased_coin_effect.dat" using 1:8 t "has()" with linespoints pt 2 lt 2 lw 2, \
+    "dat/biased_coin_effect.dat" using 1:9 t "insert()+at()+remove()" with linespoints pt 3 lt 3 lw 2, \
+    "dat/biased_coin_effect.dat" using 1:10 t "rolling median" with linespoints pt 7 lt 7 lw 2
 
 #reset
 
@@ -30,7 +30,7 @@ set ylabel "Size in bytes / node"
 set yrange [0:250]
 
 set terminal png size 750,500           # choose the file format
-set output "biased_coin_effect_size_of.png"   # choose the output device
-plot "biased_coin_effect.dat" using 1:($6 * 8.0) t "size_of()" with linespoints pt 12 lt 12 lw 2
+set output "images/biased_coin_effect_size_of.png"   # choose the output device
+plot "dat/biased_coin_effect.dat" using 1:($6 * 8.0) t "size_of()" with linespoints pt 12 lt 12 lw 2
 
 reset

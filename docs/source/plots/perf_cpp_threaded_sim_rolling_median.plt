@@ -27,10 +27,10 @@ set datafile separator whitespace
 #fit cost(x) "perf_height_size.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "perf_cpp_threaded_sim_rolling_median.png"   # choose the output device
+set output "images/perf_cpp_threaded_sim_rolling_median.png"   # choose the output device
 
-plot "perf_cpp_threaded_sim_rolling_median.dat" using 1:2 t "Time/op (left)" with linespoints pt 1 lw 2#, \
-    "perf_cpp_threaded_sim_rolling_median.dat" using 1:($1 * 0.5194) axes x1y1 t "Linear" with linespoints pt 1 lw 2#, \
-    "perf_cpp_threaded_sim_rolling_median.dat" using 1:($2 / 0.5194) axes x1y2 t "Ratio (right)" with linespoints pt 1 lw 2, \
+plot "dat/perf_cpp_threaded_sim_rolling_median.dat" using 1:2 t "Time/op (left)" with linespoints pt 1 lw 2#, \
+    "dat/perf_cpp_threaded_sim_rolling_median.dat" using 1:($1 * 0.5194) axes x1y1 t "Linear" with linespoints pt 1 lw 2#, \
+    "dat/perf_cpp_threaded_sim_rolling_median.dat" using 1:($2 / 0.5194) axes x1y2 t "Ratio (right)" with linespoints pt 1 lw 2, \
 
 reset

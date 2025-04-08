@@ -18,7 +18,7 @@ set datafile separator whitespace
 set key left
 
 set terminal png size 750,500           # choose the file format
-set output "perf_rolling_median_shared_memory.png"   # choose the output device
+set output "images/perf_rolling_median_shared_memory.png"   # choose the output device
 
 #plot "perf_rolling_median_shared_memory.dat" using 1:2 t "processes=1" with linespoints axes x1y1 pt 2 lw 2, \
      "perf_rolling_median_shared_memory.dat" using 1:3 t "processes=2" with linespoints  axes x1y1 pt 1 lw 2, \
@@ -43,10 +43,10 @@ set output "perf_rolling_median_shared_memory.png"   # choose the output device
      "perf_rolling_median_shared_memory.dat" using 1:9 t "processes=8" with linespoints  axes x1y1 pt 1 lw 1, \
      "perf_rolling_median_shared_memory.dat" using 1:17 t "processes=16" with linespoints  axes x1y1 pt 1 lw 1
 
-plot "perf_rolling_median_shared_memory.dat" using 1:2 t "Single process" with lines axes x1y1 lw 2, \
-     "perf_rolling_median_shared_memory.dat" using 1:3 t "2 processes" with lines  axes x1y1 lw 2, \
-     "perf_rolling_median_shared_memory.dat" using 1:5 t "4 processes" with lines  axes x1y1 lw 3, \
-     "perf_rolling_median_shared_memory.dat" using 1:9 t "8 processes" with lines  axes x1y1 lw 2, \
-     "perf_rolling_median_shared_memory.dat" using 1:17 t "16 processes" with lines  axes x1y1 lw 2
+plot "dat/perf_rolling_median_shared_memory.dat" using 1:2 t "Single process" with lines axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory.dat" using 1:3 t "2 processes" with lines  axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory.dat" using 1:5 t "4 processes" with lines  axes x1y1 lw 3, \
+     "dat/perf_rolling_median_shared_memory.dat" using 1:9 t "8 processes" with lines  axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory.dat" using 1:17 t "16 processes" with lines  axes x1y1 lw 2
 
 reset

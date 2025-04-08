@@ -363,12 +363,12 @@ Performance
 Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
 Mac OS X with 4 cores and hyper-threading:
 
-.. image:: plots/perf_rolling_median_shared_memory.png
+.. image:: plots/images/perf_rolling_median_shared_memory.png
     :width: 640
 
 Comparing the **speed** of execution compared to a single process gives:
 
-.. image:: plots/perf_rolling_median_shared_memory_ratio.png
+.. image:: plots/images/perf_rolling_median_shared_memory_ratio.png
     :width: 640
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.

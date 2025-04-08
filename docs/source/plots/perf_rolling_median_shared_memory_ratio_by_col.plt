@@ -18,7 +18,7 @@ set datafile separator whitespace
 set key right
 
 set terminal png size 750,500           # choose the file format
-set output "perf_rolling_median_shared_memory_ratio_by_col.png"   # choose the output device
+set output "images/perf_rolling_median_shared_memory_ratio_by_col.png"   # choose the output device
 
 # 4 processes
 #plot "perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:14 t "65536 columns" with lines  axes x1y1 lw 2, \
@@ -33,8 +33,8 @@ set output "perf_rolling_median_shared_memory_ratio_by_col.png"   # choose the o
 
 
 # 16 processes
-plot "perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:16 t "65536 columns" with lines  axes x1y1 lw 2, \
-     "perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:11 t "1024 columns" with lines  axes x1y1 lw 2, \
-     "perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:6 t "16 columns" with lines axes x1y1 lw 2
+plot "dat/perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:16 t "65536 columns" with lines  axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:11 t "1024 columns" with lines  axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory_ratio_by_col.dat" using 1:6 t "16 columns" with lines axes x1y1 lw 2
 
 reset

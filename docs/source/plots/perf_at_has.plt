@@ -11,10 +11,10 @@ set datafile separator "\t"
 #fit cost(x) "perf_at_has.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "perf_at_has.png"   # choose the output device
+set output "images/perf_at_has.png"   # choose the output device
 
-plot "perf_at_has.dat" using 1:3 t "has()" with linespoints pt 2 lw 2, \
-    "perf_at_has.dat" using 1:2 t "at()" with linespoints pt 1 lw 2
+plot "dat/perf_at_has.dat" using 1:3 t "has()" with linespoints pt 2 lw 2, \
+    "dat/perf_at_has.dat" using 1:2 t "at()" with linespoints pt 1 lw 2
     
     
 reset

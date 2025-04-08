@@ -20,10 +20,10 @@ set datafile separator "\t"
 #fit cost(x) "perf_size_of.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "perf_size_of.png"   # choose the output device
+set output "images/perf_size_of.png"   # choose the output device
 
-plot "perf_size_of.dat" using 1:3 t "Bytes/Node <double>" with linespoints axes x1y1 pt 5 lw 2#, \
-    "perf_size_of.dat" using 1:5 t "Factor * sizeof(char)" with linespoints axes x1y1 pt 12 lw 2#,
-    # "perf_size_of.dat" using 1:3 t "Memory usage (bytes)" with linespoints axes x1y2 pt 15 lw 2
+plot "dat/perf_size_of.dat" using 1:3 t "Bytes/Node <double>" with linespoints axes x1y1 pt 5 lw 2#, \
+    "dat/perf_size_of.dat" using 1:5 t "Factor * sizeof(char)" with linespoints axes x1y1 pt 12 lw 2#,
+    # "dat/perf_size_of.dat" using 1:3 t "Memory usage (bytes)" with linespoints axes x1y2 pt 15 lw 2
     
 reset

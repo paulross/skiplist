@@ -27,8 +27,8 @@ set datafile separator whitespace
 #fit cost(x) "perf_height_size.dat" using 1:2 via a,b
 
 set terminal png size 750,500           # choose the file format
-set output "perf_py_threaded_sim_rolling_median.png"   # choose the output device
+set output "images/perf_py_threaded_sim_rolling_median.png"   # choose the output device
 
-plot "perf_py_threaded_sim_rolling_median.dat" using 1:($2 / 1000 / $1) t "Time/op (left)" with linespoints pt 1 lw 2
+plot "dat/perf_py_threaded_sim_rolling_median.dat" using 1:($2 / 1000 / $1) t "Time/op (left)" with linespoints pt 1 lw 2
 
 reset
