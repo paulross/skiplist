@@ -1021,7 +1021,6 @@ int perf_test_node_height_growth(size_t repeat, TestResultS &test_results) {
 int perf_skiplist() {
     int result = 0;
 
-#if 0
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
@@ -1038,28 +1037,21 @@ int perf_skiplist() {
     result |= perf_has_in_one_million_vary_length();
     result |= perf_index();
     result |= perf_index_vary_length();
-#endif
 
-#if 1
     // Multiple statistical tests
     TestResultS perf_test_results;
-#if 0
     result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
     result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
-#endif
-#if 1
     result |= perf_roll_med_by_win_size(10, perf_test_results);
-#endif
-//    result |= perf_test_node_height_growth(20, perf_test_results);
+    result |= perf_test_node_height_growth(20, perf_test_results);
 
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
     perf_test_results.dump_tail(std::cout);
-#endif
 
     return result;
 }
@@ -1107,7 +1099,7 @@ int test_performance_all() {
     int result = 0;
 
     result |= perf_skiplist();
-#if 0
+#if 1
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
 #endif
