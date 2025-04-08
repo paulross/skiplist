@@ -35,6 +35,7 @@ add_executable(
         src/cpp/Node.h
         src/cpp/NodeRefs.h
         src/cpp/RollingMedian.h
+        src/cpp/RollingMedian.cpp
         src/cpp/SkipList.cpp
         src/cpp/SkipList.h
         # Test code
@@ -59,7 +60,10 @@ add_executable(
         src/cpy/cSkipList.h
         src/cpy/OrderedStructs.cpp
         src/cpy/OrderedStructs.h
-        src/cpp/test/TestFramework.cpp src/cpp/test/TestFramework.h src/cpp/test/save_stream_state.h)
+        src/cpp/test/TestFramework.cpp
+        src/cpp/test/TestFramework.h
+        src/cpp/test/save_stream_state.h
+)
 
 include_directories(
         src/cpp
