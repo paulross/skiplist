@@ -1,0 +1,14 @@
+# REGEX_HEAD: "HEAD:\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)"
+# REGEX_TEST: "TEST:\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+(\d+)\s+([0-9+-.]+)\s+(\S+)"
+# REGEX_TAIL: "TAIL:\s+(.+)"
+#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
+# HEAD: Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
+# TEST:    0     0.5      10     0.000026363     0.000006533     0.000020417     0.000042917       200     7586361.2 test_perf_sim_rolling_median_multi_thread_multi_no_thread[0]
+TEST:    0       1      10     0.000211472     0.000241758     0.000091625     0.000930126       200      945753.5 test_perf_sim_rolling_median_multi_thread_multi[1]
+TEST:    0       2      10     0.000158455     0.000016681     0.000141126     0.000195418       400     2524379.2 test_perf_sim_rolling_median_multi_thread_multi[2]
+TEST:    0       4      10     0.000486613     0.000309745     0.000242834     0.001233084       800     1644016.2 test_perf_sim_rolling_median_multi_thread_multi[4]
+TEST:    0       8      10     0.000556746     0.000171049     0.000368292     0.000945793      1600     2873840.4 test_perf_sim_rolling_median_multi_thread_multi[8]
+TEST:    0      16      10     0.001261796     0.000657970     0.000618959     0.002959168      3200     2536067.0 test_perf_sim_rolling_median_multi_thread_multi[16]
+TEST:    0      32      10     0.003183821     0.000982828     0.001429792     0.005026791      6400     2010163.0 test_perf_sim_rolling_median_multi_thread_multi[32]
+TEST:    0      64      10     0.005863938     0.001256431     0.003960918     0.007986083     12800     2182833.4 test_perf_sim_rolling_median_multi_thread_multi[64]
+TEST:    0     128      10     0.011956071     0.002871801     0.008302917     0.017034583     25600     2141171.6 test_perf_sim_rolling_median_multi_thread_multi[128]

@@ -1,0 +1,6 @@
+# REGEX_HEAD: "HEAD:\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)"
+# REGEX_TEST: "TEST:\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+(\d+)\s+([0-9+-.]+)\s+(\S+)"
+# REGEX_TAIL: "TAIL:\s+(.+)"
+#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
+# HEAD: Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
+TEST:    0     0.5      10     0.000026363     0.000006533     0.000020417     0.000042917       200     7586361.2 test_perf_sim_rolling_median_multi_thread_multi_no_thread[0]

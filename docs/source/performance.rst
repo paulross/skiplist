@@ -364,10 +364,10 @@ Then repeating the task in 1, 2, 4, ... 128 new threads simultaneously where the
 The test function is ``_test_perf_sim_rolling_median_multi_thread()``.
 
 In the graph below the Y-axis shows the cost for each insert/has/remove operation in microseconds against the number of
-threads contending for the Skip List.
+threads contending for the SkipList, also shown is the same for a single threaded version (arbitrarily at 0.5 threads).
 
 .. image::
-    plots/images/perf_cpp_threaded_sim_rolling_median.png
+    plots/images/test_perf_sim_rolling_median_multi_thread_multi.png
 
 ===============================
 Detailed Performance
