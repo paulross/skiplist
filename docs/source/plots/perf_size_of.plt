@@ -1,7 +1,7 @@
 set logscale x
 set grid
-set title "Size complexity of a skip list of double."
-set xlabel "Index"
+set title "Size Complexity of a SkipList of double."
+set xlabel "Length of SkipList"
 
 # set logscale y
 set ylabel "Bytes/Node"
