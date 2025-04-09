@@ -105,8 +105,8 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 
 The lines show the minimum values and the legend shows the log(n) behaviour.
 
-.. image:: plots/images/perf_test_double_at_has_index.png
-    :width: 640
+.. image::
+    plots/images/perf_test_double_at_has_index.png
 
 This shows good O(log(n))'ish type behaviour.
 
@@ -120,8 +120,8 @@ This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)
 A window size of 1000 and 1m values (the size of the SkipList) takes around 0.75 second or 750 ns /value.
 The line shows a very approximate fir to the minimum recorded value of around 0.3 + sqrt(window length) / 300 seconds.
 
-.. image:: plots/images/perf_roll_med_by_win_size.png
-    :width: 640
+.. image::
+    plots/images/perf_roll_med_by_win_size.png
 
 The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
@@ -187,8 +187,8 @@ The Y axis is the ``size_of()`` divided by the length of the SkipList in bytes p
 Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double.
 The test name is ``perf_size_of()``.
 
-.. image:: plots/images/perf_size_of.png
-    :width: 640
+.. image::
+    plots/images/perf_size_of.png
 
 ---------------------------------------------
 Height Distribution
@@ -198,8 +198,8 @@ This graph shows the height growth of the SkipList where the height is the numbe
 It should grow in a log(n) fashion and it does.
 The tests is ``perf_test_node_height_growth()`` in ``src/cpp/test/test_performance.cpp``.
 
-.. image:: plots/images/perf_test_node_height_growth.png
-    :width: 640
+.. image::
+    plots/images/perf_test_node_height_growth.png
 
 .. _performance-biased-coins-label:
 
@@ -239,8 +239,8 @@ The following graph plots the time cost of ``at(middle)``, ``has(middle_value)``
 rolling median (window size 101) all on a 1 million long SkipList of doubles against ``p()`` the probability of the
 coin toss being heads. The time cost is normalised to ``p(0.5)``.
 
-.. image:: plots/images/biased_coin_effect.png
-    :width: 640
+.. image::
+    plots/images/biased_coin_effect.png
 
 Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the
 performance would deteriorate.
@@ -263,8 +263,8 @@ Different values of ``p()`` greatly influences the space used as it directly aff
 created.
 In practice a reduction of ``p()`` provides some small space improvement.
 
-.. image:: plots/images/biased_coin_effect_size_of.png
-    :width: 640
+.. image::
+    plots/images/biased_coin_effect_size_of.png
 
 If the SkipList was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)``
 or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case,
@@ -341,8 +341,8 @@ In the graph below the X axis is the number of times the task is repeated (seque
 The left Y axis is the total execution time with the SkipList in the main thread.
 The right Y axis is the ratio: time with ``-DSKIPLIST_THREAD_SUPPORT`` / time without ``-DSKIPLIST_THREAD_SUPPORT``
 
-.. image:: plots/images/perf_cpp_threaded_vs_single.png
-    :width: 640
+.. image::
+    plots/images/perf_cpp_threaded_vs_single.png
 
 The overhead of using ``-DSKIPLIST_THREAD_SUPPORT`` is about 0% to 15%.
 
@@ -366,8 +366,8 @@ The test function is ``_test_perf_sim_rolling_median_multi_thread()``.
 In the graph below the Y-axis shows the cost for each insert/has/remove operation in microseconds against the number of
 threads contending for the Skip List.
 
-.. image:: plots/images/perf_cpp_threaded_sim_rolling_median.png
-    :width: 640
+.. image::
+    plots/images/perf_cpp_threaded_sim_rolling_median.png
 
 ===============================
 Detailed Performance
