@@ -1011,6 +1011,75 @@ int perf_test_node_height_growth(size_t repeat, TestResultS &test_results) {
     return result;
 }
 
+int perf_test_string_insert_remove_value(std::string function, size_t test_count, size_t repeat, size_t sl_length,
+                                         size_t str_length, size_t index_for_value, TestResultS &test_results) {
+    std::ostringstream title;
+    title << function << "[" << sl_length << "]";
+    TestResult test_result(title.str());
+
+    int result = 0;
+    std::string value;
+
+    for (size_t i = 0; i < repeat; ++i) {
+        // Create and populate a SkipList of sl_length strings
+        OrderedStructs::SkipList::HeadNode<std::string> sl;
+        for (size_t i = 0; i < sl_length; ++i) {
+            if (i == index_for_value) {
+                value = unique_string(str_length);
+            } else {
+                sl.insert(unique_string(str_length));
+            }
+        }
+        ExecClock exec_clock;
+        for (size_t j = 0; j < test_count; ++j) {
+            sl.insert(value);
+            sl.remove(value);
+        }
+        double exec_time = exec_clock.seconds();
+        if (i == 0) {
+            std::cout << function << "[" << sl_length << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, sl_length);
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+int perf_test_string_insert_remove_value_begin(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 10) {
+        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, 0, test_results);
+        sl_length *= 2;
+    }
+    return result;
+}
+
+int perf_test_string_insert_remove_value_mid(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 10) {
+        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, sl_length / 2, test_results);
+        sl_length *= 2;
+    }
+    return result;
+}
+
+int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, TestResultS &test_results) {
+    std::cout << "Running test: " << __FUNCTION__ << std::endl;
+    size_t sl_length = 2;
+    int result = 0;
+    while (sl_length <= 1 << 10) {
+        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, sl_length, sl_length - 1, test_results);
+        sl_length *= 2;
+    }
+    return result;
+}
+
+
 /******************* END: Performance Tests **************************/
 
 /**
@@ -1048,6 +1117,10 @@ int perf_skiplist() {
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
     result |= perf_roll_med_by_win_size(10, perf_test_results);
     result |= perf_test_node_height_growth(20, perf_test_results);
+
+    result |= perf_test_string_insert_remove_value_begin(100, 10, perf_test_results);
+    result |= perf_test_string_insert_remove_value_mid(100, 10, perf_test_results);
+    result |= perf_test_string_insert_remove_value_end(100, 10, perf_test_results);
 
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
