@@ -1,5 +1,11 @@
 # History
 
+## 0.3.16 (TODO)
+
+* Improvements to performance documentation.
+* Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13.
+* Development Status :: 5 - Production/Stable
+
 ## 0.3.15 (2025-02-12)
 
 * Minor fix to support C++20 (credit https://github.com/wdhongtw for issue #11 https://github.com/paulross/skiplist/issues/11).
