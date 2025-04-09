@@ -37,9 +37,10 @@
 #include <iomanip>
 #include <thread>
 
+#include "SkipList.h"
+#include "TestFramework.h"
 #include "test_print.h"
 #include "test_concurrent.h"
-#include "SkipList.h"
 
 
 /**
@@ -85,9 +86,12 @@ static void
 insert_has_remove_count(OrderedStructs::SkipList::HeadNode<T> *psl,
                         const T &value,
                         const size_t &count) {
+//    std::cout << __FUNCTION__ << " Value: " << value << " thread ID: " << std::this_thread::get_id() << std::endl;
     for (size_t i = 0; i < count; ++i) {
         insert_has_remove(psl, value);
     }
+//    std::cout << __FUNCTION__ << " Value: " << value << " thread ID: " << std::this_thread::get_id() << " DONE"
+//              << std::endl;
 }
 
 /**
@@ -246,6 +250,7 @@ static int _test_perf_insert_count_has_remove_count_multi_threads(
 }
 
 #ifndef DEBUG
+
 /**
  * Test insert/at/remove on a single Skip List in a multi-threaded environment.
  * Number of threads is from 1 to < SKIPLIST_MAX_THREADS
@@ -267,6 +272,7 @@ static int test_perf_insert_count_has_remove_count_multi_threads_vary_length() {
     }
     return result;
 }
+
 #endif
 
 /**
@@ -380,6 +386,7 @@ int test_perf_sim_rolling_median_single_thread() {
 }
 
 #ifndef DEBUG
+
 static int _test_perf_sim_rolling_median_multi_thread(size_t thread_count) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
@@ -420,9 +427,11 @@ static int _test_perf_sim_rolling_median_multi_thread(size_t thread_count) {
 #endif // SKIPLIST_THREAD_SUPPORT
     return -1; // N/A
 }
+
 #endif
 
 #ifndef DEBUG
+
 static int test_perf_sim_rolling_median_multi_thread() {
 #ifdef SKIPLIST_THREAD_SUPPORT
     int result = 0;
@@ -433,7 +442,113 @@ static int test_perf_sim_rolling_median_multi_thread() {
 #endif // SKIPLIST_THREAD_SUPPORT
     return -1; // N/A
 }
+
 #endif
+
+static int test_perf_sim_rolling_median_multi_thread_multi_no_thread(
+        size_t test_count, size_t repeat, TestResultS &test_results
+) {
+    int result = 0;
+
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << 0 << "]";
+    TestResult test_result(title.str());
+
+    for (size_t r = 0; r < repeat; ++r) {
+        // Create and populate a SkipList of 1m doubles.
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        size_t skip_list_size = 1000 * 1000;
+        for (size_t i = 0; i < skip_list_size; ++i) {
+            sl.insert(i);
+        }
+        // Set up the threads
+        ExecClock exec_clock;
+        insert_has_remove_count<double>(&sl, skip_list_size / 2.0, test_count);
+        double exec_time = exec_clock.seconds();
+        if (r == 0) {
+            std::cout << __FUNCTION__ << "[" << 0 << "] Sample time/op = " << 1e6 * exec_time / test_count
+                      << "(us)" << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count, 0);
+//        result |= sl.lacksIntegrity();
+        result |= sl.size() != skip_list_size;
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+// These tests accumulate statistics in a TestResultS object
+#ifndef DEBUG
+
+static int _test_perf_sim_rolling_median_multi_thread_multi(
+        std::string function, size_t thread_count, size_t test_count, size_t repeat, TestResultS &test_results
+) {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    int result = 0;
+
+    std::ostringstream title;
+    title << function << "[" << thread_count << "]";
+    TestResult test_result(title.str());
+
+    for (size_t r = 0; r < repeat; ++r) {
+        // Create and populate a SkipList of 1m doubles.
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        size_t skip_list_size = 1000 * 1000;
+        for (size_t i = 0; i < skip_list_size; ++i) {
+            sl.insert(i);
+        }
+        // Set up the threads
+        std::vector<std::thread> threads;
+        ExecClock exec_clock;
+        for (size_t t = 0; t < thread_count; ++t) {
+            // Value is mid point of SkipList plus thread_count so the value is unique to the thread.
+            threads.push_back(
+                    std::thread(insert_has_remove_count<double>, &sl, skip_list_size / 2.0 + thread_count, test_count)
+            );
+//            std::cout << "Repeat " << r << " created thread ID: " << threads[threads.size() - 1].get_id() << std::endl;
+        }
+        for (auto &t: threads) {
+//            std::cout << "Repeat " << r << " joining thread ID: " << t.get_id() << std::endl;
+            t.join();
+        }
+        double exec_time = exec_clock.seconds();
+        if (r == 0) {
+            std::cout << function << "[" << thread_count << "] Sample time/op = "
+                      << 1e6 * exec_time / test_count / thread_count
+                      << "(us)" << std::endl;
+        }
+        test_result.execTimeAdd(0, exec_time, test_count * thread_count, thread_count);
+//        result |= sl.lacksIntegrity();
+        result |= sl.size() != skip_list_size;
+    }
+    test_results.push_back(test_result);
+    return result;
+#endif // SKIPLIST_THREAD_SUPPORT
+    return -1; // N/A
+}
+
+#endif
+
+#ifndef DEBUG
+
+static int test_perf_sim_rolling_median_multi_thread_multi(
+        size_t test_count, size_t repeat, TestResultS &test_results
+) {
+#ifdef SKIPLIST_THREAD_SUPPORT
+    int result = 0;
+//    for (size_t num_threads = 2; num_threads < 4; num_threads *= 2) {
+    for (size_t num_threads = 1; num_threads < SKIPLIST_MAX_THREADS; num_threads *= 2) {
+        result |= _test_perf_sim_rolling_median_multi_thread_multi(
+                __FUNCTION__, num_threads, test_count, repeat, test_results
+        );
+    }
+    return result;
+#endif // SKIPLIST_THREAD_SUPPORT
+    return -1; // N/A
+}
+
+#endif
+
 /***************** END: Concurrency Tests ************************/
 
 /**
@@ -443,12 +558,14 @@ static int test_perf_sim_rolling_median_multi_thread() {
  */
 int test_concurrent_all() {
     int result = 0;
+#if 1
     result |= print_result("test_single_thread_insert",
                            test_single_thread_insert());
     result |= print_result("test_two_thread_insert_has_remove",
                            test_two_thread_insert_has_remove());
     result |= print_result("test_two_thread_insert_count_has_remove_count",
                            test_two_thread_insert_count_has_remove_count());
+#endif
     // Performance tests are very slow if DEBUG as checking
     // integrity is very expensive for large data sets.
 #ifndef DEBUG
@@ -459,11 +576,21 @@ int test_concurrent_all() {
                            test_perf_insert_count_has_remove_count_multi_threads_fixed_length());
     result |= print_result("test_perf_single_thread_fixed_length",
                            test_perf_single_thread_fixed_length());
-#endif
     result |= print_result("test_perf_sim_rolling_median_single_thread",
                            test_perf_sim_rolling_median_single_thread());
     result |= print_result("test_perf_sim_rolling_median_multi_thread",
                            test_perf_sim_rolling_median_multi_thread());
+#endif
+#endif // DEBUG
+#ifndef DEBUG
+    // Multiple statistical tests
+    TestResultS perf_test_results;
+    result |= test_perf_sim_rolling_median_multi_thread_multi_no_thread(20, 10, perf_test_results);
+    result |= test_perf_sim_rolling_median_multi_thread_multi(20, 10, perf_test_results);
+    perf_test_results.dump_header(std::cout);
+    perf_test_results.dump_tests(std::cout);
+    perf_test_results.dump_tail(std::cout);
+
 #endif // DEBUG
     return result;
 }

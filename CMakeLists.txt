@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_C_FLAGS "-std=c99")
 
 add_compile_definitions(SKIPLIST_THREAD_SUPPORT)
+#add_compile_definitions(SKIPLIST_THREAD_SUPPORT_TRACE)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("debug build")

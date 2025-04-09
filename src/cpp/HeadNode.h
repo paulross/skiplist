@@ -388,7 +388,7 @@ void HeadNode<T, _Compare>::insert(const T &value) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
-    std::cout << "HeadNode insert() thread: " << std::this_thread::get_id() << std::endl;
+    std::cout << "HeadNode insert(" << value << ") thread: " << std::this_thread::get_id() << std::endl;
 #endif
 #endif
     Node<T, _Compare> *pNode = nullptr;
@@ -454,7 +454,7 @@ void HeadNode<T, _Compare>::insert(const T &value) {
     ++_count;
 #ifdef SKIPLIST_THREAD_SUPPORT
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
-    std::cout << "HeadNode insert() thread: " << std::this_thread::get_id() << " DONE" << std::endl;
+    std::cout << "HeadNode insert(" << value << ") thread: " << std::this_thread::get_id() << " DONE" << std::endl;
 #endif
 #endif
 }
