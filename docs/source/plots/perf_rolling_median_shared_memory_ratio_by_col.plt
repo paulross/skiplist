@@ -17,7 +17,7 @@ set datafile separator whitespace
 
 set key right
 
-set terminal png size 750,500           # choose the file format
+set terminal png size 1000,700           # choose the file format
 set output "images/perf_rolling_median_shared_memory_ratio_by_col.png"   # choose the output device
 
 # 4 processes

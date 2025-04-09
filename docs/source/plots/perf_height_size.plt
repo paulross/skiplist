@@ -9,7 +9,7 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_height_size.dat" using 1:2 via a,b
 
-set terminal png size 750,500           # choose the file format
+set terminal png size 1000,700           # choose the file format
 set output "images/perf_height_size.png"   # choose the output device
 
 plot "dat/perf_height_size.dat" using 2:3 t "Height" with linespoints pt 19 lw 2

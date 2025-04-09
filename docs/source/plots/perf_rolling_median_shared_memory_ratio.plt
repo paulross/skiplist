@@ -17,7 +17,7 @@ set datafile separator whitespace
 
 set key left
 
-set terminal png size 750,500           # choose the file format
+set terminal png size 1000,700           # choose the file format
 set output "images/perf_rolling_median_shared_memory_ratio.png"   # choose the output device
 
 #plot "perf_rolling_median_shared_memory_ratio.dat" using 1:2 t "processes=1" with linespoints axes x1y1 pt 2 lw 2, \

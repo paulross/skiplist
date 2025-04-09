@@ -55,15 +55,34 @@ follows.
 Mutating operations: ``insert()``, ``remove()``
 -------------------------------------------------
 
-These operations depend on the size of the SkipList. For one containing 1 million doubles each operation is typically 450 ns (2.2 million operations per second).
+These operations depend on the size of the SkipList. For one containing 1 million doubles each operation is typically
+450 ns (2.2 million operations per second).
 
-Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in the middle of the list, both as time in (ns) and rate per second.
-The test function is ``perf_single_ins_rem_middle_vary_length()``.
+Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in different places in the
+list of 1m doubles.
+The candlesticks are calculated thus:
 
-.. image:: plots/images/perf_ins_rem_mid.png
+- The lowest point is the minimum value of several repeats (typically 10).
+  This is the mose relevant time as it represents the time free of CPU contention.
+- The lowest box value is the mean value *minus* the standard deviation of several repeats (typically 10).
+- The lowest box value is the mean value *plus* the standard deviation of several repeats (typically 10).
+- The highest point is the maximum value of several repeats (typically 10).
+
+The test functions are in ``src/cpp/test/test_performance.cpp``:
+
+- ``perf_test_double_insert_remove_value_begin()`` inserts and removes a value from the beginning of the list.
+- ``perf_test_double_insert_remove_value_mid()`` inserts and removes a value from the middle of the list.
+- ``perf_test_double_insert_remove_value_end()`` inserts and removes a value from the end of the list.
+
+.. image::
+    plots/images/perf_test_double_insert_remove_value.png
+
+..
     :width: 640
 
+The lines on the graph depict the minimum values of several test repeats.
 This shows good O(log(n)) behaviour where n is the SkipList size.
+As expected inserting and removing in the middle is more costly because of the more complicated search setup.
 
 -----------------------------------------------------------
 Indexing operations: ``at()``, ``has()`` ``index()``
@@ -75,30 +94,36 @@ These operations on a SkipList containing 1 million doubles is typically 220 ns 
 vs Location
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here is plot of the time taken to execute ``at()`` or ``has()`` on a SkipList of 1 million doubles where the X-axis is the position in the SkipList of the found double.
-The test functions are respectively ``perf_at_in_one_million()`` and ``perf_has_in_one_million()``.
+Here is plot of the time taken to execute ``at(index)``, ``has(value)`` and ``index(value)`` on a SkipList of 1 million
+doubles where the X-axis is the position in the SkipList of the found double.
 
+The test functions are in ``src/cpp/test/test_performance.cpp``:
 
-.. image:: plots/images/perf_at_has.png
+- ``perf_test_double_at_1m_all()``.
+- ``perf_test_double_has_1m_all()``.
+- ``perf_test_double_index_1m_all()``.
+
+The lines show the minimum values and the legend shows the log(n) behaviour.
+
+.. image:: plots/images/perf_test_double_at_has_index.png
     :width: 640
 
-This shows fairly decent O(log(n))'ish type behaviour.
-
-The ``index(value)`` method has similar behavour:
-
-.. image:: plots/images/perf_index.png
-    :width: 640
+This shows good O(log(n))'ish type behaviour.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Rolling Median
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here is a plot of the time taken to compute a rolling median on one million values using different window sizes. The number of results is 1e6 - window size. This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``. A window size of 1000 and 1m values (the size of the SkipList) takes around 1 second or 1000 ns /value.
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
+The number of results is 1e6 - window size.
+This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
+A window size of 1000 and 1m values (the size of the SkipList) takes around 0.75 second or 750 ns /value.
+The line shows a very approximate fir to the minimum recorded value of around 0.3 + sqrt(window length) / 300 seconds.
 
-.. image:: plots/images/perf_roll_med_odd_index_wins.png
+.. image:: plots/images/perf_roll_med_by_win_size.png
     :width: 640
 
-The test function is ``perf_roll_med_odd_index_wins()``.
+The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
 
 .. _performance-space-complexity-label:
@@ -107,7 +132,9 @@ The test function is ``perf_roll_med_odd_index_wins()``.
 Space Complexity
 ====================================
 
-Space usage is a weakness of SkipLists. There is a large amount of bookkeeping involved with multiple node pointers plus the width values for each node for an indexed SkipList.
+Space usage is a weakness of SkipLists.
+There is a large amount of bookkeeping involved with multiple node pointers plus the width values for each node for an
+indexed SkipList.
 
 -------------------------------------------
 Theoretical Memory Usage for ``double``
@@ -115,9 +142,16 @@ Theoretical Memory Usage for ``double``
 
 The space requirements for a SkipList of doubles can be estimated as follows.
 
-``t = sizeof(T)`` ~ typ. 8 bytes for a double. ``v = sizeof(std::vector<struct NodeRef<T>>)`` ~ typ. 32 bytes. ``p = sizeof(Node<T>*)`` ~ typ. 8 bytes. ``e = sizeof(struct NodeRef<T>)`` ~ typ. 8 + p = 16 bytes. Then each node: is ``t + v`` bytes.
+- ``t = sizeof(T)`` ~ typ. 8 bytes for a double.
+- ``v = sizeof(std::vector<struct NodeRef<T>>)`` ~ typ. 32 bytes.
+- ``p = sizeof(Node<T>*)`` ~ typ. 8 bytes.
+- ``e = sizeof(struct NodeRef<T>)`` ~ typ. 8 + p = 16 bytes.
 
-Linked list at level 0 is ``e`` bytes per node and at level 1 is, typically, ``e / 2`` bytes per node (given ``p()`` as a fair coin) and so on. So the totality of linked lists is about ``2 * e`` bytes per node.
+Then each node: is ``t + v`` bytes.
+
+Linked list at level 0 is ``e`` bytes per node and at level 1 is, typically, ``e / 2`` bytes per node
+(given ``p()`` as a fair coin) and so on.
+So the totality of linked lists is about ``2 * e`` bytes per node.
 
 Then the total is ``N (t + v + 2 e)`` which for ``T`` as a double is typically 72 bytes per item.
 
@@ -125,35 +159,47 @@ Memory usage can be gauged by any of the following methods:
 
 * Theoretical calculation such as above which gives ~72 bytes per node for doubles.
 * Observing a process that creates a SkipList using OS tools, this typically gives ~86 bytes per node for doubles.
-* Calling the ``size_of()`` method that can make use of its knowledge of the internal structure of a SkipList to estimate memory usage. For ``double`` this is shown to be about 76 bytes per node. Any ``size_of()`` estimate will be an underestimate if the SkipList ``<T>`` uses dynamic memory allocation such as ``std::string``.
+* Calling the ``size_of()`` method that can make use of its knowledge of the internal structure of a SkipList to
+  estimate memory usage.
+  For ``double`` this is shown to be about 76 bytes per node.
+  Any ``size_of()`` estimate will be an underestimate if the SkipList ``<T>`` uses dynamic memory allocation such as
+  ``std::string``.
 
 -------------------------------------------
 Estimate Memory Usage With ``size_of()``
 -------------------------------------------
 
-This implementation of a SkipList has a ``size_of()`` function that estimates the current memory usage of the SkipList. This function uses ``sizeof(T)`` which will not account for any dynamically allocated content, for example if ``T`` was a ``std::string``.
+This implementation of a SkipList has a ``size_of()`` function that estimates the current memory usage of the SkipList.
+This function uses ``sizeof(T)`` which will not account for any dynamically allocated content, for example if ``T`` was
+a ``std::string``.
 
 Total memory allocation is a function of a number of factors:
 
-* Alignment issues with the members of ``class Node`` which has members ``T _value;`` and ``SwappableNodeRefStack<T> _nodeRefs;``. If ``T`` was a ``char`` type then alignment issues on 64 bit machines may mean the ``char`` takes eight bytes, not one. 
+* Alignment issues with the members of ``class Node`` which has members ``T _value;`` and
+  ``SwappableNodeRefStack<T> _nodeRefs;``. If ``T`` was a ``char`` type then alignment issues on 64 bit machines may
+  mean the ``char`` takes eight bytes, not one.
 * The size of the SkipLists, very small SkipLists carry the overhead of the ``HeadNode``.
-* The coin probability ``p()``. Unfair coins can change the overhead of the additional coarser linked lists. More about this later.
+* The coin probability ``p()``. Unfair coins can change the overhead of the additional coarser linked lists.
+  More about this later.
 
-The following graph shows the ``size_of()`` a SkipList of doubles of varying lengths with a fair coin. The Y axis is the ``size_of()`` divided by the length of the SkipList in bytes per node. Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double. The test name is ``perf_size_of()``.
+The following graph shows the ``size_of()`` a SkipList of doubles of varying lengths with a fair coin.
+The Y axis is the ``size_of()`` divided by the length of the SkipList in bytes per node.
+Fairly quickly this settles down to around 80 bytes a node or around 10 times the size of a single double.
+The test name is ``perf_size_of()``.
 
 .. image:: plots/images/perf_size_of.png
     :width: 640
-
 
 ---------------------------------------------
 Height Distribution
 ---------------------------------------------
 
-This graph shows the height growth of the SkipList where the height is the number of additional coarse linked lists. It should grow in a log(n) fashion and it does. It is not monotonic as this SkipList is a probabilistic data structure.
+This graph shows the height growth of the SkipList where the height is the number of additional coarse linked lists.
+It should grow in a log(n) fashion and it does.
+The tests is ``perf_test_node_height_growth()`` in ``src/cpp/test/test_performance.cpp``.
 
-.. image:: plots/images/perf_height_size.png
+.. image:: plots/images/perf_test_node_height_growth.png
     :width: 640
-
 
 .. _performance-biased-coins-label:
 
@@ -161,7 +207,8 @@ This graph shows the height growth of the SkipList where the height is the numbe
 Effect of a Biased Coin
 ====================================
 
-The default compilation of the SkipList uses a fair coin. The coin toss is determined by ``tossCoin()`` in *SkipList.cpp* which has the following implementation:
+The default compilation of the SkipList uses a fair coin.
+The coin toss is determined by ``tossCoin()`` in *SkipList.cpp* which has the following implementation:
 
 .. code-block:: c
 
@@ -188,14 +235,21 @@ For visualising what a SkipList looks like with a biased coin see :ref:`biased-c
 Time Performance
 ------------------------------------
 
-The following graph plots the time cost of ``at(middle)``, ``has(middle_value)``, ``insert(), at(), remove()`` and the rolling median (window size 101) all on a 1 million long SkipList of doubles against ``p()`` the probability of the coin toss being heads. The time cost is normalised to ``p(0.5)``.
+The following graph plots the time cost of ``at(middle)``, ``has(middle_value)``, ``insert(), at(), remove()`` and the
+rolling median (window size 101) all on a 1 million long SkipList of doubles against ``p()`` the probability of the
+coin toss being heads. The time cost is normalised to ``p(0.5)``.
 
 .. image:: plots/images/biased_coin_effect.png
     :width: 640
 
-Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the performance would deteriorate. If ``p()`` was zero the SkipList would be, effectively, a singly linked list with O(n) search performance. I do not understand why the rolling median performance appears to improve slightly when the rolling median is really just an ``insert(), at(), remove()`` operation.
+Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the
+performance would deteriorate.
+If ``p()`` was zero the SkipList would be, effectively, a singly linked list with O(n) search performance.
+I do not understand why the rolling median performance appears to improve slightly when the rolling median is really
+just an ``insert(), at(), remove()`` operation.
 
-Increasing ``p()`` increases the number of coarser linked lists that might be expected to speed up the search. This does not do so in practice, possible explanations are:
+Increasing ``p()`` increases the number of coarser linked lists that might be expected to speed up the search.
+This does not do so in practice, possible explanations are:
 
 * The increased cost of creating a node
 * The increased memory usage (see next section)
@@ -205,13 +259,16 @@ Increasing ``p()`` increases the number of coarser linked lists that might be ex
 Space Performance
 ------------------------------------
 
-Different values of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists created. In practice a reduction of ``p()`` provides some small space improvement.
+Different values of ``p()`` greatly influences the space used as it directly affects the number of coarser linked lists
+created.
+In practice a reduction of ``p()`` provides some small space improvement.
 
 .. image:: plots/images/biased_coin_effect_size_of.png
     :width: 640
 
-If the SkipList was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)`` or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case, to use anything but ``p(0.5)``.
-
+If the SkipList was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)``
+or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case,
+to use anything but ``p(0.5)``.
 
 .. _multi-threaded-performance:
 
@@ -219,7 +276,8 @@ If the SkipList was highly optimised for rolling median operations it might be w
 Multi-threaded C++ Performance
 ===============================
 
-The C++ code is capable of multi-threading support where a single SkipList can be mutated by multiple threads. The code must be compiled with the macro ``SKIPLIST_THREAD_SUPPORT`` defined.
+The C++ code is capable of multi-threading support where a single SkipList can be mutated by multiple threads.
+The code must be compiled with the macro ``SKIPLIST_THREAD_SUPPORT`` defined.
 
 Test C++ execution code can be run by invoking the the makefile thus:
 
@@ -262,9 +320,12 @@ Here are several performance measurements when ``SKIPLIST_THREAD_SUPPORT`` is de
 * A SkipList in a single threaded environment.
 * A SkipList in a multi threaded environment where threads vie for the same SkipList.
 
-To explore this we create a task that is to insert a unique double into an empty SkipList 2**14 (16384) times and then remove that number one by one to empty the SkipList. This task typically takes 18 ms (around 1 us per insert+remove).
+To explore this we create a task that is to insert a unique double into an empty SkipList 2**14 (16384) times and then
+remove that number one by one to empty the SkipList. This task typically takes 18 ms (around 1 us per insert+remove).
 
-This task will be repeated 1, 2, 4, ... 64 times using single and multiple threads. The single threaded version is sequential, the multithreaded version creates simultaneous operations on the same SkipList.
+This task will be repeated 1, 2, 4, ... 64 times using single and multiple threads.
+The single threaded version is sequential, the multithreaded version creates simultaneous operations on the same
+SkipList.
 
 The code for these tests is in ``test/test_concurrent.cpp``.
 
@@ -272,9 +333,13 @@ The code for these tests is in ``test/test_concurrent.cpp``.
 A Single Threaded Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The sheer act of using ``-DSKIPLIST_THREAD_SUPPORT`` will introduce a mutex into the head node. This will increase the time of any operation on the SkipList even when run in the single thread as there is a cost of acquiring the mutex even in the absence of contention. The test function is ``test_perf_single_thread_fixed_length()``.
+The sheer act of using ``-DSKIPLIST_THREAD_SUPPORT`` will introduce a mutex into the head node.
+This will increase the time of any operation on the SkipList even when run in the single thread as there is a cost of
+acquiring the mutex even in the absence of contention. The test function is ``test_perf_single_thread_fixed_length()``.
 
-In the graph below the X axis is the number of times the task is repeated (sequentially). The left Y axis is the total execution time with the SkipList in the main thread. The right Y axis is the ratio: time with ``-DSKIPLIST_THREAD_SUPPORT`` / time without ``-DSKIPLIST_THREAD_SUPPORT``
+In the graph below the X axis is the number of times the task is repeated (sequentially).
+The left Y axis is the total execution time with the SkipList in the main thread.
+The right Y axis is the ratio: time with ``-DSKIPLIST_THREAD_SUPPORT`` / time without ``-DSKIPLIST_THREAD_SUPPORT``
 
 .. image:: plots/images/perf_cpp_threaded_vs_single.png
     :width: 640
@@ -308,7 +373,8 @@ threads contending for the Skip List.
 Detailed Performance
 ===============================
 
-The performance test function names all start with ``perf_...`` and are as follows. The SkipList type is ``<double>``. In the table below 1M means mega, i.e. 2**20 or 1024*1024 or 1048576:
+The performance test function names all start with ``perf_...`` and are as follows.
+The SkipList type is ``<double>``. In the table below 1M means mega, i.e. 2**20 or 1024*1024 or 1048576:
 
 
 =================================== =============================================== =========== ========
@@ -366,7 +432,8 @@ Test Name                           Measure                                     
 Time Complexity
 ---------------------------------
 
-There are a number of tests that check the execution time of operations with varying sizes of SkipLists. The expectation is that the time complexity is O(log(n)).
+There are a number of tests that check the execution time of operations with varying sizes of SkipLists.
+The expectation is that the time complexity is O(log(n)).
 
 
 =================================== ================================================================
@@ -387,7 +454,9 @@ Test Name                           Description
 Python Performance Tests
 ====================================
 
-Some informal testing of the Python wrapper around the C++ SkipList was done using ``timeit`` in *tests/perf/test_perf_cSkipList.py*. The SkipList has 1m items. The performance is comparable to the C++ tests.
+Some informal testing of the Python wrapper around the C++ SkipList was done using
+``timeit`` in *tests/perf/test_perf_cSkipList.py*.
+The SkipList has 1m items. The performance is comparable to the C++ tests.
 
 ======================================= =========================== ==============================
 Test                                    Time per operation (ns)     Factor over C++ time
@@ -402,4 +471,6 @@ Test                                    Time per operation (ns)     Factor over 
 ``test_index_mid_float()``              356                         x1.9
 ======================================= =========================== ==============================
 
-It is rather surprising, and satisfying, that the Python overhead is so small considering the boxing/unboxing that is going on. The test methodology is different in the Python/C++ cases which might skew the figures.
+It is rather surprising, and satisfying, that the Python overhead is so small considering the boxing/unboxing that is
+going on.
+The test methodology is different in the Python/C++ cases which might skew the figures.
