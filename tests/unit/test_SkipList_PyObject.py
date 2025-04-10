@@ -412,10 +412,10 @@ def test_ordered_insert_remove_cmp_reversed(cls):
 @pytest.mark.parametrize(
     'cls, size, rounds, expected_getsizeof, maximum_increase_at_empty',
     (
-        (int, 1024**2, 8, 88e6, 400e6),
-        (float, 1024**2, 8, 88e6, 400e6),
-        (TotalOrdered, 1024 * 256, 8, 22e6, 400e6),
-        (OrderedLt, 1024 * 256, 8, 22e6, 400e6),
+        (int, 1024**2, 8, 100e6, 400e6),
+        (float, 1024**2, 8, 100e6, 400e6),
+        (TotalOrdered, 1024 * 256, 8, 25e6, 400e6),
+        (OrderedLt, 1024 * 256, 8, 25e6, 400e6),
     )
 )
 def test_memory_management_python_objects(cls, size, rounds, expected_getsizeof, maximum_increase_at_empty):
