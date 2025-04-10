@@ -209,13 +209,15 @@ In this example the last name of the person takes precedence over the first name
     
         def __eq__(self, other):
             try:
-                return self.last_name == other.last_name and self.first_name == other.first_name
+                return self.last_name == other.last_name \
+                    and self.first_name == other.first_name
             except AttributeError:
                 return NotImplemented
 
         def __lt__(self, other):
             try:
-                return self.last_name < other.last_name or self.first_name < other.first_name
+                return self.last_name < other.last_name \
+                    or self.first_name < other.first_name
             except AttributeError:
                 return NotImplemented
     
@@ -240,7 +242,7 @@ This SkipList has extensive tests for correctness and performance.
 C++
 --------------------------------------
 
-Using a Makefile
+Using the Makefile
 ^^^^^^^^^^^^^^^^^^^^
 
 To run all the C++ functional and performance tests:
@@ -306,7 +308,8 @@ To run more extensive (slow) tests and generate benchmarks:
 .. code-block:: sh
 
     $ cd <skiplist>
-    $ pytest tests/ --runslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram
+    $ pytest tests/ --runslow --benchmark-sort=name \
+      --benchmark-autosave --benchmark-histogram
 
 --------------------------------------
 Both C++ and Python
@@ -319,6 +322,7 @@ Running all tests (C++ and Python) and building all currently supported Python v
     $ cd <skiplist>
     $ ./build_all.sh
 
+This takes 5 to 10 minutes per Python version.
 
 .. note:: Naming conventions
 

@@ -121,7 +121,6 @@ This creates an array with the same length as the input starting with ``window_l
 
 This can be called thus:
 
-
 .. code-block:: python
 
     np_array = np.arange(10.0)
@@ -136,6 +135,7 @@ And the result will be:
     Original: [0. 1. 2. 3. 4. 5. 6. 7. 8. 9.]
       Result: [nan nan  1.  2.  3.  4.  5.  6.  7.  8.]
 
+Of course this Python code could be made much faster by using a Python C Extension.
 
 .. _rolling-median-mp-shared-memory-label:
 
@@ -204,7 +204,8 @@ We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just
 
         def __str__(self):
             return (
-                f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype} name "{self.name}"'
+                f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype}'
+                f' name "{self.name}"'
                 f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
             )
 
@@ -220,9 +221,11 @@ Here is the rolling median function used by the child processes:
 
 .. code-block:: python
 
-    def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_index: int,
+    def rolling_median_of_column(read_array: np.ndarray, window_length: int,
+                                 column_index: int,
                                  write_array: np.ndarray) -> int:
-        """Computes a rolling median of given column and writes out the results to the write array.
+        """Computes a rolling median of given column and writes out the results to
+        the write array.
         Called by a child process."""
         assert read_array.ndim == 2
         assert write_array.ndim == 2
@@ -261,7 +264,9 @@ On exit this automatically releases the reference to the shared memory from the 
 .. code-block:: python
 
     @contextlib.contextmanager
-    def recover_array_from_shared_memory_and_close(array_spec: SharedMemoryArraySpecification) -> np.ndarray:
+    def recover_array_from_shared_memory_and_close(
+            array_spec: SharedMemoryArraySpecification
+        ) -> np.ndarray:
         array_shm = shared_memory.SharedMemory(name=array_spec.name)
         array_view = np.ndarray(array_spec.shape, array_spec.dtype, buffer=array_shm.buf)
         try:
@@ -273,14 +278,19 @@ And use it in the child process:
 
 .. code-block:: python
 
-    def compute_rolling_median_2d_from_index(read_array_spec: SharedMemoryArraySpecification, window_length: int,
-                                             column_index: int,
-                                             write_array_spec: SharedMemoryArraySpecification) -> int:
-        """Computes a rolling median of the 2D read array and window length and writes it to the 2D write array.
+    def compute_rolling_median_2d_from_index(
+            read_array_spec: SharedMemoryArraySpecification,
+            window_length: int, column_index: int,
+            write_array_spec: SharedMemoryArraySpecification) -> int:
+        """Computes a rolling median of the 2D read array and window length
+        and writes it to the 2D write array.
         This is invoked by a child process."""
         with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
-            with recover_array_from_shared_memory_and_close(write_array_spec) as write_array:
-                write_count = rolling_median_of_column(read_array, window_length, column_index, write_array)
+            with recover_array_from_shared_memory_and_close(write_array_spec) \
+                    as write_array:
+                write_count = rolling_median_of_column(
+                    read_array, window_length, column_index, write_array
+                )
                 return write_count
 
 Create two more context managers, one to copy the input numpy array to shared memory:
@@ -288,15 +298,22 @@ Create two more context managers, one to copy the input numpy array to shared me
 .. code-block:: python
 
     @contextlib.contextmanager
-    def create_read_shared_memory_array_spec_close_unlink(arr: np.ndarray) -> SharedMemoryArraySpecification:
-        """Context manager that creates a Shared Memory instance and copies the numpy array into it.
+    def create_read_shared_memory_array_spec_close_unlink(
+            arr: np.ndarray
+        ) -> SharedMemoryArraySpecification:
+        """Context manager that creates a Shared Memory instance and copies the
+        numpy array into it.
         The Shared Memory instance is closed and unlinked on exit."""
         shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
-        array_spec = SharedMemoryArraySpecification(arr.shape, arr.dtype, arr.nbytes, shm)
+        array_spec = SharedMemoryArraySpecification(
+            arr.shape, arr.dtype, arr.nbytes, shm
+        )
         logger.info('Created shared memory %s ', array_spec)
         try:
             # Copy the numpy array into shared memory.
-            array_view = np.ndarray(array_spec.shape, dtype=array_spec.dtype, buffer=array_spec.shm.buf)
+            array_view = np.ndarray(
+                array_spec.shape, dtype=array_spec.dtype, buffer=array_spec.shm.buf
+            )
             array_view[:] = arr[:]
             yield array_spec
         finally:
@@ -307,12 +324,17 @@ And another to wrap around the output numpy array:
 .. code-block:: python
 
     @contextlib.contextmanager
-    def create_write_shared_memory_array_spec_close_unlink(arr: np.ndarray) -> SharedMemoryArraySpecification:
-        """Context manager that creates a Shared Memory instance for writing to a numpy array.
+    def create_write_shared_memory_array_spec_close_unlink(
+            arr: np.ndarray
+        ) -> SharedMemoryArraySpecification:
+        """Context manager that creates a Shared Memory instance for writing
+        to a numpy array.
         The numpy array can be recovered with copy_shared_memory_into_new_numpy_array().
         The Shared Memory instance is closed and unlinked on exit."""
         shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
-        array_spec = SharedMemoryArraySpecification(arr.shape, arr.dtype, arr.nbytes, shm)
+        array_spec = SharedMemoryArraySpecification(
+            arr.shape, arr.dtype, arr.nbytes, shm
+        )
         logger.info('Created shared memory %s ', array_spec)
         try:
             yield array_spec
@@ -323,10 +345,19 @@ Finally a function to copy the output shared memory to a numpy array:
 
 .. code-block:: python
 
-    def copy_shared_memory_into_new_numpy_array(write_array_spec: SharedMemoryArraySpecification) -> np.ndarray:
-        """With the output SharedMemoryArraySpecification this creates a new numpy array and copies the shared memory into it."""
-        temp_write = np.ndarray(write_array_spec.shape, dtype=write_array_spec.dtype, buffer=write_array_spec.shm.buf)
-        write_array = np.empty(write_array_spec.shape, dtype=write_array_spec.dtype)
+    def copy_shared_memory_into_new_numpy_array(
+            write_array_spec: SharedMemoryArraySpecification
+        ) -> np.ndarray:
+        """With the output SharedMemoryArraySpecification this creates a new
+        numpy array and copies the shared memory into it."""
+        temp_write = np.ndarray(
+            write_array_spec.shape,
+            dtype=write_array_spec.dtype,
+            buffer=write_array_spec.shm.buf
+        )
+        write_array = np.empty(
+            write_array_spec.shape, dtype=write_array_spec.dtype
+        )
         write_array[:] = temp_write[:]
         return write_array
 
@@ -334,8 +365,11 @@ Finally here is the code for the parent process that puts this all together:
 
 .. code-block:: python
 
-    def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num_processes: int) -> np.ndarray:
-        """Compute a rolling median of a numpy 2D array using multiprocessing and shared memory.
+    def compute_rolling_median_2d_mp(
+            read_array: np.ndarray, window_length: int, num_processes: int
+        ) -> np.ndarray:
+        """Compute a rolling median of a numpy 2D array using multiprocessing
+        and shared memory.
         This is run as the parent process."""
         if read_array.ndim != 2:
             raise ValueError(f'Array  must be 2D not {read_array.shape}')
@@ -343,15 +377,27 @@ Finally here is the code for the parent process that puts this all together:
         if read_array.shape[1] < num_processes:
             num_processes = read_array.shape[1]
         # Create the read and write shared memory context managers
-        with create_read_shared_memory_array_spec_close_unlink(read_array) as read_array_spec:
-            with create_write_shared_memory_array_spec_close_unlink(read_array) as write_array_spec:
+        with create_read_shared_memory_array_spec_close_unlink(read_array) \
+                as read_array_spec:
+            with create_write_shared_memory_array_spec_close_unlink(read_array) \
+                    as write_array_spec:
                 # Set up the multiprocessing pool.
                 mp_pool = multiprocessing.Pool(processes=num_processes)
                 tasks = []
                 for column_index in range(read_array.shape[1]):
-                    tasks.append((read_array_spec, window_length, column_index, write_array_spec))
+                    tasks.append(
+                        (
+                            read_array_spec,
+                            window_length,
+                            column_index,
+                            write_array_spec,
+                        )
+                    )
                 # Run compute_rolling_median_2d_from_index() on the pool
-                pool_apply = [mp_pool.apply_async(compute_rolling_median_2d_from_index, t) for t in tasks]
+                pool_apply = [
+                    mp_pool.apply_async(compute_rolling_median_2d_from_index, t) \
+                        for t in tasks
+                ]
                 results = [r.get() for r in pool_apply]
                 # Extract the result as a numpy array.
                 write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
@@ -636,7 +682,7 @@ Here is a rolling median that will raise a ``ValueError`` if there is a NaN in t
             value = vector[i]
             skip_list.insert(float(value))
             if i >= window_length:
-                median = skip_list.at(window_length // 2)
+                median = skip_list.at(window_length // 2) # This will raise a ValueError
                 skip_list.remove(vector[i - window_length])
             else:
                 median = math.nan

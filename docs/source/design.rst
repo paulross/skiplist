@@ -222,29 +222,33 @@ There are three template classes defined in their own .h files and these are all
 
 The classes are:
 
-=============================== ====================================================================
-Class                           Description
-=============================== ====================================================================
-``SwappableNodeRefStack<T>``    A simple bookkeeping class that has a vector of
-                                ``[{skip_width, Node<T>*}, ...]``
-                                This vector can be expanded or contracted at will. Both HeadNode
-                                and Node classes have one of these to manage their references.
-                                This is defined in *NodeRefs.h*
-``Node<T>``                     This represents a single value in the skip list. The height of a
-                                Node is determined at construction by tossing a virtual coin, this
-                                determines how many coarser lists this node participates in.
-                                A Node has a ``SwappableNodeRefStack`` object and a value of
-                                type ``T``.
-                                This is defined in *Node.h*
-``HeadNode<T>``                 There is one of these per skip list and this provides the API to
-                                the entire skip list. The height of the HeadNode expands and
-                                contracts as required when Nodes are inserted or removed
-                                (it is the height of the highest Node).
-                                A HeadNode has a ``SwappableNodeRefStack`` object and an
-                                independently maintained count of the number of Node objects in the
-                                skip list.
-                                This is defined in *HeadNode.h*
-=============================== ====================================================================
+.. list-table:: SkipList Classes
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Class
+     - Description
+   * - ``SwappableNodeRefStack<T>``
+     - A simple bookkeeping class that has a vector of
+       ``[{skip_width, Node<T>*}, ...]``
+       This vector can be expanded or contracted at will. Both HeadNode
+       and Node classes have one of these to manage their references.
+       This is defined in *NodeRefs.h*
+   * - ``Node<T>``
+     - This represents a single value in the skip list. The height of a
+       Node is determined at construction by tossing a virtual coin, this
+       determines how many coarser lists this node participates in.
+       A Node has a ``SwappableNodeRefStack`` object and a value of type ``T``.
+       This is defined in *Node.h*
+   * - ``HeadNode<T>``
+     - There is one of these per skip list and this provides the API to
+       the entire skip list. The height of the HeadNode expands and
+       contracts as required when Nodes are inserted or removed
+       (it is the height of the highest Node).
+       A HeadNode has a ``SwappableNodeRefStack`` object and an
+       independently maintained count of the number of Node objects in the
+       skip list.
+       This is defined in *HeadNode.h*
 
 A ``Node`` and ``HeadNode`` have specialised methods such as ``has()``, ``at()``, ``insert()``, ``remove()`` that
 traverse the skip list recursively.
@@ -283,6 +287,8 @@ with a ``size_t`` (an ``unsigned int`` type), the idiom used is this:
 .. code-block:: c
 
     for (size_t l = height(); l-- > 0;) {
+        // Do something...
+    }
 
 The ``l-- > 0`` will test ``l`` against 0 then decrement it.
 ``l`` will thus start at the value ``height() - 1`` down to 0 then exit the loop.

@@ -81,7 +81,8 @@ This diagram was created with the following C++ code:
             sl.insert(i);
             sl.dotFile(std::cout);
         }
-        // Finalise the dot file with the number of snapshots, this updates internal references
+        // Finalise the dot file containing the snapshots.
+        // This updates the internal references.
         sl.dotFileFinalise(std::cout);
     }
 
@@ -129,6 +130,10 @@ This visualisation is produced by this code:
     }
 
 Produces this image, note how the shape of the skip list nodes changes with repeated inserts.
+
+.. raw:: latex
+
+    [Continued on the next page]
 
 .. image:: visualisations/doc_insert_remove_repeat.png
     :width: 500

@@ -19,10 +19,10 @@ C++ API
 
 This describes the C++ API to a skip list with some algorithmic details of their implementation. Here is a visualisation of a skip list::
 
-    | 5 E |------------------------------------->| 4 0 |---------------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |---------->| NULL |
-    | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 H |->| 1 0 |->| NULL |
-    | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |  |  H  |
+    | 5 E |------------------------------------->| 4 0 |------------------->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
+    | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
 In these descriptions:
 
@@ -283,16 +283,23 @@ Module ``cSkipList``
 
 The module contains the following attributes:
 
-=================================== ================================================================
-Attribute                           Description
-=================================== ================================================================
-``cSkipList.__build_target__``      The Python version this module is built for.
-                                    Example: ``'3.5.1'``
-``cSkipList.__build_time__``        The date and time the module was built.
-                                    Example: ``'Jul 14 2016 11:35:03'``
-``cSkipList.__build_type__``        The build type, either ``'debug'`` or ``'release'``.
-``cSkipList.__version__``           The version of the build. Example ``'0.1.0'``.
-=================================== ================================================================
+.. list-table:: ``cSkipList`` Attributes
+   :widths: 40 60
+   :header-rows: 1
+
+   * - Attribute
+     - Description
+   * - ``cSkipList.__build_target__``
+     - The Python version this module is built for.
+       Example: ``'3.5.1'``
+   * - ``cSkipList.__build_time__``
+     - The date and time the module was built.
+       Example: ``'Jul 14 2016 11:35:03'``
+   * - ``cSkipList.__build_type__``
+     - The build type, either ``'debug'`` or ``'release'``.
+   * - ``cSkipList.__version__``
+     - The version of the build. Example ``'0.1.0'``.
+
 
 The module contains the following module level functions:
 
