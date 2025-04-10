@@ -30,6 +30,7 @@ import io
 import logging
 import math
 import multiprocessing
+import pprint
 import sys
 import time
 import typing
@@ -79,7 +80,7 @@ def np_data_read_only(a: np.ndarray) -> bool:
 def _print(*args, **kwargs):
     pass
     # print(*args, **kwargs)
-    
+
 
 def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_index: int,
                              write_array: np.ndarray) -> int:
@@ -89,7 +90,8 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
     assert write_array.ndim == 2
     assert read_array.shape == write_array.shape
     proc = psutil.Process()
-    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
+    _print(
+        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
     skip_list = orderedstructs.SkipList(float)
     write_count = 0
     for i in range(len(read_array)):
@@ -102,16 +104,22 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
         else:
             median = np.nan
         if i == 0:
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
-        if i == 1024**2 // 2:
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
+        if i == 1024 ** 2 // 2:
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
         write_array[i, column_index] = median
         if i == 0:
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
-        if i == 1024**2 // 2:
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
-    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
-    _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
+        if i == 1024 ** 2 // 2:
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
+    _print(
+        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
+    _print(
+        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
     return write_count
 
 
@@ -158,9 +166,11 @@ def compute_rolling_median_2d_from_index(read_array_spec: SharedMemoryArraySpeci
     _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} START.')
     with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
         with recover_array_from_shared_memory_and_close(write_array_spec) as write_array:
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
             write_count = rolling_median_of_column(read_array, window_length, column_index, write_array)
-            _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
+            _print(
+                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
     _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} DONE.')
     return write_count
 
@@ -228,7 +238,8 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
             logger.debug(f'compute_rolling_median_2d(): Results: {results}')
             write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
             logger.info(f'write_array data @ 0x{np_data_pointer(write_array):x}')
-            logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} - before closing and unlinking read+write shm.')
+            logger.info(
+                f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} - before closing and unlinking read+write shm.')
     logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} DONE')
     logger.info('compute_rolling_median_2d(): DONE array shape %s window length %d with %d processes', read_array.shape,
                 window_length, num_processes)
@@ -269,6 +280,7 @@ def _test_rm_2d_mp_time(rows, columns, process_range):
         _print(f'Rows: {rows:8d} Columns: {columns:8d} Processes: {p:8d} Time: {tim_exec:8.3f}')
     assert 0
 
+
 # s = 10 * 1024 ** 2 * 16
 # f'{s:,d}'
 # '167,772,160'
@@ -277,12 +289,13 @@ def _test_rm_2d_mp_time(rows, columns, process_range):
 NUMPY_SIZE = 8 * 1024 ** 2 * 16
 NUMPY_SIZE = 10 * 1024 ** 2 * 16
 
+
 @pytest.mark.parametrize(
     'min_size, max_size, columns, process_range',
     (
-        # (1024, NUMPY_SIZE, 16, 16),
-        # (1024, NUMPY_SIZE, 1024, 16),
-        (1024, NUMPY_SIZE, 16 * 1024, 16),
+            # (1024, NUMPY_SIZE, 16, 16),
+            # (1024, NUMPY_SIZE, 1024, 16),
+            (1024, NUMPY_SIZE, 16 * 1024, 16),
     )
 )
 def test_rm_2d_mp_time_b(min_size, max_size, columns, max_processes):
@@ -355,26 +368,34 @@ def rm_2d_mp_time_b(row_range, columns, max_processes):
 
 
 def experiment() -> int:  # pragma: no cover
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s - %(filename)24s#%(lineno)-4d - %(process)5d - (%(threadName)-10s) - %(levelname)-8s - %(message)s',
-                        stream=sys.stdout)
+    logging.basicConfig(
+        level=logging.INFO,
+        format=(
+            '%(asctime)s - %(filename)24s#%(lineno)-4d - %(process)5d'
+            ' - (%(threadName)-10s) - %(levelname)-8s - %(message)s'
+        ),
+        stream=sys.stdout,
+    )
     logger.setLevel(logging.INFO)
     logger.info(f'Process memory RSS: {psutil.Process().memory_info().rss:,d}')
     ROWS = 1024 * 1024  # 1024 * 1
     COLUMNS = 16  # 1024 * 4 # 8
     ROLLING_MEDIAN_WINDOW_SIZE = 21
-    logger.info(f'Configuration: rows {ROWS} columns {COLUMNS} window size {ROLLING_MEDIAN_WINDOW_SIZE}')
+    logger.info(
+        f'Configuration: rows {ROWS} columns {COLUMNS} window size {ROLLING_MEDIAN_WINDOW_SIZE}'
+    )
     logger.info(f'CPU count {multiprocessing.cpu_count()}')
     logger.info(f'orderedstructs version {orderedstructs.__version__}')
 
     read_array = np.random.random((ROWS, COLUMNS))
     read_array_size = read_array.size
     timings: typing.Dict[int, float] = {}
-    for p in range(1, 2): # 17):
+    for p in range(1, 2):  # 17):
         logger.info(f' Processes {p} '.center(75, '-'))
         t_start = time.perf_counter()
-        write_array = compute_rolling_median_2d_mp(read_array, window_length=ROLLING_MEDIAN_WINDOW_SIZE,
-                                                   num_processes=p)
+        write_array = compute_rolling_median_2d_mp(
+            read_array, window_length=ROLLING_MEDIAN_WINDOW_SIZE, num_processes=p,
+        )
         t_elapsed = time.perf_counter() - t_start
         logger.info(f' DONE Processes {p} '.center(75, '-'))
         timings[p] = t_elapsed
@@ -399,16 +420,18 @@ def range_power(minimum, maximum, multiplier):
         yield value
         value *= multiplier
 
+
 def dump_results(results):
     # results is {columns : {rows : {processes : time, ...}, ...}, ...}
     # Make a gnuplot table
+    print(f'TRACE: results:\n{pprint.pprint(results)}')
     rows = set()
     for columns in results:
         rows |= set(results[columns].keys())
     processes = set()
     for columns in results:
-        for rows in results[columns]:
-            processes |= set(results[columns][rows].keys())
+        for row in results[columns]:
+            processes |= set(results[columns][row].keys())
     # Now arrange in a table
     for row_count in sorted(rows):
         for column_count in sorted(results.keys()):
@@ -421,15 +444,19 @@ def dump_results(results):
 
 
 def main() -> int:  # pragma: no cover
-    # experiment()
+    experiment()
+    return 0
     # pytest.main()
     print(f'NUMPY_SIZE: {NUMPY_SIZE:,d}')
+    print(f'multiprocessing.cpu_count(): {multiprocessing.cpu_count()}')
     # results is {columns : {rows : {processes : time, ...}, ...}, ...}
     results = {}
-    results[16]         = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
-    results[1024]       = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
-    results[64 * 1024]  = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
-    dump_results(results)
+    # Simple test:
+    # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
+    results[16] = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
+    results[1024] = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
+    results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
+    # dump_results(results)
     return 0
 
 
