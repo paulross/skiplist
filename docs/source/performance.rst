@@ -95,12 +95,17 @@ As expected inserting and removing in the middle is more costly because of the m
 Strings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in different places in a
-SkipList of strings with differing lengths of the SkipList.
+Here is a graph showing the cost of the *combined* ``remove()`` plus ``insert()`` of a string in different
+places in a SkipList of strings with differing lengths of the SkipList.
 The strings are 1024 bytes long of random printable characters.
 Thus a SkipList 16384 long with 1024 bytes strings holds 16 MB of data.
 On top of that is the SkipList nodes (including the ``std::string`` object but *not* including any dynamically allocated
 memory) which is around 2MB of data. This makes a total of 18MB.
+
+.. note::
+
+    This test first populates a SkipList with N random strings.
+    It then identifies the string at the beginning/middle/end as appropriate, removes it and then re-inserts it.
 
 The test functions are in ``src/cpp/test/test_performance.cpp``:
 
@@ -114,9 +119,11 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 Notes:
 
 - Inserting at the beginning or in the middle takes the same time and exhibits O(log(N)) behaviour.
-- Inserting at the end is significantly faster with SkipLists with up to 1024 strings in them.
+- Inserting at the end is significantly faster with SkipLists with up to 4096 strings in them.
   It also exhibits O(log(N)) behaviour in this range.
-- Inserting at the end with SkipLists with more than 1024 strings in them starts to exhibit O(N) behaviour.
+- Inserting at the end with SkipLists with more than 4096 strings in them starts to exhibit O(N) behaviour.
+  Additionally the range between maximum test time and minimum test time increases to 2:1 or more.
+  Also the standard deviation of test times increases sharply with these SkipList lengths.
   I know not why this should be.
 
 .. todo::

@@ -3,10 +3,11 @@ set grid
 
 set logscale x
 set xlabel "Size of SkipList"
+set xrange [:20000]
 
 set ylabel "Time per 1kB String (ns)"
 # set logscale y
-#set yrange [:4000]
+# set yrange [:3000]
 # set yrange [0.001:10]
 # set ytics 8,35,3
 

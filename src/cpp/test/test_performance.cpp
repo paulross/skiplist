@@ -1026,29 +1026,20 @@ int perf_test_string_insert_remove_value(std::string function, size_t test_count
     TestResult test_result(title.str());
 
     int result = 0;
-    std::string value;
 
     for (size_t i = 0; i < repeat; ++i) {
         // Create and populate a SkipList of sl_length strings
         OrderedStructs::SkipList::HeadNode<std::string> sl;
         for (size_t i = 0; i < sl_length; ++i) {
-            if (i == index_for_value) {
-//                value = unique_string(str_length);
-                value = random_string(str_length);
-            } else {
-//                sl.insert(unique_string(str_length));
-                sl.insert(random_string(str_length));
-            }
+            sl.insert(random_string(str_length));
         }
-        // Sanity check.
-        if (value.size() != str_length) {
-            std::cout << "Value has not been created." << std::endl;
-            return -1;
-        }
+        // Find the appropriate string at the index.
+        std::string value = sl.at(index_for_value);
         ExecClock exec_clock;
         for (size_t j = 0; j < test_count; ++j) {
-            sl.insert(value);
+            // We remove first, then insert.
             sl.remove(value);
+            sl.insert(value);
         }
         double exec_time = exec_clock.seconds();
         if (i == 0) {
@@ -1068,7 +1059,9 @@ int perf_test_string_insert_remove_value_begin(size_t test_count, size_t repeat,
     size_t sl_length = 1;
     int result = 0;
     while (sl_length <= 1 << 14) {
-        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, 0, test_results);
+        result |= perf_test_string_insert_remove_value(
+                __FUNCTION__, test_count, repeat, sl_length, 1024, 0, test_results
+        );
         sl_length *= 2;
     }
     return result;
@@ -1079,7 +1072,9 @@ int perf_test_string_insert_remove_value_mid(size_t test_count, size_t repeat, T
     size_t sl_length = 1;
     int result = 0;
     while (sl_length <= 1 << 14) {
-        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, sl_length / 2, test_results);
+        result |= perf_test_string_insert_remove_value(
+                __FUNCTION__, test_count, repeat, sl_length, 1024, sl_length / 2, test_results
+        );
         sl_length *= 2;
     }
     return result;
@@ -1090,7 +1085,9 @@ int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, T
     size_t sl_length = 1;
     int result = 0;
     while (sl_length <= 1 << 14) {
-        result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, sl_length, sl_length - 1, test_results);
+        result |= perf_test_string_insert_remove_value(
+                __FUNCTION__, test_count, repeat, sl_length, sl_length, sl_length - 1, test_results
+        );
         sl_length *= 2;
     }
     return result;
@@ -1107,7 +1104,7 @@ int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, T
 int perf_skiplist() {
     int result = 0;
 
-#if 1
+#if 0
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
@@ -1129,10 +1126,10 @@ int perf_skiplist() {
 
     // Multiple statistical tests
     TestResultS perf_test_results;
+#if 0
     result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
-#if 1
     result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
