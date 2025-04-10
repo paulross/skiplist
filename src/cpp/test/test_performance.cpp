@@ -1104,7 +1104,7 @@ int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, T
 int perf_skiplist() {
     int result = 0;
 
-#if 0
+#if 1
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
@@ -1126,7 +1126,7 @@ int perf_skiplist() {
 
     // Multiple statistical tests
     TestResultS perf_test_results;
-#if 0
+#if 1
     result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
@@ -1191,7 +1191,7 @@ int test_performance_all() {
     int result = 0;
 
     result |= perf_skiplist();
-#if 0
+#if 1
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
 #endif
