@@ -43,9 +43,9 @@ set output "images/perf_test_double_insert_remove_value.png"   # choose the outp
 # NOTE: Compute actual time as $4 * $? / $9, e.g. $4 * $5 / $9
 
 plot "dat/perf_test_double_insert_remove_value_begin.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "Beginning" with candlesticks whiskerbars 0.5, \
-        "dat/perf_test_double_insert_remove_value_end.dat" using 3:(277 + 125.85 / 20 * log($3) / log(2)) t "Beginning : 277 + 6 * log2(x)" with lines, \
+        "dat/perf_test_double_insert_remove_value_begin.dat" using 3:(277 + 125.85 / 20 * log($3) / log(2)) t "Beginning : 277 + 6 * log2(x)" with lines, \
         "dat/perf_test_double_insert_remove_value_mid.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "Middle" with candlesticks whiskerbars 0.5, \
-        "dat/perf_test_double_insert_remove_value_end.dat" using 3:(264 + 310 / 20 * log($3) / log(2)) t "Middle: 264 + 16 * log2(x)" with lines, \
+        "dat/perf_test_double_insert_remove_value_mid.dat" using 3:(264 + 310 / 20 * log($3) / log(2)) t "Middle: 264 + 16 * log2(x)" with lines, \
         "dat/perf_test_double_insert_remove_value_end.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "End" with candlesticks whiskerbars 0.5, \
         "dat/perf_test_double_insert_remove_value_end.dat" using 3:(287 + 143 / 20 * log($3) / log(2)) t "End: 287 + 7 * log2(x)" with lines
 reset

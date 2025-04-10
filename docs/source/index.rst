@@ -18,6 +18,7 @@ SkipList documentation
     test_notes
     api
     reference
+    todo
    
 Indices and tables
 ==================

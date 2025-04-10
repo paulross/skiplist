@@ -790,6 +790,8 @@ int perf_test_double_insert_remove_value(std::string function, size_t test_count
         double exec_time = exec_clock.seconds();
         if (i == 0) {
             std::cout << function << "[" << sl_length << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << " SkipList sizeof() = " << sl.size_of() << " bytes."
+                      << " SkipList height() = " << sl.height()
                       << std::endl;
         }
         test_result.execTimeAdd(0, exec_time, test_count, sl_length);
@@ -853,6 +855,8 @@ int perf_test_double_at_1m(size_t test_count, size_t repeat, size_t index, TestR
         double exec_time = exec_clock.seconds();
         if (i == 0) {
             std::cout << __FUNCTION__ << "[" << index << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << " SkipList sizeof() = " << sl.size_of() << " bytes"
+                      << " SkipList height() = " << sl.height()
                       << std::endl;
         }
         test_result.execTimeAdd(0, exec_time, test_count, index);
@@ -893,6 +897,8 @@ int perf_test_double_has_1m(size_t test_count, size_t repeat, size_t value, Test
         double exec_time = exec_clock.seconds();
         if (i == 0) {
             std::cout << __FUNCTION__ << "[" << value << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << " SkipList sizeof() = " << sl.size_of() << " bytes"
+                      << " SkipList height() = " << sl.height()
                       << std::endl;
         }
         test_result.execTimeAdd(0, exec_time, test_count, value);
@@ -933,6 +939,8 @@ int perf_test_double_index_1m(size_t test_count, size_t repeat, size_t value, Te
         double exec_time = exec_clock.seconds();
         if (i == 0) {
             std::cout << __FUNCTION__ << "[" << value << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << " SkipList sizeof() = " << sl.size_of() << " bytes"
+                      << " SkipList height() = " << sl.height()
                       << std::endl;
         }
         test_result.execTimeAdd(0, exec_time, test_count, value);
@@ -1025,10 +1033,17 @@ int perf_test_string_insert_remove_value(std::string function, size_t test_count
         OrderedStructs::SkipList::HeadNode<std::string> sl;
         for (size_t i = 0; i < sl_length; ++i) {
             if (i == index_for_value) {
-                value = unique_string(str_length);
+//                value = unique_string(str_length);
+                value = random_string(str_length);
             } else {
-                sl.insert(unique_string(str_length));
+//                sl.insert(unique_string(str_length));
+                sl.insert(random_string(str_length));
             }
+        }
+        // Sanity check.
+        if (value.size() != str_length) {
+            std::cout << "Value has not been created." << std::endl;
+            return -1;
         }
         ExecClock exec_clock;
         for (size_t j = 0; j < test_count; ++j) {
@@ -1038,6 +1053,8 @@ int perf_test_string_insert_remove_value(std::string function, size_t test_count
         double exec_time = exec_clock.seconds();
         if (i == 0) {
             std::cout << function << "[" << sl_length << "] Sample time/op = " << 1e9 * exec_time / test_count << "(ns)"
+                      << " SkipList sizeof() = " << sl.size_of() << " bytes"
+                      << " SkipList height() = " << sl.height()
                       << std::endl;
         }
         test_result.execTimeAdd(0, exec_time, test_count, sl_length);
@@ -1048,9 +1065,9 @@ int perf_test_string_insert_remove_value(std::string function, size_t test_count
 
 int perf_test_string_insert_remove_value_begin(size_t test_count, size_t repeat, TestResultS &test_results) {
     std::cout << "Running test: " << __FUNCTION__ << std::endl;
-    size_t sl_length = 2;
+    size_t sl_length = 1;
     int result = 0;
-    while (sl_length <= 1 << 10) {
+    while (sl_length <= 1 << 14) {
         result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, 0, test_results);
         sl_length *= 2;
     }
@@ -1059,9 +1076,9 @@ int perf_test_string_insert_remove_value_begin(size_t test_count, size_t repeat,
 
 int perf_test_string_insert_remove_value_mid(size_t test_count, size_t repeat, TestResultS &test_results) {
     std::cout << "Running test: " << __FUNCTION__ << std::endl;
-    size_t sl_length = 2;
+    size_t sl_length = 1;
     int result = 0;
-    while (sl_length <= 1 << 10) {
+    while (sl_length <= 1 << 14) {
         result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, 1024, sl_length / 2, test_results);
         sl_length *= 2;
     }
@@ -1070,9 +1087,9 @@ int perf_test_string_insert_remove_value_mid(size_t test_count, size_t repeat, T
 
 int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, TestResultS &test_results) {
     std::cout << "Running test: " << __FUNCTION__ << std::endl;
-    size_t sl_length = 2;
+    size_t sl_length = 1;
     int result = 0;
-    while (sl_length <= 1 << 10) {
+    while (sl_length <= 1 << 14) {
         result |= perf_test_string_insert_remove_value(__FUNCTION__, test_count, repeat, sl_length, sl_length, sl_length - 1, test_results);
         sl_length *= 2;
     }
@@ -1090,6 +1107,7 @@ int perf_test_string_insert_remove_value_end(size_t test_count, size_t repeat, T
 int perf_skiplist() {
     int result = 0;
 
+#if 1
     result |= perf_single_insert_remove();
     result |= perf_large_skiplist_ins_only();
     result |= perf_large_skiplist_ins_rem();
@@ -1107,16 +1125,20 @@ int perf_skiplist() {
     result |= perf_index();
     result |= perf_index_vary_length();
 
+#endif
+
     // Multiple statistical tests
     TestResultS perf_test_results;
     result |= perf_test_double_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_double_insert_remove_value_end(100, 10, perf_test_results);
+#if 1
     result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
     result |= perf_roll_med_by_win_size(10, perf_test_results);
     result |= perf_test_node_height_growth(20, perf_test_results);
+#endif
 
     result |= perf_test_string_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_string_insert_remove_value_mid(100, 10, perf_test_results);
@@ -1172,7 +1194,7 @@ int test_performance_all() {
     int result = 0;
 
     result |= perf_skiplist();
-#if 1
+#if 0
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
 #endif

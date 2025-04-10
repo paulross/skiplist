@@ -1,0 +1,17 @@
+#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
+#HEAD Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
+TEST:    0       1      10     0.000029900     0.000000801     0.000028168     0.000031208      1000    33444368.6 perf_test_string_insert_remove_value_end[1]
+TEST:    0       2      10     0.000034113     0.000001593     0.000030334     0.000036084      1000    29314423.6 perf_test_string_insert_remove_value_end[2]
+TEST:    0       4      10     0.000041371     0.000005865     0.000034416     0.000056376      1000    24171404.3 perf_test_string_insert_remove_value_end[4]
+TEST:    0       8      10     0.000044321     0.000004043     0.000036876     0.000050251      1000    22562515.1 perf_test_string_insert_remove_value_end[8]
+TEST:    0      16      10     0.000047330     0.000005001     0.000041542     0.000059667      1000    21128337.7 perf_test_string_insert_remove_value_end[16]
+TEST:    0      32      10     0.000059413     0.000004623     0.000055375     0.000069501      1000    16831333.2 perf_test_string_insert_remove_value_end[32]
+TEST:    0      64      10     0.000065217     0.000005936     0.000057084     0.000078501      1000    15333378.3 perf_test_string_insert_remove_value_end[64]
+TEST:    0     128      10     0.000073938     0.000009536     0.000062791     0.000094126      1000    13524881.7 perf_test_string_insert_remove_value_end[128]
+TEST:    0     256      10     0.000092451     0.000008158     0.000085375     0.000113668      1000    10816587.5 perf_test_string_insert_remove_value_end[256]
+TEST:    0     512      10     0.000101734     0.000007404     0.000087292     0.000115334      1000     9829555.5 perf_test_string_insert_remove_value_end[512]
+TEST:    0    1024      10     0.000124021     0.000015772     0.000102334     0.000161625      1000     8063131.1 perf_test_string_insert_remove_value_end[1024]
+TEST:    0    2048      10     0.000156663     0.000015443     0.000137876     0.000191042      1000     6383128.1 perf_test_string_insert_remove_value_end[2048]
+TEST:    0    4096      10     0.000223346     0.000014752     0.000194042     0.000240541      1000     4477350.0 perf_test_string_insert_remove_value_end[4096]
+TEST:    0    8192      10     0.000335796     0.000025013     0.000312375     0.000406667      1000     2977995.0 perf_test_string_insert_remove_value_end[8192]
+TEST:    0   16384      10     0.000589117     0.000036307     0.000550459     0.000689835      1000     1697455.1 perf_test_string_insert_remove_value_end[16384]

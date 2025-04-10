@@ -292,6 +292,7 @@ protected:
 };
 
 std::string unique_string(int width=0);
+std::string random_string(ssize_t length);
 std::u16string unique_u16string(int width=0);
 std::u32string unique_u32string(int width=0);
 std::vector<char> unique_vector_char(int width);

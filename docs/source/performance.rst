@@ -55,11 +55,18 @@ follows.
 Mutating operations: ``insert()``, ``remove()``
 -------------------------------------------------
 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Doubles
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 These operations depend on the size of the SkipList. For one containing 1 million doubles each operation is typically
 450 ns (2.2 million operations per second).
 
-Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in different places in the
-list of 1m doubles.
+Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in different places in a
+SkipList of doubles with differing lengths of the SkipList.
+A SkipList 1m long of doubles represents 8MB data (the doubles) but totals around 100MB of data including the SkipList
+nodes.
+
 The candlesticks are calculated thus:
 
 - The lowest point is the minimum value of several repeats (typically 10).
@@ -70,9 +77,9 @@ The candlesticks are calculated thus:
 
 The test functions are in ``src/cpp/test/test_performance.cpp``:
 
-- ``perf_test_double_insert_remove_value_begin()`` inserts and removes a value from the beginning of the list.
-- ``perf_test_double_insert_remove_value_mid()`` inserts and removes a value from the middle of the list.
-- ``perf_test_double_insert_remove_value_end()`` inserts and removes a value from the end of the list.
+- ``perf_test_double_insert_remove_value_begin()`` inserts and removes from the beginning of the list.
+- ``perf_test_double_insert_remove_value_mid()`` inserts and removes from the middle of the list.
+- ``perf_test_double_insert_remove_value_end()`` inserts and removes from the end of the list.
 
 .. image::
     plots/images/perf_test_double_insert_remove_value.png
@@ -83,6 +90,38 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 The lines on the graph depict the minimum values of several test repeats.
 This shows good O(log(n)) behaviour where n is the SkipList size.
 As expected inserting and removing in the middle is more costly because of the more complicated search setup.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Strings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a graph showing the cost of the *combined* ``insert()`` plus ``remove()`` of a value in different places in a
+SkipList of strings with differing lengths of the SkipList.
+The strings are 1024 bytes long of random printable characters.
+Thus a SkipList 16384 long with 1024 bytes strings holds 16 MB of data.
+On top of that is the SkipList nodes (including the ``std::string`` object but *not* including any dynamically allocated
+memory) which is around 2MB of data. This makes a total of 18MB.
+
+The test functions are in ``src/cpp/test/test_performance.cpp``:
+
+- ``perf_test_string_insert_remove_value_begin()`` inserts and removes from the beginning of the list.
+- ``perf_test_string_insert_remove_value_mid()`` inserts and removes from the middle of the list.
+- ``perf_test_string_insert_remove_value_end()`` inserts and removes from the end of the list.
+
+.. image::
+    plots/images/perf_test_string_insert_remove_value.png
+
+Notes:
+
+- Inserting at the beginning or in the middle takes the same time and exhibits O(log(N)) behaviour.
+- Inserting at the end is significantly faster with SkipLists with up to 1024 strings in them.
+  It also exhibits O(log(N)) behaviour in this range.
+- Inserting at the end with SkipLists with more than 1024 strings in them starts to exhibit O(N) behaviour.
+  I know not why this should be.
+
+.. todo::
+
+    Investigate this O(N) behaviour when inserting strings at the end of a SkipList.
 
 -----------------------------------------------------------
 Indexing operations: ``at()``, ``has()`` ``index()``
@@ -245,6 +284,7 @@ coin toss being heads. The time cost is normalised to ``p(0.5)``.
 Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the
 performance would deteriorate.
 If ``p()`` was zero the SkipList would be, effectively, a singly linked list with O(n) search performance.
+
 I do not understand why the rolling median performance appears to improve slightly when the rolling median is really
 just an ``insert(), at(), remove()`` operation.
 
@@ -317,8 +357,8 @@ Effect of ``SKIPLIST_THREAD_SUPPORT``
 
 Here are several performance measurements when ``SKIPLIST_THREAD_SUPPORT`` is defined:
 
-* A SkipList in a single threaded environment.
-* A SkipList in a multi threaded environment where threads vie for the same SkipList.
+* A multi-threaded capable SkipList in a single threaded environment.
+* A multi-threaded capable SkipList in a multi threaded environment where threads vie for the same SkipList.
 
 To explore this we create a task that is to insert a unique double into an empty SkipList 2**14 (16384) times and then
 remove that number one by one to empty the SkipList. This task typically takes 18 ms (around 1 us per insert+remove).

@@ -357,6 +357,24 @@ std::string unique_string(int width) {
 }
 
 /**
+ * Creates a random \c std::string filled with the character set 32...126 (printable characters) inclusive.
+ *
+ * @param width The string width.
+ * @return The random \c std::string.
+ */
+std::string random_string(ssize_t length) {
+    std::string ret(length, ' ');
+    ssize_t i = 0;
+    while (i < length) {
+        int c = rand() % 128;
+        if (c >= 0x20 && c < 0x7f) {
+            ret[i++] = static_cast<char>(c);
+        }
+    }
+    return ret;
+}
+
+/**
  * Creates a unique \c std::u16string. This starts as "0", "1" ...
  *
  * @param width If > 0 the string will be at least this width.
