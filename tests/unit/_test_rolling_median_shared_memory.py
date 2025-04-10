@@ -91,7 +91,9 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
     assert read_array.shape == write_array.shape
     proc = psutil.Process()
     _print(
-        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} {write_array.shape} rolling_median_of_column()  START.')
+        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d}'
+        f' {write_array.shape} rolling_median_of_column()  START.'
+    )
     skip_list = orderedstructs.SkipList(float)
     write_count = 0
     for i in range(len(read_array)):
@@ -105,21 +107,33 @@ def rolling_median_of_column(read_array: np.ndarray, window_length: int, column_
             median = np.nan
         if i == 0:
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 before write.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} i == 0 before write.'
+            )
         if i == 1024 ** 2 // 2:
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 before write.'
+            )
         write_array[i, column_index] = median
         if i == 0:
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 0 after write.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} i == 0 after write.'
+            )
         if i == 1024 ** 2 // 2:
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} i == 1024**2 // 2 after write.'
+            )
     _print(
-        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.')
+        f'Child process {proc.pid} from parent {proc.ppid()}'
+        f' RSS: {proc.memory_info().rss:,d} skiplist length {skip_list.size():,d}.'
+    )
     _print(
-        f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.')
+        f'Child process {proc.pid} from parent {proc.ppid()}'
+        f' RSS: {proc.memory_info().rss:,d} rolling_median_of_column()  DONE.'
+    )
     return write_count
 
 
@@ -167,10 +181,14 @@ def compute_rolling_median_2d_from_index(read_array_spec: SharedMemoryArraySpeci
     with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
         with recover_array_from_shared_memory_and_close(write_array_spec) as write_array:
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation START.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} rolling median calculation START.'
+            )
             write_count = rolling_median_of_column(read_array, window_length, column_index, write_array)
             _print(
-                f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.')
+                f'Child process {proc.pid} from parent {proc.ppid()}'
+                f' RSS: {proc.memory_info().rss:,d} rolling median calculation DONE.'
+            )
     _print(f'Child process {proc.pid} from parent {proc.ppid()} RSS: {proc.memory_info().rss:,d} DONE.')
     return write_count
 
@@ -206,7 +224,8 @@ def create_write_shared_memory_array_spec_close_unlink(arr: np.ndarray) -> Share
 
 
 def copy_shared_memory_into_new_numpy_array(write_array_spec: SharedMemoryArraySpecification) -> np.ndarray:
-    """With the output SharedMemoryArraySpecification this creates a new numpy array and copies the shared memory into it."""
+    """With the output SharedMemoryArraySpecification this creates a new numpy array and copies
+    the shared memory into it."""
     temp_write = np.ndarray(write_array_spec.shape, dtype=write_array_spec.dtype, buffer=write_array_spec.shm.buf)
     write_array = np.empty(write_array_spec.shape, dtype=write_array_spec.dtype)
     write_array[:] = temp_write[:]
@@ -221,8 +240,10 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
     # Limit number of processes if the number of columns is small.
     if read_array.shape[1] < num_processes:
         num_processes = read_array.shape[1]
-    logger.info('compute_rolling_median_2d(): array shape %s window length %d with %d processes', read_array.shape,
-                window_length, num_processes)
+    logger.info(
+        'compute_rolling_median_2d(): array shape %s window length %d with %d processes',
+        read_array.shape, window_length, num_processes
+    )
     proc = psutil.Process()
     logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} START')
     logger.info(f'read_array data @ 0x{np_data_pointer(read_array):x}')
@@ -239,10 +260,14 @@ def compute_rolling_median_2d_mp(read_array: np.ndarray, window_length: int, num
             write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
             logger.info(f'write_array data @ 0x{np_data_pointer(write_array):x}')
             logger.info(
-                f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} - before closing and unlinking read+write shm.')
+                f'Parent {proc.pid} memory'
+                f' RSS: {proc.memory_info().rss:,d} - before closing and unlinking read+write shm.'
+            )
     logger.info(f'Parent {proc.pid} memory RSS: {proc.memory_info().rss:,d} DONE')
-    logger.info('compute_rolling_median_2d(): DONE array shape %s window length %d with %d processes', read_array.shape,
-                window_length, num_processes)
+    logger.info(
+        'compute_rolling_median_2d(): DONE array shape %s window length %d with %d processes',
+        read_array.shape, window_length, num_processes
+    )
     return write_array
 
 
