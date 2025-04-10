@@ -171,6 +171,13 @@ The line shows a very approximate fir to the minimum recorded value of around 0.
 
 The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
+.. note::
+
+    The number of operations to calculate a rolling median is the data length minus the window length.
+    A rolling median operation is an ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
+    Given a data length of 1m then a window length of 1 this would require 1m operations.
+    A window length of 1000 this would be 999,000 operations.
+    A window length of 500,000 this would be 500,000 operations.
 
 .. _performance-space-complexity-label:
 
