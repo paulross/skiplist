@@ -534,6 +534,8 @@ IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const N
 
 /**
  * Returns an estimate of the memory usage of an instance.
+ * This does not include the size of any dynamically allocated content in the value<T> which can be significant in the
+ * case of, say, strings.
  *
  * @tparam T The type of the Skip List Node values.
  * @tparam _Compare A comparison function for type T.
@@ -543,7 +545,7 @@ template <typename T, typename _Compare>
 size_t Node<T, _Compare>::size_of() const {
     // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
     // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
-    return sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
+    return sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs) + sizeof(T);
 }
 
 
