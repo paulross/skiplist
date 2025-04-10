@@ -23,7 +23,8 @@ Here is a reasonable C++ attempt at doing that with the arguments:
 * ``data`` - A vector of data of type ``T`` of length ``L``.
 * ``win_length`` - a 'window' size. The median is computed over this number of values.
 * ``result`` - a destination vector for the result.
-  This will either end up with ``L - win_length`` values, alternatively is will be ``L`` long and start with ``win_length`` ``NaN`` s.
+  This will either end up with ``L - win_length`` values, alternatively is will be ``L`` long and start with
+  ``win_length`` ``NaN`` s.
 
 Rolling median code using a skip list might look like this, error checking is omitted:
 
@@ -48,7 +49,8 @@ Rolling median code using a skip list might look like this, error checking is om
         }
     }
 
-If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error checking omitted:
+If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error
+checking omitted:
 
 .. code-block:: c
 
@@ -72,15 +74,19 @@ If you are working with C arrays (such as Numpy arrays) then this C'ish approach
         }
     }
 
-Multidimensional Numpy arrays have a stride value which is omitted in the above code but is simple to add. See *RollingMedian.h* and *test/test_rolling_median.cpp* for further examples.
+Multidimensional Numpy arrays have a stride value which is omitted in the above code but is simple to add.
+See *RollingMedian.h* and *test/test_rolling_median.cpp* for further examples.
 
-Rolling percentiles require a argument that says what fraction of the window the required value lies. Again, this is easy to add.
+Rolling percentiles require a argument that says what fraction of the window the required value lies.
+Again, this is easy to add.
 
 
 Even Window Length
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``. A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and ``window length / 2``. This requires that the mean of two types is meaningful which it will not be for strings.
+The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``.
+A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and
+``window length / 2``. This requires that the mean of two types is meaningful which it will not be for strings.
 
 
 Rolling Median in Python
@@ -142,14 +148,18 @@ Of course this Python code could be made much faster by using a Python C Extensi
 Rolling Median in Python with ``multiprocessing.shared_memory``
 ----------------------------------------------------------------
 
-An exiting development in Python 3.8+ is `multiprocessing.shared_memory <https://docs.python.org/3/library/multiprocessing.shared_memory.html#module-multiprocessing.shared_memory>`_
+An exiting development in Python 3.8+ is
+`multiprocessing.shared_memory <https://docs.python.org/3/library/multiprocessing.shared_memory.html#module-multiprocessing.shared_memory>`_
 This allows a parent process to share memory with its child processes.
 
-In this example we are going to compute a rolling median on a 2D numpy array where each child process works on a single column of the same array and writes the result to a shared output array.
-There will be two shared memory areas; a read one with the input data and a write one with the result from all the child processes
+In this example we are going to compute a rolling median on a 2D numpy array where each child process works on a single
+column of the same array and writes the result to a shared output array.
+There will be two shared memory areas; a read one with the input data and a write one with the result from all the
+child processes
 There will be two corresponding numpy arrays the input that we are given and the output numpy array that we create.
 
-The only copying going on here is the initial copy of the input array into shared memory and then the final copy, when all child processes have completed of *that* shared memory to a single numpy array.
+The only copying going on here is the initial copy of the input array into shared memory and then the final copy, when
+all child processes have completed of *that* shared memory to a single numpy array.
 
 Pictorially:
 
@@ -172,14 +182,17 @@ Pictorially:
 .. note::
 
     This solution assumes that you are given a numpy array that you need to process.
-    An alternative solution is to create a shared memory object, create an empty numpy array that uses the shared memory buffer, populate that buffer and pass the buffer to the child processes.
+    An alternative solution is to create a shared memory object, create an empty numpy array that uses the shared
+    memory buffer, populate that buffer and pass the buffer to the child processes.
     This would save the cost, in time and memory, of the first copy operation.
 
 Code
 ^^^^^^
 
-First let's write some code that wraps the low level ``multiprocessing.shared_memory.SharedMemory`` class that can be used by the parent process.
-This is a dataclass that records essential information about the array and includes the ``SharedMemory`` object itself.
+First let's write some code that wraps the low level ``multiprocessing.shared_memory.SharedMemory`` class that can be
+used by the parent process.
+This is a ``NamedTuple`` that records essential information about the array and includes the ``SharedMemory`` object
+itself.
 We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just a named tuple:
 
 .. code-block:: python
@@ -470,10 +483,13 @@ Values are in Mb.
 Here are the actual results running on Mac OS X.
 Two things are noticeable:
 
-* Creating the shared memory object has no memory cost. It is only when data is copied into it that the memory is allocated and that is incremental.
-* The RSS shown here is collected from ``psutil`` and it looks like this is including shared memory so there may be double counting here. ``psutil`` can not identify shared memory on Mac OS X, it can on Linux.
+* Creating the shared memory object has no memory cost. It is only when data is copied into it that the memory is
+  allocated and that is incremental.
+* The RSS shown here is collected from ``psutil`` and it looks like this is including shared memory so there may be
+  double counting here. ``psutil`` can not identify shared memory on Mac OS X, it can on Linux.
 
-Here is the breakdown of the RSS memory profile of processing a numpy array with 6m rows with 2 columns (100Mb) with a parent [P] and two child processes [0] and [1].
+Here is the breakdown of the RSS memory profile of processing a numpy array with 6m rows with 2 columns (100Mb) with a
+parent [P] and two child processes [0] and [1].
 The change in RSS is indicated by "d" (if non-zero).
 Values are in Mb.
 
@@ -647,13 +663,15 @@ Values are in Mb.
     There is an interesting quirk here, the array is 6m rows with 2 columns and has a residual memory of 227Mb.
     This is not reduced by a ``gc.collect()``.
     This does not increase if the same function calls are repeated.
-    If the array is changed to *16m* rows, 2 columns (260Mb) the residual memory is 35Mb, typical for a minimal Python process.
+    If the array is changed to *16m* rows, 2 columns (260Mb) the residual memory is 35Mb, typical for a minimal
+    Python process.
 
 
 Handling NaNs
 -----------------------------------------
 
-`Not-a-number <https://en.wikipedia.org/wiki/NaN>`_ (NaN) values can not be inserted into a Skip List as they are not comparable to anything (including themselves).
+`Not-a-number <https://en.wikipedia.org/wiki/NaN>`_ (NaN) values can not be inserted into a Skip List as they are not
+comparable to anything (including themselves).
 An attempt to call ``insert()``, ``index()``, ``has()``, ``remove()`` with a NaN will raise an error.
 In C++ this will throw a ``OrderedStructs::SkipList::FailedComparison``.
 In Python it will raise a ``ValueError``.
