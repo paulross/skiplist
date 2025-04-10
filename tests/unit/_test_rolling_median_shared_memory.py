@@ -444,8 +444,7 @@ def dump_results(results):
 
 
 def main() -> int:  # pragma: no cover
-    experiment()
-    return 0
+    # experiment()
     # pytest.main()
     print(f'NUMPY_SIZE: {NUMPY_SIZE:,d}')
     print(f'multiprocessing.cpu_count(): {multiprocessing.cpu_count()}')
