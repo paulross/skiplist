@@ -189,48 +189,20 @@ Pictorially:
 Code
 ^^^^^^
 
-First let's write some code that wraps the low level ``multiprocessing.shared_memory.SharedMemory`` class that can be
-used by the parent process.
-This is a ``NamedTuple`` that records essential information about the array and includes the ``SharedMemory`` object
-itself.
-We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just a named tuple:
+These are the essential imports:
 
 .. code-block:: python
 
     import multiprocessing
-    import typing
+    # Python 3.8+, need to be specific about importing this.
     from multiprocessing import shared_memory
+    import typing
 
     import numpy as np
 
     import orderedstructs
 
-    class SharedMemoryArraySpecification(typing.NamedTuple):
-        shape: typing.Tuple[int, ...]
-        dtype: np.dtype
-        nbytes: int
-        shm: shared_memory.SharedMemory
-
-        @property
-        def name(self) -> str:
-            return self.shm.name
-
-        def __str__(self):
-            return (
-                f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype}'
-                f' name "{self.name}"'
-                f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
-            )
-
-        def close(self) -> None:
-            self.shm.close()
-
-        def close_and_unlink(self) -> None:
-            self.close()
-            self.shm.unlink()
-
-
-Here is the rolling median function used by the child processes:
+Firstly, as a reminder here is our rolling median function that will be used by the child processes:
 
 .. code-block:: python
 
@@ -257,19 +229,62 @@ Here is the rolling median function used by the child processes:
             write_array[i, column_index] = median
         return write_count
 
+Then let's write some code that wraps the low level ``shared_memory.SharedMemory`` class that can be
+used by the parent process.
+This is a ``NamedTuple`` that records essential information about the array and includes the ``SharedMemory`` object
+itself.
+We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just a named tuple:
 
-Now create a function that takes a numpy array, creates the ``SharedMemory`` and returns an ``ArraySpecification``:
+.. code-block:: python
+
+    class SharedMemoryArraySpecification(typing.NamedTuple):
+        shape: typing.Tuple[int, ...]
+        dtype: np.dtype
+        nbytes: int
+        shm: shared_memory.SharedMemory
+
+        @property
+        def name(self) -> str:
+            return self.shm.name
+
+        def __str__(self):
+            return (
+                f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype} name "{self.name}"'
+                f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
+            )
+
+        def close(self) -> None:
+            self.shm.close()
+
+        def close_and_unlink(self) -> None:
+            self.close()
+            self.shm.unlink()
+
+
+Now create a function that takes a numpy array and returns an ``SharedMemoryArraySpecification``.
+We write this as a context manager:
 
 .. code-block:: python
 
     # NOTE: This code used by the parent process.
 
-    def shared_memory_and_array_spec(arr: np.ndarray) -> ArraySpecification:
-        """Given a numpy array create a SharedMemory object and encapsulate it in an
-        ArraySpecification."""
+    @contextlib.contextmanager
+    def create_read_shared_memory_array_spec_close_unlink(
+            arr: np.ndarray
+        ) -> SharedMemoryArraySpecification:
+        """Context manager that creates a Shared Memory instance and copies the numpy array into it.
+        The Shared Memory instance is closed and unlinked on exit."""
         shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
-        array_spec = ArraySpecification(arr.shape, arr.dtype, arr.nbytes, shm)
-        return array_spec
+        array_spec = SharedMemoryArraySpecification(arr.shape, arr.dtype, arr.nbytes, shm)
+        logger.info('Created shared memory %s ', array_spec)
+        try:
+            # Copy the numpy array into shared memory.
+            array_view = np.ndarray(array_spec.shape, dtype=array_spec.dtype, buffer=array_spec.shm.buf)
+            array_view[:] = arr[:]
+            yield array_spec
+        finally:
+            array_spec.close_and_unlink()
+
 
 Now create a context manager that will wrap a numpy array around a ``SharedMemoryArraySpecification``
 On exit this automatically releases the reference to the shared memory from the child process.
@@ -286,6 +301,8 @@ On exit this automatically releases the reference to the shared memory from the 
             yield array_view
         finally:
             array_shm.close()
+
+TODO:
 
 And use it in the child process:
 
@@ -439,7 +456,7 @@ Memory Usage
 What I would expect in processing a 100Mb numpy array.
 Values are in Mb.
 
-.. list-table:: Expected ``multiprocessing.shared_memory`` Memory Usage With 100 Mb numpy array
+.. list-table:: Expected ``shared_memory`` Memory Usage With 100 Mb numpy array
     :widths: 50 30 30
     :header-rows: 1
 
@@ -493,7 +510,7 @@ parent [P] and two child processes [0] and [1].
 The change in RSS is indicated by "d" (if non-zero).
 Values are in Mb.
 
-.. list-table:: ``multiprocessing.shared_memory`` Memory Usage With Two Processes
+.. list-table:: ``shared_memory`` Memory Usage With Two Processes
     :widths: 50 10 10 10 10 10 10 50
     :header-rows: 1
 
