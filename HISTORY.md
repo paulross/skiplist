@@ -1,8 +1,9 @@
 # History
 
-## 0.3.16 (TODO)
+## 0.3.16 (2025-04-11)
 
 * Improvements to performance documentation.
+* Minor fix for a linker issue.
 * Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13.
 * Development Status :: 5 - Production/Stable
 
