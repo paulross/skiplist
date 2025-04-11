@@ -167,7 +167,7 @@ Pictorially:
 
     Parent                                        Children
     ======                                        ========
-    Copies the array to the input SharedMemory
+    Copies the numpy array to the input SharedMemory
     Creates the output SharedMemory
     Launches n child processes...
     \>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\
@@ -202,7 +202,8 @@ These are the essential imports:
 
     import orderedstructs
 
-Firstly, as a reminder here is our rolling median function that will be used by the child processes:
+Firstly, as a reminder here is our rolling median function that will be used by the child processes, it works on a
+specific column of a numpy array:
 
 .. code-block:: python
 
@@ -249,7 +250,8 @@ We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just
 
         def __str__(self):
             return (
-                f'<SharedMemoryArraySpecification shape {self.shape} dtype {self.dtype} name "{self.name}"'
+                f'<SharedMemoryArraySpecification shape {self.shape}'
+                f' dtype {self.dtype} name "{self.name}"'
                 f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
             )
 
@@ -261,67 +263,9 @@ We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just
             self.shm.unlink()
 
 
-Now create a function that takes a numpy array and returns an ``SharedMemoryArraySpecification``.
+Now create a function that takes a numpy array, copies it into the input ``shared_memory.SharedMemory``.
+This returns an ``SharedMemoryArraySpecification``.
 We write this as a context manager:
-
-.. code-block:: python
-
-    # NOTE: This code used by the parent process.
-    @contextlib.contextmanager
-    def create_read_shared_memory_array_spec_close_unlink(
-            arr: np.ndarray
-        ) -> SharedMemoryArraySpecification:
-        """Context manager that creates a Shared Memory instance and copies the numpy array into it.
-        The Shared Memory instance is closed and unlinked on exit."""
-        shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
-        array_spec = SharedMemoryArraySpecification(arr.shape, arr.dtype, arr.nbytes, shm)
-        logger.info('Created shared memory %s ', array_spec)
-        try:
-            # Copy the numpy array into shared memory.
-            array_view = np.ndarray(array_spec.shape, dtype=array_spec.dtype, buffer=array_spec.shm.buf)
-            array_view[:] = arr[:]
-            yield array_spec
-        finally:
-            array_spec.close_and_unlink()
-
-
-Now create a context manager that will wrap a numpy array around a ``SharedMemoryArraySpecification``
-On exit this automatically releases the reference to the shared memory from the child process.
-
-.. code-block:: python
-
-    @contextlib.contextmanager
-    def recover_array_from_shared_memory_and_close(
-            array_spec: SharedMemoryArraySpecification
-        ) -> np.ndarray:
-        array_shm = shared_memory.SharedMemory(name=array_spec.name)
-        array_view = np.ndarray(array_spec.shape, array_spec.dtype, buffer=array_shm.buf)
-        try:
-            yield array_view
-        finally:
-            array_shm.close()
-
-
-And use it in the child process:
-
-.. code-block:: python
-
-    def compute_rolling_median_2d_from_index(
-            read_array_spec: SharedMemoryArraySpecification,
-            window_length: int, column_index: int,
-            write_array_spec: SharedMemoryArraySpecification) -> int:
-        """Computes a rolling median of the 2D read array and window length
-        and writes it to the 2D write array.
-        This is invoked by a child process."""
-        with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
-            with recover_array_from_shared_memory_and_close(write_array_spec) \
-                    as write_array:
-                write_count = rolling_median_of_column(
-                    read_array, window_length, column_index, write_array
-                )
-                return write_count
-
-Create two more context managers, one to copy the input numpy array to shared memory:
 
 .. code-block:: python
 
@@ -347,7 +291,7 @@ Create two more context managers, one to copy the input numpy array to shared me
         finally:
             array_spec.close_and_unlink()
 
-And another to wrap around the output numpy array:
+And another context manager that creates the output ``shared_memory.SharedMemory``:
 
 .. code-block:: python
 
@@ -369,7 +313,43 @@ And another to wrap around the output numpy array:
         finally:
             array_spec.close_and_unlink()
 
-Finally a function to copy the output shared memory to a numpy array:
+Now create a context manager that will wrap a numpy array around a ``SharedMemoryArraySpecification``
+On exit this automatically releases the reference to the shared memory from the child process.
+
+.. code-block:: python
+
+    @contextlib.contextmanager
+    def recover_array_from_shared_memory_and_close(
+            array_spec: SharedMemoryArraySpecification
+        ) -> np.ndarray:
+        array_shm = shared_memory.SharedMemory(name=array_spec.name)
+        array_view = np.ndarray(array_spec.shape, array_spec.dtype, buffer=array_shm.buf)
+        try:
+            yield array_view
+        finally:
+            array_shm.close()
+
+
+And use it in the child process, once for reading and once for writing:
+
+.. code-block:: python
+
+    def compute_rolling_median_2d_from_index(
+            read_array_spec: SharedMemoryArraySpecification,
+            window_length: int, column_index: int,
+            write_array_spec: SharedMemoryArraySpecification) -> int:
+        """Computes a rolling median of the 2D read array and window length
+        and writes it to the 2D write array.
+        This is invoked by a child process."""
+        with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
+            with recover_array_from_shared_memory_and_close(write_array_spec) \
+                    as write_array:
+                write_count = rolling_median_of_column(
+                    read_array, window_length, column_index, write_array
+                )
+                return write_count
+
+Finally a function to copy the output shared memory to a new numpy array:
 
 .. code-block:: python
 
@@ -431,11 +411,20 @@ Finally here is the code for the parent process that puts this all together:
                 write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
         return write_array
 
+This is function that we are going to time so it includes:
+
+- Copying the numpy array to shared memory.
+- Creating the output shared memory.
+- Computing the rolling median with child processes.
+- Copying the output shared memory to a new numpy array.
+- Disposing of any temporaries.
+
 Performance
 ^^^^^^^^^^^^
 
 Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
-Mac OS X with 4 cores and hyper-threading:
+Mac OS X with 4 cores and hyper-threading.
+The rolling median window is 21:
 
 .. image::
     plots/images/perf_rolling_median_shared_memory.png
@@ -793,7 +782,8 @@ The first row is the input, the second the output. Window length is 5:
     [0.0,      math.nan,      2.0,      3.0,      4.0, 5.0, 6.0, math.nan, 8.0, 9.0],
     [math.nan, math.nan, math.nan, math.nan, math.nan, 2.0, 3.0,      4.0, 5.0, 6.0],
 
-Another example, the first row is the input, the second the output. Window length is 5:
+Another example where [3] is now a NaN, the first row is the input, the second the output.
+Window length is 5:
 
 .. code-block:: python
 
