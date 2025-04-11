@@ -267,7 +267,6 @@ We write this as a context manager:
 .. code-block:: python
 
     # NOTE: This code used by the parent process.
-
     @contextlib.contextmanager
     def create_read_shared_memory_array_spec_close_unlink(
             arr: np.ndarray
@@ -302,7 +301,6 @@ On exit this automatically releases the reference to the shared memory from the 
         finally:
             array_shm.close()
 
-TODO:
 
 And use it in the child process:
 
@@ -439,13 +437,13 @@ Performance
 Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
 Mac OS X with 4 cores and hyper-threading:
 
-.. image:: plots/images/perf_rolling_median_shared_memory.png
-    :width: 640
+.. image::
+    plots/images/perf_rolling_median_shared_memory.png
 
 Comparing the **speed** of execution compared to a single process gives:
 
-.. image:: plots/images/perf_rolling_median_shared_memory_ratio.png
-    :width: 640
+.. image::
+    plots/images/perf_rolling_median_shared_memory_ratio.png
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
 The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
