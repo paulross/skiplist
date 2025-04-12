@@ -1,6 +1,6 @@
 # History
 
-## 0.3.16 (2025-04-11)
+## 0.3.16 (2025-04-12)
 
 * Improvements to performance documentation.
 * Minor fix for a linker issue.
