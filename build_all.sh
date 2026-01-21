@@ -13,7 +13,7 @@ set -o pipefail # don't hide errors within pipes
 
 # Takes about 5 to 10 minutes per Python version.
 # See: https://devguide.python.org/versions/
-PYTHON_VERSIONS=('3.8' '3.9' '3.10' '3.11' '3.12' '3.13')
+PYTHON_VERSIONS=('3.8' '3.9' '3.10' '3.11' '3.12' '3.13' '3.14')
 # Used for venvs
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
 PROJECT_NAME="SkipList"
@@ -158,6 +158,8 @@ show_results_of_dist() {
   echo "---> twine upload dist/*"
 }
 
+echo "build_all.sh PID:"
+echo $$
 echo "===> Clean and build C++ code"
 build_cpp
 echo "===> Running C++ tests"

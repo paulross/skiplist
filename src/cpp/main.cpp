@@ -11,6 +11,8 @@
 #include <sstream>
 #include <ctime>
 
+#include <unistd.h>
+
 //#include "SkipList.h"
 //#include "RollingMedian.h"
 
@@ -100,7 +102,10 @@ int test_all() {
 int main(int /* argc */, const char *[] /* argv[] */) {
     int result = 0;
 
+    pid_t pid = getpid();
+
     std::cout << "Running skip list tests..." << std::endl;
+    std::cout << "PID: " << (int)pid << std::endl;
 
     time_t start = clock();
     result = test_all();

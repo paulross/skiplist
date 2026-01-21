@@ -1,5 +1,10 @@
 # History
 
+## 0.3.17 (2026-01-21)
+
+* Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14.
+* Development Status :: 5 - Production/Stable
+
 ## 0.3.16 (2025-04-12)
 
 * Improvements to performance documentation.

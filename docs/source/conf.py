@@ -50,9 +50,9 @@ copyright = u'2016-2024, Paul Ross'
 # built documents.
 #
 # The short X.Y version.
-version = '0.3.16'
+version = '0.3.17'
 # The full version, including alpha/beta/rc tags.
-release = '0.3.16'
+release = '0.3.17'
 
 todo_include_todos = True
 todo_link_only = True
