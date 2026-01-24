@@ -1,0 +1,19 @@
+# Numpy arrays with different column lengths and different number of processes.
+# Columns 16, 1024, 65536
+# NUMPY_SIZE (maximum): 167,772,160 doubles
+# Speedup factor over a single process. columns=16      # Speedup factor over a single process. columns=1024    # Speedup factor over a single process. columns=65536
+# Rows        p=1      p=2      p=4      p=8     p=16   p=1      p=2      p=4      p=8     p=16     p=1      p=2      p=4      p=8     p=16
+32            NaN      NaN      NaN      NaN      NaN   1.000    1.634    1.757    1.717    1.006   1.000    1.879    2.508    2.865    2.722
+64            NaN      NaN      NaN      NaN      NaN   NaN      NaN      NaN      NaN      NaN     1.000    1.798    2.503    3.032    2.819
+128         1.000    0.891    0.767    0.570    0.310   1.000    1.540    1.726    1.826    1.120   1.000    1.803    2.647    3.116    2.989
+256           NaN      NaN      NaN      NaN      NaN   NaN      NaN      NaN      NaN      NaN     1.000    1.825    2.790    3.530    3.450
+512         1.000    0.880    0.802    0.612    0.391   1.000    1.735    2.488    2.821    1.897   1.000    1.751    2.890    3.658    3.784
+1024          NaN      NaN      NaN      NaN      NaN   NaN      NaN      NaN      NaN      NaN     1.000    1.734    3.074    3.979    3.972
+2048        1.000    0.956    0.889    0.697    0.354   1.000    1.696    2.978    3.370    2.669   1.000    1.807    3.268    4.393    4.271
+4096          NaN      NaN      NaN      NaN      NaN   NaN      NaN      NaN      NaN      NaN     1.000    1.814    3.262    4.351    4.265
+8192        1.000    1.145    1.182    0.921    0.355   1.000    1.879    3.254    3.909    3.773   NaN      NaN      NaN      NaN      NaN
+32768       1.000    1.802    2.498    2.164    0.988   1.000    1.813    3.043    3.656    3.543   NaN      NaN      NaN      NaN      NaN
+131072      1.000    1.867    3.072    2.985    1.925   1.000    1.659    2.846    3.715    3.392   NaN      NaN      NaN      NaN      NaN
+524288      1.000    1.904    3.015    2.995    2.759   NaN      NaN      NaN      NaN      NaN     NaN      NaN      NaN      NaN      NaN
+2097152     1.000    1.865    2.860    3.188    3.072   NaN      NaN      NaN      NaN      NaN     NaN      NaN      NaN      NaN      NaN
+8388608     1.000    1.766    2.789    3.200    3.141   NaN      NaN      NaN      NaN      NaN     NaN      NaN      NaN      NaN      NaN
