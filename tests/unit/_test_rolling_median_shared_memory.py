@@ -30,7 +30,6 @@ import io
 import logging
 import math
 import multiprocessing
-import os
 # Python 3.8+, need to be specific about importing this.
 from multiprocessing import shared_memory
 import pprint
@@ -66,7 +65,6 @@ def np_info(a: np.ndarray) -> str:
     with io.StringIO() as file:
         np.info(a, output=file)
         return file.getvalue().rstrip()
-
 
 def np_data_pointer(a: np.ndarray) -> int:
     """The address of the actual data. 'data pointer' in np.info()."""
@@ -440,25 +438,6 @@ def experiment() -> int:  # pragma: no cover
     return 0
 
 
-def monitored_by_pymemtrace_process_tree():
-    input(f'PID: {os.getpid()} monitored_by_pymemtrace_process_tree() go? ')
-    num_processes = 4
-    columns = 2 ** 5  # 32
-    rows = 2 ** 23  # 8388608
-    # rows = 2 ** 20  # 1048576
-    # rows = 2 ** 10  # 1024
-    window_length = 21
-    read_array = np.random.random((rows, columns))
-    tim_start = time.perf_counter()
-    _result = compute_rolling_median_2d_mp(read_array, window_length, num_processes)
-    tim_exec = time.perf_counter() - tim_start
-    print(
-        f'{rows:8d} {columns:8d}'
-        f' Data size: {rows * columns * 8 / 1024 ** 2} (MB)'
-        f' {num_processes:8d} {tim_exec:8.3f}'
-    )
-
-
 def range_power(minimum, maximum, multiplier):
     value = minimum
     while value <= maximum:
@@ -493,16 +472,14 @@ def main() -> int:  # pragma: no cover
     # pytest.main()
     print(f'NUMPY_SIZE: {NUMPY_SIZE:,d}')
     print(f'multiprocessing.cpu_count(): {multiprocessing.cpu_count()}')
-    # # results is {columns : {rows : {processes : time, ...}, ...}, ...}
-    # results = {}
-    # # Simple test:
-    # # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
-    # results[16] = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
-    # results[1024] = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
-    # results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
-    # # dump_results(results)
-
-    monitored_by_pymemtrace_process_tree()
+    # results is {columns : {rows : {processes : time, ...}, ...}, ...}
+    results = {}
+    # Simple test:
+    # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
+    results[16] = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
+    results[1024] = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
+    results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
+    # dump_results(results)
     return 0
 
 
