@@ -13,6 +13,8 @@
 Computing a Rolling Median
 ===============================================
 
+
+-----------------------------------------
 Rolling Median in C++
 -----------------------------------------
 
@@ -82,13 +84,14 @@ Again, this is easy to add.
 
 
 Even Window Length
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``.
 A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and
 ``window length / 2``. This requires that the mean of two types is meaningful which it will not be for strings.
 
 
+-----------------------------------------
 Rolling Median in Python
 ----------------------------------------
 
@@ -145,6 +148,7 @@ Of course this Python code could be made much faster by using a Python C Extensi
 
 .. _rolling-median-mp-shared-memory-label:
 
+----------------------------------------------------------------
 Rolling Median in Python with ``multiprocessing.shared_memory``
 ----------------------------------------------------------------
 
@@ -187,7 +191,7 @@ Pictorially:
     This would save the cost, in time and memory, of the first copy operation.
 
 Code
-^^^^^^
+-----------------------------------------
 
 These are the essential imports:
 
@@ -419,26 +423,90 @@ This is function that we are going to time so it includes:
 - Copying the output shared memory to a new numpy array.
 - Disposing of any temporaries.
 
+
 Performance
+-----------------------------------------
+
+Mac OS X with 4 cores and hyper-threading.
+The table has 16m entries organised with different (column, row) shapes: 16 x 1m, 1k x 128k, 64k x 4k.
+The rolling median window is 21.
+
+Columns: 16
 ^^^^^^^^^^^^
 
-Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
-Mac OS X with 4 cores and hyper-threading.
-The rolling median window is 21:
+Running this on 16 column arrays with 1m rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
-    plots/images/perf_rolling_median_shared_memory.png
+    plots/images/perf_rolling_median_shared_memory_cols_16.png
 
 Comparing the **speed** of execution compared to a single process gives:
 
 .. image::
-    plots/images/perf_rolling_median_shared_memory_ratio.png
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_16.png
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
 The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
 
-Memory Usage
+Columns: 1024
+^^^^^^^^^^^^^^
+
+Running this on 1024 column arrays with up to 131,072 rows with processes from 1 to 16 gives the following execution times.
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_1024.png
+
+Comparing the **speed** of execution compared to a single process gives:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_1024.png
+
+Clearly there is some overhead so it is not really worth doing this for less that 1,000 rows or so.
+
+Columns: 65536
+^^^^^^^^^^^^^^
+
+Running this on 65,536 column arrays with up to 4096 rows with processes from 1 to 16 gives the following execution times.
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_65536.png
+
+Comparing the **speed** of execution compared to a single process gives:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_65536.png
+
+The overhead, by number of columns is very low.
+
+Summary
 ^^^^^^^^^^^^
+
+For different table shapes using four simultaneous processes on a four CPU machine.
+The second column shows the number of rows need to get a 3x performance on a four CPU machine.
+The third column ("Best") shows the maximum speedup.
+
+.. list-table:: Performance Gain
+   :widths: 20 20 20 50
+   :header-rows: 1
+
+   * - Columns
+     - ~Rows for 3x
+     - Best
+     - Notes
+   * - 16
+     - 800,000
+     - 3.3x
+     -
+   * - 1024
+     - 8,000
+     - 3.3x
+     -
+   * - 65536
+     - 128
+     - 3.0x
+     -
+
+Memory Usage
+-----------------------------------------
 
 What I would expect in processing a 100Mb numpy array.
 Values are in Mb.
@@ -671,6 +739,7 @@ Values are in Mb.
     Python process.
 
 
+-----------------------------------------
 Handling NaNs
 -----------------------------------------
 
@@ -688,7 +757,7 @@ Here are several ways of handling NaNs:
 * Forward Filling.
 
 Propogate the Exception
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Here is a rolling median that will raise a ``ValueError`` if there is a NaN in the input.
 
@@ -713,7 +782,7 @@ Here is a rolling median that will raise a ``ValueError`` if there is a NaN in t
 
 
 Make the Median NaN
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Here is a rolling median that will make the median NaN if there is a NaN in the input.
 Incidentally this is the approach that numpy takes.
@@ -750,7 +819,7 @@ The first row is the input, the second the output. Window length is 5:
     [math.nan, math.nan, math.nan, math.nan, math.nan, 3.0, 4.0, math.nan, 4.0, 5.0],
 
 Forward Filling
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Another approach is to replace the NaN with the previous value.
 This is *very popular* in FinTech and is commonly know as *Forward Filling*.
