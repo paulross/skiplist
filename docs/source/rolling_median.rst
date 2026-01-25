@@ -434,15 +434,23 @@ The rolling median window is 21.
 Columns: 16
 ^^^^^^^^^^^^
 
+In this test a 16 column array is created with up to 8,388,608 rows.
+This is up to 134,217,728 entries at 8 bytes a float this is 1,073,741,824 bytes (1GB) in total.
 Running this on 16 column arrays with 1m rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_16.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 16 Columns
 
 Comparing the **speed** of execution compared to a single process gives:
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_ratio_cols_16.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 16 Columns
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
 The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
@@ -450,30 +458,46 @@ The number of processes equal to the number of CPUs is optimum, twice that *migh
 Columns: 1024
 ^^^^^^^^^^^^^^
 
+In this test a 1024 column array is created with up to 131,072 rows.
+This is up to 134,217,728 entries at 8 bytes a float this is 1,073,741,824 bytes (1GB) in total.
 Running this on 1024 column arrays with up to 131,072 rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_1024.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 1024 Columns
 
 Comparing the **speed** of execution compared to a single process gives:
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_ratio_cols_1024.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 1024 Columns
 
 Clearly there is some overhead so it is not really worth doing this for less that 1,000 rows or so.
 
 Columns: 65536
 ^^^^^^^^^^^^^^
 
+In this test a 65,536 column array is created with up to 4096 rows.
+This is up to 268,435,456 entries at 8 bytes a float this is 2,147,483,648 bytes (2GB) in total.
 Running this on 65,536 column arrays with up to 4096 rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_65536.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 65536 Columns
 
 Comparing the **speed** of execution compared to a single process gives:
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_ratio_cols_65536.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 65536 Columns
 
 The overhead, by number of columns is very low.
 

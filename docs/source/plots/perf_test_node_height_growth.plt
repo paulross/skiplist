@@ -23,7 +23,7 @@ set key left
 set key font ",9"
 set boxwidth 0.2 relative
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_test_node_height_growth.png"   # choose the output device
 
 plot "dat/perf_test_node_height_growth.dat" using 3:($5 - $6):7:8:($5 + $6) t "Head Node Height" with candlesticks whiskerbars 0.5, \

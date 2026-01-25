@@ -19,7 +19,7 @@ set key left
 # set title "Big Title\n{/*0.5 subtitle}"
 
 set title "Rolling Median with multiprocessing SharedMemory, 4 CPUs\nColumns: 16"
-set terminal png size 800,640           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_rolling_median_shared_memory_ratio_cols_16.png"   # choose the output device
 
 plot "dat/perf_rolling_median_shared_memory_ratio_cols_16.dat" using 1:2 t "Single process" with lines axes x1y1 lw 2, \
@@ -29,7 +29,7 @@ plot "dat/perf_rolling_median_shared_memory_ratio_cols_16.dat" using 1:2 t "Sing
      "dat/perf_rolling_median_shared_memory_ratio_cols_16.dat" using 1:6 t "16 processes" with linespoints axes x1y1 lw 2
 
 set title "Rolling Median with multiprocessing SharedMemory, 4 CPUs\nColumns: 1024"
-set terminal png size 800,640           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_rolling_median_shared_memory_ratio_cols_1024.png"   # choose the output device
 
 plot "dat/perf_rolling_median_shared_memory_ratio_cols_1024.dat" using 1:2 t "Single process" with lines axes x1y1 lw 2, \
@@ -39,7 +39,7 @@ plot "dat/perf_rolling_median_shared_memory_ratio_cols_1024.dat" using 1:2 t "Si
      "dat/perf_rolling_median_shared_memory_ratio_cols_1024.dat" using 1:6 t "16 processes" with linespoints  axes x1y1 lw 2
 
 set title "Rolling Median with multiprocessing SharedMemory, 4 CPUs\nColumns: 65536"
-set terminal png size 800,640           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_rolling_median_shared_memory_ratio_cols_65536.png"   # choose the output device
 
 plot "dat/perf_rolling_median_shared_memory_ratio_cols_65536.dat" using 1:2 t "Single process" with lines axes x1y1 lw 2, \

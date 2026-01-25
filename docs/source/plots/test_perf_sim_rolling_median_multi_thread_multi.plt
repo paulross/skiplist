@@ -24,7 +24,7 @@ set key left
 set key font ",9"
 set boxwidth 0.2 relative
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/test_perf_sim_rolling_median_multi_thread_multi.png"   # choose the output device
 
 # NOTE: Compute actual time as $4 * $? / $9, e.g. $4 * $5 / $9

@@ -13,7 +13,7 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "biased_coin_effect.dat" using 1:2 via a,b
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/biased_coin_effect.png"   # choose the output device
 
 # pt is pointtype
@@ -29,7 +29,7 @@ set title "Effect of varying p() on size_of() the skip list <double>."
 set ylabel "Size in bytes / node"
 set yrange [0:250]
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/biased_coin_effect_size_of.png"   # choose the output device
 plot "dat/biased_coin_effect.dat" using 1:($6 * 8.0) t "size_of()" with linespoints pt 12 lt 12 lw 2
 

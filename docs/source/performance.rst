@@ -83,6 +83,9 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 
 .. image::
     plots/images/perf_test_double_insert_remove_value.png
+    :width: 500
+    :align: center
+    :alt: Double Performance
 
 ..
     :width: 640
@@ -115,6 +118,9 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 
 .. image::
     plots/images/perf_test_string_insert_remove_value.png
+    :width: 500
+    :align: center
+    :alt: String Performance
 
 Notes:
 
@@ -153,6 +159,9 @@ The lines show the minimum values and the legend shows the log(n) behaviour.
 
 .. image::
     plots/images/perf_test_double_at_has_index.png
+    :width: 500
+    :align: center
+    :alt: Double at/has/index Performance
 
 This shows good O(log(n))'ish type behaviour.
 
@@ -168,6 +177,9 @@ The line shows a very approximate fir to the minimum recorded value of around 0.
 
 .. image::
     plots/images/perf_roll_med_by_win_size.png
+    :width: 500
+    :align: center
+    :alt: Median by Window Size Performance
 
 The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
@@ -242,6 +254,9 @@ The test name is ``perf_size_of()``.
 
 .. image::
     plots/images/perf_size_of.png
+    :width: 500
+    :align: center
+    :alt: sizeof()
 
 ---------------------------------------------
 Height Distribution
@@ -253,6 +268,9 @@ The tests is ``perf_test_node_height_growth()`` in ``src/cpp/test/test_performan
 
 .. image::
     plots/images/perf_test_node_height_growth.png
+    :width: 500
+    :align: center
+    :alt: Node Height Growth
 
 .. _performance-biased-coins-label:
 
@@ -294,6 +312,9 @@ coin toss being heads. The time cost is normalised to ``p(0.5)``.
 
 .. image::
     plots/images/biased_coin_effect.png
+    :width: 500
+    :align: center
+    :alt: Biased Coin
 
 Reducing ``p()`` reduces the number of coarser linked lists that help speed up the search so it is expected that the
 performance would deteriorate.
@@ -319,6 +340,9 @@ In practice a reduction of ``p()`` provides some small space improvement.
 
 .. image::
     plots/images/biased_coin_effect_size_of.png
+    :width: 500
+    :align: center
+    :alt: Biased Coin sizeof()
 
 If the SkipList was highly optimised for rolling median operations it might be worth experimenting with ``p(0.25)``
 or even ``p(0.125)`` and evaluate the time/space requirements but otherwise there seems no reason, in the general case,
@@ -397,6 +421,9 @@ The right Y axis is the ratio: time with ``-DSKIPLIST_THREAD_SUPPORT`` / time wi
 
 .. image::
     plots/images/perf_cpp_threaded_vs_single.png
+    :width: 500
+    :align: center
+    :alt: Multi Threaded Performance
 
 The overhead of using ``-DSKIPLIST_THREAD_SUPPORT`` is about 0% to 15%.
 
@@ -422,6 +449,9 @@ threads contending for the SkipList, also shown is the same for a single threade
 
 .. image::
     plots/images/test_perf_sim_rolling_median_multi_thread_multi.png
+    :width: 500
+    :align: center
+    :alt: Multi-threaded Rolling Median Performance
 
 ====================================
 Python Performance Tests
