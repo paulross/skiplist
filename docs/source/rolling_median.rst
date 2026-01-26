@@ -93,7 +93,7 @@ A more plausible median for even sized window lengths is the mean of ``(window l
 
 -----------------------------------------
 Rolling Median in Python
-----------------------------------------
+-----------------------------------------
 
 Here is an example of computing a rolling median of a ``numpy`` 1D array.
 This creates an array with the same length as the input starting with ``window_length`` ``NaN`` s:
