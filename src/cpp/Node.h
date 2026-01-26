@@ -271,7 +271,9 @@ const Node<T, _Compare> *Node<T, _Compare>::pNode(size_t level) const {
 
 /**
  * Insert a new node with a value.
- * 
+ * A duplicate value is inserted *after* the last same value.
+ * This ensures order stability as it mirrors remove().
+ *
  * @tparam T The type of the Skip List Node values.
  * @tparam _Compare A comparison function for type T.
  * @param value The value of the Node to insert.
@@ -412,6 +414,8 @@ Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Comp
 /**
  * Remove a Node with the given value to be removed.
  * The return value must be deleted, the other Nodes have been adjusted as required.
+ * Where there are duplicate values then the last one is removed.
+ * This ensures order stability as it mirrors insert().
  *
  * @tparam T The type of the Skip List Node values.
  * @tparam _Compare A comparison function for type T.

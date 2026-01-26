@@ -180,6 +180,28 @@ node C. Finally ``HED`` can drop one level before deleting ``E``.
 
 A more detailed description of the algorithm used for each method is in the :ref:`skiplist-cpp-api-label`
 
+------------------------------------
+Insertion and Removal Stability
+------------------------------------
+
+Insertion and removal is *stable*.
+A duplicate value is inserted *after* the last value.
+On removal the *last* value is removed.
+For example here is a visualisation (:ref:`skiplist-visualisation-label`) of inserting the integer 25 three times then removing them one by one:
+
+.. image:: visualisations/doc_insert_remove_duplicate.png
+    :width: 460
+    :align: center
+    :alt: Insert and Remove Stability
+
+The first node is created at ``0x...c000``.
+The second node is created at ``0x...c030`` and that is inserted after the first node.
+The third node is created at ``0x...c060`` and that is inserted after the second node.
+
+On removal the third node at ``0x...c060`` is removed first.
+Then the second node at ``0x...c030``.
+Finally the first node at ``0x...c000``.
+
 =====================================
 Implementation Notes
 =====================================
