@@ -3,4 +3,4 @@
 # REGEX_TAIL: "TAIL:\s+(.+)"
 #  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
 # HEAD: Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
-TEST:    0     0.5      10     0.000026363     0.000006533     0.000020417     0.000042917       200     7586361.2 test_perf_sim_rolling_median_multi_thread_multi_no_thread[0]
+TEST:    0       0      10     0.000023213     0.000003004     0.000019167     0.000029917       200     8615787.6 test_perf_sim_rolling_median_multi_thread_multi_no_thread[0]
