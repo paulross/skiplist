@@ -170,6 +170,8 @@ echo "===> Removing virtual environments"
 remove_virtual_environments
 echo "===> Creating virtual environments"
 create_virtual_environments
+echo "===> Removing .benchmarks directory and benchmark.svg files"
+rm -rf -- ".benchmarks" "benchmark*.svg"
 echo "===> Creating binary wheels"
 create_and_test_bdist_wheel
 echo "===> Creating source distribution"
