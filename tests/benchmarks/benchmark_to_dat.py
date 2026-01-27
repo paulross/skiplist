@@ -171,10 +171,10 @@ def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
             # Scale     Min          Mean         StdDev       Max         Name
             # 512       0.000000451  0.000000599  0.000000691  0.000066975 test_float_iar_begin
             dat_file.write(
-                '# $1        $2           $3           $4           $5          $6\n'
+                '# $1      $2           $3           $4           $5          $6\n'
             )
             dat_file.write(
-                '# Scale     Min          Mean         StdDev       Max         Name\n'
+                '# Scale   Min          Mean         StdDev       Max         Name\n'
             )
             for scale in sorted(index[benchmark_name]):
                 line = [f'{scale:<8d}']
