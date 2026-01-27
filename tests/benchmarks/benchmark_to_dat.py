@@ -166,7 +166,9 @@ def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
                 benchmark_name,
             ]
         ) + '.dat'
-        with open(os.path.join(OUTPUT_DAT_DIR, out_file_name), 'w') as dat_file:
+        out_path = os.path.normpath(os.path.join(OUTPUT_DAT_DIR, out_file_name))
+        logger.info(f'Writing DAT file: {out_path}')
+        with open(out_path, 'w') as dat_file:
             # $1        $2           $3           $4           $5          $6
             # Scale     Min          Mean         StdDev       Max         Name
             # 512       0.000000451  0.000000599  0.000000691  0.000066975 test_float_iar_begin
@@ -193,7 +195,7 @@ def walk_benchmark_directory():
     for root, dirs, files in os.walk(BENCHMARK_DIR):
         files.sort()
         for name in files:
-            path = os.path.join(root, name)
+            path = os.path.normpath(os.path.join(root, name))
             logger.info(f'Reading {path}')
             try:
                 benchmarks = parse_json_file(path)
