@@ -1,0 +1,2487 @@
+Running skip list tests...
+PID: 8050
+                           test_very_simple_insert(): PASS
+                                test_simple_insert(): PASS
+                       test_insert_and_remove_same(): PASS
+                       test_insert_remove_multiple(): PASS
+                                 test_ins_rem_rand(): PASS
+                        test_insert_n_numbers_same(): PASS
+                                           test_at(): PASS
+                                     test_at_fails(): PASS
+                                      test_at_dest(): PASS
+                                test_at_dest_fails(): PASS
+                                          test_has(): PASS
+                                      test_has_not(): PASS
+                                 test_remove_fails(): PASS
+                                     test_at_large(): PASS
+                        test_ins_at_rem_with_srand(): PASS
+                         test_single_insert_remove(): PASS
+                        test_single_ins_rem_middle(): PASS
+                           test_insert_one_million(): PASS
+                            test_insert_nan_throws(): PASS
+                           test_index_basic_7_node(): PASS
+                                 test_index_throws(): PASS
+                                  test_index_large(): PASS
+                       test_reversed_simple_insert(): PASS
+                              test_roll_med_simple(): PASS
+                            test_roll_med_even_win(): PASS
+                           test_roll_med_even_mean(): PASS
+                           test_roll_med_even_mean(): PASS
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:      1 time: 280.219 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:      2 time: 301.039 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:      4 time: 333.248 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:      8 time: 382.52 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:     16 time: 416.498 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:     32 time: 437.396 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:     64 time: 444.878 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:    128 time: 456.715 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:    256 time: 467.727 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:    512 time: 486.762 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:   1024 time: 497.718 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:   2048 time: 519.818 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:   4096 time: 534.474 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:   8192 time: 548.389 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:  16384 time: 558.831 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:  32768 time: 581.834 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width:  65536 time: 578.068 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width: 131072 time: 581.756 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width: 262144 time: 566.856 (ms)
+                      perf_roll_med_odd_index_wins(): vectors length:  1000000 window width: 524288 time: 511.858 (ms)
+                      perf_roll_med_odd_index_wins(): PASS
+test_doc_height_trend
+Comparing the Height of HeadNode with the length of the skip list:
+   i    Length  Height
+   0         1       3
+   1         2       3
+   2         4       2
+   3         8       5
+   4        16       7
+   5        32       5
+   6        64       7
+   7       128      12
+   8       256      10
+   9       512      10
+  10      1024      11
+  11      2048      14
+  12      4096      13
+  13      8192      15
+  14     16384      20
+  15     32768      14
+  16     65536      15
+  17    131072      17
+  18    262144      19
+  19    524288      22
+                             test_doc_height_trend(): PASS
+# tests_doc_simple_dot
+digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "{ 2 | <f3> 0x60000398c090} | { 2 | <f2> 0x60000398c090} | { 1 | <f1> 0x60000398c150}"
+shape = "record"
+];
+"HeadNode0":f1 -> "node00x60000398c150":w1 [];
+"HeadNode0":f2 -> "node00x60000398c090":w2 [];
+"HeadNode0":f3 -> "node00x60000398c090":w3 [];
+
+"node00x60000398c150" [
+label = " { <w1> 1 | <f1> 0x60000398c090 } | <f0> 12"
+shape = "record"
+];
+"node00x60000398c150":f1 -> "node00x60000398c090":w1 [];
+"node00x60000398c090" [
+label = " { <w3> 1 | <f3> 0x60000398c030 } | { <w2> 1 | <f2> 0x60000398c030 } | { <w1> 1 | <f1> 0x60000398c030 } | <f0> 21"
+shape = "record"
+];
+"node00x60000398c090":f1 -> "node00x60000398c030":w1 [];
+"node00x60000398c090":f2 -> "node00x60000398c030":w2 [];
+"node00x60000398c090":f3 -> "node00x60000398c030":w3 [];
+"node00x60000398c030" [
+label = " { <w3> 3 | <f3> 0x0 } | { <w2> 1 | <f2> 0x60000398c060 } | { <w1> 1 | <f1> 0x60000398c060 } | <f0> 42"
+shape = "record"
+];
+"node00x60000398c030":f1 -> "node00x60000398c060":w1 [];
+"node00x60000398c030":f2 -> "node00x60000398c060":w2 [];
+"node00x60000398c030":f3 -> "node00x0":w3 [];
+"node00x60000398c060" [
+label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x60000398c120 } | <f0> 84"
+shape = "record"
+];
+"node00x60000398c060":f1 -> "node00x60000398c120":w1 [];
+"node00x60000398c060":f2 -> "node00x0":w2 [];
+"node00x60000398c120" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 100"
+shape = "record"
+];
+"node00x60000398c120":f1 -> "node00x0":w1 [];
+
+"node00x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+node0 [shape=record, label = "<f0> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+}
+
+                              tests_doc_simple_dot(): PASS
+# test_doc_insert
+digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster1 {
+style=dashed
+label="Skip list iteration 1"
+
+"HeadNode1" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode1":f1 -> "node10x600013d88000":w1 [];
+"HeadNode1":f2 -> "node10x600013d88000":w2 [];
+"HeadNode1":f3 -> "node10x600013d88000":w3 [];
+
+"node10x600013d88000" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node10x600013d88000":f1 -> "node10x0":w1 [];
+"node10x600013d88000":f2 -> "node10x0":w2 [];
+"node10x600013d88000":f3 -> "node10x0":w3 [];
+
+"node10x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster2 {
+style=dashed
+label="Skip list iteration 2"
+
+"HeadNode2" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode2":f1 -> "node20x600013d88000":w1 [];
+"HeadNode2":f2 -> "node20x600013d88000":w2 [];
+"HeadNode2":f3 -> "node20x600013d88000":w3 [];
+
+"node20x600013d88000" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node20x600013d88000":f1 -> "node20x600013d88030":w1 [];
+"node20x600013d88000":f2 -> "node20x600013d88030":w2 [];
+"node20x600013d88000":f3 -> "node20x0":w3 [];
+"node20x600013d88030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node20x600013d88030":f1 -> "node20x0":w1 [];
+"node20x600013d88030":f2 -> "node20x0":w2 [];
+
+"node20x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster3 {
+style=dashed
+label="Skip list iteration 3"
+
+"HeadNode3" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode3":f1 -> "node30x600013d88000":w1 [];
+"HeadNode3":f2 -> "node30x600013d88000":w2 [];
+"HeadNode3":f3 -> "node30x600013d88000":w3 [];
+
+"node30x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node30x600013d88000":f1 -> "node30x600013d88030":w1 [];
+"node30x600013d88000":f2 -> "node30x600013d88030":w2 [];
+"node30x600013d88000":f3 -> "node30x600013d88060":w3 [];
+"node30x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node30x600013d88030":f1 -> "node30x600013d88060":w1 [];
+"node30x600013d88030":f2 -> "node30x600013d88060":w2 [];
+"node30x600013d88060" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node30x600013d88060":f1 -> "node30x0":w1 [];
+"node30x600013d88060":f2 -> "node30x0":w2 [];
+"node30x600013d88060":f3 -> "node30x0":w3 [];
+
+"node30x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster4 {
+style=dashed
+label="Skip list iteration 4"
+
+"HeadNode4" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode4":f1 -> "node40x600013d88000":w1 [];
+"HeadNode4":f2 -> "node40x600013d88000":w2 [];
+"HeadNode4":f3 -> "node40x600013d88000":w3 [];
+
+"node40x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node40x600013d88000":f1 -> "node40x600013d88030":w1 [];
+"node40x600013d88000":f2 -> "node40x600013d88030":w2 [];
+"node40x600013d88000":f3 -> "node40x600013d88060":w3 [];
+"node40x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node40x600013d88030":f1 -> "node40x600013d88060":w1 [];
+"node40x600013d88030":f2 -> "node40x600013d88060":w2 [];
+"node40x600013d88060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node40x600013d88060":f1 -> "node40x600013d880c0":w1 [];
+"node40x600013d88060":f2 -> "node40x0":w2 [];
+"node40x600013d88060":f3 -> "node40x0":w3 [];
+"node40x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node40x600013d880c0":f1 -> "node40x0":w1 [];
+
+"node40x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster5 {
+style=dashed
+label="Skip list iteration 5"
+
+"HeadNode5" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode5":f1 -> "node50x600013d88000":w1 [];
+"HeadNode5":f2 -> "node50x600013d88000":w2 [];
+"HeadNode5":f3 -> "node50x600013d88000":w3 [];
+
+"node50x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node50x600013d88000":f1 -> "node50x600013d88030":w1 [];
+"node50x600013d88000":f2 -> "node50x600013d88030":w2 [];
+"node50x600013d88000":f3 -> "node50x600013d88060":w3 [];
+"node50x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node50x600013d88030":f1 -> "node50x600013d88060":w1 [];
+"node50x600013d88030":f2 -> "node50x600013d88060":w2 [];
+"node50x600013d88060" [
+label = " { <w3> 3 | <f3> 0x0 } | { <w2> 3 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node50x600013d88060":f1 -> "node50x600013d880c0":w1 [];
+"node50x600013d88060":f2 -> "node50x0":w2 [];
+"node50x600013d88060":f3 -> "node50x0":w3 [];
+"node50x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x600013d88090 } | <f0> 3"
+shape = "record"
+];
+"node50x600013d880c0":f1 -> "node50x600013d88090":w1 [];
+"node50x600013d88090" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 4"
+shape = "record"
+];
+"node50x600013d88090":f1 -> "node50x0":w1 [];
+
+"node50x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster6 {
+style=dashed
+label="Skip list iteration 6"
+
+"HeadNode6" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode6":f1 -> "node60x600013d88000":w1 [];
+"HeadNode6":f2 -> "node60x600013d88000":w2 [];
+"HeadNode6":f3 -> "node60x600013d88000":w3 [];
+
+"node60x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node60x600013d88000":f1 -> "node60x600013d88030":w1 [];
+"node60x600013d88000":f2 -> "node60x600013d88030":w2 [];
+"node60x600013d88000":f3 -> "node60x600013d88060":w3 [];
+"node60x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node60x600013d88030":f1 -> "node60x600013d88060":w1 [];
+"node60x600013d88030":f2 -> "node60x600013d88060":w2 [];
+"node60x600013d88060" [
+label = " { <w3> 4 | <f3> 0x0 } | { <w2> 3 | <f2> 0x600013d88150 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node60x600013d88060":f1 -> "node60x600013d880c0":w1 [];
+"node60x600013d88060":f2 -> "node60x600013d88150":w2 [];
+"node60x600013d88060":f3 -> "node60x0":w3 [];
+"node60x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x600013d88090 } | <f0> 3"
+shape = "record"
+];
+"node60x600013d880c0":f1 -> "node60x600013d88090":w1 [];
+"node60x600013d88090" [
+label = " { <w1> 1 | <f1> 0x600013d88150 } | <f0> 4"
+shape = "record"
+];
+"node60x600013d88090":f1 -> "node60x600013d88150":w1 [];
+"node60x600013d88150" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 5"
+shape = "record"
+];
+"node60x600013d88150":f1 -> "node60x0":w1 [];
+"node60x600013d88150":f2 -> "node60x0":w2 [];
+
+"node60x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster7 {
+style=dashed
+label="Skip list iteration 7"
+
+"HeadNode7" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode7":f1 -> "node70x600013d88000":w1 [];
+"HeadNode7":f2 -> "node70x600013d88000":w2 [];
+"HeadNode7":f3 -> "node70x600013d88000":w3 [];
+
+"node70x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node70x600013d88000":f1 -> "node70x600013d88030":w1 [];
+"node70x600013d88000":f2 -> "node70x600013d88030":w2 [];
+"node70x600013d88000":f3 -> "node70x600013d88060":w3 [];
+"node70x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node70x600013d88030":f1 -> "node70x600013d88060":w1 [];
+"node70x600013d88030":f2 -> "node70x600013d88060":w2 [];
+"node70x600013d88060" [
+label = " { <w3> 5 | <f3> 0x0 } | { <w2> 3 | <f2> 0x600013d88150 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node70x600013d88060":f1 -> "node70x600013d880c0":w1 [];
+"node70x600013d88060":f2 -> "node70x600013d88150":w2 [];
+"node70x600013d88060":f3 -> "node70x0":w3 [];
+"node70x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x600013d88090 } | <f0> 3"
+shape = "record"
+];
+"node70x600013d880c0":f1 -> "node70x600013d88090":w1 [];
+"node70x600013d88090" [
+label = " { <w1> 1 | <f1> 0x600013d88150 } | <f0> 4"
+shape = "record"
+];
+"node70x600013d88090":f1 -> "node70x600013d88150":w1 [];
+"node70x600013d88150" [
+label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d88180 } | <f0> 5"
+shape = "record"
+];
+"node70x600013d88150":f1 -> "node70x600013d88180":w1 [];
+"node70x600013d88150":f2 -> "node70x0":w2 [];
+"node70x600013d88180" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 6"
+shape = "record"
+];
+"node70x600013d88180":f1 -> "node70x0":w1 [];
+
+"node70x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster8 {
+style=dashed
+label="Skip list iteration 8"
+
+"HeadNode8" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode8":f1 -> "node80x600013d88000":w1 [];
+"HeadNode8":f2 -> "node80x600013d88000":w2 [];
+"HeadNode8":f3 -> "node80x600013d88000":w3 [];
+
+"node80x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node80x600013d88000":f1 -> "node80x600013d88030":w1 [];
+"node80x600013d88000":f2 -> "node80x600013d88030":w2 [];
+"node80x600013d88000":f3 -> "node80x600013d88060":w3 [];
+"node80x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node80x600013d88030":f1 -> "node80x600013d88060":w1 [];
+"node80x600013d88030":f2 -> "node80x600013d88060":w2 [];
+"node80x600013d88060" [
+label = " { <w3> 5 | <f3> 0x600013d88120 } | { <w2> 3 | <f2> 0x600013d88150 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node80x600013d88060":f1 -> "node80x600013d880c0":w1 [];
+"node80x600013d88060":f2 -> "node80x600013d88150":w2 [];
+"node80x600013d88060":f3 -> "node80x600013d88120":w3 [];
+"node80x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x600013d88090 } | <f0> 3"
+shape = "record"
+];
+"node80x600013d880c0":f1 -> "node80x600013d88090":w1 [];
+"node80x600013d88090" [
+label = " { <w1> 1 | <f1> 0x600013d88150 } | <f0> 4"
+shape = "record"
+];
+"node80x600013d88090":f1 -> "node80x600013d88150":w1 [];
+"node80x600013d88150" [
+label = " { <w2> 2 | <f2> 0x600013d88120 } | { <w1> 1 | <f1> 0x600013d88180 } | <f0> 5"
+shape = "record"
+];
+"node80x600013d88150":f1 -> "node80x600013d88180":w1 [];
+"node80x600013d88150":f2 -> "node80x600013d88120":w2 [];
+"node80x600013d88180" [
+label = " { <w1> 1 | <f1> 0x600013d88120 } | <f0> 6"
+shape = "record"
+];
+"node80x600013d88180":f1 -> "node80x600013d88120":w1 [];
+"node80x600013d88120" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 7"
+shape = "record"
+];
+"node80x600013d88120":f1 -> "node80x0":w1 [];
+"node80x600013d88120":f2 -> "node80x0":w2 [];
+"node80x600013d88120":f3 -> "node80x0":w3 [];
+
+"node80x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+node0:f1 -> HeadNode1 [style=invis];
+node0:f2 -> HeadNode2 [style=invis];
+node0:f3 -> HeadNode3 [style=invis];
+node0:f4 -> HeadNode4 [style=invis];
+node0:f5 -> HeadNode5 [style=invis];
+node0:f6 -> HeadNode6 [style=invis];
+node0:f7 -> HeadNode7 [style=invis];
+node0:f8 -> HeadNode8 [style=invis];
+}
+
+                                   test_doc_insert(): PASS
+# test_doc_insert_remove
+digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster1 {
+style=dashed
+label="Skip list iteration 1"
+
+"HeadNode1" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode1":f1 -> "node10x600013d88000":w1 [];
+"HeadNode1":f2 -> "node10x600013d88000":w2 [];
+"HeadNode1":f3 -> "node10x600013d88000":w3 [];
+
+"node10x600013d88000" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node10x600013d88000":f1 -> "node10x0":w1 [];
+"node10x600013d88000":f2 -> "node10x0":w2 [];
+"node10x600013d88000":f3 -> "node10x0":w3 [];
+
+"node10x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster2 {
+style=dashed
+label="Skip list iteration 2"
+
+"HeadNode2" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode2":f1 -> "node20x600013d88000":w1 [];
+"HeadNode2":f2 -> "node20x600013d88000":w2 [];
+"HeadNode2":f3 -> "node20x600013d88000":w3 [];
+
+"node20x600013d88000" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node20x600013d88000":f1 -> "node20x600013d88030":w1 [];
+"node20x600013d88000":f2 -> "node20x600013d88030":w2 [];
+"node20x600013d88000":f3 -> "node20x0":w3 [];
+"node20x600013d88030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node20x600013d88030":f1 -> "node20x0":w1 [];
+"node20x600013d88030":f2 -> "node20x0":w2 [];
+
+"node20x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster3 {
+style=dashed
+label="Skip list iteration 3"
+
+"HeadNode3" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode3":f1 -> "node30x600013d88000":w1 [];
+"HeadNode3":f2 -> "node30x600013d88000":w2 [];
+"HeadNode3":f3 -> "node30x600013d88000":w3 [];
+
+"node30x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node30x600013d88000":f1 -> "node30x600013d88030":w1 [];
+"node30x600013d88000":f2 -> "node30x600013d88030":w2 [];
+"node30x600013d88000":f3 -> "node30x600013d88060":w3 [];
+"node30x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node30x600013d88030":f1 -> "node30x600013d88060":w1 [];
+"node30x600013d88030":f2 -> "node30x600013d88060":w2 [];
+"node30x600013d88060" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node30x600013d88060":f1 -> "node30x0":w1 [];
+"node30x600013d88060":f2 -> "node30x0":w2 [];
+"node30x600013d88060":f3 -> "node30x0":w3 [];
+
+"node30x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster4 {
+style=dashed
+label="Skip list iteration 4"
+
+"HeadNode4" [
+label = "{ 1 | <f3> 0x600013d88000} | { 1 | <f2> 0x600013d88000} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode4":f1 -> "node40x600013d88000":w1 [];
+"HeadNode4":f2 -> "node40x600013d88000":w2 [];
+"HeadNode4":f3 -> "node40x600013d88000":w3 [];
+
+"node40x600013d88000" [
+label = " { <w3> 2 | <f3> 0x600013d88060 } | { <w2> 1 | <f2> 0x600013d88030 } | { <w1> 1 | <f1> 0x600013d88030 } | <f0> 0"
+shape = "record"
+];
+"node40x600013d88000":f1 -> "node40x600013d88030":w1 [];
+"node40x600013d88000":f2 -> "node40x600013d88030":w2 [];
+"node40x600013d88000":f3 -> "node40x600013d88060":w3 [];
+"node40x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node40x600013d88030":f1 -> "node40x600013d88060":w1 [];
+"node40x600013d88030":f2 -> "node40x600013d88060":w2 [];
+"node40x600013d88060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node40x600013d88060":f1 -> "node40x600013d880c0":w1 [];
+"node40x600013d88060":f2 -> "node40x0":w2 [];
+"node40x600013d88060":f3 -> "node40x0":w3 [];
+"node40x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node40x600013d880c0":f1 -> "node40x0":w1 [];
+
+"node40x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster5 {
+style=dashed
+label="Skip list iteration 5"
+
+"HeadNode5" [
+label = "{ 2 | <f3> 0x600013d88060} | { 1 | <f2> 0x600013d88030} | { 1 | <f1> 0x600013d88030}"
+shape = "record"
+];
+"HeadNode5":f1 -> "node50x600013d88030":w1 [];
+"HeadNode5":f2 -> "node50x600013d88030":w2 [];
+"HeadNode5":f3 -> "node50x600013d88060":w3 [];
+
+"node50x600013d88030" [
+label = " { <w2> 1 | <f2> 0x600013d88060 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 1"
+shape = "record"
+];
+"node50x600013d88030":f1 -> "node50x600013d88060":w1 [];
+"node50x600013d88030":f2 -> "node50x600013d88060":w2 [];
+"node50x600013d88060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node50x600013d88060":f1 -> "node50x600013d880c0":w1 [];
+"node50x600013d88060":f2 -> "node50x0":w2 [];
+"node50x600013d88060":f3 -> "node50x0":w3 [];
+"node50x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node50x600013d880c0":f1 -> "node50x0":w1 [];
+
+"node50x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster6 {
+style=dashed
+label="Skip list iteration 6"
+
+"HeadNode6" [
+label = "{ 1 | <f3> 0x600013d88060} | { 1 | <f2> 0x600013d88060} | { 1 | <f1> 0x600013d88060}"
+shape = "record"
+];
+"HeadNode6":f1 -> "node60x600013d88060":w1 [];
+"HeadNode6":f2 -> "node60x600013d88060":w2 [];
+"HeadNode6":f3 -> "node60x600013d88060":w3 [];
+
+"node60x600013d88060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d880c0 } | <f0> 2"
+shape = "record"
+];
+"node60x600013d88060":f1 -> "node60x600013d880c0":w1 [];
+"node60x600013d88060":f2 -> "node60x0":w2 [];
+"node60x600013d88060":f3 -> "node60x0":w3 [];
+"node60x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node60x600013d880c0":f1 -> "node60x0":w1 [];
+
+"node60x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster7 {
+style=dashed
+label="Skip list iteration 7"
+
+"HeadNode7" [
+label = "{ 1 | <f1> 0x600013d880c0}"
+shape = "record"
+];
+"HeadNode7":f1 -> "node70x600013d880c0":w1 [];
+
+"node70x600013d880c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node70x600013d880c0":f1 -> "node70x0":w1 [];
+
+"node70x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster8 {
+style=dashed
+label="Skip list iteration 8"
+
+"HeadNode8" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+node0:f1 -> HeadNode1 [style=invis];
+node0:f2 -> HeadNode2 [style=invis];
+node0:f3 -> HeadNode3 [style=invis];
+node0:f4 -> HeadNode4 [style=invis];
+node0:f5 -> HeadNode5 [style=invis];
+node0:f6 -> HeadNode6 [style=invis];
+node0:f7 -> HeadNode7 [style=invis];
+node0:f8 -> HeadNode8 [style=invis];
+}
+
+                            test_doc_insert_remove(): PASS
+# test_doc_insert_remove_duplicates
+digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster1 {
+style=dashed
+label="Skip list iteration 1"
+
+"HeadNode1" [
+label = "{ 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode1":f1 -> "node10x600013d88000":w1 [];
+
+"node10x600013d88000" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+shape = "record"
+];
+"node10x600013d88000":f1 -> "node10x0":w1 [];
+
+"node10x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster2 {
+style=dashed
+label="Skip list iteration 2"
+
+"HeadNode2" [
+label = "{ 2 | <f2> 0x600013d88030} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode2":f1 -> "node20x600013d88000":w1 [];
+"HeadNode2":f2 -> "node20x600013d88030":w2 [];
+
+"node20x600013d88000" [
+label = " { <w1> 1 | <f1> 0x600013d88030 } | <f0> 25"
+shape = "record"
+];
+"node20x600013d88000":f1 -> "node20x600013d88030":w1 [];
+"node20x600013d88030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 25"
+shape = "record"
+];
+"node20x600013d88030":f1 -> "node20x0":w1 [];
+"node20x600013d88030":f2 -> "node20x0":w2 [];
+
+"node20x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster3 {
+style=dashed
+label="Skip list iteration 3"
+
+"HeadNode3" [
+label = "{ 2 | <f2> 0x600013d88030} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode3":f1 -> "node30x600013d88000":w1 [];
+"HeadNode3":f2 -> "node30x600013d88030":w2 [];
+
+"node30x600013d88000" [
+label = " { <w1> 1 | <f1> 0x600013d88030 } | <f0> 25"
+shape = "record"
+];
+"node30x600013d88000":f1 -> "node30x600013d88030":w1 [];
+"node30x600013d88030" [
+label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600013d88060 } | <f0> 25"
+shape = "record"
+];
+"node30x600013d88030":f1 -> "node30x600013d88060":w1 [];
+"node30x600013d88030":f2 -> "node30x0":w2 [];
+"node30x600013d88060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+shape = "record"
+];
+"node30x600013d88060":f1 -> "node30x0":w1 [];
+
+"node30x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster4 {
+style=dashed
+label="Skip list iteration 4"
+
+"HeadNode4" [
+label = "{ 2 | <f2> 0x600013d88030} | { 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode4":f1 -> "node40x600013d88000":w1 [];
+"HeadNode4":f2 -> "node40x600013d88030":w2 [];
+
+"node40x600013d88000" [
+label = " { <w1> 1 | <f1> 0x600013d88030 } | <f0> 25"
+shape = "record"
+];
+"node40x600013d88000":f1 -> "node40x600013d88030":w1 [];
+"node40x600013d88030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 25"
+shape = "record"
+];
+"node40x600013d88030":f1 -> "node40x0":w1 [];
+"node40x600013d88030":f2 -> "node40x0":w2 [];
+
+"node40x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster5 {
+style=dashed
+label="Skip list iteration 5"
+
+"HeadNode5" [
+label = "{ 1 | <f1> 0x600013d88000}"
+shape = "record"
+];
+"HeadNode5":f1 -> "node50x600013d88000":w1 [];
+
+"node50x600013d88000" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+shape = "record"
+];
+"node50x600013d88000":f1 -> "node50x0":w1 [];
+
+"node50x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster6 {
+style=dashed
+label="Skip list iteration 6"
+
+"HeadNode6" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+node0:f1 -> HeadNode1 [style=invis];
+node0:f2 -> HeadNode2 [style=invis];
+node0:f3 -> HeadNode3 [style=invis];
+node0:f4 -> HeadNode4 [style=invis];
+node0:f5 -> HeadNode5 [style=invis];
+node0:f6 -> HeadNode6 [style=invis];
+}
+
+                 test_doc_insert_remove_duplicates(): PASS
+# test_doc_insert_remove_repeat
+digraph SkipList {
+label = "SkipList."
+graph [rankdir = "LR"];
+node [fontsize = "12" shape = "ellipse"];
+edge [];
+
+subgraph cluster0 {
+style=dashed
+label="Skip list iteration 0"
+
+"HeadNode0" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster1 {
+style=dashed
+label="Skip list iteration 1"
+
+"HeadNode1" [
+label = "{ 1 | <f3> 0x600003f1c000} | { 1 | <f2> 0x600003f1c000} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode1":f1 -> "node10x600003f1c000":w1 [];
+"HeadNode1":f2 -> "node10x600003f1c000":w2 [];
+"HeadNode1":f3 -> "node10x600003f1c000":w3 [];
+
+"node10x600003f1c000" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node10x600003f1c000":f1 -> "node10x0":w1 [];
+"node10x600003f1c000":f2 -> "node10x0":w2 [];
+"node10x600003f1c000":f3 -> "node10x0":w3 [];
+
+"node10x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster2 {
+style=dashed
+label="Skip list iteration 2"
+
+"HeadNode2" [
+label = "{ 1 | <f3> 0x600003f1c000} | { 1 | <f2> 0x600003f1c000} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode2":f1 -> "node20x600003f1c000":w1 [];
+"HeadNode2":f2 -> "node20x600003f1c000":w2 [];
+"HeadNode2":f3 -> "node20x600003f1c000":w3 [];
+
+"node20x600003f1c000" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 1 | <f2> 0x600003f1c030 } | { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node20x600003f1c000":f1 -> "node20x600003f1c030":w1 [];
+"node20x600003f1c000":f2 -> "node20x600003f1c030":w2 [];
+"node20x600003f1c000":f3 -> "node20x0":w3 [];
+"node20x600003f1c030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node20x600003f1c030":f1 -> "node20x0":w1 [];
+"node20x600003f1c030":f2 -> "node20x0":w2 [];
+
+"node20x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster3 {
+style=dashed
+label="Skip list iteration 3"
+
+"HeadNode3" [
+label = "{ 1 | <f3> 0x600003f1c000} | { 1 | <f2> 0x600003f1c000} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode3":f1 -> "node30x600003f1c000":w1 [];
+"HeadNode3":f2 -> "node30x600003f1c000":w2 [];
+"HeadNode3":f3 -> "node30x600003f1c000":w3 [];
+
+"node30x600003f1c000" [
+label = " { <w3> 2 | <f3> 0x600003f1c060 } | { <w2> 1 | <f2> 0x600003f1c030 } | { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node30x600003f1c000":f1 -> "node30x600003f1c030":w1 [];
+"node30x600003f1c000":f2 -> "node30x600003f1c030":w2 [];
+"node30x600003f1c000":f3 -> "node30x600003f1c060":w3 [];
+"node30x600003f1c030" [
+label = " { <w2> 1 | <f2> 0x600003f1c060 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node30x600003f1c030":f1 -> "node30x600003f1c060":w1 [];
+"node30x600003f1c030":f2 -> "node30x600003f1c060":w2 [];
+"node30x600003f1c060" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node30x600003f1c060":f1 -> "node30x0":w1 [];
+"node30x600003f1c060":f2 -> "node30x0":w2 [];
+"node30x600003f1c060":f3 -> "node30x0":w3 [];
+
+"node30x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster4 {
+style=dashed
+label="Skip list iteration 4"
+
+"HeadNode4" [
+label = "{ 1 | <f3> 0x600003f1c000} | { 1 | <f2> 0x600003f1c000} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode4":f1 -> "node40x600003f1c000":w1 [];
+"HeadNode4":f2 -> "node40x600003f1c000":w2 [];
+"HeadNode4":f3 -> "node40x600003f1c000":w3 [];
+
+"node40x600003f1c000" [
+label = " { <w3> 2 | <f3> 0x600003f1c060 } | { <w2> 1 | <f2> 0x600003f1c030 } | { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node40x600003f1c000":f1 -> "node40x600003f1c030":w1 [];
+"node40x600003f1c000":f2 -> "node40x600003f1c030":w2 [];
+"node40x600003f1c000":f3 -> "node40x600003f1c060":w3 [];
+"node40x600003f1c030" [
+label = " { <w2> 1 | <f2> 0x600003f1c060 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node40x600003f1c030":f1 -> "node40x600003f1c060":w1 [];
+"node40x600003f1c030":f2 -> "node40x600003f1c060":w2 [];
+"node40x600003f1c060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node40x600003f1c060":f1 -> "node40x600003f1c0c0":w1 [];
+"node40x600003f1c060":f2 -> "node40x0":w2 [];
+"node40x600003f1c060":f3 -> "node40x0":w3 [];
+"node40x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node40x600003f1c0c0":f1 -> "node40x0":w1 [];
+
+"node40x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster5 {
+style=dashed
+label="Skip list iteration 5"
+
+"HeadNode5" [
+label = "{ 2 | <f3> 0x600003f1c060} | { 1 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c030}"
+shape = "record"
+];
+"HeadNode5":f1 -> "node50x600003f1c030":w1 [];
+"HeadNode5":f2 -> "node50x600003f1c030":w2 [];
+"HeadNode5":f3 -> "node50x600003f1c060":w3 [];
+
+"node50x600003f1c030" [
+label = " { <w2> 1 | <f2> 0x600003f1c060 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node50x600003f1c030":f1 -> "node50x600003f1c060":w1 [];
+"node50x600003f1c030":f2 -> "node50x600003f1c060":w2 [];
+"node50x600003f1c060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node50x600003f1c060":f1 -> "node50x600003f1c0c0":w1 [];
+"node50x600003f1c060":f2 -> "node50x0":w2 [];
+"node50x600003f1c060":f3 -> "node50x0":w3 [];
+"node50x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node50x600003f1c0c0":f1 -> "node50x0":w1 [];
+
+"node50x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster6 {
+style=dashed
+label="Skip list iteration 6"
+
+"HeadNode6" [
+label = "{ 1 | <f3> 0x600003f1c060} | { 1 | <f2> 0x600003f1c060} | { 1 | <f1> 0x600003f1c060}"
+shape = "record"
+];
+"HeadNode6":f1 -> "node60x600003f1c060":w1 [];
+"HeadNode6":f2 -> "node60x600003f1c060":w2 [];
+"HeadNode6":f3 -> "node60x600003f1c060":w3 [];
+
+"node60x600003f1c060" [
+label = " { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node60x600003f1c060":f1 -> "node60x600003f1c0c0":w1 [];
+"node60x600003f1c060":f2 -> "node60x0":w2 [];
+"node60x600003f1c060":f3 -> "node60x0":w3 [];
+"node60x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node60x600003f1c0c0":f1 -> "node60x0":w1 [];
+
+"node60x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster7 {
+style=dashed
+label="Skip list iteration 7"
+
+"HeadNode7" [
+label = "{ 1 | <f1> 0x600003f1c0c0}"
+shape = "record"
+];
+"HeadNode7":f1 -> "node70x600003f1c0c0":w1 [];
+
+"node70x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node70x600003f1c0c0":f1 -> "node70x0":w1 [];
+
+"node70x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster8 {
+style=dashed
+label="Skip list iteration 8"
+
+"HeadNode8" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster9 {
+style=dashed
+label="Skip list iteration 9"
+
+"HeadNode9" [
+label = "{ 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode9":f1 -> "node90x600003f1c000":w1 [];
+
+"node90x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node90x600003f1c000":f1 -> "node90x0":w1 [];
+
+"node90x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster10 {
+style=dashed
+label="Skip list iteration 10"
+
+"HeadNode10" [
+label = "{ 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode10":f1 -> "node100x600003f1c000":w1 [];
+"HeadNode10":f2 -> "node100x600003f1c030":w2 [];
+
+"node100x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node100x600003f1c000":f1 -> "node100x600003f1c030":w1 [];
+"node100x600003f1c030" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node100x600003f1c030":f1 -> "node100x0":w1 [];
+"node100x600003f1c030":f2 -> "node100x0":w2 [];
+
+"node100x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster11 {
+style=dashed
+label="Skip list iteration 11"
+
+"HeadNode11" [
+label = "{ 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode11":f1 -> "node110x600003f1c000":w1 [];
+"HeadNode11":f2 -> "node110x600003f1c030":w2 [];
+
+"node110x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node110x600003f1c000":f1 -> "node110x600003f1c030":w1 [];
+"node110x600003f1c030" [
+label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node110x600003f1c030":f1 -> "node110x600003f1c060":w1 [];
+"node110x600003f1c030":f2 -> "node110x0":w2 [];
+"node110x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node110x600003f1c060":f1 -> "node110x0":w1 [];
+
+"node110x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster12 {
+style=dashed
+label="Skip list iteration 12"
+
+"HeadNode12" [
+label = "{ 4 | <f3> 0x600003f1c0c0} | { 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode12":f1 -> "node120x600003f1c000":w1 [];
+"HeadNode12":f2 -> "node120x600003f1c030":w2 [];
+"HeadNode12":f3 -> "node120x600003f1c0c0":w3 [];
+
+"node120x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node120x600003f1c000":f1 -> "node120x600003f1c030":w1 [];
+"node120x600003f1c030" [
+label = " { <w2> 2 | <f2> 0x600003f1c0c0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node120x600003f1c030":f1 -> "node120x600003f1c060":w1 [];
+"node120x600003f1c030":f2 -> "node120x600003f1c0c0":w2 [];
+"node120x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node120x600003f1c060":f1 -> "node120x600003f1c0c0":w1 [];
+"node120x600003f1c0c0" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node120x600003f1c0c0":f1 -> "node120x0":w1 [];
+"node120x600003f1c0c0":f2 -> "node120x0":w2 [];
+"node120x600003f1c0c0":f3 -> "node120x0":w3 [];
+
+"node120x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster13 {
+style=dashed
+label="Skip list iteration 13"
+
+"HeadNode13" [
+label = "{ 3 | <f3> 0x600003f1c0c0} | { 1 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c030}"
+shape = "record"
+];
+"HeadNode13":f1 -> "node130x600003f1c030":w1 [];
+"HeadNode13":f2 -> "node130x600003f1c030":w2 [];
+"HeadNode13":f3 -> "node130x600003f1c0c0":w3 [];
+
+"node130x600003f1c030" [
+label = " { <w2> 2 | <f2> 0x600003f1c0c0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node130x600003f1c030":f1 -> "node130x600003f1c060":w1 [];
+"node130x600003f1c030":f2 -> "node130x600003f1c0c0":w2 [];
+"node130x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node130x600003f1c060":f1 -> "node130x600003f1c0c0":w1 [];
+"node130x600003f1c0c0" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node130x600003f1c0c0":f1 -> "node130x0":w1 [];
+"node130x600003f1c0c0":f2 -> "node130x0":w2 [];
+"node130x600003f1c0c0":f3 -> "node130x0":w3 [];
+
+"node130x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster14 {
+style=dashed
+label="Skip list iteration 14"
+
+"HeadNode14" [
+label = "{ 2 | <f3> 0x600003f1c0c0} | { 2 | <f2> 0x600003f1c0c0} | { 1 | <f1> 0x600003f1c060}"
+shape = "record"
+];
+"HeadNode14":f1 -> "node140x600003f1c060":w1 [];
+"HeadNode14":f2 -> "node140x600003f1c0c0":w2 [];
+"HeadNode14":f3 -> "node140x600003f1c0c0":w3 [];
+
+"node140x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node140x600003f1c060":f1 -> "node140x600003f1c0c0":w1 [];
+"node140x600003f1c0c0" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node140x600003f1c0c0":f1 -> "node140x0":w1 [];
+"node140x600003f1c0c0":f2 -> "node140x0":w2 [];
+"node140x600003f1c0c0":f3 -> "node140x0":w3 [];
+
+"node140x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster15 {
+style=dashed
+label="Skip list iteration 15"
+
+"HeadNode15" [
+label = "{ 1 | <f3> 0x600003f1c0c0} | { 1 | <f2> 0x600003f1c0c0} | { 1 | <f1> 0x600003f1c0c0}"
+shape = "record"
+];
+"HeadNode15":f1 -> "node150x600003f1c0c0":w1 [];
+"HeadNode15":f2 -> "node150x600003f1c0c0":w2 [];
+"HeadNode15":f3 -> "node150x600003f1c0c0":w3 [];
+
+"node150x600003f1c0c0" [
+label = " { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node150x600003f1c0c0":f1 -> "node150x0":w1 [];
+"node150x600003f1c0c0":f2 -> "node150x0":w2 [];
+"node150x600003f1c0c0":f3 -> "node150x0":w3 [];
+
+"node150x0" [label = "<w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster16 {
+style=dashed
+label="Skip list iteration 16"
+
+"HeadNode16" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster17 {
+style=dashed
+label="Skip list iteration 17"
+
+"HeadNode17" [
+label = "{ 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode17":f1 -> "node170x600003f1c000":w1 [];
+
+"node170x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node170x600003f1c000":f1 -> "node170x0":w1 [];
+
+"node170x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster18 {
+style=dashed
+label="Skip list iteration 18"
+
+"HeadNode18" [
+label = "{ 2 | <f5> 0x600003f1c030} | { 2 | <f4> 0x600003f1c030} | { 2 | <f3> 0x600003f1c030} | { 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode18":f1 -> "node180x600003f1c000":w1 [];
+"HeadNode18":f2 -> "node180x600003f1c030":w2 [];
+"HeadNode18":f3 -> "node180x600003f1c030":w3 [];
+"HeadNode18":f4 -> "node180x600003f1c030":w4 [];
+"HeadNode18":f5 -> "node180x600003f1c030":w5 [];
+
+"node180x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node180x600003f1c000":f1 -> "node180x600003f1c030":w1 [];
+"node180x600003f1c030" [
+label = " { <w5> 1 | <f5> 0x0 } | { <w4> 1 | <f4> 0x0 } | { <w3> 1 | <f3> 0x0 } | { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node180x600003f1c030":f1 -> "node180x0":w1 [];
+"node180x600003f1c030":f2 -> "node180x0":w2 [];
+"node180x600003f1c030":f3 -> "node180x0":w3 [];
+"node180x600003f1c030":f4 -> "node180x0":w4 [];
+"node180x600003f1c030":f5 -> "node180x0":w5 [];
+
+"node180x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster19 {
+style=dashed
+label="Skip list iteration 19"
+
+"HeadNode19" [
+label = "{ 2 | <f5> 0x600003f1c030} | { 2 | <f4> 0x600003f1c030} | { 2 | <f3> 0x600003f1c030} | { 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode19":f1 -> "node190x600003f1c000":w1 [];
+"HeadNode19":f2 -> "node190x600003f1c030":w2 [];
+"HeadNode19":f3 -> "node190x600003f1c030":w3 [];
+"HeadNode19":f4 -> "node190x600003f1c030":w4 [];
+"HeadNode19":f5 -> "node190x600003f1c030":w5 [];
+
+"node190x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node190x600003f1c000":f1 -> "node190x600003f1c030":w1 [];
+"node190x600003f1c030" [
+label = " { <w5> 2 | <f5> 0x0 } | { <w4> 2 | <f4> 0x0 } | { <w3> 2 | <f3> 0x0 } | { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node190x600003f1c030":f1 -> "node190x600003f1c060":w1 [];
+"node190x600003f1c030":f2 -> "node190x0":w2 [];
+"node190x600003f1c030":f3 -> "node190x0":w3 [];
+"node190x600003f1c030":f4 -> "node190x0":w4 [];
+"node190x600003f1c030":f5 -> "node190x0":w5 [];
+"node190x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node190x600003f1c060":f1 -> "node190x0":w1 [];
+
+"node190x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster20 {
+style=dashed
+label="Skip list iteration 20"
+
+"HeadNode20" [
+label = "{ 2 | <f5> 0x600003f1c030} | { 2 | <f4> 0x600003f1c030} | { 2 | <f3> 0x600003f1c030} | { 2 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode20":f1 -> "node200x600003f1c000":w1 [];
+"HeadNode20":f2 -> "node200x600003f1c030":w2 [];
+"HeadNode20":f3 -> "node200x600003f1c030":w3 [];
+"HeadNode20":f4 -> "node200x600003f1c030":w4 [];
+"HeadNode20":f5 -> "node200x600003f1c030":w5 [];
+
+"node200x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node200x600003f1c000":f1 -> "node200x600003f1c030":w1 [];
+"node200x600003f1c030" [
+label = " { <w5> 3 | <f5> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w2> 3 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node200x600003f1c030":f1 -> "node200x600003f1c060":w1 [];
+"node200x600003f1c030":f2 -> "node200x0":w2 [];
+"node200x600003f1c030":f3 -> "node200x0":w3 [];
+"node200x600003f1c030":f4 -> "node200x0":w4 [];
+"node200x600003f1c030":f5 -> "node200x0":w5 [];
+"node200x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node200x600003f1c060":f1 -> "node200x600003f1c0c0":w1 [];
+"node200x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node200x600003f1c0c0":f1 -> "node200x0":w1 [];
+
+"node200x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster21 {
+style=dashed
+label="Skip list iteration 21"
+
+"HeadNode21" [
+label = "{ 1 | <f5> 0x600003f1c030} | { 1 | <f4> 0x600003f1c030} | { 1 | <f3> 0x600003f1c030} | { 1 | <f2> 0x600003f1c030} | { 1 | <f1> 0x600003f1c030}"
+shape = "record"
+];
+"HeadNode21":f1 -> "node210x600003f1c030":w1 [];
+"HeadNode21":f2 -> "node210x600003f1c030":w2 [];
+"HeadNode21":f3 -> "node210x600003f1c030":w3 [];
+"HeadNode21":f4 -> "node210x600003f1c030":w4 [];
+"HeadNode21":f5 -> "node210x600003f1c030":w5 [];
+
+"node210x600003f1c030" [
+label = " { <w5> 3 | <f5> 0x0 } | { <w4> 3 | <f4> 0x0 } | { <w3> 3 | <f3> 0x0 } | { <w2> 3 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node210x600003f1c030":f1 -> "node210x600003f1c060":w1 [];
+"node210x600003f1c030":f2 -> "node210x0":w2 [];
+"node210x600003f1c030":f3 -> "node210x0":w3 [];
+"node210x600003f1c030":f4 -> "node210x0":w4 [];
+"node210x600003f1c030":f5 -> "node210x0":w5 [];
+"node210x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node210x600003f1c060":f1 -> "node210x600003f1c0c0":w1 [];
+"node210x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node210x600003f1c0c0":f1 -> "node210x0":w1 [];
+
+"node210x0" [label = "<w5> NULL | <w4> NULL | <w3> NULL | <w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster22 {
+style=dashed
+label="Skip list iteration 22"
+
+"HeadNode22" [
+label = "{ 1 | <f1> 0x600003f1c060}"
+shape = "record"
+];
+"HeadNode22":f1 -> "node220x600003f1c060":w1 [];
+
+"node220x600003f1c060" [
+label = " { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node220x600003f1c060":f1 -> "node220x600003f1c0c0":w1 [];
+"node220x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node220x600003f1c0c0":f1 -> "node220x0":w1 [];
+
+"node220x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster23 {
+style=dashed
+label="Skip list iteration 23"
+
+"HeadNode23" [
+label = "{ 1 | <f1> 0x600003f1c0c0}"
+shape = "record"
+];
+"HeadNode23":f1 -> "node230x600003f1c0c0":w1 [];
+
+"node230x600003f1c0c0" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node230x600003f1c0c0":f1 -> "node230x0":w1 [];
+
+"node230x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster24 {
+style=dashed
+label="Skip list iteration 24"
+
+"HeadNode24" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+subgraph cluster25 {
+style=dashed
+label="Skip list iteration 25"
+
+"HeadNode25" [
+label = "{ 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode25":f1 -> "node250x600003f1c000":w1 [];
+
+"node250x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 0"
+shape = "record"
+];
+"node250x600003f1c000":f1 -> "node250x0":w1 [];
+
+"node250x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster26 {
+style=dashed
+label="Skip list iteration 26"
+
+"HeadNode26" [
+label = "{ 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode26":f1 -> "node260x600003f1c000":w1 [];
+
+"node260x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node260x600003f1c000":f1 -> "node260x600003f1c030":w1 [];
+"node260x600003f1c030" [
+label = " { <w1> 1 | <f1> 0x0 } | <f0> 1"
+shape = "record"
+];
+"node260x600003f1c030":f1 -> "node260x0":w1 [];
+
+"node260x0" [label = "<w1> NULL" shape = "record"];
+}
+
+subgraph cluster27 {
+style=dashed
+label="Skip list iteration 27"
+
+"HeadNode27" [
+label = "{ 3 | <f2> 0x600003f1c060} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode27":f1 -> "node270x600003f1c000":w1 [];
+"HeadNode27":f2 -> "node270x600003f1c060":w2 [];
+
+"node270x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node270x600003f1c000":f1 -> "node270x600003f1c030":w1 [];
+"node270x600003f1c030" [
+label = " { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node270x600003f1c030":f1 -> "node270x600003f1c060":w1 [];
+"node270x600003f1c060" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 2"
+shape = "record"
+];
+"node270x600003f1c060":f1 -> "node270x0":w1 [];
+"node270x600003f1c060":f2 -> "node270x0":w2 [];
+
+"node270x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster28 {
+style=dashed
+label="Skip list iteration 28"
+
+"HeadNode28" [
+label = "{ 3 | <f2> 0x600003f1c060} | { 1 | <f1> 0x600003f1c000}"
+shape = "record"
+];
+"HeadNode28":f1 -> "node280x600003f1c000":w1 [];
+"HeadNode28":f2 -> "node280x600003f1c060":w2 [];
+
+"node280x600003f1c000" [
+label = " { <w1> 1 | <f1> 0x600003f1c030 } | <f0> 0"
+shape = "record"
+];
+"node280x600003f1c000":f1 -> "node280x600003f1c030":w1 [];
+"node280x600003f1c030" [
+label = " { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node280x600003f1c030":f1 -> "node280x600003f1c060":w1 [];
+"node280x600003f1c060" [
+label = " { <w2> 1 | <f2> 0x600003f1c0c0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node280x600003f1c060":f1 -> "node280x600003f1c0c0":w1 [];
+"node280x600003f1c060":f2 -> "node280x600003f1c0c0":w2 [];
+"node280x600003f1c0c0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node280x600003f1c0c0":f1 -> "node280x0":w1 [];
+"node280x600003f1c0c0":f2 -> "node280x0":w2 [];
+
+"node280x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster29 {
+style=dashed
+label="Skip list iteration 29"
+
+"HeadNode29" [
+label = "{ 2 | <f2> 0x600003f1c060} | { 1 | <f1> 0x600003f1c030}"
+shape = "record"
+];
+"HeadNode29":f1 -> "node290x600003f1c030":w1 [];
+"HeadNode29":f2 -> "node290x600003f1c060":w2 [];
+
+"node290x600003f1c030" [
+label = " { <w1> 1 | <f1> 0x600003f1c060 } | <f0> 1"
+shape = "record"
+];
+"node290x600003f1c030":f1 -> "node290x600003f1c060":w1 [];
+"node290x600003f1c060" [
+label = " { <w2> 1 | <f2> 0x600003f1c0c0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node290x600003f1c060":f1 -> "node290x600003f1c0c0":w1 [];
+"node290x600003f1c060":f2 -> "node290x600003f1c0c0":w2 [];
+"node290x600003f1c0c0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node290x600003f1c0c0":f1 -> "node290x0":w1 [];
+"node290x600003f1c0c0":f2 -> "node290x0":w2 [];
+
+"node290x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster30 {
+style=dashed
+label="Skip list iteration 30"
+
+"HeadNode30" [
+label = "{ 1 | <f2> 0x600003f1c060} | { 1 | <f1> 0x600003f1c060}"
+shape = "record"
+];
+"HeadNode30":f1 -> "node300x600003f1c060":w1 [];
+"HeadNode30":f2 -> "node300x600003f1c060":w2 [];
+
+"node300x600003f1c060" [
+label = " { <w2> 1 | <f2> 0x600003f1c0c0 } | { <w1> 1 | <f1> 0x600003f1c0c0 } | <f0> 2"
+shape = "record"
+];
+"node300x600003f1c060":f1 -> "node300x600003f1c0c0":w1 [];
+"node300x600003f1c060":f2 -> "node300x600003f1c0c0":w2 [];
+"node300x600003f1c0c0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node300x600003f1c0c0":f1 -> "node300x0":w1 [];
+"node300x600003f1c0c0":f2 -> "node300x0":w2 [];
+
+"node300x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster31 {
+style=dashed
+label="Skip list iteration 31"
+
+"HeadNode31" [
+label = "{ 1 | <f2> 0x600003f1c0c0} | { 1 | <f1> 0x600003f1c0c0}"
+shape = "record"
+];
+"HeadNode31":f1 -> "node310x600003f1c0c0":w1 [];
+"HeadNode31":f2 -> "node310x600003f1c0c0":w2 [];
+
+"node310x600003f1c0c0" [
+label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 3"
+shape = "record"
+];
+"node310x600003f1c0c0":f1 -> "node310x0":w1 [];
+"node310x600003f1c0c0":f2 -> "node310x0":w2 [];
+
+"node310x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+}
+
+subgraph cluster32 {
+style=dashed
+label="Skip list iteration 32"
+
+"HeadNode32" [
+label = "Empty HeadNode"
+shape = "record"
+];
+
+
+}
+
+node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | <f7> | <f8> | <f9> | <f10> | <f11> | <f12> | <f13> | <f14> | <f15> | <f16> | <f17> | <f18> | <f19> | <f20> | <f21> | <f22> | <f23> | <f24> | <f25> | <f26> | <f27> | <f28> | <f29> | <f30> | <f31> | <f32> | ", style=invis, width=0.01];
+node0:f0 -> HeadNode0 [style=invis];
+node0:f1 -> HeadNode1 [style=invis];
+node0:f2 -> HeadNode2 [style=invis];
+node0:f3 -> HeadNode3 [style=invis];
+node0:f4 -> HeadNode4 [style=invis];
+node0:f5 -> HeadNode5 [style=invis];
+node0:f6 -> HeadNode6 [style=invis];
+node0:f7 -> HeadNode7 [style=invis];
+node0:f8 -> HeadNode8 [style=invis];
+node0:f9 -> HeadNode9 [style=invis];
+node0:f10 -> HeadNode10 [style=invis];
+node0:f11 -> HeadNode11 [style=invis];
+node0:f12 -> HeadNode12 [style=invis];
+node0:f13 -> HeadNode13 [style=invis];
+node0:f14 -> HeadNode14 [style=invis];
+node0:f15 -> HeadNode15 [style=invis];
+node0:f16 -> HeadNode16 [style=invis];
+node0:f17 -> HeadNode17 [style=invis];
+node0:f18 -> HeadNode18 [style=invis];
+node0:f19 -> HeadNode19 [style=invis];
+node0:f20 -> HeadNode20 [style=invis];
+node0:f21 -> HeadNode21 [style=invis];
+node0:f22 -> HeadNode22 [style=invis];
+node0:f23 -> HeadNode23 [style=invis];
+node0:f24 -> HeadNode24 [style=invis];
+node0:f25 -> HeadNode25 [style=invis];
+node0:f26 -> HeadNode26 [style=invis];
+node0:f27 -> HeadNode27 [style=invis];
+node0:f28 -> HeadNode28 [style=invis];
+node0:f29 -> HeadNode29 [style=invis];
+node0:f30 -> HeadNode30 [style=invis];
+node0:f31 -> HeadNode31 [style=invis];
+node0:f32 -> HeadNode32 [style=invis];
+}
+
+                     test_doc_insert_remove_repeat(): PASS
+                         perf_single_insert_remove(): 274.522 (ms) rate 3.6427e+06 /s
+                      perf_large_skiplist_ins_only(): skiplist length: 1000000 count: 1 time: 4.05308e+08 (ns) rate 2.46726e+06 /s
+                       perf_large_skiplist_ins_rem(): skiplist length: 1048576 count: 1 time: 566100 (us) rate 1.85228e+06 /s
+                        perf_single_ins_rem_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 650610 (us) rate 1.53702e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:          2 repeat count: 1000000 time:    278.296 (ms) rate   3.5933e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:          3 repeat count: 1000000 time:    297.274 (ms) rate   3.3639e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:          5 repeat count: 1000000 time:    286.464 (ms) rate  3.49084e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:          9 repeat count: 1000000 time:    315.181 (ms) rate  3.17278e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:         17 repeat count: 1000000 time:    327.925 (ms) rate  3.04948e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:         33 repeat count: 1000000 time:    343.997 (ms) rate    2.907e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:         65 repeat count: 1000000 time:    324.059 (ms) rate  3.08586e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:        129 repeat count: 1000000 time:    334.339 (ms) rate  2.99098e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:        257 repeat count: 1000000 time:    420.741 (ms) rate  2.37676e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:        513 repeat count: 1000000 time:    461.589 (ms) rate  2.16643e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:       1025 repeat count: 1000000 time:    456.664 (ms) rate  2.18979e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:       2049 repeat count: 1000000 time:    442.235 (ms) rate  2.26124e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:       4097 repeat count: 1000000 time:    468.281 (ms) rate  2.13547e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:       8193 repeat count: 1000000 time:    448.633 (ms) rate  2.22899e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:      16385 repeat count: 1000000 time:    437.101 (ms) rate   2.2878e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:      32769 repeat count: 1000000 time:    563.257 (ms) rate  1.77539e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:      65537 repeat count: 1000000 time:    434.132 (ms) rate  2.30345e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:     131073 repeat count: 1000000 time:    436.074 (ms) rate  2.29319e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:     262145 repeat count: 1000000 time:    601.356 (ms) rate  1.66291e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:     524289 repeat count: 1000000 time:    587.261 (ms) rate  1.70282e+06 /s
+            perf_single_ins_rem_middle_vary_length(): SkiplistSize:    1048577 repeat count: 1000000 time:     596.73 (ms) rate   1.6758e+06 /s
+                             perf_single_at_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 58120 (us) rate 1.72058e+07 /s
+                            perf_single_has_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 115131 (us) rate 8.68576e+06 /s
+                     perf_single_ins_at_rem_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 645668 (us) rate 1.54878e+06 /s
+                        perf_median_sliding_window(): vector length: 10000 window width: 100 time: 5822 (us)
+                             perf_1m_median_values(): vectors:      1 of length:  1000000 time: 0.59932 (s)
+                      perf_1m_medians_1000_vectors(): vectors:   1000 of length:     1000 window width:  101 time: 0.582382 (s)
+                            perf_simulate_real_use(): vectors:   8000 of length:     8000 window width:  200 time: 40.0588 (s)
+                            perf_at_in_one_million(): at(       1):   23.497 ns ticks 23515
+                            perf_at_in_one_million(): at(       2):   23.398 ns ticks 23408
+                            perf_at_in_one_million(): at(       4):    26.81 ns ticks 26814
+                            perf_at_in_one_million(): at(       8):   26.891 ns ticks 26910
+                            perf_at_in_one_million(): at(      16):   27.141 ns ticks 27159
+                            perf_at_in_one_million(): at(      32):   24.991 ns ticks 25006
+                            perf_at_in_one_million(): at(      64):   24.411 ns ticks 24430
+                            perf_at_in_one_million(): at(     128):   36.026 ns ticks 36045
+                            perf_at_in_one_million(): at(     256):   51.118 ns ticks 51138
+                            perf_at_in_one_million(): at(     512):   47.647 ns ticks 47663
+                            perf_at_in_one_million(): at(    1024):   41.296 ns ticks 41317
+                            perf_at_in_one_million(): at(    2048):   41.539 ns ticks 41562
+                            perf_at_in_one_million(): at(    4096):   42.241 ns ticks 42261
+                            perf_at_in_one_million(): at(    8192):   32.459 ns ticks 32478
+                            perf_at_in_one_million(): at(   16384):   63.829 ns ticks 63847
+                            perf_at_in_one_million(): at(   32768):   31.604 ns ticks 31622
+                            perf_at_in_one_million(): at(   65536):   27.915 ns ticks 27940
+                            perf_at_in_one_million(): at(  131072):   87.867 ns ticks 87882
+                            perf_at_in_one_million(): at(  262144):    74.95 ns ticks 74969
+                            perf_at_in_one_million(): at(  524288):   57.063 ns ticks 57078
+               perf_has_in_one_million_vary_length(): has(       1):   50.278 ns
+               perf_has_in_one_million_vary_length(): has(       2):   48.316 ns
+               perf_has_in_one_million_vary_length(): has(       4):   59.521 ns
+               perf_has_in_one_million_vary_length(): has(       8):   62.916 ns
+               perf_has_in_one_million_vary_length(): has(      16):   61.199 ns
+               perf_has_in_one_million_vary_length(): has(      32):   59.363 ns
+               perf_has_in_one_million_vary_length(): has(      64):   53.887 ns
+               perf_has_in_one_million_vary_length(): has(     128):   77.642 ns
+               perf_has_in_one_million_vary_length(): has(     256):  103.324 ns
+               perf_has_in_one_million_vary_length(): has(     512):   102.43 ns
+               perf_has_in_one_million_vary_length(): has(    1024):   84.952 ns
+               perf_has_in_one_million_vary_length(): has(    2048):   84.641 ns
+               perf_has_in_one_million_vary_length(): has(    4096):   84.522 ns
+               perf_has_in_one_million_vary_length(): has(    8192):   66.171 ns
+               perf_has_in_one_million_vary_length(): has(   16384):  114.002 ns
+               perf_has_in_one_million_vary_length(): has(   32768):   65.971 ns
+               perf_has_in_one_million_vary_length(): has(   65536):   52.487 ns
+               perf_has_in_one_million_vary_length(): has(  131072):  143.899 ns
+               perf_has_in_one_million_vary_length(): has(  262144):  120.925 ns
+               perf_has_in_one_million_vary_length(): has(  524288):  113.647 ns
+                                        perf_index():  145.011 ns
+                            perf_index_vary_length(): index(       1):   84.969 ns
+                            perf_index_vary_length(): index(       2):   88.874 ns
+                            perf_index_vary_length(): index(       4):   92.016 ns
+                            perf_index_vary_length(): index(       8):   91.415 ns
+                            perf_index_vary_length(): index(      16):   91.423 ns
+                            perf_index_vary_length(): index(      32):    89.85 ns
+                            perf_index_vary_length(): index(      64):  114.951 ns
+                            perf_index_vary_length(): index(     128):  104.723 ns
+                            perf_index_vary_length(): index(     256):  118.147 ns
+                            perf_index_vary_length(): index(     512):  125.346 ns
+                            perf_index_vary_length(): index(    1024):  108.587 ns
+                            perf_index_vary_length(): index(    2048):  107.698 ns
+                            perf_index_vary_length(): index(    4096):  124.929 ns
+                            perf_index_vary_length(): index(    8192):   109.76 ns
+                            perf_index_vary_length(): index(   16384):  144.886 ns
+                            perf_index_vary_length(): index(   32768):  106.905 ns
+                            perf_index_vary_length(): index(   65536):  144.253 ns
+                            perf_index_vary_length(): index(  131072):  176.384 ns
+                            perf_index_vary_length(): index(  262144):  187.185 ns
+                            perf_index_vary_length(): index(  524288):  141.155 ns
+Running test: perf_test_double_insert_remove_value_begin
+perf_test_double_insert_remove_value_begin[2] Sample time/op = 324.585(ns) SkipList sizeof() = 464 bytes. SkipList height() = 1
+perf_test_double_insert_remove_value_begin[4] Sample time/op = 298.345(ns) SkipList sizeof() = 672 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_begin[8] Sample time/op = 317.505(ns) SkipList sizeof() = 912 bytes. SkipList height() = 5
+perf_test_double_insert_remove_value_begin[16] Sample time/op = 282.085(ns) SkipList sizeof() = 1632 bytes. SkipList height() = 3
+perf_test_double_insert_remove_value_begin[32] Sample time/op = 280.425(ns) SkipList sizeof() = 3008 bytes. SkipList height() = 4
+perf_test_double_insert_remove_value_begin[64] Sample time/op = 349.585(ns) SkipList sizeof() = 6384 bytes. SkipList height() = 10
+perf_test_double_insert_remove_value_begin[128] Sample time/op = 326.255(ns) SkipList sizeof() = 12016 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_begin[256] Sample time/op = 318.335(ns) SkipList sizeof() = 23088 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_begin[512] Sample time/op = 333.755(ns) SkipList sizeof() = 47968 bytes. SkipList height() = 9
+perf_test_double_insert_remove_value_begin[1024] Sample time/op = 370.005(ns) SkipList sizeof() = 94112 bytes. SkipList height() = 12
+perf_test_double_insert_remove_value_begin[2048] Sample time/op = 390.835(ns) SkipList sizeof() = 190752 bytes. SkipList height() = 11
+perf_test_double_insert_remove_value_begin[4096] Sample time/op = 387.505(ns) SkipList sizeof() = 375584 bytes. SkipList height() = 12
+perf_test_double_insert_remove_value_begin[8192] Sample time/op = 363.335(ns) SkipList sizeof() = 752960 bytes. SkipList height() = 15
+perf_test_double_insert_remove_value_begin[16384] Sample time/op = 397.085(ns) SkipList sizeof() = 1502720 bytes. SkipList height() = 13
+perf_test_double_insert_remove_value_begin[32768] Sample time/op = 401.255(ns) SkipList sizeof() = 3034512 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_begin[65536] Sample time/op = 387.925(ns) SkipList sizeof() = 6047184 bytes. SkipList height() = 18
+perf_test_double_insert_remove_value_begin[131072] Sample time/op = 434.175(ns) SkipList sizeof() = 12126688 bytes. SkipList height() = 18
+perf_test_double_insert_remove_value_begin[262144] Sample time/op = 453.755(ns) SkipList sizeof() = 24236896 bytes. SkipList height() = 22
+perf_test_double_insert_remove_value_begin[524288] Sample time/op = 450.005(ns) SkipList sizeof() = 48526336 bytes. SkipList height() = 21
+perf_test_double_insert_remove_value_begin[1048576] Sample time/op = 433.755(ns) SkipList sizeof() = 96987312 bytes. SkipList height() = 20
+Running test: perf_test_double_insert_remove_value_mid
+perf_test_double_insert_remove_value_mid[2] Sample time/op = 315.835(ns) SkipList sizeof() = 512 bytes. SkipList height() = 3
+perf_test_double_insert_remove_value_mid[4] Sample time/op = 348.755(ns) SkipList sizeof() = 608 bytes. SkipList height() = 1
+perf_test_double_insert_remove_value_mid[8] Sample time/op = 321.255(ns) SkipList sizeof() = 1056 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_mid[16] Sample time/op = 339.595(ns) SkipList sizeof() = 1760 bytes. SkipList height() = 4
+perf_test_double_insert_remove_value_mid[32] Sample time/op = 335.415(ns) SkipList sizeof() = 3392 bytes. SkipList height() = 5
+perf_test_double_insert_remove_value_mid[64] Sample time/op = 365.005(ns) SkipList sizeof() = 5888 bytes. SkipList height() = 8
+perf_test_double_insert_remove_value_mid[128] Sample time/op = 369.585(ns) SkipList sizeof() = 12016 bytes. SkipList height() = 5
+perf_test_double_insert_remove_value_mid[256] Sample time/op = 368.755(ns) SkipList sizeof() = 23328 bytes. SkipList height() = 7
+perf_test_double_insert_remove_value_mid[512] Sample time/op = 407.505(ns) SkipList sizeof() = 47072 bytes. SkipList height() = 9
+perf_test_double_insert_remove_value_mid[1024] Sample time/op = 414.175(ns) SkipList sizeof() = 95024 bytes. SkipList height() = 12
+perf_test_double_insert_remove_value_mid[2048] Sample time/op = 472.085(ns) SkipList sizeof() = 190640 bytes. SkipList height() = 14
+perf_test_double_insert_remove_value_mid[4096] Sample time/op = 430.005(ns) SkipList sizeof() = 378960 bytes. SkipList height() = 13
+perf_test_double_insert_remove_value_mid[8192] Sample time/op = 518.755(ns) SkipList sizeof() = 760528 bytes. SkipList height() = 13
+perf_test_double_insert_remove_value_mid[16384] Sample time/op = 485.835(ns) SkipList sizeof() = 1512800 bytes. SkipList height() = 14
+perf_test_double_insert_remove_value_mid[32768] Sample time/op = 459.585(ns) SkipList sizeof() = 3033904 bytes. SkipList height() = 15
+perf_test_double_insert_remove_value_mid[65536] Sample time/op = 546.675(ns) SkipList sizeof() = 6058592 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_mid[131072] Sample time/op = 595.845(ns) SkipList sizeof() = 12131456 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_mid[262144] Sample time/op = 652.505(ns) SkipList sizeof() = 24227408 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_mid[524288] Sample time/op = 646.255(ns) SkipList sizeof() = 48438320 bytes. SkipList height() = 17
+perf_test_double_insert_remove_value_mid[1048576] Sample time/op = 620.425(ns) SkipList sizeof() = 97017232 bytes. SkipList height() = 19
+Running test: perf_test_double_insert_remove_value_end
+perf_test_double_insert_remove_value_end[2] Sample time/op = 304.165(ns) SkipList sizeof() = 512 bytes. SkipList height() = 3
+perf_test_double_insert_remove_value_end[4] Sample time/op = 298.335(ns) SkipList sizeof() = 560 bytes. SkipList height() = 3
+perf_test_double_insert_remove_value_end[8] Sample time/op = 327.925(ns) SkipList sizeof() = 832 bytes. SkipList height() = 2
+perf_test_double_insert_remove_value_end[16] Sample time/op = 336.675(ns) SkipList sizeof() = 1936 bytes. SkipList height() = 8
+perf_test_double_insert_remove_value_end[32] Sample time/op = 319.175(ns) SkipList sizeof() = 3328 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_end[64] Sample time/op = 357.505(ns) SkipList sizeof() = 5872 bytes. SkipList height() = 7
+perf_test_double_insert_remove_value_end[128] Sample time/op = 349.585(ns) SkipList sizeof() = 11744 bytes. SkipList height() = 6
+perf_test_double_insert_remove_value_end[256] Sample time/op = 347.085(ns) SkipList sizeof() = 23968 bytes. SkipList height() = 9
+perf_test_double_insert_remove_value_end[512] Sample time/op = 370.005(ns) SkipList sizeof() = 46512 bytes. SkipList height() = 9
+perf_test_double_insert_remove_value_end[1024] Sample time/op = 412.925(ns) SkipList sizeof() = 94560 bytes. SkipList height() = 11
+perf_test_double_insert_remove_value_end[2048] Sample time/op = 419.585(ns) SkipList sizeof() = 190880 bytes. SkipList height() = 13
+perf_test_double_insert_remove_value_end[4096] Sample time/op = 521.675(ns) SkipList sizeof() = 380464 bytes. SkipList height() = 12
+perf_test_double_insert_remove_value_end[8192] Sample time/op = 458.345(ns) SkipList sizeof() = 756640 bytes. SkipList height() = 17
+perf_test_double_insert_remove_value_end[16384] Sample time/op = 370.835(ns) SkipList sizeof() = 1515136 bytes. SkipList height() = 15
+perf_test_double_insert_remove_value_end[32768] Sample time/op = 419.585(ns) SkipList sizeof() = 3029168 bytes. SkipList height() = 16
+perf_test_double_insert_remove_value_end[65536] Sample time/op = 458.335(ns) SkipList sizeof() = 6077648 bytes. SkipList height() = 17
+perf_test_double_insert_remove_value_end[131072] Sample time/op = 558.345(ns) SkipList sizeof() = 12102960 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_end[262144] Sample time/op = 488.755(ns) SkipList sizeof() = 24261888 bytes. SkipList height() = 19
+perf_test_double_insert_remove_value_end[524288] Sample time/op = 497.915(ns) SkipList sizeof() = 48512192 bytes. SkipList height() = 21
+perf_test_double_insert_remove_value_end[1048576] Sample time/op = 447.505(ns) SkipList sizeof() = 97029952 bytes. SkipList height() = 23
+Running test: perf_test_double_at_1m_all
+perf_test_double_at_1m[1] Sample time/op = 79.25(ns) SkipList sizeof() = 97005432 bytes SkipList height() = 23
+perf_test_double_at_1m[2] Sample time/op = 83.45(ns) SkipList sizeof() = 97008264 bytes SkipList height() = 22
+perf_test_double_at_1m[4] Sample time/op = 108.45(ns) SkipList sizeof() = 97039768 bytes SkipList height() = 21
+perf_test_double_at_1m[8] Sample time/op = 91.65(ns) SkipList sizeof() = 97069848 bytes SkipList height() = 21
+perf_test_double_at_1m[16] Sample time/op = 120.95(ns) SkipList sizeof() = 96957416 bytes SkipList height() = 20
+perf_test_double_at_1m[32] Sample time/op = 120.85(ns) SkipList sizeof() = 97047544 bytes SkipList height() = 20
+perf_test_double_at_1m[64] Sample time/op = 150.05(ns) SkipList sizeof() = 96941848 bytes SkipList height() = 20
+perf_test_double_at_1m[128] Sample time/op = 212.55(ns) SkipList sizeof() = 96972872 bytes SkipList height() = 22
+perf_test_double_at_1m[256] Sample time/op = 191.75(ns) SkipList sizeof() = 97041048 bytes SkipList height() = 22
+perf_test_double_at_1m[512] Sample time/op = 241.75(ns) SkipList sizeof() = 96989432 bytes SkipList height() = 22
+perf_test_double_at_1m[1024] Sample time/op = 270.85(ns) SkipList sizeof() = 97019192 bytes SkipList height() = 24
+perf_test_double_at_1m[2048] Sample time/op = 320.85(ns) SkipList sizeof() = 96968168 bytes SkipList height() = 20
+perf_test_double_at_1m[4096] Sample time/op = 220.85(ns) SkipList sizeof() = 96976296 bytes SkipList height() = 21
+perf_test_double_at_1m[8192] Sample time/op = 262.55(ns) SkipList sizeof() = 97013496 bytes SkipList height() = 21
+perf_test_double_at_1m[16384] Sample time/op = 316.75(ns) SkipList sizeof() = 97032760 bytes SkipList height() = 20
+perf_test_double_at_1m[32768] Sample time/op = 362.55(ns) SkipList sizeof() = 97031112 bytes SkipList height() = 18
+perf_test_double_at_1m[65536] Sample time/op = 345.85(ns) SkipList sizeof() = 96993672 bytes SkipList height() = 21
+perf_test_double_at_1m[131072] Sample time/op = 270.95(ns) SkipList sizeof() = 96989768 bytes SkipList height() = 20
+perf_test_double_at_1m[262144] Sample time/op = 200.05(ns) SkipList sizeof() = 96963176 bytes SkipList height() = 21
+perf_test_double_at_1m[524288] Sample time/op = 487.55(ns) SkipList sizeof() = 96984328 bytes SkipList height() = 20
+perf_test_double_at_1m[1048576] Sample time/op = 83.35(ns) SkipList sizeof() = 97066552 bytes SkipList height() = 22
+Running test: perf_test_double_has_1m_all
+perf_test_double_has_1m[1] Sample time/op = 145.85(ns) SkipList sizeof() = 96985704 bytes SkipList height() = 21
+perf_test_double_has_1m[2] Sample time/op = 166.75(ns) SkipList sizeof() = 97036568 bytes SkipList height() = 25
+perf_test_double_has_1m[4] Sample time/op = 116.65(ns) SkipList sizeof() = 97027224 bytes SkipList height() = 18
+perf_test_double_has_1m[8] Sample time/op = 170.85(ns) SkipList sizeof() = 96996200 bytes SkipList height() = 19
+perf_test_double_has_1m[16] Sample time/op = 120.85(ns) SkipList sizeof() = 96987912 bytes SkipList height() = 19
+perf_test_double_has_1m[32] Sample time/op = 191.75(ns) SkipList sizeof() = 96991672 bytes SkipList height() = 21
+perf_test_double_has_1m[64] Sample time/op = 154.25(ns) SkipList sizeof() = 96984088 bytes SkipList height() = 23
+perf_test_double_has_1m[128] Sample time/op = 270.85(ns) SkipList sizeof() = 97015864 bytes SkipList height() = 22
+perf_test_double_has_1m[256] Sample time/op = 200.05(ns) SkipList sizeof() = 96991048 bytes SkipList height() = 23
+perf_test_double_has_1m[512] Sample time/op = 316.65(ns) SkipList sizeof() = 96992472 bytes SkipList height() = 21
+perf_test_double_has_1m[1024] Sample time/op = 225.05(ns) SkipList sizeof() = 97064232 bytes SkipList height() = 23
+perf_test_double_has_1m[2048] Sample time/op = 487.55(ns) SkipList sizeof() = 96977512 bytes SkipList height() = 20
+perf_test_double_has_1m[4096] Sample time/op = 441.75(ns) SkipList sizeof() = 96964552 bytes SkipList height() = 21
+perf_test_double_has_1m[8192] Sample time/op = 425.05(ns) SkipList sizeof() = 96999192 bytes SkipList height() = 20
+perf_test_double_has_1m[16384] Sample time/op = 458.35(ns) SkipList sizeof() = 96984232 bytes SkipList height() = 21
+perf_test_double_has_1m[32768] Sample time/op = 595.85(ns) SkipList sizeof() = 97013832 bytes SkipList height() = 24
+perf_test_double_has_1m[65536] Sample time/op = 470.85(ns) SkipList sizeof() = 97028472 bytes SkipList height() = 22
+perf_test_double_has_1m[131072] Sample time/op = 741.65(ns) SkipList sizeof() = 97015544 bytes SkipList height() = 20
+perf_test_double_has_1m[262144] Sample time/op = 733.35(ns) SkipList sizeof() = 96960312 bytes SkipList height() = 20
+perf_test_double_has_1m[524288] Sample time/op = 695.85(ns) SkipList sizeof() = 96974472 bytes SkipList height() = 25
+perf_test_double_has_1m[1048576] Sample time/op = 162.55(ns) SkipList sizeof() = 96964648 bytes SkipList height() = 20
+Running test: perf_test_double_index_1m_all
+perf_test_double_index_1m[1] Sample time/op = 158.35(ns) SkipList sizeof() = 96956616 bytes SkipList height() = 20
+perf_test_double_index_1m[2] Sample time/op = 170.85(ns) SkipList sizeof() = 97010312 bytes SkipList height() = 21
+perf_test_double_index_1m[4] Sample time/op = 262.55(ns) SkipList sizeof() = 97067816 bytes SkipList height() = 19
+perf_test_double_index_1m[8] Sample time/op = 225.05(ns) SkipList sizeof() = 96986152 bytes SkipList height() = 22
+perf_test_double_index_1m[16] Sample time/op = 195.85(ns) SkipList sizeof() = 96994360 bytes SkipList height() = 25
+perf_test_double_index_1m[32] Sample time/op = 233.45(ns) SkipList sizeof() = 97012120 bytes SkipList height() = 24
+perf_test_double_index_1m[64] Sample time/op = 245.85(ns) SkipList sizeof() = 96954952 bytes SkipList height() = 20
+perf_test_double_index_1m[128] Sample time/op = 345.95(ns) SkipList sizeof() = 96967048 bytes SkipList height() = 21
+perf_test_double_index_1m[256] Sample time/op = 250.05(ns) SkipList sizeof() = 96973528 bytes SkipList height() = 23
+perf_test_double_index_1m[512] Sample time/op = 458.45(ns) SkipList sizeof() = 96979736 bytes SkipList height() = 20
+perf_test_double_index_1m[1024] Sample time/op = 308.35(ns) SkipList sizeof() = 96953320 bytes SkipList height() = 24
+perf_test_double_index_1m[2048] Sample time/op = 416.75(ns) SkipList sizeof() = 97004008 bytes SkipList height() = 23
+perf_test_double_index_1m[4096] Sample time/op = 420.95(ns) SkipList sizeof() = 97011384 bytes SkipList height() = 20
+perf_test_double_index_1m[8192] Sample time/op = 537.55(ns) SkipList sizeof() = 97049592 bytes SkipList height() = 19
+perf_test_double_index_1m[16384] Sample time/op = 508.35(ns) SkipList sizeof() = 96983864 bytes SkipList height() = 19
+perf_test_double_index_1m[32768] Sample time/op = 512.55(ns) SkipList sizeof() = 96960552 bytes SkipList height() = 20
+perf_test_double_index_1m[65536] Sample time/op = 512.55(ns) SkipList sizeof() = 97016312 bytes SkipList height() = 23
+perf_test_double_index_1m[131072] Sample time/op = 441.65(ns) SkipList sizeof() = 96998936 bytes SkipList height() = 23
+perf_test_double_index_1m[262144] Sample time/op = 679.25(ns) SkipList sizeof() = 96994680 bytes SkipList height() = 20
+perf_test_double_index_1m[524288] Sample time/op = 675.05(ns) SkipList sizeof() = 96948456 bytes SkipList height() = 21
+perf_test_double_index_1m[1048576] Sample time/op = 145.85(ns) SkipList sizeof() = 97037624 bytes SkipList height() = 21
+perf_roll_med_by_win_size[1] Sample time/op = 0.299118(s)
+perf_roll_med_by_win_size[2] Sample time/op = 0.321229(s)
+perf_roll_med_by_win_size[4] Sample time/op = 0.382933(s)
+perf_roll_med_by_win_size[8] Sample time/op = 0.4477(s)
+perf_roll_med_by_win_size[16] Sample time/op = 0.500703(s)
+perf_roll_med_by_win_size[32] Sample time/op = 0.542368(s)
+perf_roll_med_by_win_size[64] Sample time/op = 0.57851(s)
+perf_roll_med_by_win_size[128] Sample time/op = 0.611436(s)
+perf_roll_med_by_win_size[256] Sample time/op = 0.645543(s)
+perf_roll_med_by_win_size[512] Sample time/op = 0.705629(s)
+perf_roll_med_by_win_size[1024] Sample time/op = 0.739845(s)
+perf_roll_med_by_win_size[2048] Sample time/op = 0.834045(s)
+perf_roll_med_by_win_size[4096] Sample time/op = 0.964379(s)
+perf_roll_med_by_win_size[8192] Sample time/op = 1.07558(s)
+perf_roll_med_by_win_size[16384] Sample time/op = 1.21789(s)
+perf_roll_med_by_win_size[32768] Sample time/op = 1.21517(s)
+perf_roll_med_by_win_size[65536] Sample time/op = 1.29668(s)
+perf_roll_med_by_win_size[131072] Sample time/op = 1.44522(s)
+perf_roll_med_by_win_size[262144] Sample time/op = 2.11584(s)
+perf_roll_med_by_win_size[524288] Sample time/op = 2.46534(s)
+perf_test_node_height_growth[1] Sample height = 5
+perf_test_node_height_growth[2] Sample height = 3
+perf_test_node_height_growth[4] Sample height = 5
+perf_test_node_height_growth[8] Sample height = 4
+perf_test_node_height_growth[16] Sample height = 5
+perf_test_node_height_growth[32] Sample height = 7
+perf_test_node_height_growth[64] Sample height = 13
+perf_test_node_height_growth[128] Sample height = 11
+perf_test_node_height_growth[256] Sample height = 8
+perf_test_node_height_growth[512] Sample height = 12
+perf_test_node_height_growth[1024] Sample height = 10
+perf_test_node_height_growth[2048] Sample height = 14
+perf_test_node_height_growth[4096] Sample height = 12
+perf_test_node_height_growth[8192] Sample height = 17
+perf_test_node_height_growth[16384] Sample height = 15
+perf_test_node_height_growth[32768] Sample height = 20
+perf_test_node_height_growth[65536] Sample height = 17
+perf_test_node_height_growth[131072] Sample height = 16
+perf_test_node_height_growth[262144] Sample height = 20
+perf_test_node_height_growth[524288] Sample height = 23
+Running test: perf_test_string_insert_remove_value_begin
+perf_test_string_insert_remove_value_begin[1] Sample time/op = 2853.76(ns) SkipList sizeof() = 312 bytes SkipList height() = 2
+perf_test_string_insert_remove_value_begin[2] Sample time/op = 844.175(ns) SkipList sizeof() = 432 bytes SkipList height() = 2
+perf_test_string_insert_remove_value_begin[4] Sample time/op = 855.425(ns) SkipList sizeof() = 832 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_begin[8] Sample time/op = 828.335(ns) SkipList sizeof() = 1232 bytes SkipList height() = 5
+perf_test_string_insert_remove_value_begin[16] Sample time/op = 912.915(ns) SkipList sizeof() = 2352 bytes SkipList height() = 6
+perf_test_string_insert_remove_value_begin[32] Sample time/op = 919.585(ns) SkipList sizeof() = 4176 bytes SkipList height() = 5
+perf_test_string_insert_remove_value_begin[64] Sample time/op = 909.595(ns) SkipList sizeof() = 8384 bytes SkipList height() = 8
+perf_test_string_insert_remove_value_begin[128] Sample time/op = 996.665(ns) SkipList sizeof() = 16544 bytes SkipList height() = 9
+perf_test_string_insert_remove_value_begin[256] Sample time/op = 930.425(ns) SkipList sizeof() = 31712 bytes SkipList height() = 8
+perf_test_string_insert_remove_value_begin[512] Sample time/op = 886.255(ns) SkipList sizeof() = 63280 bytes SkipList height() = 7
+perf_test_string_insert_remove_value_begin[1024] Sample time/op = 906.665(ns) SkipList sizeof() = 127104 bytes SkipList height() = 10
+perf_test_string_insert_remove_value_begin[2048] Sample time/op = 899.175(ns) SkipList sizeof() = 255744 bytes SkipList height() = 12
+perf_test_string_insert_remove_value_begin[4096] Sample time/op = 939.175(ns) SkipList sizeof() = 505744 bytes SkipList height() = 11
+perf_test_string_insert_remove_value_begin[8192] Sample time/op = 979.595(ns) SkipList sizeof() = 1021600 bytes SkipList height() = 12
+perf_test_string_insert_remove_value_begin[16384] Sample time/op = 957.095(ns) SkipList sizeof() = 2044432 bytes SkipList height() = 12
+Running test: perf_test_string_insert_remove_value_mid
+perf_test_string_insert_remove_value_mid[1] Sample time/op = 818.335(ns) SkipList sizeof() = 440 bytes SkipList height() = 2
+perf_test_string_insert_remove_value_mid[2] Sample time/op = 765.835(ns) SkipList sizeof() = 464 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_mid[4] Sample time/op = 826.665(ns) SkipList sizeof() = 784 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_mid[8] Sample time/op = 860.415(ns) SkipList sizeof() = 1440 bytes SkipList height() = 6
+perf_test_string_insert_remove_value_mid[16] Sample time/op = 955.425(ns) SkipList sizeof() = 2496 bytes SkipList height() = 7
+perf_test_string_insert_remove_value_mid[32] Sample time/op = 929.175(ns) SkipList sizeof() = 4464 bytes SkipList height() = 5
+perf_test_string_insert_remove_value_mid[64] Sample time/op = 913.335(ns) SkipList sizeof() = 8352 bytes SkipList height() = 7
+perf_test_string_insert_remove_value_mid[128] Sample time/op = 980.835(ns) SkipList sizeof() = 15936 bytes SkipList height() = 8
+perf_test_string_insert_remove_value_mid[256] Sample time/op = 1218.76(ns) SkipList sizeof() = 32656 bytes SkipList height() = 10
+perf_test_string_insert_remove_value_mid[512] Sample time/op = 1117.51(ns) SkipList sizeof() = 62496 bytes SkipList height() = 9
+perf_test_string_insert_remove_value_mid[1024] Sample time/op = 1015.42(ns) SkipList sizeof() = 127328 bytes SkipList height() = 10
+perf_test_string_insert_remove_value_mid[2048] Sample time/op = 1312.51(ns) SkipList sizeof() = 253472 bytes SkipList height() = 15
+perf_test_string_insert_remove_value_mid[4096] Sample time/op = 1112.51(ns) SkipList sizeof() = 513696 bytes SkipList height() = 15
+perf_test_string_insert_remove_value_mid[8192] Sample time/op = 1300.41(ns) SkipList sizeof() = 1015104 bytes SkipList height() = 14
+perf_test_string_insert_remove_value_mid[16384] Sample time/op = 1288.76(ns) SkipList sizeof() = 2037184 bytes SkipList height() = 17
+Running test: perf_test_string_insert_remove_value_end
+perf_test_string_insert_remove_value_end[1] Sample time/op = 305.005(ns) SkipList sizeof() = 344 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_end[2] Sample time/op = 333.755(ns) SkipList sizeof() = 576 bytes SkipList height() = 4
+perf_test_string_insert_remove_value_end[4] Sample time/op = 345.835(ns) SkipList sizeof() = 720 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_end[8] Sample time/op = 475.835(ns) SkipList sizeof() = 1072 bytes SkipList height() = 3
+perf_test_string_insert_remove_value_end[16] Sample time/op = 436.255(ns) SkipList sizeof() = 2272 bytes SkipList height() = 4
+perf_test_string_insert_remove_value_end[32] Sample time/op = 576.675(ns) SkipList sizeof() = 4400 bytes SkipList height() = 6
+perf_test_string_insert_remove_value_end[64] Sample time/op = 580.845(ns) SkipList sizeof() = 8272 bytes SkipList height() = 8
+perf_test_string_insert_remove_value_end[128] Sample time/op = 567.095(ns) SkipList sizeof() = 15696 bytes SkipList height() = 9
+perf_test_string_insert_remove_value_end[256] Sample time/op = 712.505(ns) SkipList sizeof() = 31200 bytes SkipList height() = 8
+perf_test_string_insert_remove_value_end[512] Sample time/op = 1145.42(ns) SkipList sizeof() = 63696 bytes SkipList height() = 10
+perf_test_string_insert_remove_value_end[1024] Sample time/op = 969.175(ns) SkipList sizeof() = 127360 bytes SkipList height() = 10
+perf_test_string_insert_remove_value_end[2048] Sample time/op = 1522.91(ns) SkipList sizeof() = 255008 bytes SkipList height() = 13
+perf_test_string_insert_remove_value_end[4096] Sample time/op = 1988.76(ns) SkipList sizeof() = 510192 bytes SkipList height() = 11
+perf_test_string_insert_remove_value_end[8192] Sample time/op = 3027.09(ns) SkipList sizeof() = 1017488 bytes SkipList height() = 12
+perf_test_string_insert_remove_value_end[16384] Sample time/op = 5374.6(ns) SkipList sizeof() = 2039456 bytes SkipList height() = 16
+Number of tests: 208
+REGEX_HEAD: "HEAD:\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)"
+REGEX_TEST: "TEST:\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+(\d+)\s+([0-9+-.]+)\s+(\S+)"
+REGEX_TAIL: "TAIL:\s+(.+)"
+#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
+HEAD: Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
+TEST:    0       2      10     0.000029354     0.000001401     0.000027375     0.000032459      1000    34066327.1 perf_test_double_insert_remove_value_begin[2]
+TEST:    0       4      10     0.000030263     0.000000790     0.000028917     0.000031542      1000    33043541.5 perf_test_double_insert_remove_value_begin[4]
+TEST:    0       8      10     0.000030884     0.000001395     0.000027916     0.000032667      1000    32379540.0 perf_test_double_insert_remove_value_begin[8]
+TEST:    0      16      10     0.000031913     0.000002276     0.000028083     0.000036292      1000    31335094.4 perf_test_double_insert_remove_value_begin[16]
+TEST:    0      32      10     0.000032255     0.000001985     0.000028043     0.000034960      1000    31003329.8 perf_test_double_insert_remove_value_begin[32]
+TEST:    0      64      10     0.000031917     0.000001951     0.000029208     0.000034959      1000    31331265.5 perf_test_double_insert_remove_value_begin[64]
+TEST:    0     128      10     0.000034050     0.000002200     0.000031959     0.000039083      1000    29368230.6 perf_test_double_insert_remove_value_begin[128]
+TEST:    0     256      10     0.000033659     0.000001897     0.000030917     0.000037417      1000    29709912.4 perf_test_double_insert_remove_value_begin[256]
+TEST:    0     512      10     0.000034780     0.000002770     0.000031709     0.000041917      1000    28752404.4 perf_test_double_insert_remove_value_begin[512]
+TEST:    0    1024      10     0.000035609     0.000001983     0.000031709     0.000038668      1000    28082866.9 perf_test_double_insert_remove_value_begin[1024]
+TEST:    0    2048      10     0.000038171     0.000002046     0.000035834     0.000042209      1000    26197693.0 perf_test_double_insert_remove_value_begin[2048]
+TEST:    0    4096      10     0.000037759     0.000001822     0.000035751     0.000041626      1000    26483962.6 perf_test_double_insert_remove_value_begin[4096]
+TEST:    0    8192      10     0.000040021     0.000002417     0.000036334     0.000043168      1000    24986632.2 perf_test_double_insert_remove_value_begin[8192]
+TEST:    0   16384      10     0.000038626     0.000001789     0.000035458     0.000041709      1000    25889565.5 perf_test_double_insert_remove_value_begin[16384]
+TEST:    0   32768      10     0.000040284     0.000001745     0.000038625     0.000044417      1000    24823874.6 perf_test_double_insert_remove_value_begin[32768]
+TEST:    0   65536      10     0.000040430     0.000002768     0.000038668     0.000047875      1000    24734230.7 perf_test_double_insert_remove_value_begin[65536]
+TEST:    0  131072      10     0.000041809     0.000002432     0.000037626     0.000047126      1000    23918352.3 perf_test_double_insert_remove_value_begin[131072]
+TEST:    0  262144      10     0.000043250     0.000001847     0.000040668     0.000046416      1000    23121173.4 perf_test_double_insert_remove_value_begin[262144]
+TEST:    0  524288      10     0.000043376     0.000002689     0.000039209     0.000048542      1000    23054489.3 perf_test_double_insert_remove_value_begin[524288]
+TEST:    0 1048576      10     0.000044463     0.000002174     0.000040460     0.000047083      1000    22490509.0 perf_test_double_insert_remove_value_begin[1048576]
+TEST:    0       2      10     0.000030417     0.000001657     0.000027667     0.000032667      1000    32876244.0 perf_test_double_insert_remove_value_mid[2]
+TEST:    0       4      10     0.000032963     0.000001376     0.000030667     0.000034876      1000    30336860.5 perf_test_double_insert_remove_value_mid[4]
+TEST:    0       8      10     0.000032592     0.000001693     0.000030166     0.000035751      1000    30682281.9 perf_test_double_insert_remove_value_mid[8]
+TEST:    0      16      10     0.000034172     0.000001975     0.000030793     0.000037626      1000    29264067.2 perf_test_double_insert_remove_value_mid[16]
+TEST:    0      32      10     0.000035755     0.000002817     0.000031833     0.000040710      1000    27968507.5 perf_test_double_insert_remove_value_mid[32]
+TEST:    0      64      10     0.000037567     0.000003255     0.000031918     0.000044376      1000    26619036.3 perf_test_double_insert_remove_value_mid[64]
+TEST:    0     128      10     0.000040921     0.000002653     0.000035625     0.000044376      1000    24437151.3 perf_test_double_insert_remove_value_mid[128]
+TEST:    0     256      10     0.000040934     0.000003793     0.000034083     0.000047084      1000    24429688.9 perf_test_double_insert_remove_value_mid[256]
+TEST:    0     512      10     0.000043850     0.000003558     0.000040417     0.000052541      1000    22804913.1 perf_test_double_insert_remove_value_mid[512]
+TEST:    0    1024      10     0.000045622     0.000004684     0.000038751     0.000057584      1000    21919489.7 perf_test_double_insert_remove_value_mid[1024]
+TEST:    0    2048      10     0.000045601     0.000004007     0.000040375     0.000054000      1000    21929584.1 perf_test_double_insert_remove_value_mid[2048]
+TEST:    0    4096      10     0.000050359     0.000008039     0.000039543     0.000065208      1000    19857423.7 perf_test_double_insert_remove_value_mid[4096]
+TEST:    0    8192      10     0.000052180     0.000004793     0.000047417     0.000063709      1000    19164541.0 perf_test_double_insert_remove_value_mid[8192]
+TEST:    0   16384      10     0.000050767     0.000006413     0.000043042     0.000062376      1000    19697718.8 perf_test_double_insert_remove_value_mid[16384]
+TEST:    0   32768      10     0.000052546     0.000004956     0.000045958     0.000060792      1000    19030871.9 perf_test_double_insert_remove_value_mid[32768]
+TEST:    0   65536      10     0.000054246     0.000005547     0.000045751     0.000063583      1000    18434437.0 perf_test_double_insert_remove_value_mid[65536]
+TEST:    0  131072      10     0.000055926     0.000002003     0.000053125     0.000059584      1000    17880898.9 perf_test_double_insert_remove_value_mid[131072]
+TEST:    0  262144      10     0.000061142     0.000007327     0.000049333     0.000073792      1000    16355342.7 perf_test_double_insert_remove_value_mid[262144]
+TEST:    0  524288      10     0.000062209     0.000007237     0.000050834     0.000076709      1000    16074870.3 perf_test_double_insert_remove_value_mid[524288]
+TEST:    0 1048576      10     0.000069059     0.000010217     0.000051793     0.000088458      1000    14480392.8 perf_test_double_insert_remove_value_mid[1048576]
+TEST:    0       2      10     0.000030705     0.000001770     0.000028625     0.000035291      1000    32568516.0 perf_test_double_insert_remove_value_end[2]
+TEST:    0       4      10     0.000030913     0.000001089     0.000029834     0.000033084      1000    32348954.6 perf_test_double_insert_remove_value_end[4]
+TEST:    0       8      10     0.000032421     0.000001281     0.000030626     0.000034833      1000    30843920.5 perf_test_double_insert_remove_value_end[8]
+TEST:    0      16      10     0.000032942     0.000001736     0.000030167     0.000036292      1000    30356199.6 perf_test_double_insert_remove_value_end[16]
+TEST:    0      32      10     0.000034001     0.000002838     0.000029792     0.000039667      1000    29411245.7 perf_test_double_insert_remove_value_end[32]
+TEST:    0      64      10     0.000035605     0.000002393     0.000030418     0.000040210      1000    28086100.8 perf_test_double_insert_remove_value_end[64]
+TEST:    0     128      10     0.000037821     0.000003348     0.000032958     0.000044250      1000    26440127.7 perf_test_double_insert_remove_value_end[128]
+TEST:    0     256      10     0.000035892     0.000003661     0.000029668     0.000040668      1000    27861206.6 perf_test_double_insert_remove_value_end[256]
+TEST:    0     512      10     0.000037646     0.000002532     0.000033958     0.000042126      1000    26562894.3 perf_test_double_insert_remove_value_end[512]
+TEST:    0    1024      10     0.000038326     0.000004414     0.000033418     0.000047333      1000    26092220.3 perf_test_double_insert_remove_value_end[1024]
+TEST:    0    2048      10     0.000042926     0.000006691     0.000034083     0.000057958      1000    23296175.9 perf_test_double_insert_remove_value_end[2048]
+TEST:    0    4096      10     0.000042201     0.000004486     0.000037167     0.000052167      1000    23696401.7 perf_test_double_insert_remove_value_end[4096]
+TEST:    0    8192      10     0.000042471     0.000005025     0.000032876     0.000051168      1000    23545256.3 perf_test_double_insert_remove_value_end[8192]
+TEST:    0   16384      10     0.000044684     0.000005784     0.000036959     0.000055542      1000    22379425.3 perf_test_double_insert_remove_value_end[16384]
+TEST:    0   32768      10     0.000043792     0.000005243     0.000036668     0.000057000      1000    22835064.6 perf_test_double_insert_remove_value_end[32768]
+TEST:    0   65536      10     0.000042684     0.000003632     0.000035751     0.000046335      1000    23428092.2 perf_test_double_insert_remove_value_end[65536]
+TEST:    0  131072      10     0.000047584     0.000004264     0.000040710     0.000055835      1000    21015467.4 perf_test_double_insert_remove_value_end[131072]
+TEST:    0  262144      10     0.000048113     0.000005559     0.000038835     0.000058209      1000    20784317.0 perf_test_double_insert_remove_value_end[262144]
+TEST:    0  524288      10     0.000050796     0.000005958     0.000044583     0.000062500      1000    19686473.2 perf_test_double_insert_remove_value_end[524288]
+TEST:    0 1048576      10     0.000048705     0.000002473     0.000044750     0.000053459      1000    20531899.4 perf_test_double_insert_remove_value_end[1048576]
+TEST:    0       1       5     0.000000667     0.000000234     0.000000293     0.000000917        50    74928817.6 perf_test_double_at_1m[1]
+TEST:    0       2       5     0.000000892     0.000000343     0.000000334     0.000001376        50    56047528.3 perf_test_double_at_1m[2]
+TEST:    0       4       5     0.000001484     0.000000939     0.000000835     0.000003333        50    33694992.9 perf_test_double_at_1m[4]
+TEST:    0       8       5     0.000001234     0.000000339     0.000000917     0.000001834        50    40528491.5 perf_test_double_at_1m[8]
+TEST:    0      16       5     0.000001109     0.000000166     0.000000835     0.000001334        50    45073469.8 perf_test_double_at_1m[16]
+TEST:    0      32       5     0.000001275     0.000000125     0.000001084     0.000001459        50    39206461.2 perf_test_double_at_1m[32]
+TEST:    0      64       5     0.000001542     0.000000099     0.000001416     0.000001709        50    32423318.9 perf_test_double_at_1m[64]
+TEST:    0     128       5     0.000001817     0.000000262     0.000001417     0.000002125        50    27516372.2 perf_test_double_at_1m[128]
+TEST:    0     256       5     0.000002017     0.000000613     0.000001334     0.000003084        50    24790520.1 perf_test_double_at_1m[256]
+TEST:    0     512       5     0.000002184     0.000000375     0.000001709     0.000002583        50    22896918.1 perf_test_double_at_1m[512]
+TEST:    0    1024       5     0.000002192     0.000000397     0.000001667     0.000002708        50    22809178.4 perf_test_double_at_1m[1024]
+TEST:    0    2048       5     0.000002500     0.000000697     0.000001334     0.000003208        50    19997600.3 perf_test_double_at_1m[2048]
+TEST:    0    4096       5     0.000003042     0.000000666     0.000002209     0.000004210        50    16436014.6 perf_test_double_at_1m[4096]
+TEST:    0    8192       5     0.000003417     0.000000600     0.000002626     0.000004458        50    14633147.0 perf_test_double_at_1m[8192]
+TEST:    0   16384       5     0.000003976     0.000000935     0.000003167     0.000005708        50    12577034.3 perf_test_double_at_1m[16384]
+TEST:    0   32768       5     0.000003184     0.000000841     0.000001833     0.000004375        50    15704010.8 perf_test_double_at_1m[32768]
+TEST:    0   65536       5     0.000004601     0.000001459     0.000002960     0.000007168        50    10867911.4 perf_test_double_at_1m[65536]
+TEST:    0  131072       5     0.000004175     0.000000813     0.000002710     0.000004834        50    11974613.8 perf_test_double_at_1m[131072]
+TEST:    0  262144       5     0.000005201     0.000001925     0.000002001     0.000007375        50     9614460.1 perf_test_double_at_1m[262144]
+TEST:    0  524288       5     0.000005676     0.000000639     0.000004876     0.000006417        50     8809796.5 perf_test_double_at_1m[524288]
+TEST:    0 1048576       5     0.000000967     0.000000116     0.000000834     0.000001166        50    51711655.8 perf_test_double_at_1m[1048576]
+TEST:    0       1       5     0.000001209     0.000000199     0.000000918     0.000001459        50    41359914.0 perf_test_double_has_1m[1]
+TEST:    0       2       5     0.000002009     0.000000849     0.000001250     0.000003668        50    24891721.0 perf_test_double_has_1m[2]
+TEST:    0       4       5     0.000002600     0.000002240     0.000001166     0.000007042        50    19231508.9 perf_test_double_has_1m[4]
+TEST:    0       8       5     0.000001667     0.000000144     0.000001459     0.000001833        50    29999400.0 perf_test_double_has_1m[8]
+TEST:    0      16       5     0.000001550     0.000000246     0.000001208     0.000001833        50    32251822.2 perf_test_double_has_1m[16]
+TEST:    0      32       5     0.000001951     0.000000285     0.000001459     0.000002291        50    25634452.7 perf_test_double_has_1m[32]
+TEST:    0      64       5     0.000002067     0.000000496     0.000001417     0.000002667        50    24183796.9 perf_test_double_has_1m[64]
+TEST:    0     128       5     0.000002300     0.000000462     0.000001625     0.000002834        50    21736295.3 perf_test_double_has_1m[128]
+TEST:    0     256       5     0.000002092     0.000000159     0.000001833     0.000002250        50    23899431.2 perf_test_double_has_1m[256]
+TEST:    0     512       5     0.000002667     0.000000362     0.000002125     0.000003167        50    18748359.5 perf_test_double_has_1m[512]
+TEST:    0    1024       5     0.000003134     0.000000694     0.000002250     0.000004334        50    15955579.7 perf_test_double_has_1m[1024]
+TEST:    0    2048       5     0.000003717     0.000000804     0.000002583     0.000004876        50    13452070.3 perf_test_double_has_1m[2048]
+TEST:    0    4096       5     0.000004067     0.000000372     0.000003584     0.000004458        50    12294376.6 perf_test_double_has_1m[4096]
+TEST:    0    8192       5     0.000002851     0.000000737     0.000002209     0.000004251        50    17540782.3 perf_test_double_has_1m[8192]
+TEST:    0   16384       5     0.000004650     0.000000362     0.000004251     0.000005166        50    10751994.5 perf_test_double_has_1m[16384]
+TEST:    0   32768       5     0.000004776     0.000000790     0.000003542     0.000005958        50    10470107.8 perf_test_double_has_1m[32768]
+TEST:    0   65536       5     0.000004700     0.000001244     0.000003709     0.000007084        50    10637618.9 perf_test_double_has_1m[65536]
+TEST:    0  131072       5     0.000006142     0.000001122     0.000004416     0.000007417        50     8140803.3 perf_test_double_has_1m[131072]
+TEST:    0  262144       5     0.000006267     0.000000958     0.000004876     0.000007334        50     7978171.7 perf_test_double_has_1m[262144]
+TEST:    0  524288       5     0.000006984     0.000002591     0.000003043     0.000011209        50     7159118.6 perf_test_double_has_1m[524288]
+TEST:    0 1048576       5     0.000001509     0.000000301     0.000001208     0.000002041        50    33141114.9 perf_test_double_has_1m[1048576]
+TEST:    0       1       5     0.000001926     0.000000205     0.000001583     0.000002167        50    25967281.2 perf_test_double_index_1m[1]
+TEST:    0       2       5     0.000001926     0.000000196     0.000001709     0.000002167        50    25967281.2 perf_test_double_index_1m[2]
+TEST:    0       4       5     0.000002142     0.000000254     0.000001917     0.000002626        50    23341580.7 perf_test_double_index_1m[4]
+TEST:    0       8       5     0.000002692     0.000000522     0.000002250     0.000003709        50    18571481.6 perf_test_double_index_1m[8]
+TEST:    0      16       5     0.000002942     0.000001234     0.000001958     0.000005375        50    16995819.0 perf_test_double_index_1m[16]
+TEST:    0      32       5     0.000002401     0.000000287     0.000001876     0.000002667        50    20827258.7 perf_test_double_index_1m[32]
+TEST:    0      64       5     0.000002692     0.000000193     0.000002458     0.000002959        50    18572861.3 perf_test_double_index_1m[64]
+TEST:    0     128       5     0.000002917     0.000000349     0.000002501     0.000003460        50    17140310.6 perf_test_double_index_1m[128]
+TEST:    0     256       5     0.000002801     0.000000310     0.000002417     0.000003251        50    17853954.7 perf_test_double_index_1m[256]
+TEST:    0     512       5     0.000003409     0.000000669     0.000002708     0.000004584        50    14667488.0 perf_test_double_index_1m[512]
+TEST:    0    1024       5     0.000003234     0.000000237     0.000003000     0.000003542        50    15461207.8 perf_test_double_index_1m[1024]
+TEST:    0    2048       5     0.000003942     0.000000134     0.000003792     0.000004168        50    12683595.0 perf_test_double_index_1m[2048]
+TEST:    0    4096       5     0.000004159     0.000000337     0.000003501     0.000004416        50    12022988.0 perf_test_double_index_1m[4096]
+TEST:    0    8192       5     0.000005084     0.000000812     0.000003959     0.000006126        50     9835356.1 perf_test_double_index_1m[8192]
+TEST:    0   16384       5     0.000005542     0.000000710     0.000004917     0.000006792        50     9022176.5 perf_test_double_index_1m[16384]
+TEST:    0   32768       5     0.000005417     0.000001012     0.000004334     0.000007292        50     9230371.6 perf_test_double_index_1m[32768]
+TEST:    0   65536       5     0.000006259     0.000001053     0.000005126     0.000007916        50     7989134.8 perf_test_double_index_1m[65536]
+TEST:    0  131072       5     0.000005901     0.000000897     0.000004416     0.000006875        50     8473858.1 perf_test_double_index_1m[131072]
+TEST:    0  262144       5     0.000005617     0.000001162     0.000003959     0.000006792        50     8901390.4 perf_test_double_index_1m[262144]
+TEST:    0  524288       5     0.000006400     0.000001089     0.000004959     0.000008167        50     7812133.8 perf_test_double_index_1m[524288]
+TEST:    0 1048576       5     0.000001475     0.000000281     0.000001166     0.000002001        50    33891411.9 perf_test_double_index_1m[1048576]
+TEST:    0       1      10     0.293891129     0.002454580     0.291324584     0.299118167        10          34.0 perf_roll_med_by_win_size[1]
+TEST:    0       2      10     0.318770296     0.001735289     0.316441293     0.321248875        10          31.4 perf_roll_med_by_win_size[2]
+TEST:    0       4      10     0.377418363     0.003509276     0.372360083     0.382932667        10          26.5 perf_roll_med_by_win_size[4]
+TEST:    0       8      10     0.446960321     0.001882207     0.443985376     0.450481085        10          22.4 perf_roll_med_by_win_size[8]
+TEST:    0      16      10     0.504380496     0.005766478     0.499553125     0.516535166        10          19.8 perf_roll_med_by_win_size[16]
+TEST:    0      32      10     0.541122201     0.001471125     0.539252417     0.544051918        10          18.5 perf_roll_med_by_win_size[32]
+TEST:    0      64      10     0.576765425     0.001877211     0.574016209     0.579025626        10          17.3 perf_roll_med_by_win_size[64]
+TEST:    0     128      10     0.610785680     0.001872129     0.607956293     0.613197751        10          16.4 perf_roll_med_by_win_size[128]
+TEST:    0     256      10     0.646607775     0.003374652     0.641541709     0.651851376        10          15.5 perf_roll_med_by_win_size[256]
+TEST:    0     512      10     0.699234830     0.011257062     0.688153293     0.727442210        10          14.3 perf_roll_med_by_win_size[512]
+TEST:    0    1024      10     0.740165080     0.004029299     0.733337418     0.747323708        10          13.5 perf_roll_med_by_win_size[1024]
+TEST:    0    2048      10     0.855390955     0.018767570     0.834045376     0.894903167        10          11.7 perf_roll_med_by_win_size[2048]
+TEST:    0    4096      10     0.963391675     0.014929146     0.944674125     0.988236709        10          10.4 perf_roll_med_by_win_size[4096]
+TEST:    0    8192      10     1.064384042     0.064175643     1.020135417     1.244195292        10           9.4 perf_roll_med_by_win_size[8192]
+TEST:    0   16384      10     1.133981759     0.028391496     1.118536125     1.217893708        10           8.8 perf_roll_med_by_win_size[16384]
+TEST:    0   32768      10     1.213920080     0.005067800     1.205485459     1.222469084        10           8.2 perf_roll_med_by_win_size[32768]
+TEST:    0   65536      10     1.296816713     0.006816809     1.287623625     1.308204584        10           7.7 perf_roll_med_by_win_size[65536]
+TEST:    0  131072      10     1.481213076     0.025698737     1.442311751     1.514437125        10           6.8 perf_roll_med_by_win_size[131072]
+TEST:    0  262144      10     2.132652025     0.066293352     2.075523501     2.319479668        10           4.7 perf_roll_med_by_win_size[262144]
+TEST:    0  524288      10     2.493407984     0.047974056     2.449440792     2.618114626        10           4.0 perf_roll_med_by_win_size[524288]
+TEST:    0       1      20     2.300000000     1.187434209     1.000000000     5.000000000       400         173.9 perf_test_node_height_growth[1]
+TEST:    0       2      20     3.100000000     1.577973384     1.000000000     7.000000000       400         129.0 perf_test_node_height_growth[2]
+TEST:    0       4      20     3.300000000     1.144552314     1.000000000     5.000000000       400         121.2 perf_test_node_height_growth[4]
+TEST:    0       8      20     4.400000000     1.529705854     2.000000000     8.000000000       400          90.9 perf_test_node_height_growth[8]
+TEST:    0      16      20     5.200000000     1.029563014     3.000000000     7.000000000       400          76.9 perf_test_node_height_growth[16]
+TEST:    0      32      20     7.550000000     2.132486811     5.000000000    13.000000000       400          53.0 perf_test_node_height_growth[32]
+TEST:    0      64      20     7.150000000     1.739971264     5.000000000    13.000000000       400          55.9 perf_test_node_height_growth[64]
+TEST:    0     128      20     8.100000000     1.700000000     6.000000000    13.000000000       400          49.4 perf_test_node_height_growth[128]
+TEST:    0     256      20     9.050000000     1.627114010     7.000000000    13.000000000       400          44.2 perf_test_node_height_growth[256]
+TEST:    0     512      20    10.650000000     1.851350858     8.000000000    14.000000000       400          37.6 perf_test_node_height_growth[512]
+TEST:    0    1024      20    10.950000000     2.011839954     8.000000000    16.000000000       400          36.5 perf_test_node_height_growth[1024]
+TEST:    0    2048      20    11.700000000     1.382027496    10.000000000    14.000000000       400          34.2 perf_test_node_height_growth[2048]
+TEST:    0    4096      20    13.350000000     1.739971264    11.000000000    18.000000000       400          30.0 perf_test_node_height_growth[4096]
+TEST:    0    8192      20    13.950000000     1.627114010    12.000000000    19.000000000       400          28.7 perf_test_node_height_growth[8192]
+TEST:    0   16384      20    16.500000000     2.991655060    12.000000000    23.000000000       400          24.2 perf_test_node_height_growth[16384]
+TEST:    0   32768      20    16.300000000     3.494281042    13.000000000    26.000000000       400          24.5 perf_test_node_height_growth[32768]
+TEST:    0   65536      20    17.400000000     1.907878403    14.000000000    22.000000000       400          23.0 perf_test_node_height_growth[65536]
+TEST:    0  131072      20    18.450000000     2.654712790    15.000000000    27.000000000       400          21.7 perf_test_node_height_growth[131072]
+TEST:    0  262144      20    19.250000000     1.577181030    17.000000000    22.000000000       400          20.8 perf_test_node_height_growth[262144]
+TEST:    0  524288      20    20.950000000     1.716828471    18.000000000    24.000000000       400          19.1 perf_test_node_height_growth[524288]
+TEST:    0       1      10     0.000098900     0.000062199     0.000073792     0.000285375      1000    10111192.8 perf_test_string_insert_remove_value_begin[1]
+TEST:    0       2      10     0.000082392     0.000002043     0.000078917     0.000085500      1000    12137056.5 perf_test_string_insert_remove_value_begin[2]
+TEST:    0       4      10     0.000080938     0.000002911     0.000075751     0.000085542      1000    12355151.3 perf_test_string_insert_remove_value_begin[4]
+TEST:    0       8      10     0.000083784     0.000004700     0.000077000     0.000093916      1000    11935467.3 perf_test_string_insert_remove_value_begin[8]
+TEST:    0      16      10     0.000091101     0.000004996     0.000085168     0.000100585      1000    10976876.1 perf_test_string_insert_remove_value_begin[16]
+TEST:    0      32      10     0.000088559     0.000004234     0.000082251     0.000095459      1000    11291932.6 perf_test_string_insert_remove_value_begin[32]
+TEST:    0      64      10     0.000096605     0.000007591     0.000086751     0.000114751      1000    10351484.7 perf_test_string_insert_remove_value_begin[64]
+TEST:    0     128      10     0.000092759     0.000004852     0.000087292     0.000100293      1000    10780648.3 perf_test_string_insert_remove_value_begin[128]
+TEST:    0     256      10     0.000091667     0.000004396     0.000085626     0.000100833      1000    10909027.4 perf_test_string_insert_remove_value_begin[256]
+TEST:    0     512      10     0.000090538     0.000002919     0.000086709     0.000094917      1000    11045086.0 perf_test_string_insert_remove_value_begin[512]
+TEST:    0    1024      10     0.000092663     0.000006359     0.000083668     0.000107917      1000    10791817.2 perf_test_string_insert_remove_value_begin[1024]
+TEST:    0    2048      10     0.000094734     0.000003221     0.000089750     0.000098834      1000    10555883.4 perf_test_string_insert_remove_value_begin[2048]
+TEST:    0    4096      10     0.000095680     0.000003615     0.000090126     0.000101625      1000    10451537.8 perf_test_string_insert_remove_value_begin[4096]
+TEST:    0    8192      10     0.000099880     0.000003115     0.000096042     0.000107417      1000    10012034.5 perf_test_string_insert_remove_value_begin[8192]
+TEST:    0   16384      10     0.000099338     0.000003263     0.000095709     0.000107292      1000    10066631.0 perf_test_string_insert_remove_value_begin[16384]
+TEST:    0       1      10     0.000074384     0.000003657     0.000068210     0.000081833      1000    13443769.4 perf_test_string_insert_remove_value_mid[1]
+TEST:    0       2      10     0.000076042     0.000002861     0.000071166     0.000081166      1000    13150644.6 perf_test_string_insert_remove_value_mid[2]
+TEST:    0       4      10     0.000083184     0.000002406     0.000079126     0.000086751      1000    12021586.0 perf_test_string_insert_remove_value_mid[4]
+TEST:    0       8      10     0.000085283     0.000002118     0.000081000     0.000087834      1000    11725597.6 perf_test_string_insert_remove_value_mid[8]
+TEST:    0      16      10     0.000094026     0.000003098     0.000088417     0.000099501      1000    10635401.4 perf_test_string_insert_remove_value_mid[16]
+TEST:    0      32      10     0.000092126     0.000005432     0.000085168     0.000102543      1000    10854746.1 perf_test_string_insert_remove_value_mid[32]
+TEST:    0      64      10     0.000102196     0.000006832     0.000091333     0.000116625      1000     9785090.1 perf_test_string_insert_remove_value_mid[64]
+TEST:    0     128      10     0.000105555     0.000005925     0.000098083     0.000117459      1000     9473761.0 perf_test_string_insert_remove_value_mid[128]
+TEST:    0     256      10     0.000114388     0.000011733     0.000100166     0.000142875      1000     8742175.8 perf_test_string_insert_remove_value_mid[256]
+TEST:    0     512      10     0.000108217     0.000011041     0.000093043     0.000125875      1000     9240666.7 perf_test_string_insert_remove_value_mid[512]
+TEST:    0    1024      10     0.000118030     0.000008660     0.000101543     0.000132542      1000     8472436.6 perf_test_string_insert_remove_value_mid[1024]
+TEST:    0    2048      10     0.000122892     0.000013431     0.000101834     0.000144250      1000     8137206.3 perf_test_string_insert_remove_value_mid[2048]
+TEST:    0    4096      10     0.000127355     0.000013361     0.000107125     0.000147251      1000     7852085.6 perf_test_string_insert_remove_value_mid[4096]
+TEST:    0    8192      10     0.000133909     0.000012192     0.000112167     0.000157793      1000     7467769.1 perf_test_string_insert_remove_value_mid[8192]
+TEST:    0   16384      10     0.000136096     0.000011653     0.000114584     0.000151126      1000     7347732.9 perf_test_string_insert_remove_value_mid[16384]
+TEST:    0       1      10     0.000031597     0.000001874     0.000028583     0.000034709      1000    31649075.1 perf_test_string_insert_remove_value_end[1]
+TEST:    0       2      10     0.000035021     0.000002028     0.000031751     0.000038417      1000    28554051.4 perf_test_string_insert_remove_value_end[2]
+TEST:    0       4      10     0.000039530     0.000002254     0.000034583     0.000042875      1000    25297498.6 perf_test_string_insert_remove_value_end[4]
+TEST:    0       8      10     0.000040713     0.000002796     0.000036501     0.000047584      1000    24562239.5 perf_test_string_insert_remove_value_end[8]
+TEST:    0      16      10     0.000043596     0.000002464     0.000039376     0.000047376      1000    22937779.0 perf_test_string_insert_remove_value_end[16]
+TEST:    0      32      10     0.000061022     0.000007393     0.000053085     0.000076585      1000    16387639.8 perf_test_string_insert_remove_value_end[32]
+TEST:    0      64      10     0.000063455     0.000004931     0.000055208     0.000070335      1000    15759273.9 perf_test_string_insert_remove_value_end[64]
+TEST:    0     128      10     0.000065580     0.000006347     0.000055001     0.000075793      1000    15248597.9 perf_test_string_insert_remove_value_end[128]
+TEST:    0     256      10     0.000083234     0.000006714     0.000071251     0.000090791      1000    12014349.9 perf_test_string_insert_remove_value_end[256]
+TEST:    0     512      10     0.000098871     0.000007809     0.000088292     0.000114542      1000    10114168.7 perf_test_string_insert_remove_value_end[512]
+TEST:    0    1024      10     0.000099650     0.000007293     0.000090333     0.000110417      1000    10035082.6 perf_test_string_insert_remove_value_end[1024]
+TEST:    0    2048      10     0.000138021     0.000016494     0.000112168     0.000160751      1000     7245258.5 perf_test_string_insert_remove_value_end[2048]
+TEST:    0    4096      10     0.000195721     0.000009354     0.000184209     0.000215208      1000     5109303.3 perf_test_string_insert_remove_value_end[4096]
+TEST:    0    8192      10     0.000310508     0.000015470     0.000289958     0.000337666      1000     3220523.8 perf_test_string_insert_remove_value_end[8192]
+TEST:    0   16384      10     0.000563680     0.000062238     0.000525291     0.000745959      1000     1774056.8 perf_test_string_insert_remove_value_end[16384]
+TAIL: Passed=1965/1965 Failed=0/1965
+All tests pass.
+                   perf_size_of_double_vary_length(): size_of(       1):      248 bytes ratio:      248 /sizeof(T):       31
+                   perf_size_of_double_vary_length(): size_of(       2):      336 bytes ratio:      168 /sizeof(T):       21
+                   perf_size_of_double_vary_length(): size_of(       4):      400 bytes ratio:      100 /sizeof(T):     12.5
+                   perf_size_of_double_vary_length(): size_of(       8):      944 bytes ratio:      118 /sizeof(T):    14.75
+                   perf_size_of_double_vary_length(): size_of(      16):     1648 bytes ratio:      103 /sizeof(T):    12.88
+                   perf_size_of_double_vary_length(): size_of(      32):     2976 bytes ratio:       93 /sizeof(T):    11.62
+                   perf_size_of_double_vary_length(): size_of(      64):     6080 bytes ratio:       95 /sizeof(T):    11.88
+                   perf_size_of_double_vary_length(): size_of(     128):    12320 bytes ratio:    96.25 /sizeof(T):    12.03
+                   perf_size_of_double_vary_length(): size_of(     256):    24000 bytes ratio:    93.75 /sizeof(T):    11.72
+                   perf_size_of_double_vary_length(): size_of(     512):    47632 bytes ratio:    93.03 /sizeof(T):    11.63
+                   perf_size_of_double_vary_length(): size_of(    1024):    95808 bytes ratio:    93.56 /sizeof(T):     11.7
+                   perf_size_of_double_vary_length(): size_of(    2048):   188144 bytes ratio:    91.87 /sizeof(T):    11.48
+                   perf_size_of_double_vary_length(): size_of(    4096):   379056 bytes ratio:    92.54 /sizeof(T):    11.57
+                   perf_size_of_double_vary_length(): size_of(    8192):   759824 bytes ratio:    92.75 /sizeof(T):    11.59
+                   perf_size_of_double_vary_length(): size_of(   16384):  1508864 bytes ratio:    92.09 /sizeof(T):    11.51
+                   perf_size_of_double_vary_length(): size_of(   32768):  3023920 bytes ratio:    92.28 /sizeof(T):    11.54
+                   perf_size_of_double_vary_length(): size_of(   65536):  6056800 bytes ratio:    92.42 /sizeof(T):    11.55
+                   perf_size_of_double_vary_length(): size_of(  131072): 12145488 bytes ratio:    92.66 /sizeof(T):    11.58
+                   perf_size_of_double_vary_length(): size_of(  262144): 24241936 bytes ratio:    92.48 /sizeof(T):    11.56
+                   perf_size_of_double_vary_length(): size_of(  524288): 48465312 bytes ratio:    92.44 /sizeof(T):    11.56
+                   perf_size_of_double_vary_length(): size_of( 1048576): 97000880 bytes ratio:    92.51 /sizeof(T):    11.56
+                     perf_size_of_char_vary_length(): size_of(       1):      241 bytes ratio:      241 /sizeof(T):      241
+                     perf_size_of_char_vary_length(): size_of(       2):      322 bytes ratio:      161 /sizeof(T):      161
+                     perf_size_of_char_vary_length(): size_of(       4):      372 bytes ratio:       93 /sizeof(T):       93
+                     perf_size_of_char_vary_length(): size_of(       8):      888 bytes ratio:      111 /sizeof(T):      111
+                     perf_size_of_char_vary_length(): size_of(      16):     1536 bytes ratio:       96 /sizeof(T):       96
+                     perf_size_of_char_vary_length(): size_of(      32):     2752 bytes ratio:       86 /sizeof(T):       86
+                     perf_size_of_char_vary_length(): size_of(      64):     5632 bytes ratio:       88 /sizeof(T):       88
+                     perf_size_of_char_vary_length(): size_of(     128):    11424 bytes ratio:    89.25 /sizeof(T):    89.25
+                     perf_size_of_char_vary_length(): size_of(     256):    22208 bytes ratio:    86.75 /sizeof(T):    86.75
+                     perf_size_of_char_vary_length(): size_of(     512):    44048 bytes ratio:    86.03 /sizeof(T):    86.03
+                     perf_size_of_char_vary_length(): size_of(    1024):    88640 bytes ratio:    86.56 /sizeof(T):    86.56
+                     perf_size_of_char_vary_length(): size_of(    2048):   173808 bytes ratio:    84.87 /sizeof(T):    84.87
+                     perf_size_of_char_vary_length(): size_of(    4096):   350384 bytes ratio:    85.54 /sizeof(T):    85.54
+                     perf_size_of_char_vary_length(): size_of(    8192):   702480 bytes ratio:    85.75 /sizeof(T):    85.75
+                     perf_size_of_char_vary_length(): size_of(   16384):  1394176 bytes ratio:    85.09 /sizeof(T):    85.09
+                     perf_size_of_char_vary_length(): size_of(   32768):  2794544 bytes ratio:    85.28 /sizeof(T):    85.28
+                     perf_size_of_char_vary_length(): size_of(   65536):  5598048 bytes ratio:    85.42 /sizeof(T):    85.42
+                     perf_size_of_char_vary_length(): size_of(  131072): 11227984 bytes ratio:    85.66 /sizeof(T):    85.66
+                     perf_size_of_char_vary_length(): size_of(  262144): 22406928 bytes ratio:    85.48 /sizeof(T):    85.48
+                     perf_size_of_char_vary_length(): size_of(  524288): 44795296 bytes ratio:    85.44 /sizeof(T):    85.44
+                     perf_size_of_char_vary_length(): size_of( 1048576): 89660848 bytes ratio:    85.51 /sizeof(T):    85.51
+                                   perf_size_of_1m(): size_of( 1048576): 96956080 bytes ratio:    92.46 /sizeof(T):    11.56
+                             perf_single_at_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 6.023e+04 (us) rate 1.66e+07 /s
+                            perf_single_has_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 1.178e+05 (us) rate 8.49e+06 /s
+                     perf_single_ins_at_rem_middle(): SkiplistSize: 1048576 repeat count: 1000000 time: 6.542e+05 (us) rate 1.529e+06 /s
+                             perf_1m_median_values(): vectors:      1 of length:  1000000 time: 0.5792 (s)
+                                   perf_size_of_1m(): size_of( 1048576): 96956080 bytes ratio:    92.46 /sizeof(T):    11.56
+                         test_single_thread_insert(): PASS
+                 test_two_thread_insert_has_remove(): PASS
+     test_two_thread_insert_count_has_remove_count(): PASS
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:    1 SkiplistSize:    16384 time:         8605 (us) rate    1.904e+06 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:    2 SkiplistSize:     8192 time:        25303 (us) rate    6.475e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:    4 SkiplistSize:     4096 time:        78357 (us) rate    2.091e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:    8 SkiplistSize:     2048 time:       153190 (us) rate     1.07e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:   16 SkiplistSize:     1024 time:       320661 (us) rate    5.109e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:   32 SkiplistSize:      512 time:       286911 (us) rate     5.71e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:   64 SkiplistSize:      256 time:       199566 (us) rate     8.21e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): threads:  128 SkiplistSize:      128 time:       367687 (us) rate    4.456e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_vary_length(): PASS
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:    1 SkiplistSize:    16384 time:         9609 (us) rate    1.705e+06 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:    2 SkiplistSize:    16384 time:        55779 (us) rate    5.875e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:    4 SkiplistSize:    16384 time:       349347 (us) rate    1.876e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:    8 SkiplistSize:    16384 time:      1028571 (us) rate    1.274e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:   16 SkiplistSize:    16384 time:      3143098 (us) rate     8.34e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:   32 SkiplistSize:    16384 time:      3930336 (us) rate    1.334e+05 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:   64 SkiplistSize:    16384 time:     28514022 (us) rate    3.677e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): threads:  128 SkiplistSize:    16384 time:     37244195 (us) rate    5.631e+04 /s
+test_perf_insert_count_has_remove_count_multi_threads_fixed_length(): PASS
+              test_perf_single_thread_fixed_length():   count:    1 SkiplistSize:    16384 time:         8849 (us) rate    1.852e+06 /s
+              test_perf_single_thread_fixed_length():   count:    2 SkiplistSize:    16384 time:        17394 (us) rate    1.884e+06 /s
+              test_perf_single_thread_fixed_length():   count:    4 SkiplistSize:    16384 time:        36536 (us) rate    1.794e+06 /s
+              test_perf_single_thread_fixed_length():   count:    8 SkiplistSize:    16384 time:        69710 (us) rate     1.88e+06 /s
+              test_perf_single_thread_fixed_length():   count:   16 SkiplistSize:    16384 time:       137772 (us) rate    1.903e+06 /s
+              test_perf_single_thread_fixed_length():   count:   32 SkiplistSize:    16384 time:       275415 (us) rate    1.904e+06 /s
+              test_perf_single_thread_fixed_length():   count:   64 SkiplistSize:    16384 time:       549993 (us) rate    1.907e+06 /s
+              test_perf_single_thread_fixed_length():   count:  128 SkiplistSize:    16384 time:      1094388 (us) rate    1.916e+06 /s
+              test_perf_single_thread_fixed_length(): PASS
+        test_perf_sim_rolling_median_single_thread(): threads:    1 SkiplistSize:  1000000 repeat_count:    10000 total time:         6866 (us) per op:       0.6866 (us) rate    1.456e+06 /s
+        test_perf_sim_rolling_median_single_thread(): PASS
+        _test_perf_sim_rolling_median_multi_thread(): threads:    1 SkiplistSize:  1000000 repeat_count:    10000 total time:         8127 (us) per op:       0.8127 (us) rate     1.23e+06 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:    2 SkiplistSize:  1000000 repeat_count:    10000 total time:        37830 (us) per op:        1.891 (us) rate    5.287e+05 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:    4 SkiplistSize:  1000000 repeat_count:    10000 total time:       182756 (us) per op:        4.569 (us) rate    2.189e+05 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:    8 SkiplistSize:  1000000 repeat_count:    10000 total time:       807354 (us) per op:        10.09 (us) rate    9.909e+04 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:   16 SkiplistSize:  1000000 repeat_count:    10000 total time:      5428253 (us) per op:        33.93 (us) rate    2.948e+04 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:   32 SkiplistSize:  1000000 repeat_count:    10000 total time:      4644307 (us) per op:        14.51 (us) rate     6.89e+04 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:   64 SkiplistSize:  1000000 repeat_count:    10000 total time:      7576014 (us) per op:        11.84 (us) rate    8.448e+04 /s
+        _test_perf_sim_rolling_median_multi_thread(): threads:  128 SkiplistSize:  1000000 repeat_count:    10000 total time:     55401496 (us) per op:        43.28 (us) rate     2.31e+04 /s
+         test_perf_sim_rolling_median_multi_thread(): PASS
+test_perf_sim_rolling_median_multi_thread_multi_no_thread[0] Sample time/op = 1.046(us)
+test_perf_sim_rolling_median_multi_thread_multi[1] Sample time/op = 36.68(us)
+test_perf_sim_rolling_median_multi_thread_multi[2] Sample time/op = 7.509(us)
+test_perf_sim_rolling_median_multi_thread_multi[4] Sample time/op = 3.652(us)
+test_perf_sim_rolling_median_multi_thread_multi[8] Sample time/op = 5.699(us)
+test_perf_sim_rolling_median_multi_thread_multi[16] Sample time/op = 3.249(us)
+test_perf_sim_rolling_median_multi_thread_multi[32] Sample time/op = 6.823(us)
+test_perf_sim_rolling_median_multi_thread_multi[64] Sample time/op = 5.182(us)
+test_perf_sim_rolling_median_multi_thread_multi[128] Sample time/op = 3.975(us)
+Number of tests: 9
+REGEX_HEAD: "HEAD:\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)"
+REGEX_TEST: "TEST:\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+([0-9+-.]+)\s+(\d+)\s+([0-9+-.]+)\s+(\S+)"
+REGEX_TAIL: "TAIL:\s+(.+)"
+#  $1   $2      $3      $4              $5              $6              $7              $8        $9           $10 $11
+HEAD: Fail   Scale  Repeat         Mean(s)     Std.Dev.(s)         Min.(s)         Max.(s)     Count      Rate(/s) Name
+TEST:    0       0      10     0.000023213     0.000003004     0.000019167     0.000029917       200     8615787.6 test_perf_sim_rolling_median_multi_thread_multi_no_thread[0]
+TEST:    0       1      10     0.000173521     0.000188363     0.000094126     0.000733625       200     1152596.9 test_perf_sim_rolling_median_multi_thread_multi[1]
+TEST:    0       2      10     0.000165588     0.000046331     0.000129125     0.000300375       400     2415632.5 test_perf_sim_rolling_median_multi_thread_multi[2]
+TEST:    0       4      10     0.000312567     0.000047719     0.000222875     0.000387668       800     2559450.4 test_perf_sim_rolling_median_multi_thread_multi[4]
+TEST:    0       8      10     0.000640663     0.000200250     0.000337001     0.001005917      1600     2497413.6 test_perf_sim_rolling_median_multi_thread_multi[8]
+TEST:    0      16      10     0.001222230     0.000503443     0.000645583     0.002193167      3200     2618165.8 test_perf_sim_rolling_median_multi_thread_multi[16]
+TEST:    0      32      10     0.003034863     0.000694005     0.002076959     0.004367000      6400     2108826.7 test_perf_sim_rolling_median_multi_thread_multi[32]
+TEST:    0      64      10     0.006212063     0.000855899     0.004241542     0.007469417     12800     2060507.0 test_perf_sim_rolling_median_multi_thread_multi[64]
+TEST:    0     128      10     0.013532005     0.005292444     0.009303417     0.028770876     25600     1891811.3 test_perf_sim_rolling_median_multi_thread_multi[128]
+TAIL: Passed=90/90 Failed=0/90
+All tests pass.
+Final result: PASS
+Exec time: 686.154 (s)

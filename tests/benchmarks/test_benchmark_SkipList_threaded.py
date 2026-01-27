@@ -72,35 +72,36 @@ def benchmark_insert_has_remove_float_threaded(skip_list, insert_value, num_inse
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    ('length', 'num_threads'),
+    'num_threads',
     (
-            (1000 * 1000, 0,),
-            (1000 * 1000, 1,),
-            (1000 * 1000, 2,),
-            (1000 * 1000, 4,),
-            (1000 * 1000, 8,),
-            (1000 * 1000, 16,),
-            (1000 * 1000, 32,),
-            (1000 * 1000, 64,),
-            (1000 * 1000, 128,),
+            0,
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
     ),
-    ids=[
-        'Len_1e6_Threads_000',
-        'Len_1e6_Threads_001',
-        'Len_1e6_Threads_002',
-        'Len_1e6_Threads_004',
-        'Len_1e6_Threads_008',
-        'Len_1e6_Threads_016',
-        'Len_1e6_Threads_032',
-        'Len_1e6_Threads_064',
-        'Len_1e6_Threads_128',
-    ]
+    # ids=[
+    #     'Len_1e6_Threads_000',
+    #     'Len_1e6_Threads_001',
+    #     'Len_1e6_Threads_002',
+    #     'Len_1e6_Threads_004',
+    #     'Len_1e6_Threads_008',
+    #     'Len_1e6_Threads_016',
+    #     'Len_1e6_Threads_032',
+    #     'Len_1e6_Threads_064',
+    #     'Len_1e6_Threads_128',
+    # ]
 )
-def test_ihr_float_threaded(benchmark, length, num_threads):
-    """Tests multi-threaded insert()/has()/remove() of floats converted to
+def test_ihr_float_threaded(benchmark, num_threads):
+    """Tests multithreaded insert()/has()/remove() of floats converted to
     native C++ objects."""
     # logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(float)
+    length = 1000 * 1000
     # Load SkipList with length values
     for i in range(length):
         sl.insert(float(i))

@@ -113,6 +113,8 @@ create_documentation() {
   python -VV
   echo "---> pip list:"
   pip list
+  echo "---> Creating .dat files from .benchmarks:"
+  python tests/benchmarks/benchmark_to_dat.py
   echo "---> Building documentation:"
   cd docs
   ./build_docs.sh
