@@ -26,6 +26,7 @@ popd
 
 # Doxygen, requires doxygen installed, very noisy so /dev/null
 echo "---- START Creating Doxygen output"
+rm -rf doxygen/
 doxygen SkipList.dox > /dev/null
 echo "---- DONE  Creating Doxygen output"
 # Doxygen PDF
