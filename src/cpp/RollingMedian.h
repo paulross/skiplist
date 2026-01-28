@@ -106,8 +106,9 @@ namespace OrderedStructs {
 
 /**
  * Rolling median where only the odd mid-index is considered.
- * If the win_length is even then (win_length - 1) / 2 value is used.
- * See even_odd_index() for a different treatment of even lengths.
+ * The (win_length - 1) / 2 value is used.
+ * See even_index() for a different treatment of even lengths.
+ *
  * This is valid for all types T.
  * It is up to the caller to ensure that there is enough space in dest for
  * the results, use dest_size() for this.
@@ -125,10 +126,12 @@ namespace OrderedStructs {
         RollingMedianResult odd_index(const T *src, size_t src_stride,
                                       size_t count, size_t win_length,
                                       T *dest, size_t dest_stride) {
+            assert(win_length % 2 == 1);
+            ROLLING_MEDIAN_ERROR_CHECK;
+
             SkipList::HeadNode<T> sl;
             const T *tail = src;
 
-            ROLLING_MEDIAN_ERROR_CHECK;
             for (size_t i = 0; i < count; ++i) {
                 sl.insert(*src);
                 if (i + 1 >= win_length) {
@@ -142,8 +145,49 @@ namespace OrderedStructs {
             return ROLLING_MEDIAN_SUCCESS;
         }
 
-/*
+/**
+ * Rolling median where only the even mid-index is considered.
+ * Then value is: the mean of the two centre values SkipList[(win_length - 1) / 2] / 2 + SkipList[(win_length - 1) / 2] / 2
+ * See odd_index() for a different treatment of odd lengths.
+ *
+ * This is valid only for types T that can be divided by two.
+ * It is up to the caller to ensure that there is enough space in dest for
+ * the results, use dest_size() for this.
+ *
+ * @tparam T Type of the value(s).
+ * @param src Source array of values.
+ * @param src_stride Source stride for 2D arrays.
+ * @param count Number of input values.
+ * @param win_length Window length.
+ * @param dest The destination array.
+ * @param dest_stride The destination stride given a 2D array.
+ * @return The result of the Rolling Median operation as a RollingMedianResult enum.
  */
+        template<typename T>
+        RollingMedianResult even_index(const T *src, size_t src_stride,
+                                      size_t count, size_t win_length,
+                                      T *dest, size_t dest_stride) {
+            assert(win_length % 2 == 0);
+            ROLLING_MEDIAN_ERROR_CHECK;
+
+            SkipList::HeadNode<T> sl;
+            std::vector<T> buffer;
+
+            const T *tail = src;
+            for (size_t i = 0; i < count; ++i) {
+                sl.insert(*src);
+                if (i + 1 >= win_length) {
+                    sl.at((win_length - 1) / 2, 2, buffer);
+                    assert(buffer.size() == 2);
+                    *dest = buffer[0] / 2 + buffer[1] / 2;
+                    dest += dest_stride;
+                    sl.remove(*tail);
+                    tail += src_stride;
+                }
+                src += src_stride;
+            }
+            return ROLLING_MEDIAN_SUCCESS;
+        }
 /**
  * Rolling median where the mean of adjacent values is used
  * when the window size is even length.
@@ -164,30 +208,17 @@ namespace OrderedStructs {
         RollingMedianResult even_odd_index(const T *src, size_t src_stride,
                                            size_t count, size_t win_length,
                                            T *dest, size_t dest_stride) {
+            RollingMedianResult ret;
             if (win_length % 2 == 1) {
-                return odd_index(src, src_stride,
+                ret = odd_index(src, src_stride,
+                                count, win_length,
+                                dest, dest_stride);
+            } else {
+                ret = even_index(src, src_stride,
                                  count, win_length,
                                  dest, dest_stride);
-            } else {
-                ROLLING_MEDIAN_ERROR_CHECK;
-                SkipList::HeadNode<T> sl;
-                std::vector<T> buffer;
-
-                const T *tail = src;
-                for (size_t i = 0; i < count; ++i) {
-                    sl.insert(*src);
-                    if (i + 1 >= win_length) {
-                        sl.at((win_length - 1) / 2, 2, buffer);
-                        assert(buffer.size() == 2);
-                        *dest = buffer[0] / 2 + buffer[1] / 2;
-                        dest += dest_stride;
-                        sl.remove(*tail);
-                        tail += src_stride;
-                    }
-                    src += src_stride;
-                }
             }
-            return ROLLING_MEDIAN_SUCCESS;
+            return ret;
         }
 
     } // namespace RollingMedian

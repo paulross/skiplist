@@ -144,7 +144,7 @@ int perf_roll_med_odd_index() {
     std::cout << exec / 1e6;
     std::cout << " (s)";
     std::cout << std::endl;
-    
+
     delete [] dest;
     return result;
 }
@@ -160,7 +160,7 @@ int perf_roll_med_odd_index_wins() {
     const int DEST_STRIDE = 1;
     double *src = new double[COUNT];
     int result = 0;
-    
+
     // Create source data
     for (size_t i = 0; i < COUNT; ++i) {
         src[i] = 2.0 * i;
@@ -201,10 +201,10 @@ int test_rolling_median_all() {
     result |= print_result("test_roll_med_simple", test_roll_med_simple());
     result |= print_result("test_roll_med_even_win", test_roll_med_even_win());
     result |= print_result("test_roll_med_even_mean", test_roll_med_even_mean());
-    result |= print_result("test_roll_med_even_mean", test_roll_med_even_mean());
     // Performance tests are very slow if DEBUG as checking
     // integrity is very expensive for large data sets.
 #ifndef DEBUG
+    result |= print_result("perf_roll_med_odd_index", perf_roll_med_odd_index());
     result |= print_result("perf_roll_med_odd_index_wins", perf_roll_med_odd_index_wins());
 #endif
     return result;
