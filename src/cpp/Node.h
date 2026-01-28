@@ -44,6 +44,9 @@
 #endif
 
 /**************************** Node *********************************/
+namespace OrderedStructs {
+    namespace SkipList {
+
 #pragma mark -
 #pragma mark class Node definition
 
@@ -610,6 +613,9 @@ void Node<T, _Compare>::dotFile(std::ostream &os, size_t suffix) const {
 }
 
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
+
+} // namespace SkipList
+} // namespace OrderedStructs
 
 /************************** END: Node *******************************/
 

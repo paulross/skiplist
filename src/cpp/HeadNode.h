@@ -50,6 +50,9 @@
 #pragma mark -
 #pragma mark class HeadNode definition
 
+namespace OrderedStructs {
+    namespace SkipList {
+
 /** HeadNode
  *
  * @brief A HeadNode is a skip list. This is the single node leading to all other content Nodes.
@@ -939,6 +942,8 @@ void HeadNode<T, _Compare>::dotFileFinalise(std::ostream &os) const {
 
 #endif // INCLUDE_METHODS_THAT_USE_STREAMS
 
+    } // namespace SkipList
+} // namespace OrderedStructs
 /************************** END: HeadNode *******************************/
 
 #endif // SkipList_HeadNode_h
