@@ -1,5 +1,6 @@
 pytest
 hypothesis
+numpy
 psutil
 pytest-benchmark
 pytest-benchmark[histogram]
