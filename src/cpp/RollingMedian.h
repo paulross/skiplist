@@ -58,6 +58,45 @@ namespace OrderedStructs {
         };
 
 /**
+ * Vector based rolling median.
+ *
+ * The length of the result is data.size() - win_length
+ *
+ * @tparam T
+ * @param data
+ * @param win_length
+ * @param result
+ * @return ROLLING_MEDIAN_SUCCESS on success, non-zero on failure.
+ */
+        template<typename T>
+        RollingMedianResult rolling_median(const std::vector<T> data,
+                                           size_t win_length,
+                                           std::vector<T> &result) {
+            if (win_length == 0) {
+                return ROLLING_MEDIAN_WIN_LENGTH;
+            }
+            OrderedStructs::SkipList::HeadNode<T> sl;
+
+            result.clear();
+            std::vector<T> buffer;
+            for (size_t i = 0; i < data.size(); ++i) {
+                sl.insert(data[i]);
+                if (i >= win_length) {
+                    if (win_length % 2 == 1) {
+                        result.push_back(sl.at(win_length / 2));
+                    } else {
+                        /* Even length so average */
+                        sl.at((win_length - 1) / 2, 2, buffer);
+                        assert(buffer.size() == 2);
+                        result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                    }
+                    sl.remove(data[i - win_length]);
+                }
+            }
+            return ROLLING_MEDIAN_SUCCESS;
+        }
+
+/**
  * Return an error code.
  */
 #define ROLLING_MEDIAN_ERROR_CHECK                      \
@@ -113,6 +152,8 @@ namespace OrderedStructs {
  * It is up to the caller to ensure that there is enough space in dest for
  * the results, use dest_size() for this.
  *
+ * The number of valid values in the result is count - win_length
+ *
  * @tparam T Type of the value(s).
  * @param src Source array of values.
  * @param src_stride Source stride for 2D arrays.
@@ -154,6 +195,8 @@ namespace OrderedStructs {
  * It is up to the caller to ensure that there is enough space in dest for
  * the results, use dest_size() for this.
  *
+ * The number of valid values in the result is count - win_length
+ *
  * @tparam T Type of the value(s).
  * @param src Source array of values.
  * @param src_stride Source stride for 2D arrays.
@@ -165,8 +208,8 @@ namespace OrderedStructs {
  */
         template<typename T>
         RollingMedianResult even_index(const T *src, size_t src_stride,
-                                      size_t count, size_t win_length,
-                                      T *dest, size_t dest_stride) {
+                                       size_t count, size_t win_length,
+                                       T *dest, size_t dest_stride) {
             assert(win_length % 2 == 0);
             ROLLING_MEDIAN_ERROR_CHECK;
 
@@ -188,6 +231,7 @@ namespace OrderedStructs {
             }
             return ROLLING_MEDIAN_SUCCESS;
         }
+
 /**
  * Rolling median where the mean of adjacent values is used
  * when the window size is even length.

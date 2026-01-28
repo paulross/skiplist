@@ -187,6 +187,72 @@ int perf_roll_med_odd_index_wins() {
     return result;
 }
 
+/**
+ * @brief Test the performance of a simple rolling median using vectors.
+ * Even length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_vector_style_even_win_length() {
+    const size_t COUNT = 1000000;
+    std::vector<double> src;
+    std::vector<double> dest;
+    int result = 0;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src.push_back(2.0 * i);
+    }
+    // Loop over this data for various window sizes from 2 to 524288
+    for (size_t win = 2; win < COUNT; win *= 2) {
+        srand(1);
+        time_t start = clock();
+        result |= OrderedStructs::RollingMedian::rolling_median(src, win, dest);
+        double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+        std::cout << " vectors length: " << std::setw(8) << COUNT;
+        std::cout << " window width: " << std::setw(6) << win;
+        std::cout << " time: ";
+        std::cout << exec / 1e3;
+        std::cout << " (ms)";
+        std::cout << std::endl;
+    }
+    return result;
+}
+
+/**
+ * @brief Test the performance of a simple rolling median using vectors.
+ * Odd length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_vector_style_odd_win_length() {
+    const size_t COUNT = 1000000;
+    std::vector<double> src;
+    std::vector<double> dest;
+    int result = 0;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src.push_back(2.0 * i);
+    }
+    // Loop over this data for various window sizes from 2 to 524288
+    for (size_t win = 2; win < COUNT; win *= 2) {
+        srand(1);
+        time_t start = clock();
+        result |= OrderedStructs::RollingMedian::rolling_median(src, win + 1, dest);
+        double exec = 1e6 * (clock() - start) / (double) CLOCKS_PER_SEC;
+        std::cout << std::setw(FUNCTION_WIDTH) << __FUNCTION__ << "():";
+        std::cout << " vectors length: " << std::setw(8) << COUNT;
+        std::cout << " window width: " << std::setw(6) << win;
+        std::cout << " time: ";
+        std::cout << exec / 1e3;
+        std::cout << " (ms)";
+        std::cout << std::endl;
+    }
+    return result;
+}
+
 
 /******************* END: Rolling Median Tests ************************/
 
@@ -206,6 +272,8 @@ int test_rolling_median_all() {
 #ifndef DEBUG
     result |= print_result("perf_roll_med_odd_index", perf_roll_med_odd_index());
     result |= print_result("perf_roll_med_odd_index_wins", perf_roll_med_odd_index_wins());
+    result |= print_result("perf_roll_med_vector_style_even_win_length", perf_roll_med_vector_style_even_win_length());
+    result |= print_result("perf_roll_med_vector_style_odd_win_length", perf_roll_med_vector_style_odd_win_length());
 #endif
     return result;
 }

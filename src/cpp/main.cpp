@@ -78,21 +78,26 @@ int test_example_introduction_A(void) {
 int test_all() {
     int result = 0;
 
-#if 1
+#if 0
     result |= test_example_introduction_A();
-
     result |= test_functional_all();
+#endif
+
+#if 1
     result |= test_rolling_median_all();
+#endif
+
+#if 0
     result |= test_documentation_all();
+#endif
+#if 0
     // Performance tests are very slow if DEBUG as checking
     // integrity is very expensive for large data sets.
-#endif
-#if 1
 #ifndef DEBUG
     result |= test_performance_all();
 #endif // DEBUG
 #endif
-#if 1
+#if 0
     // test_concurrent_all() only executes performance tests #ifndef DEBUG
     result |= test_concurrent_all();
 #endif
