@@ -59,13 +59,14 @@ namespace OrderedStructs {
 
 /**
  * Vector based rolling median.
+ * This handles both even and odd window lengths.
  *
  * The length of the result is data.size() - win_length
  *
- * @tparam T
- * @param data
- * @param win_length
- * @param result
+ * @tparam T Data type.
+ * @param data Data vector.
+ * @param win_length Window length.
+ * @param result Result vector.
  * @return ROLLING_MEDIAN_SUCCESS on success, non-zero on failure.
  */
         template<typename T>
@@ -90,6 +91,42 @@ namespace OrderedStructs {
                         assert(buffer.size() == 2);
                         result.push_back(buffer[0] / 2 + buffer[1] / 2);
                     }
+                    sl.remove(data[i - win_length]);
+                }
+            }
+            return ROLLING_MEDIAN_SUCCESS;
+        }
+
+/**
+ * Vector based rolling median.
+ * This always uses the lower bound so works correctly for odd sized window lengths.
+ * For even sized window lengths this chooses the lower value rather than averaging two values.
+ * This is useful for, say, strings that can not be averaged.
+ *
+ * The length of the result is data.size() - win_length
+ *
+ * @tparam T Data type.
+ * @param data Data vector.
+ * @param win_length Window length.
+ * @param result Result vector.
+ * @return ROLLING_MEDIAN_SUCCESS on success, non-zero on failure.
+ */
+        template<typename T>
+        RollingMedianResult rolling_median_lower_bound(const std::vector<T> data,
+                                           size_t win_length,
+                                           std::vector<T> &result) {
+            if (win_length == 0) {
+                return ROLLING_MEDIAN_WIN_LENGTH;
+            }
+            OrderedStructs::SkipList::HeadNode<T> sl;
+
+            result.clear();
+            std::vector<T> buffer;
+            for (size_t i = 0; i < data.size(); ++i) {
+                sl.insert(data[i]);
+                if (i >= win_length) {
+                    /* Choose the lower bound rather than averaging. */
+                    result.push_back(sl.at(win_length / 2));
                     sl.remove(data[i - win_length]);
                 }
             }

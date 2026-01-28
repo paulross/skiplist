@@ -51,6 +51,8 @@ Rolling median code using a skip list might look like this, error checking is om
         }
     }
 
+A full example is the ``RollingMedian::rolling_median_lower_bound`` function in ``RollingMedian.h``.
+
 If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error
 checking omitted:
 
@@ -88,7 +90,22 @@ Even Window Length
 
 The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``.
 A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and
-``window length / 2``. This requires that the mean of two types is meaningful which it will not be for strings.
+``window length / 2``.
+
+This requires that the mean of two types is meaningful which it will not be for strings.
+In that case you will get this compilation error:
+
+.. code-block:: text
+
+    RollingMedian.h:91:52: error: invalid operands to binary expression ('value_type' (aka 'std::string') and 'int')
+                result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                                 ~~~~~~~~~ ^ ~
+
+One remedy for this is to use the ``RollingMedian::rolling_median_lower_bound`` function.
+This always uses the lower bound so works correctly for odd sized window lengths.
+For even sized window lengths this chooses the lower value rather than averaging two values.
+This is useful for, say, strings that can not be averaged.
+
 
 
 -----------------------------------------
