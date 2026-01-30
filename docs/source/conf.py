@@ -52,7 +52,7 @@ copyright = u'2016-2024, Paul Ross'
 # The short X.Y version.
 version = '0.4.0'
 # The full version, including alpha/beta/rc tags.
-release = '0..4.0'
+release = '0.4.0'
 
 todo_include_todos = True
 todo_link_only = True
