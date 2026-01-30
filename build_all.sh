@@ -11,7 +11,7 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-# Takes about 10 minutes per Python version.
+# Takes up to 20 minutes per Python version.
 # See: https://devguide.python.org/versions/
 PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14')
 # Used for venvs
