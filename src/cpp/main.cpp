@@ -80,14 +80,19 @@ int test_all() {
 
 #if 1
     result |= test_example_introduction_A();
-
     result |= test_functional_all();
+#endif
+
+#if 1
     result |= test_rolling_median_all();
+#endif
+
+#if 1
     result |= test_documentation_all();
-    // Performance tests are very slow if DEBUG as checking
-    // integrity is very expensive for large data sets.
 #endif
 #if 1
+    // Performance tests are very slow if DEBUG as checking
+    // integrity is very expensive for large data sets.
 #ifndef DEBUG
     result |= test_performance_all();
 #endif // DEBUG

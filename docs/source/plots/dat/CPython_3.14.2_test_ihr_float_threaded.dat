@@ -1,0 +1,11 @@
+# $1      $2           $3           $4           $5          $6
+# Scale   Min          Mean         StdDev       Max         Name
+0         0.006480750  0.006840312  0.000332555  0.008803584 test_ihr_float_threaded
+1         0.007935208  0.008380730  0.000392778  0.011245250 test_ihr_float_threaded
+2         0.006081166  0.006354069  0.000170679  0.007204584 test_ihr_float_threaded
+4         0.005850209  0.006105859  0.000325532  0.008943541 test_ihr_float_threaded
+8         0.008042792  0.008651087  0.001139077  0.015829917 test_ihr_float_threaded
+16        0.008520084  0.008970051  0.000917489  0.018162958 test_ihr_float_threaded
+32        0.007715209  0.008057483  0.000250727  0.009498959 test_ihr_float_threaded
+64        0.012292250  0.016796825  0.008481140  0.051578208 test_ihr_float_threaded
+128       0.015691750  0.020454659  0.020679327  0.179239417 test_ihr_float_threaded

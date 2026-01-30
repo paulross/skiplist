@@ -37,6 +37,9 @@
  * @endcode
  */
 
+namespace OrderedStructs {
+    namespace SkipList {
+
 /**
  * Various integrity codes for structures in this code.
  */
@@ -58,5 +61,8 @@ enum IntegrityCheck {
     HEADNODE_DETECTS_CYCLIC_REFERENCE,
     HEADNODE_DETECTS_OUT_OF_ORDER,
 };
+
+    } // namespace SkipList
+} // namespace OrderedStructs
 
 #endif

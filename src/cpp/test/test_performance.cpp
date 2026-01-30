@@ -960,6 +960,29 @@ int perf_test_double_index_1m_all(size_t test_count, size_t repeat, TestResultS 
     return result;
 }
 
+int perf_test_node_height_growth(size_t repeat, TestResultS &test_results) {
+    int result = 0;
+
+    for (size_t sl_length = 1; sl_length < 1 << 20; sl_length *= 2) {
+        std::ostringstream title;
+        title << __FUNCTION__ << "[" << sl_length << "]";
+        TestResult test_result(title.str());
+        for (size_t i = 0; i < repeat; ++i) {
+            // Create and populate a SkipList of sl_length doubles
+            OrderedStructs::SkipList::HeadNode<double> sl;
+            for (size_t i = 0; i <= sl_length; ++i) {
+                sl.insert(i);
+            }
+            if (i == 0) {
+                std::cout << __FUNCTION__ << "[" << sl_length << "] Sample height = " << sl.height() << std::endl;
+            }
+            test_result.execTimeAdd(0, sl.height(), repeat, sl_length);
+        }
+        test_results.push_back(test_result);
+    }
+    return result;
+}
+
 // Tests evaluating a rolling median on 1m doubles with different window lengths.
 int perf_roll_med_by_win_size(size_t repeat, TestResultS &test_results) {
     int result = 0;
@@ -996,26 +1019,144 @@ int perf_roll_med_by_win_size(size_t repeat, TestResultS &test_results) {
     return result;
 }
 
-int perf_test_node_height_growth(size_t repeat, TestResultS &test_results) {
+/**
+ * @brief Test the performance of a simple rolling median into a dynamic array of doubles given by
+ * \c OrderedStructs::RollingMedian::dest_size. Odd length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_odd_index_wins(size_t repeat, TestResultS &test_results) {
+    const size_t COUNT = 1000000;
+    const int DEST_STRIDE = 1;
+    double *src = new double[COUNT];
     int result = 0;
 
-    for (size_t sl_length = 1; sl_length < 1 << 20; sl_length *= 2) {
-        std::ostringstream title;
-        title << __FUNCTION__ << "[" << sl_length << "]";
-        TestResult test_result(title.str());
-        for (size_t i = 0; i < repeat; ++i) {
-            // Create and populate a SkipList of sl_length doubles
-            OrderedStructs::SkipList::HeadNode<double> sl;
-            for (size_t i = 0; i <= sl_length; ++i) {
-                sl.insert(i);
-            }
-            if (i == 0) {
-                std::cout << __FUNCTION__ << "[" << sl_length << "] Sample height = " << sl.height() << std::endl;
-            }
-            test_result.execTimeAdd(0, sl.height(), repeat, sl_length);
-        }
-        test_results.push_back(test_result);
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << COUNT << "]";
+    TestResult test_result(title.str());
+//    std::cout << "Running: " << title.str() << std::endl;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src[i] = 2.0 * i;
     }
+    // Loop over this data for various window sizes from 1 to 524288
+    for (size_t win = 1; win < COUNT; win *= 2) {
+        for (size_t i = 0; i < repeat; ++i) {
+            size_t dest_size = OrderedStructs::RollingMedian::dest_size(COUNT, win, DEST_STRIDE);
+            double *dest = new double[dest_size];
+            ExecClock exec_clock;
+            result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
+                                                               win, dest, DEST_STRIDE);
+            double exec_time = exec_clock.seconds();
+            delete[] dest;
+            test_result.execTimeAdd(0, exec_time, 1, win);
+        }
+    }
+    delete [] src;
+    test_results.push_back(test_result);
+    return result;
+}
+
+/**
+ * @brief Test the performance of a simple rolling median using std::vector<double>.
+ * Even length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_vector_style_even_win_length(size_t repeat, TestResultS &test_results) {
+    const size_t COUNT = 1000000;
+    std::vector<double> src;
+    std::vector<double> dest;
+    int result = 0;
+
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << COUNT << "]";
+    TestResult test_result(title.str());
+//    std::cout << "Running: " << title.str() << std::endl;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src.push_back(2.0 * i);
+    }
+    // Loop over this data for various window sizes from 2 to 524288
+    for (size_t win = 2; win < COUNT; win *= 2) {
+        for (size_t i = 0; i < repeat; ++i) {
+            ExecClock exec_clock;
+            result |= OrderedStructs::RollingMedian::rolling_median(src, win, dest);
+            double exec_time = exec_clock.seconds();
+            test_result.execTimeAdd(0, exec_time, 1, win);
+        }
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+/**
+ * @brief Test the performance of a simple rolling median using std::vector<double>.
+ * Odd length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_vector_style_odd_win_length(size_t repeat, TestResultS &test_results) {
+    const size_t COUNT = 1000000;
+    std::vector<double> src;
+    std::vector<double> dest;
+    int result = 0;
+
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << COUNT << "]";
+    TestResult test_result(title.str());
+//    std::cout << "Running: " << title.str() << std::endl;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src.push_back(2.0 * i);
+    }
+    // Loop over this data for various window sizes from 2 to 524288
+    for (size_t win = 2; win < COUNT; win *= 2) {
+        for (size_t i = 0; i < repeat; ++i) {
+            ExecClock exec_clock;
+            result |= OrderedStructs::RollingMedian::rolling_median(src, win + 1, dest);
+            double exec_time = exec_clock.seconds();
+            test_result.execTimeAdd(0, exec_time, 1, win);
+        }
+    }
+    test_results.push_back(test_result);
+    return result;
+}
+
+/**
+ * @brief Test the performance of a simple rolling median using std::vector<std::string>.
+ * Even length window.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+int perf_roll_med_vector_style_even_win_length_string(size_t repeat, TestResultS &test_results) {
+    const size_t COUNT = 100000;
+    std::vector<std::string> src;
+    std::vector<std::string> dest;
+    int result = 0;
+
+    std::ostringstream title;
+    title << __FUNCTION__ << "[" << COUNT << "]";
+    TestResult test_result(title.str());
+//    std::cout << "Running: " << title.str() << std::endl;
+
+    // Create source data
+    for (size_t i = 0; i < COUNT; ++i) {
+        src.push_back(random_string(1024));
+    }
+    // Loop over this data for various window sizes from 2 to half length
+    for (size_t win = 2; win < COUNT; win *= 2) {
+        for (size_t i = 0; i < repeat; ++i) {
+            ExecClock exec_clock;
+            result |= OrderedStructs::RollingMedian::rolling_median_lower_bound(src, win, dest);
+            double exec_time = exec_clock.seconds();
+            test_result.execTimeAdd(0, exec_time, 1, win);
+        }
+    }
+    test_results.push_back(test_result);
     return result;
 }
 
@@ -1133,13 +1274,22 @@ int perf_skiplist() {
     result |= perf_test_double_at_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_has_1m_all(10, 5, perf_test_results);
     result |= perf_test_double_index_1m_all(10, 5, perf_test_results);
-    result |= perf_roll_med_by_win_size(10, perf_test_results);
     result |= perf_test_node_height_growth(20, perf_test_results);
 #endif
+#if 1
+    // Rolling median tests
+    result |= perf_roll_med_by_win_size(10, perf_test_results);
+    result |= perf_roll_med_odd_index_wins(5, perf_test_results);
+    result |= perf_roll_med_vector_style_even_win_length(5, perf_test_results);
+    result |= perf_roll_med_vector_style_odd_win_length(5, perf_test_results);
+    result |= perf_roll_med_vector_style_even_win_length_string(5, perf_test_results);
+#endif
 
+#if 1
     result |= perf_test_string_insert_remove_value_begin(100, 10, perf_test_results);
     result |= perf_test_string_insert_remove_value_mid(100, 10, perf_test_results);
     result |= perf_test_string_insert_remove_value_end(100, 10, perf_test_results);
+#endif
 
     perf_test_results.dump_header(std::cout);
     perf_test_results.dump_tests(std::cout);
@@ -1191,7 +1341,7 @@ int test_performance_all() {
     int result = 0;
 
     result |= perf_skiplist();
-#if 1
+#if 0
     result |= perf_size();
     result |= perf_skiplist_unfair_coin();
 #endif

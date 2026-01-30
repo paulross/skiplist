@@ -19,7 +19,7 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_size_of.dat" using 1:2 via a,b
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_size_of.png"   # choose the output device
 
 plot "dat/perf_size_of.dat" using 1:3 t "Bytes/Node <double>" with linespoints axes x1y1 pt 5 lw 2#, \

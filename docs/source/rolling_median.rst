@@ -13,41 +13,54 @@
 Computing a Rolling Median
 ===============================================
 
+This describes how to code up a rolling median using a SkipList in both C++ and Python.
+A rolling median operation means, for a SkipList, an ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
+The number of operations to calculate a rolling median is the data length minus the window length.
+
+-----------------------------------------
 Rolling Median in C++
 -----------------------------------------
-
-A powerful use case for a skip list is in the computation of a rolling fraction, for example a rolling median.
 
 Here is a reasonable C++ attempt at doing that with the arguments:
 
 * ``data`` - A vector of data of type ``T`` of length ``L``.
 * ``win_length`` - a 'window' size. The median is computed over this number of values.
 * ``result`` - a destination vector for the result.
-  This will either end up with ``L - win_length`` values, alternatively is will be ``L`` long and start with
-  ``win_length`` ``NaN`` s.
-
-Rolling median code using a skip list might look like this, error checking is omitted:
+  This will either end up with ``L - win_length`` values.
 
 .. code-block:: cpp
 
     #include "SkipList.h"
     
-    template <typename T>
-    void rolling_median(const std::vector<T> data,
-                        size_t win_length,
-                        std::vector<T> &result) {
-        
+    template<typename T>
+    RollingMedianResult rolling_median(const std::vector<T> data,
+                                       size_t win_length,
+                                       std::vector<T> &result) {
+        if (win_length == 0) {
+            return ROLLING_MEDIAN_WIN_LENGTH;
+        }
         OrderedStructs::SkipList::HeadNode<T> sl;
 
         result.clear();
+        std::vector<T> buffer;
         for (size_t i = 0; i < data.size(); ++i) {
             sl.insert(data[i]);
-            if (i  >= win_length) {
-                result.push_back(sl.at(win_length / 2));
+            if (i >= win_length) {
+                if (win_length % 2 == 1) {
+                    result.push_back(sl.at(win_length / 2));
+                } else {
+                    /* Even length so average */
+                    sl.at((win_length - 1) / 2, 2, buffer);
+                    assert(buffer.size() == 2);
+                    result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                }
                 sl.remove(data[i - win_length]);
             }
         }
+        return ROLLING_MEDIAN_SUCCESS;
     }
+
+A full example is the ``RollingMedian::rolling_median_lower_bound`` function in ``RollingMedian.h``.
 
 If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error
 checking omitted:
@@ -80,17 +93,51 @@ See *RollingMedian.h* and *test/test_rolling_median.cpp* for further examples.
 Rolling percentiles require a argument that says what fraction of the window the required value lies.
 Again, this is easy to add.
 
-
 Even Window Length
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``.
 A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and
-``window length / 2``. This requires that the mean of two types is meaningful which it will not be for strings.
+``window length / 2``.
+
+This requires that the mean of two types is meaningful which it will not be for strings.
+In that case you will get this compilation error:
+
+.. code-block:: text
+
+    RollingMedian.h:91:52: error: invalid operands to binary expression ('value_type' (aka 'std::string') and 'int')
+                result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                                 ~~~~~~~~~ ^ ~
+
+One remedy for this is to use the ``RollingMedian::rolling_median_lower_bound`` function.
+This always uses the lower bound so works correctly for odd sized window lengths.
+For even sized window lengths this chooses the lower value rather than averaging two values.
+This is useful for, say, strings that can not be averaged.
+
+.. _rolling_median_cpp_performance-label:
+
+C++ Performance
+-----------------------------------------
+
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
+The time here is in ns/result and the number of results is 1e6 - window size.
+Given a data length of 1m then a window length of 1000 this would mean 999,000 operations.
+A window length of 500,000 this would mean 500,000 operations.
+
+A window size of 1000 and 1m values (the size of the SkipList) takes around 750 ns/value or 0.75 second in total.
+
+.. image::
+    plots/images/perf_roll_med_by_win_size.png
+    :width: 500
+    :align: center
+    :alt: Median by Window Size Performance
+
+The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
 
+-----------------------------------------
 Rolling Median in Python
-----------------------------------------
+-----------------------------------------
 
 Here is an example of computing a rolling median of a ``numpy`` 1D array.
 This creates an array with the same length as the input starting with ``window_length`` ``NaN`` s:
@@ -143,8 +190,44 @@ And the result will be:
 
 Of course this Python code could be made much faster by using a Python C Extension.
 
+
+.. _rolling_median_python_performance-label:
+
+Python Performance
+-----------------------------------------
+
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
+The time here is in ns/result and the number of results is 1e6 - window size.
+Given a data length of 1m then a window length of 1000 this would mean 999,000 operations.
+A window length of 500,000 this would mean 500,000 operations.
+
+A window size of 1000 and 1m values (the size of the SkipList) takes around 750 ns/value or 0.75 second in total.
+
+.. image::
+    plots/images/CPython_3.14.2_test_rolling_median_float_by_window_length.png
+    :width: 500
+    :align: center
+    :alt: Python Rolling Median by Window Size Performance
+
+----------------------------------------------
+Performance Comparison of C++ and Python
+----------------------------------------------
+
+Here is the C++ performance plotted along with the Python performance.
+
+.. image::
+    plots/images/perf_cpp_cmp_py_test_rolling_median_float_by_window_length.png
+    :width: 500
+    :align: center
+    :alt: C++ and Python Rolling Median by Window Size Performance
+
+As expected C++ is around 2x faster.
+
+But Python has another trick up its sleeve that can make it outperform C++ decisively; multiprocessing with shared memory.
+
 .. _rolling-median-mp-shared-memory-label:
 
+----------------------------------------------------------------
 Rolling Median in Python with ``multiprocessing.shared_memory``
 ----------------------------------------------------------------
 
@@ -187,7 +270,7 @@ Pictorially:
     This would save the cost, in time and memory, of the first copy operation.
 
 Code
-^^^^^^
+-----------------------------------------
 
 These are the essential imports:
 
@@ -419,26 +502,114 @@ This is function that we are going to time so it includes:
 - Copying the output shared memory to a new numpy array.
 - Disposing of any temporaries.
 
+
 Performance
+-----------------------------------------
+
+Mac OS X with 4 cores and hyper-threading.
+The table has 16m entries organised with different (column, row) shapes: 16 x 1m, 1k x 128k, 64k x 4k.
+The rolling median window is 21.
+
+Columns: 16
 ^^^^^^^^^^^^
 
-Running this on 16 column arrays with up to 1m rows with processes from 1 to 16 gives the following execution times.
-Mac OS X with 4 cores and hyper-threading.
-The rolling median window is 21:
+In this test a 16 column array is created with up to 8,388,608 rows.
+This is up to 134,217,728 entries at 8 bytes a float this is 1,073,741,824 bytes (1GB) in total.
+Running this on 16 column arrays with 1m rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
-    plots/images/perf_rolling_median_shared_memory.png
+    plots/images/perf_rolling_median_shared_memory_cols_16.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 16 Columns
 
 Comparing the **speed** of execution compared to a single process gives:
 
 .. image::
-    plots/images/perf_rolling_median_shared_memory_ratio.png
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_16.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 16 Columns
 
 Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
 The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
 
-Memory Usage
+Columns: 1024
+^^^^^^^^^^^^^^
+
+In this test a 1024 column array is created with up to 131,072 rows.
+This is up to 134,217,728 entries at 8 bytes a float this is 1,073,741,824 bytes (1GB) in total.
+Running this on 1024 column arrays with up to 131,072 rows with processes from 1 to 16 gives the following execution times.
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_1024.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 1024 Columns
+
+Comparing the **speed** of execution compared to a single process gives:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_1024.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 1024 Columns
+
+Clearly there is some overhead so it is not really worth doing this for less that 1,000 rows or so.
+
+Columns: 65536
+^^^^^^^^^^^^^^
+
+In this test a 65,536 column array is created with up to 4096 rows.
+This is up to 268,435,456 entries at 8 bytes a float this is 2,147,483,648 bytes (2GB) in total.
+Running this on 65,536 column arrays with up to 4096 rows with processes from 1 to 16 gives the following execution times.
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_65536.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 65536 Columns
+
+Comparing the **speed** of execution compared to a single process gives:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_ratio_cols_65536.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance, 65536 Columns
+
+The overhead, by number of columns is very low.
+
+Summary
 ^^^^^^^^^^^^
+
+For different table shapes using four simultaneous processes on a four CPU machine.
+The second column shows the number of rows need to get a 3x performance on a four CPU machine.
+The third column ("Best") shows the maximum speedup.
+
+.. list-table:: Performance Gain
+   :widths: 20 20 20 50
+   :header-rows: 1
+
+   * - Columns
+     - ~Rows for 3x
+     - Best
+     - Notes
+   * - 16
+     - 800,000
+     - 3.3x
+     -
+   * - 1024
+     - 8,000
+     - 3.3x
+     -
+   * - 65536
+     - 128
+     - 3.0x
+     -
+
+Memory Usage
+-----------------------------------------
 
 What I would expect in processing a 100Mb numpy array.
 Values are in Mb.
@@ -671,6 +842,7 @@ Values are in Mb.
     Python process.
 
 
+-----------------------------------------
 Handling NaNs
 -----------------------------------------
 
@@ -688,7 +860,7 @@ Here are several ways of handling NaNs:
 * Forward Filling.
 
 Propogate the Exception
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Here is a rolling median that will raise a ``ValueError`` if there is a NaN in the input.
 
@@ -713,7 +885,7 @@ Here is a rolling median that will raise a ``ValueError`` if there is a NaN in t
 
 
 Make the Median NaN
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Here is a rolling median that will make the median NaN if there is a NaN in the input.
 Incidentally this is the approach that numpy takes.
@@ -750,7 +922,7 @@ The first row is the input, the second the output. Window length is 5:
     [math.nan, math.nan, math.nan, math.nan, math.nan, 3.0, 4.0, math.nan, 4.0, 5.0],
 
 Forward Filling
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 Another approach is to replace the NaN with the previous value.
 This is *very popular* in FinTech and is commonly know as *Forward Filling*.

@@ -11,6 +11,9 @@
 
 #include "IntegrityEnums.h"
 
+namespace OrderedStructs {
+    namespace SkipList {
+
 /// Forward reference
 template<typename T, typename _Compare>
 class Node;
@@ -242,6 +245,9 @@ template<typename T, typename _Compare>
 size_t SwappableNodeRefStack<T, _Compare>::size_of() const {
     return sizeof(*this) + _nodes.capacity() * sizeof(struct NodeRef<T>);
 }
+
+    } // namespace SkipList
+} // namespace OrderedStructs
 
 /********************* END: SwappableNodeRefStack ****************************/
 

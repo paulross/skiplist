@@ -62,7 +62,7 @@ tmp/
 .idea/
 
 # Benchmarks
-.benchmarks/*
+#.benchmarks/*
 benchmark_*.svg
 
 # CMake artifacts

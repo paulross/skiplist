@@ -359,7 +359,7 @@ std::string unique_string(int width) {
 /**
  * Creates a random \c std::string filled with the character set 32...126 (printable characters) inclusive.
  *
- * @param width The string width.
+ * @param length The string width.
  * @return The random \c std::string.
  */
 std::string random_string(ssize_t length) {

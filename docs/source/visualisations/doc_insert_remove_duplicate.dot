@@ -1,0 +1,160 @@
+digraph SkipList {
+    label = "SkipList."
+    graph [rankdir = "LR"];
+    node [fontsize = "12" shape = "ellipse"];
+    edge [];
+
+    subgraph cluster0 {
+    style=dashed
+    label="Skip list iteration 0"
+
+    "HeadNode0" [
+    label = "Empty HeadNode"
+    shape = "record"
+    ];
+
+
+    }
+
+    subgraph cluster1 {
+    style=dashed
+    label="Skip list iteration 1"
+
+    "HeadNode1" [
+    label = "{ 1 | <f1> 0x600002f4c000}"
+    shape = "record"
+    ];
+    "HeadNode1":f1 -> "node10x600002f4c000":w1 [];
+
+    "node10x600002f4c000" [
+    label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+    shape = "record"
+    ];
+    "node10x600002f4c000":f1 -> "node10x0":w1 [];
+
+    "node10x0" [label = "<w1> NULL" shape = "record"];
+    }
+
+    subgraph cluster2 {
+    style=dashed
+    label="Skip list iteration 2"
+
+    "HeadNode2" [
+    label = "{ 2 | <f2> 0x600002f4c030} | { 1 | <f1> 0x600002f4c000}"
+    shape = "record"
+    ];
+    "HeadNode2":f1 -> "node20x600002f4c000":w1 [];
+    "HeadNode2":f2 -> "node20x600002f4c030":w2 [];
+
+    "node20x600002f4c000" [
+    label = " { <w1> 1 | <f1> 0x600002f4c030 } | <f0> 25"
+    shape = "record"
+    ];
+    "node20x600002f4c000":f1 -> "node20x600002f4c030":w1 [];
+    "node20x600002f4c030" [
+    label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 25"
+    shape = "record"
+    ];
+    "node20x600002f4c030":f1 -> "node20x0":w1 [];
+    "node20x600002f4c030":f2 -> "node20x0":w2 [];
+
+    "node20x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+    }
+
+    subgraph cluster3 {
+    style=dashed
+    label="Skip list iteration 3"
+
+    "HeadNode3" [
+    label = "{ 2 | <f2> 0x600002f4c030} | { 1 | <f1> 0x600002f4c000}"
+    shape = "record"
+    ];
+    "HeadNode3":f1 -> "node30x600002f4c000":w1 [];
+    "HeadNode3":f2 -> "node30x600002f4c030":w2 [];
+
+    "node30x600002f4c000" [
+    label = " { <w1> 1 | <f1> 0x600002f4c030 } | <f0> 25"
+    shape = "record"
+    ];
+    "node30x600002f4c000":f1 -> "node30x600002f4c030":w1 [];
+    "node30x600002f4c030" [
+    label = " { <w2> 2 | <f2> 0x0 } | { <w1> 1 | <f1> 0x600002f4c060 } | <f0> 25"
+    shape = "record"
+    ];
+    "node30x600002f4c030":f1 -> "node30x600002f4c060":w1 [];
+    "node30x600002f4c030":f2 -> "node30x0":w2 [];
+    "node30x600002f4c060" [
+    label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+    shape = "record"
+    ];
+    "node30x600002f4c060":f1 -> "node30x0":w1 [];
+
+    "node30x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+    }
+
+    subgraph cluster4 {
+    style=dashed
+    label="Skip list iteration 4"
+
+    "HeadNode4" [
+    label = "{ 2 | <f2> 0x600002f4c030} | { 1 | <f1> 0x600002f4c000}"
+    shape = "record"
+    ];
+    "HeadNode4":f1 -> "node40x600002f4c000":w1 [];
+    "HeadNode4":f2 -> "node40x600002f4c030":w2 [];
+
+    "node40x600002f4c000" [
+    label = " { <w1> 1 | <f1> 0x600002f4c030 } | <f0> 25"
+    shape = "record"
+    ];
+    "node40x600002f4c000":f1 -> "node40x600002f4c030":w1 [];
+    "node40x600002f4c030" [
+    label = " { <w2> 1 | <f2> 0x0 } | { <w1> 1 | <f1> 0x0 } | <f0> 25"
+    shape = "record"
+    ];
+    "node40x600002f4c030":f1 -> "node40x0":w1 [];
+    "node40x600002f4c030":f2 -> "node40x0":w2 [];
+
+    "node40x0" [label = "<w2> NULL | <w1> NULL" shape = "record"];
+    }
+
+    subgraph cluster5 {
+    style=dashed
+    label="Skip list iteration 5"
+
+    "HeadNode5" [
+    label = "{ 1 | <f1> 0x600002f4c000}"
+    shape = "record"
+    ];
+    "HeadNode5":f1 -> "node50x600002f4c000":w1 [];
+
+    "node50x600002f4c000" [
+    label = " { <w1> 1 | <f1> 0x0 } | <f0> 25"
+    shape = "record"
+    ];
+    "node50x600002f4c000":f1 -> "node50x0":w1 [];
+
+    "node50x0" [label = "<w1> NULL" shape = "record"];
+    }
+
+    subgraph cluster6 {
+    style=dashed
+    label="Skip list iteration 6"
+
+    "HeadNode6" [
+    label = "Empty HeadNode"
+    shape = "record"
+    ];
+
+
+    }
+
+    node0 [shape=record, label = "<f0> | <f1> | <f2> | <f3> | <f4> | <f5> | <f6> | ", style=invis, width=0.01];
+    node0:f0 -> HeadNode0 [style=invis];
+    node0:f1 -> HeadNode1 [style=invis];
+    node0:f2 -> HeadNode2 [style=invis];
+    node0:f3 -> HeadNode3 [style=invis];
+    node0:f4 -> HeadNode4 [style=invis];
+    node0:f5 -> HeadNode5 [style=invis];
+    node0:f6 -> HeadNode6 [style=invis];
+}

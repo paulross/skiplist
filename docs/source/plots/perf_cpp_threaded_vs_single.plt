@@ -19,7 +19,7 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_height_size.dat" using 1:2 via a,b
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_cpp_threaded_vs_single.png"   # choose the output device
 
 plot "dat/perf_cpp_threaded_vs_single.dat" using 1:2 t "Compiled Single Threaded" with linespoints pt 1 lw 2, \

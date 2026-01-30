@@ -37,7 +37,7 @@ set key left
 set key font ",9"
 set boxwidth 0.2 relative
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_test_double_insert_remove_value.png"   # choose the output device
 
 # NOTE: Compute actual time as $4 * $? / $9, e.g. $4 * $5 / $9

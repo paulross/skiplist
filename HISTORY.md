@@ -1,5 +1,15 @@
 # History
 
+## 0.4.0 (2026-01-30)
+
+* Support for Python 3.10, 3.11, 3.12, 3.13, 3.14.
+* End support for Python 3.8, 3.9, but they will work just fine.
+* Improve the performance tests and documentation.
+* Python performance benchmarks are now automatically converted into Gnuplot .dat files.
+* Improve C++ rolling median code.
+* Reorganise C++ header files to be more conventional which also gives Doxygen a better grasp of the code.
+* Development Status :: 5 - Production/Stable
+
 ## 0.3.17 (2026-01-21)
 
 * Support for Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14.

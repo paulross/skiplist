@@ -156,6 +156,37 @@ static int test_doc_insert_remove() {
 }
 
 /**
+ * Create a Skip List, insert the same value three times then remove it three times and print the DOT file to stdout.
+ * This illustrates the stability of the insert/remove methods.
+ *
+ * @return Zero on success, non-zero on failure.
+ */
+static int test_doc_insert_remove_duplicates() {
+    int result = 0;
+    int NUM = 3;
+    int value = 25;
+    std::stringstream ostr;
+    ostr << "# " << __FUNCTION__ << std::endl;
+
+//    srand(1);
+    OrderedStructs::SkipList::HeadNode<int> sl;
+    sl.dotFile(ostr);
+    for (int i = 0; i < NUM; ++i) {
+        sl.insert(value);
+        result |= sl.lacksIntegrity();
+        sl.dotFile(ostr);
+    }
+    for (int i = 0; i < NUM; ++i) {
+        sl.remove(value);
+        result |= sl.lacksIntegrity();
+        sl.dotFile(ostr);
+    }
+    sl.dotFileFinalise(ostr);
+    std::cout << ostr.str() << std::endl;
+    return result;
+}
+
+/**
  * Create a Skip List, repeatedly populate it and print the DOT file to stdout.
  *
  * @return Zero on success, non-zero on failure.
@@ -204,6 +235,7 @@ int test_documentation_all() {
     result |= print_result("tests_doc_simple_dot", tests_doc_simple_dot());
     result |= print_result("test_doc_insert", test_doc_insert());
     result |= print_result("test_doc_insert_remove", test_doc_insert_remove());
+    result |= print_result("test_doc_insert_remove_duplicates", test_doc_insert_remove_duplicates());
     result |= print_result("test_doc_insert_remove_repeat",
                            test_doc_insert_remove_repeat());
 #endif

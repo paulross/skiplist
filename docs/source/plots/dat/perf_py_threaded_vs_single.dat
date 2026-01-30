@@ -1,0 +1,13 @@
+# Comparison of single threaded and multi threaded Python insert/at/remove
+# See: tests.benchmarks.test_benchmark_SkipList_threaded.test_ihr_float_threaded
+# Threads == 0 mean single threaded
+# Threads, Time in ms from the minimum value of the benchmark
+0   0.005939117982052267
+1	0.005157387931831181
+2	0.006602467969059944
+4	0.006577517953701317
+8	0.007943689008243382
+16	0.0064500439912080765
+32	0.007307160063646734
+64	0.010624892893247306
+128 0.01295317301992327

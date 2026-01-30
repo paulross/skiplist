@@ -542,11 +542,12 @@ namespace OrderedStructs {
         extern std::mutex gSkipListMutex;
 #endif
 
+    } // namespace SkipList
+} // namespace OrderedStructs
+
+/* Include all the template classes that make up a SkipList */
 #include "NodeRefs.h"
 #include "Node.h"
 #include "HeadNode.h"
-
-    } // namespace SkipList
-} // namespace OrderedStructs
 
 #endif /* defined(__SkipList__SkipList__) */

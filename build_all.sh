@@ -11,9 +11,9 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-# Takes about 5 to 10 minutes per Python version.
+# Takes about 10 minutes per Python version.
 # See: https://devguide.python.org/versions/
-PYTHON_VERSIONS=('3.8' '3.9' '3.10' '3.11' '3.12' '3.13' '3.14')
+PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14')
 # Used for venvs
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
 PROJECT_NAME="SkipList"
@@ -113,6 +113,8 @@ create_documentation() {
   python -VV
   echo "---> pip list:"
   pip list
+  echo "---> Creating .dat files from .benchmarks:"
+  python tests/benchmarks/benchmark_to_dat.py
   echo "---> Building documentation:"
   cd docs
   ./build_docs.sh
@@ -170,6 +172,8 @@ echo "===> Removing virtual environments"
 remove_virtual_environments
 echo "===> Creating virtual environments"
 create_virtual_environments
+echo "===> Removing .benchmarks directory and benchmark.svg files"
+rm -rf -- ".benchmarks" "benchmark*.svg"
 echo "===> Creating binary wheels"
 create_and_test_bdist_wheel
 echo "===> Creating source distribution"

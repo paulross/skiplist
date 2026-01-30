@@ -11,7 +11,7 @@ set datafile separator "\t"
 #cost(x) = a + (b / (x/1024))
 #fit cost(x) "perf_roll_med_odd_index_wins.dat" using 1:2 via a,b
 
-set terminal png size 1000,700           # choose the file format
+set terminal png size 1000,600           # choose the file format
 set output "images/perf_roll_med_odd_index_wins.png"   # choose the output device
 
 plot "dat/perf_roll_med_odd_index_wins.dat" using 1:2 t "Rolling Median" with linespoints pt 1 lw 2

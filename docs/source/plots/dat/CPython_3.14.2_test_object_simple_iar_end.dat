@@ -1,0 +1,10 @@
+# $1      $2           $3           $4           $5          $6
+# Scale   Min          Mean         StdDev       Max         Name
+32        0.000004542  0.000004957  0.000001912  0.000095750 test_object_simple_iar_end
+128       0.000008375  0.000008989  0.000002499  0.000175833 test_object_simple_iar_end
+512       0.000009750  0.000010390  0.000002646  0.000185916 test_object_simple_iar_end
+2048      0.000007875  0.000008917  0.000005125  0.000376166 test_object_simple_iar_end
+8192      0.000005958  0.000006524  0.000002707  0.000249583 test_object_simple_iar_end
+32768     0.000007250  0.000008070  0.000003727  0.000200458 test_object_simple_iar_end
+131072    0.000010500  0.000011305  0.000003523  0.000226875 test_object_simple_iar_end
+524288    0.000014958  0.000015837  0.000003112  0.000108292 test_object_simple_iar_end

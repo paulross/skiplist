@@ -1,0 +1,22 @@
+# $1      $2           $3           $4           $5          $6
+# Scale   Min          Mean         StdDev       Max         Name
+1         0.742993208  0.999104650  0.413103015  1.717413959 test_rolling_median_float_by_window_length
+2         0.772151750  0.838720992  0.070320667  0.948621083 test_rolling_median_float_by_window_length
+4         0.815556000  0.823986375  0.006172504  0.831498042 test_rolling_median_float_by_window_length
+8         0.872229792  0.978663733  0.128124996  1.120032125 test_rolling_median_float_by_window_length
+16        0.916961792  0.923536575  0.007001084  0.934177750 test_rolling_median_float_by_window_length
+32        0.951500041  0.965663966  0.015870434  0.982762792 test_rolling_median_float_by_window_length
+64        0.990427458  1.000344017  0.011177546  1.016488750 test_rolling_median_float_by_window_length
+128       1.024718541  1.030658433  0.005338525  1.037844417 test_rolling_median_float_by_window_length
+256       1.062831709  1.075171467  0.007491330  1.081751541 test_rolling_median_float_by_window_length
+512       1.145161917  1.167402658  0.022040256  1.202680333 test_rolling_median_float_by_window_length
+1024      1.231260416  1.245020667  0.012227312  1.261961959 test_rolling_median_float_by_window_length
+2048      1.322803333  1.328549908  0.004866718  1.334164458 test_rolling_median_float_by_window_length
+4096      1.424442791  1.449750491  0.025171080  1.477044375 test_rolling_median_float_by_window_length
+8192      1.504697916  1.520073741  0.017402492  1.546516833 test_rolling_median_float_by_window_length
+16384     1.618811042  1.641835092  0.020147768  1.672207166 test_rolling_median_float_by_window_length
+32768     1.693659750  1.726611408  0.023199904  1.746965042 test_rolling_median_float_by_window_length
+65536     1.803151042  2.009603150  0.132170527  2.157741541 test_rolling_median_float_by_window_length
+131072    2.607346042  3.364666142  0.735339914  4.364581291 test_rolling_median_float_by_window_length
+262144    3.644750916  4.163189475  0.390972088  4.557223000 test_rolling_median_float_by_window_length
+524288    3.046135416  3.382625883  0.365951600  3.939061042 test_rolling_median_float_by_window_length
