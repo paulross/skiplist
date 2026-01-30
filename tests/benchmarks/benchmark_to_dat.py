@@ -2,6 +2,7 @@
 Converts pytest benchmarks to .dat files for gnuplot.
 """
 import dataclasses
+import glob
 import json
 import logging
 import os.path
@@ -149,6 +150,21 @@ def parse_json_file(path: str) -> Benchmarks:
         return benchmarks_from_json(j)
 
 
+DAT_FILE_EXTENSION = '.dat'
+
+def remove_existing_dat_files(benchmarks: Benchmarks) -> None:
+    for f in glob.glob(
+            os.path.join(
+                OUTPUT_DAT_DIR,
+                f'{benchmarks.environment.python_implementation}'
+                f'_{benchmarks.environment.python_version}'
+                f'*{DAT_FILE_EXTENSION}'
+            )
+    ):
+        logger.info(f'Removing {f}')
+        os.remove(f)
+
+
 def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
     # Create and index into the benchmarks {name : { scale : index, ...}, ...}
     index: typing.Dict[str, typing.Dict[int, int]] = {}
@@ -165,7 +181,7 @@ def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
                 f'{benchmarks.environment.python_version}',
                 benchmark_name,
             ]
-        ) + '.dat'
+        ) + DAT_FILE_EXTENSION
         out_path = os.path.normpath(os.path.join(OUTPUT_DAT_DIR, out_file_name))
         logger.info(f'Writing DAT file: {out_path}')
         with open(out_path, 'w') as dat_file:
@@ -199,6 +215,7 @@ def walk_benchmark_directory():
             logger.info(f'Reading {path}')
             try:
                 benchmarks = parse_json_file(path)
+                remove_existing_dat_files(benchmarks)
                 write_benchmarks_to_dat_files(benchmarks)
             except json.JSONDecodeError as err:
                 logger.error(str(err))

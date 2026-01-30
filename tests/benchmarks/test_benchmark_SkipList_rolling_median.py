@@ -53,7 +53,7 @@ def random_bytes(length: int) -> bytes:
 ROLLING_MEDIAN_STR_WINDOW_WIDTHS = tuple(f'{2 ** i:8d}' for i in range(0, 17, 1))
 
 
-def _test_rolling_median_str(vector: typing.List[str], window_length: int):
+def _test_rolling_median_bytes(vector: typing.List[str], window_length: int):
     skip_list = orderedstructs.SkipList(bytes)
     result = []
     for i in range(len(vector)):
@@ -67,10 +67,10 @@ def _test_rolling_median_str(vector: typing.List[str], window_length: int):
 
 @pytest.mark.slow
 @pytest.mark.parametrize('window_length', ROLLING_MEDIAN_STR_WINDOW_WIDTHS)
-def test_rolling_median_float_by_window_length(benchmark, window_length):
+def test_rolling_median_bytes_by_window_length(benchmark, window_length):
     # Align with perf_roll_med_vector_style_even_win_length_string()
     length = 100000
     vector = []
     for i in range(length):
         vector.append(random_bytes(1024))
-    benchmark(_test_rolling_median_str, vector, int(window_length))
+    benchmark(_test_rolling_median_bytes, vector, int(window_length))
