@@ -98,7 +98,7 @@ struct module_state {
 /* History:
  * See HISTORY.md at the project root.
  */
-static const char *MODULE_VERSION = "0.3.18rc0";
+static const char *MODULE_VERSION = "0.3.18rc1";
 
 static const char *MODULE_BUILD_DOCS = "Standard build.";
 
