@@ -1,9 +1,9 @@
 # History
 
-## 0.3.18rc1 (TODO:)
+## 0.4.0 (2026-01-30)
 
 * Support for Python 3.10, 3.11, 3.12, 3.13, 3.14.
-* End support for Python 3.8, 3.9 but they will work just fine.
+* End support for Python 3.8, 3.9, but they will work just fine.
 * Improve the performance tests and documentation.
 * Python performance benchmarks are now automatically converted into Gnuplot .dat files.
 * Improve C++ rolling median code.
