@@ -169,27 +169,8 @@ This shows good O(log(n))'ish type behaviour.
 Rolling Median
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
-The number of results is 1e6 - window size.
-This needs to ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
-A window size of 1000 and 1m values (the size of the SkipList) takes around 0.75 second or 750 ns /value.
-The line shows a very approximate fir to the minimum recorded value of around 0.3 + sqrt(window length) / 300 seconds.
-
-.. image::
-    plots/images/perf_roll_med_by_win_size.png
-    :width: 500
-    :align: center
-    :alt: Median by Window Size Performance
-
-The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
-
-.. note::
-
-    The number of operations to calculate a rolling median is the data length minus the window length.
-    A rolling median operation is an ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
-    Given a data length of 1m then a window length of 1 this would require 1m operations.
-    A window length of 1000 this would be 999,000 operations.
-    A window length of 500,000 this would be 500,000 operations.
+See the section :ref:`rolling_median_cpp_performance-label` for the rolling median performance in C++
+and :ref:`rolling_median_python_performance-label` for Python.
 
 .. _performance-space-complexity-label:
 

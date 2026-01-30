@@ -13,42 +13,51 @@
 Computing a Rolling Median
 ===============================================
 
+This describes how to code up a rolling median using a SkipList in both C++ and Python.
+A rolling median operation means, for a SkipList, an ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
+The number of operations to calculate a rolling median is the data length minus the window length.
 
 -----------------------------------------
 Rolling Median in C++
 -----------------------------------------
-
-A powerful use case for a skip list is in the computation of a rolling fraction, for example a rolling median.
 
 Here is a reasonable C++ attempt at doing that with the arguments:
 
 * ``data`` - A vector of data of type ``T`` of length ``L``.
 * ``win_length`` - a 'window' size. The median is computed over this number of values.
 * ``result`` - a destination vector for the result.
-  This will either end up with ``L - win_length`` values, alternatively is will be ``L`` long and start with
-  ``win_length`` ``NaN`` s.
-
-Rolling median code using a skip list might look like this, error checking is omitted:
+  This will either end up with ``L - win_length`` values.
 
 .. code-block:: cpp
 
     #include "SkipList.h"
     
-    template <typename T>
-    void rolling_median(const std::vector<T> data,
-                        size_t win_length,
-                        std::vector<T> &result) {
-        
+    template<typename T>
+    RollingMedianResult rolling_median(const std::vector<T> data,
+                                       size_t win_length,
+                                       std::vector<T> &result) {
+        if (win_length == 0) {
+            return ROLLING_MEDIAN_WIN_LENGTH;
+        }
         OrderedStructs::SkipList::HeadNode<T> sl;
 
         result.clear();
+        std::vector<T> buffer;
         for (size_t i = 0; i < data.size(); ++i) {
             sl.insert(data[i]);
-            if (i  >= win_length) {
-                result.push_back(sl.at(win_length / 2));
+            if (i >= win_length) {
+                if (win_length % 2 == 1) {
+                    result.push_back(sl.at(win_length / 2));
+                } else {
+                    /* Even length so average */
+                    sl.at((win_length - 1) / 2, 2, buffer);
+                    assert(buffer.size() == 2);
+                    result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                }
                 sl.remove(data[i - win_length]);
             }
         }
+        return ROLLING_MEDIAN_SUCCESS;
     }
 
 A full example is the ``RollingMedian::rolling_median_lower_bound`` function in ``RollingMedian.h``.
@@ -84,7 +93,6 @@ See *RollingMedian.h* and *test/test_rolling_median.cpp* for further examples.
 Rolling percentiles require a argument that says what fraction of the window the required value lies.
 Again, this is easy to add.
 
-
 Even Window Length
 -----------------------------------------
 
@@ -106,6 +114,25 @@ This always uses the lower bound so works correctly for odd sized window lengths
 For even sized window lengths this chooses the lower value rather than averaging two values.
 This is useful for, say, strings that can not be averaged.
 
+.. _rolling_median_cpp_performance-label:
+
+C++ Performance
+-----------------------------------------
+
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
+The time here is in ns/result and the number of results is 1e6 - window size.
+Given a data length of 1m then a window length of 1000 this would mean 999,000 operations.
+A window length of 500,000 this would mean 500,000 operations.
+
+A window size of 1000 and 1m values (the size of the SkipList) takes around 750 ns/value or 0.75 second in total.
+
+.. image::
+    plots/images/perf_roll_med_by_win_size.png
+    :width: 500
+    :align: center
+    :alt: Median by Window Size Performance
+
+The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
 
 -----------------------------------------
@@ -162,6 +189,41 @@ And the result will be:
       Result: [nan nan  1.  2.  3.  4.  5.  6.  7.  8.]
 
 Of course this Python code could be made much faster by using a Python C Extension.
+
+
+.. _rolling_median_python_performance-label:
+
+Python Performance
+-----------------------------------------
+
+Here is a plot of the time taken to compute a rolling median on one million values using different window sizes.
+The time here is in ns/result and the number of results is 1e6 - window size.
+Given a data length of 1m then a window length of 1000 this would mean 999,000 operations.
+A window length of 500,000 this would mean 500,000 operations.
+
+A window size of 1000 and 1m values (the size of the SkipList) takes around 750 ns/value or 0.75 second in total.
+
+.. image::
+    plots/images/CPython_3.14.2_test_rolling_median_float_by_window_length.png
+    :width: 500
+    :align: center
+    :alt: Python Rolling Median by Window Size Performance
+
+----------------------------------------------
+Performance Comparison of C++ and Python
+----------------------------------------------
+
+Here is the C++ performance plotted along with the Python performance.
+
+.. image::
+    plots/images/perf_cpp_cmp_py_test_rolling_median_float_by_window_length.png
+    :width: 500
+    :align: center
+    :alt: C++ and Python Rolling Median by Window Size Performance
+
+As expected C++ is around 2x faster.
+
+But Python has another trick up its sleeve that can make it outperform C++ decisively; multiprocessing with shared memory.
 
 .. _rolling-median-mp-shared-memory-label:
 
