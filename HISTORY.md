@@ -1,6 +1,6 @@
 # History
 
-## 0.3.18rc1 (TODO:)
+## 0.4.0 (2026-01-31)
 
 * Support for Python 3.10, 3.11, 3.12, 3.13, 3.14.
 * End support for Python 3.8, 3.9 but they will work just fine.
