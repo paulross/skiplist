@@ -1,6 +1,9 @@
 set logscale x
 # set logscale y
-set grid
+
+# First line specification refers to major grid lines in both x and y, the second to minor grid lines in x and y.
+set grid xtics mxtics ytics mytics linetype -1 linewidth 1, linetype 0 linewidth 1
+
 set title "Speed of Rolling Median for a skip list of 1 million doubles."
 set xlabel "Window Length"
 set ylabel "Time (ms)"

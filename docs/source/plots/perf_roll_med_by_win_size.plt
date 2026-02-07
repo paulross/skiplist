@@ -4,6 +4,9 @@ set grid
 set logscale x
 set xlabel "Size of Rolling Median Window"
 
+# First line specification refers to major grid lines in both x and y, the second to minor grid lines in x and y.
+set grid xtics mxtics ytics mytics linetype -1 linewidth 1, linetype 0 linewidth 1
+
 set ylabel "Time per Operation (ns)"
 set logscale y
 #set yrange [0:4000]

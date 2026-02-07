@@ -1,5 +1,7 @@
 set title "Speed of at(index), has(value) and index(value) in 1m doubles." noenhanced
-set grid
+
+# First line specification refers to major grid lines in both x and y, the second to minor grid lines in x and y.
+set grid xtics mxtics ytics mytics linetype -1 linewidth 1, linetype 0 linewidth 1
 
 set logscale x
 set xlabel "Position in the SkipList of 1m doubles"

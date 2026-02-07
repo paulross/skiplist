@@ -1,5 +1,7 @@
 set title "C++ and Python 3.14 Rolling Median of 1m floats." noenhanced
-set grid
+
+# First line specification refers to major grid lines in both x and y, the second to minor grid lines in x and y.
+set grid xtics mxtics ytics mytics linetype -1 linewidth 1, linetype 0 linewidth 1
 
 set logscale x
 set xlabel "Size of Rolling Median Window"

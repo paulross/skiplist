@@ -1,5 +1,8 @@
 set logscale x
-set grid
+
+# First line specification refers to major grid lines in both x and y, the second to minor grid lines in x and y.
+set grid xtics mxtics ytics mytics linetype -1 linewidth 1, linetype 0 linewidth 1
+
 set title "Threaded Insert and Remove"
 set xlabel "Threads"
 set ylabel "Time the same number of values values (ms)."
