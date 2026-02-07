@@ -1,5 +1,9 @@
 # History
 
+## 0.4.1rc0 (TODO)
+
+* Add minor gridlines to log plots.
+
 ## 0.4.0 (2026-01-31)
 
 * Support for Python 3.10, 3.11, 3.12, 3.13, 3.14.
