@@ -1,13 +1,14 @@
 # History
 
-## 0.4.1rc0 (TODO)
+## 0.4.3 (2026-02-09)
 
 * Add minor gridlines to log plots.
+* Fix git corruption.
 
 ## 0.4.0 (2026-01-31)
 
 * Support for Python 3.10, 3.11, 3.12, 3.13, 3.14.
-* End support for Python 3.8, 3.9 but they will work just fine.
+* End support for Python 3.8, 3.9, but they will work just fine.
 * Improve the performance tests and documentation.
 * Python performance benchmarks are now automatically converted into Gnuplot .dat files.
 * Improve C++ rolling median code.
