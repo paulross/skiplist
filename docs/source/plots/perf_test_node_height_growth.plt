@@ -29,6 +29,6 @@ set terminal png size 1000,600           # choose the file format
 set output "images/perf_test_node_height_growth.png"   # choose the output device
 
 plot "dat/perf_test_node_height_growth.dat" using 3:($5 - $6):7:8:($5 + $6) t "Head Node Height" with candlesticks whiskerbars 0.5, \
-    "dat/perf_test_double_insert_remove_value_end.dat" using 3:(1 + log($3) / log(2)) t "Height = 1 + log2(x)" with lines
+    "dat/perf_test_double_insert_remove_value_end.dat" using 3:(1 + log($3) / log(2)) t "Height = 1 + log2(x)" with lines lw 2
 
 reset

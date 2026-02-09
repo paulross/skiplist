@@ -57,6 +57,6 @@ set terminal png size 1000,600           # choose the file format
 set output "images/CPython_3.14.2_test_rolling_median_float_by_window_length.png"   # choose the output device
 
 plot "dat/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)):(($3 - $4) * 1e9 / (1e6 - $1)):(($3 + $4) * 1e9 / (1e6 - $1)):($5 * 1e9 / (1e6 - $1)) t "Python 3.14.2 Rolling Median" with candlesticks whiskerbars 1.0, \
-     "dat/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)) t "Minimum" with lines linewidth 1.0
+     "dat/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)) t "Minimum" with lines linewidth 2.0
 
 reset

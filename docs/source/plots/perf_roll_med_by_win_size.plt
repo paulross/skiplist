@@ -56,12 +56,12 @@ set output "images/perf_roll_med_by_win_size.png"   # choose the output device
 
 
 # plot "dat/perf_roll_med_by_win_size.dat" using 3:(1e0 * ($5 - $6) * $4 / $9):(1e0 * $7 * $4 / $9):(1e0 * $8 * $4 / $9):(1e0 * ($5 + $6) * $4 / $9) t "Rolling Median" with candlesticks whiskerbars 0.5, \
-     "dat/perf_roll_med_by_win_size.dat" using 3:(0.3 + sqrt($3) / 300) t "Rolling Median Typ. 0.3 + sqrt(window length) / 300" with lines
+     "dat/perf_roll_med_by_win_size.dat" using 3:(0.3 + sqrt($3) / 300) t "Rolling Median Typ. 0.3 + sqrt(window length) / 300" with lines lw 2
 
 # plot "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * ($5 - $6) * $4 / $9):((1e9 / (1e6 - $3)) * $7 * $4 / $9):((1e9 / (1e6 - $3)) * $8 * $4 / $9):((1e9 / (1e6 - $3)) * ($5 + $6) * $4 / $9) t "Rolling Median" with candlesticks whiskerbars 1.0, \
-     "dat/perf_roll_med_by_win_size.dat" using 3:(200 + 100 * log($3)) t "Rolling Median Typ. 200 + 100 * log(window length)" with lines
+     "dat/perf_roll_med_by_win_size.dat" using 3:(200 + 100 * log($3)) t "Rolling Median Typ. 200 + 100 * log(window length)" with lines lw 2
 
 plot "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * ($5 - $6) * $4 / $9):((1e9 / (1e6 - $3)) * $7 * $4 / $9):((1e9 / (1e6 - $3)) * $8 * $4 / $9):((1e9 / (1e6 - $3)) * ($5 + $6) * $4 / $9) t "Rolling Median" with candlesticks whiskerbars 1.0, \
-     "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * $7 * $4 / $9) t "Minimum" with lines linewidth 1.0
+     "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * $7 * $4 / $9) t "Minimum" with lines linewidth 2.0
 
 reset
