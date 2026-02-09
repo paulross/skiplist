@@ -874,9 +874,9 @@ Here is a rolling median that will raise a ``ValueError`` if there is a NaN in t
         ret: typing.List[float] = []
         for i in range(len(vector)):
             value = vector[i]
-            skip_list.insert(float(value))
+            skip_list.insert(float(value)) # This will raise a ValueError on NaN
             if i >= window_length:
-                median = skip_list.at(window_length // 2) # This will raise a ValueError
+                median = skip_list.at(window_length // 2)
                 skip_list.remove(vector[i - window_length])
             else:
                 median = math.nan
