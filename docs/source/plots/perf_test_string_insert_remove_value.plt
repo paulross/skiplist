@@ -8,7 +8,7 @@ set xlabel "Size of SkipList"
 set xrange [:20000]
 
 set ylabel "Time per 1kB String (ns)"
-# set logscale y
+set logscale y
 # set yrange [:3000]
 # set yrange [0.001:10]
 # set ytics 8,35,3
@@ -46,10 +46,10 @@ set output "images/perf_test_string_insert_remove_value.png"   # choose the outp
 # NOTE: Compute actual time as $4 * $? / $9, e.g. $4 * $5 / $9
 
 plot "dat/perf_test_string_insert_remove_value_begin.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "Beginning" with candlesticks whiskerbars 0.5, \
-        "dat/perf_test_string_insert_remove_value_begin.dat" using 3:(710 + 32 * log($3) / log(2)) t "Beginning : 710 + 32 * log2(x)" with lines, \
+        "dat/perf_test_string_insert_remove_value_begin.dat" using 3:(710 + 32 * log($3) / log(2)) t "Beginning : 710 + 32 * log2(x)" with lines lw 2, \
         "dat/perf_test_string_insert_remove_value_mid.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "Middle" with candlesticks whiskerbars 0.5, \
-        "dat/perf_test_string_insert_remove_value_mid.dat" using 3:(715 + 33 * log($3) / log(2)) t "Middle: 715 + 33 * log2(x)" with lines, \
+        "dat/perf_test_string_insert_remove_value_mid.dat" using 3:(715 + 33 * log($3) / log(2)) t "Middle: 715 + 33 * log2(x)" with lines lw 2, \
         "dat/perf_test_string_insert_remove_value_end.dat" using 3:(1e9 * ($5 - $6) * $4 / $9):(1e9 * $7 * $4 / $9):(1e9 * $8 * $4 / $9):(1e9 * ($5 + $6) * $4 / $9) t "End" with candlesticks whiskerbars 0.5, \
-        "dat/perf_test_string_insert_remove_value_end.dat" using 3:(290 + 60 * log($3) / log(2)) t "End: 290 + 60 * log2(x)" with lines
+        "dat/perf_test_string_insert_remove_value_end.dat" using 3:(290 + 60 * log($3) / log(2)) t "End: 290 + 60 * log2(x)" with lines lw 2
 
 reset

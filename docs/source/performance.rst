@@ -155,7 +155,63 @@ The test functions are in ``src/cpp/test/test_performance.cpp``:
 - ``perf_test_double_has_1m_all()``.
 - ``perf_test_double_index_1m_all()``.
 
-The lines show the minimum values and the legend shows the log(n) behaviour.
+``at(index)``
+^^^^^^^^^^^^^
+
+This shows the range, minimum and trend of ``at(index)``.
+
+.. image::
+    plots/images/perf_test_double_at.png
+    :width: 500
+    :align: center
+    :alt: Double at(index) Performance
+
+``has(value)``
+^^^^^^^^^^^^^^
+
+This shows the range, minimum and trend of ``has(value)``.
+
+.. image::
+    plots/images/perf_test_double_has.png
+    :width: 500
+    :align: center
+    :alt: Double has(value) Performance
+
+
+``index(value)``
+^^^^^^^^^^^^^^^^
+
+This shows the range, minimum and trend of ``index(value)``.
+
+.. image::
+    plots/images/perf_test_double_index.png
+    :width: 500
+    :align: center
+    :alt: Double index(value) Performance
+
+
+These all show good O(log(n))'ish type behaviour.
+
+In summary:
+
+.. list-table:: Trend of ``at(index)``, ``has(value)`` and ``index(value)``
+   :widths: 30 30 30
+   :header-rows: 1
+
+   * - Operation
+     - Offset (ns)
+     - Scale * log2(size)
+   * - ``at(index)``
+     - 30
+     - 15
+   * - ``has(value)``
+     - 100
+     - 15
+   * - ``index(value)``
+     - 160
+     - 15
+
+Here is the performance of all three operations combined:
 
 .. image::
     plots/images/perf_test_double_at_has_index.png
@@ -163,7 +219,9 @@ The lines show the minimum values and the legend shows the log(n) behaviour.
     :align: center
     :alt: Double at/has/index Performance
 
-This shows good O(log(n))'ish type behaviour.
+.. todo::
+
+    Investigate why there is a huge performance increase when the length is specifically 1048576 (1 << 20).
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Rolling Median
