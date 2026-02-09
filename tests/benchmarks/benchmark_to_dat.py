@@ -152,13 +152,16 @@ def parse_json_file(path: str) -> Benchmarks:
 
 DAT_FILE_EXTENSION = '.dat'
 
+
 def remove_existing_dat_files(benchmarks: Benchmarks) -> None:
     for f in glob.glob(
-            os.path.join(
-                OUTPUT_DAT_DIR,
-                f'{benchmarks.environment.python_implementation}'
-                f'_{benchmarks.environment.python_version}'
-                f'*{DAT_FILE_EXTENSION}'
+            os.path.normpath(
+                os.path.join(
+                    OUTPUT_DAT_DIR,
+                    f'{benchmarks.environment.python_implementation}'
+                    f'_{benchmarks.environment.python_version}'
+                    f'*{DAT_FILE_EXTENSION}'
+                )
             )
     ):
         logger.info(f'Removing {f}')
