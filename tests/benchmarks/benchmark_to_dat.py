@@ -17,7 +17,7 @@ BENCHMARK_DIR = os.path.join(
     os.path.dirname(__file__), os.pardir, os.pardir, '.benchmarks',
 )
 OUTPUT_DAT_DIR = os.path.join(
-    os.path.dirname(__file__), os.pardir, os.pardir, 'docs', 'source', 'plots', 'dat',
+    os.path.dirname(__file__), os.pardir, os.pardir, 'docs', 'source', 'plots', 'dat', 'benchmarks',
 )
 
 
@@ -153,19 +153,14 @@ def parse_json_file(path: str) -> Benchmarks:
 DAT_FILE_EXTENSION = '.dat'
 
 
-def remove_existing_dat_files(benchmarks: Benchmarks) -> None:
-    for f in glob.glob(
-            os.path.normpath(
-                os.path.join(
-                    OUTPUT_DAT_DIR,
-                    f'{benchmarks.environment.python_implementation}'
-                    f'_{benchmarks.environment.python_version}'
-                    f'*{DAT_FILE_EXTENSION}'
-                )
-            )
-    ):
-        logger.info(f'Removing {f}')
-        os.remove(f)
+def remove_existing_dat_files() -> None:
+    for root, dirs, files in os.walk(OUTPUT_DAT_DIR, topdown=False):
+        files.sort()
+        for name in files:
+            if os.path.splitext(name)[1] == DAT_FILE_EXTENSION:
+                path = os.path.normpath(os.path.join(root, name))
+                logger.info(f'Removing {path}')
+                os.remove(path)
 
 
 def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
@@ -211,6 +206,7 @@ def write_benchmarks_to_dat_files(benchmarks: Benchmarks) -> None:
 
 
 def walk_benchmark_directory():
+    remove_existing_dat_files()
     for root, dirs, files in os.walk(BENCHMARK_DIR):
         files.sort()
         for name in files:
@@ -218,7 +214,6 @@ def walk_benchmark_directory():
             logger.info(f'Reading {path}')
             try:
                 benchmarks = parse_json_file(path)
-                remove_existing_dat_files(benchmarks)
                 write_benchmarks_to_dat_files(benchmarks)
             except json.JSONDecodeError as err:
                 logger.error(str(err))
@@ -229,6 +224,7 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format=LOG_FORMAT_NO_PROCESS, stream=sys.stdout
     )
+    os.makedirs(OUTPUT_DAT_DIR, exist_ok=True)
     walk_benchmark_directory()
     return 0
 

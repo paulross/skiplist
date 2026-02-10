@@ -24,19 +24,19 @@ set key left
 set terminal png size 1000,600           # choose the file format
 set output "images/perf_py_threaded_vs_single_py.png"   # choose the output device
 
-plot "dat/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3):(($3 - $4) * 1e3):(($3 + $4) * 1e3):($5 * 1e3) t "Python 3.8.10" with candlesticks whiskerbars 0.5, \
-     "dat/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.8.10" with lines, \
-     "dat/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3):(($3 - $4) * 1e3):(($3 + $4) * 1e3):($5 * 1e3) t "Python 3.14.2" with candlesticks whiskerbars 0.5, \
-     "dat/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.14.2" with lines
+plot "dat/benchmarks/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3):(($3 - $4) * 1e3):(($3 + $4) * 1e3):($5 * 1e3) t "Python 3.8.10" with candlesticks whiskerbars 0.5, \
+     "dat/benchmarks/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.8.10" with lines, \
+     "dat/benchmarks/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3):(($3 - $4) * 1e3):(($3 + $4) * 1e3):($5 * 1e3) t "Python 3.14.2" with candlesticks whiskerbars 0.5, \
+     "dat/benchmarks/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.14.2" with lines
 
 set output "images/perf_py_threaded_vs_single_py_min_all_pythons.png"   # choose the output device
 
-plot "dat/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.8.10" with linespoints, \
-     "dat/CPython_3.9.13_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.9.13" with linespoints, \
-     "dat/CPython_3.10.11_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.10.11" with linespoints, \
-     "dat/CPython_3.11.9_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.11.9" with linespoints, \
-     "dat/CPython_3.12.7_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.12.7" with linespoints, \
-     "dat/CPython_3.13.0_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.13.0" with linespoints, \
-     "dat/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.14.2" with linespoints
+plot "dat/benchmarks/CPython_3.8.10_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.8.10" with linespoints, \
+     "dat/benchmarks/CPython_3.9.13_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.9.13" with linespoints, \
+     "dat/benchmarks/CPython_3.10.11_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.10.11" with linespoints, \
+     "dat/benchmarks/CPython_3.11.9_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.11.9" with linespoints, \
+     "dat/benchmarks/CPython_3.12.7_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.12.7" with linespoints, \
+     "dat/benchmarks/CPython_3.13.0_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.13.0" with linespoints, \
+     "dat/benchmarks/CPython_3.14.2_test_ihr_float_threaded.dat" using 1:($2 * 1e3) t "Python 3.14.2" with linespoints
 
 reset

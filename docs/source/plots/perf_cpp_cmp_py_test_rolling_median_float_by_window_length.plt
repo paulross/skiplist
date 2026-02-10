@@ -47,7 +47,7 @@ set output "images/perf_cpp_cmp_py_test_rolling_median_float_by_window_length.pn
 
 plot "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * ($5 - $6) * $4 / $9):((1e9 / (1e6 - $3)) * $7 * $4 / $9):((1e9 / (1e6 - $3)) * $8 * $4 / $9):((1e9 / (1e6 - $3)) * ($5 + $6) * $4 / $9) t "C++ Rolling Median [left]" with candlesticks whiskerbars 1.0, \
      "dat/perf_roll_med_by_win_size.dat" using 3:((1e9 / (1e6 - $3)) * $7 * $4 / $9) t "C++ Minimum [left]" with lines linewidth 2.0, \
-     "dat/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)):(($3 - $4) * 1e9 / (1e6 - $1)):(($3 + $4) * 1e9 / (1e6 - $1)):($5 * 1e9 / (1e6 - $1)) t "Python 3.14.2 Rolling Median [left]" with candlesticks whiskerbars 1.0, \
-     "dat/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)) t "Python Minimum [left]" with lines linewidth 2.0
+     "dat/benchmarks/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)):(($3 - $4) * 1e9 / (1e6 - $1)):(($3 + $4) * 1e9 / (1e6 - $1)):($5 * 1e9 / (1e6 - $1)) t "Python 3.14.2 Rolling Median [left]" with candlesticks whiskerbars 1.0, \
+     "dat/benchmarks/CPython_3.14.2_test_rolling_median_float_by_window_length.dat" using 1:($2 * 1e9 / (1e6 - $1)) t "Python Minimum [left]" with lines linewidth 2.0
 
 reset

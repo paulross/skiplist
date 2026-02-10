@@ -496,6 +496,23 @@ threads contending for the SkipList, also shown is the same for a single threade
 Python Performance Tests
 ====================================
 
+
+
+.. image::
+    plots/images/benchmarks/CPython_3.14.2_test_float_iar_begin_mid_end.png
+    :width: 500
+    :align: center
+    :alt: Multi-threaded Rolling Median Performance
+
+
+.. image::
+    plots/images/benchmarks/CPython_test_float_iar_mid_all_pythons.png
+    :width: 500
+    :align: center
+    :alt: Multi-threaded Rolling Median Performance
+
+
+
 Some informal testing of the Python wrapper around the C++ SkipList was done using
 ``timeit`` in *tests/perf/test_perf_cSkipList.py*.
 The SkipList has 1m items. The performance is comparable to the C++ tests.

@@ -204,7 +204,7 @@ A window length of 500,000 this would mean 500,000 operations.
 A window size of 1000 and 1m values (the size of the SkipList) takes around 750 ns/value or 0.75 second in total.
 
 .. image::
-    plots/images/CPython_3.14.2_test_rolling_median_float_by_window_length.png
+    plots/images/benchmarks/CPython_3.14.2_test_rolling_median_float_by_window_length.png
     :width: 500
     :align: center
     :alt: Python Rolling Median by Window Size Performance
