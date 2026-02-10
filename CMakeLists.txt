@@ -23,10 +23,6 @@ add_compile_options(
         "$<$<CONFIG:DEBUG>:-O0;-g3;-ggdb>"
 )
 
-link_directories(
-        /Library/Frameworks/Python.framework/Versions/3.10/lib
-)
-
 add_executable(
         SkipList
 
@@ -35,11 +31,14 @@ add_executable(
         src/cpp/main.cpp
         src/cpp/Node.h
         src/cpp/NodeRefs.h
-        src/cpp/RollingMedian.h
         src/cpp/RollingMedian.cpp
+        src/cpp/RollingMedian.h
         src/cpp/SkipList.cpp
         src/cpp/SkipList.h
         # Test code
+        src/cpp/test/TestFramework.cpp
+        src/cpp/test/TestFramework.h
+        src/cpp/test/save_stream_state.h
         src/cpp/test/test_concurrent.cpp
         src/cpp/test/test_concurrent.h
         src/cpp/test/test_documentation.cpp
@@ -61,9 +60,6 @@ add_executable(
         src/cpy/cSkipList.h
         src/cpy/OrderedStructs.cpp
         src/cpy/OrderedStructs.h
-        src/cpp/test/TestFramework.cpp
-        src/cpp/test/TestFramework.h
-        src/cpp/test/save_stream_state.h
 )
 
 include_directories(
@@ -72,6 +68,7 @@ include_directories(
         src/cpy
 )
 
+# See: https://devguide.python.org/versions/
 FIND_PACKAGE (Python3 3.10 EXACT REQUIRED COMPONENTS Interpreter Development)
 #FIND_PACKAGE(PythonLibs 3.11 EXACT REQUIRED)
 #SET(PythonLibs_DIR "/Library/Frameworks/Python.framework/Versions/3.8")

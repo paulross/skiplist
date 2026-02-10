@@ -68,3 +68,5 @@ benchmark_*.svg
 # CMake artifacts
 cmake-build-debug/
 cmake-build-release/
+
+tmp/
