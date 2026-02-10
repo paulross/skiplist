@@ -98,7 +98,13 @@ def benchmark_insert_has_remove_float_threaded(skip_list, insert_value, num_inse
 )
 def test_ihr_float_threaded(benchmark, num_threads):
     """Tests multithreaded insert()/has()/remove() of floats converted to
-    native C++ objects."""
+    native C++ objects.
+    The length of the SkipList is 1m.
+    The insert value is in the middle.
+    The number of time the insert()/has()/remove() is done is 1024 * 8 spread across the number of threads.
+
+    So to get the operation time per insert in ns the benchmark time needs to be factored by 1e9 / (1024 * 8)
+    """
     # logging.debug('Starting: {}()'.format(sys._getframe().f_code.co_name))
     sl = orderedstructs.SkipList(float)
     length = 1000 * 1000

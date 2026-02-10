@@ -14,7 +14,7 @@ Skip List Performance
     :maxdepth: 2
 
 ====================================
-C++ Performance Tests
+C++ Performance
 ====================================
 
 The time performance tests are run as follows:
@@ -43,7 +43,6 @@ multi-threaded tests takes about three minutes. With single threaded support the
 If the debug version is built the performance tests are omitted as the cost of integrity checking at every step is very
 high which would make the performance test data irrelevant.
 
-====================================
 Time Performance
 ====================================
 
@@ -232,7 +231,6 @@ and :ref:`rolling_median_python_performance-label` for Python.
 
 .. _performance-space-complexity-label:
 
-====================================
 Space Complexity
 ====================================
 
@@ -313,7 +311,6 @@ The tests is ``perf_test_node_height_growth()`` in ``src/cpp/test/test_performan
 
 .. _performance-biased-coins-label:
 
-====================================
 Effect of a Biased Coin
 ====================================
 
@@ -389,7 +386,6 @@ to use anything but ``p(0.5)``.
 
 .. _multi-threaded-performance:
 
-===============================
 Multi-threaded C++ Performance
 ===============================
 
@@ -493,43 +489,68 @@ threads contending for the SkipList, also shown is the same for a single threade
     :alt: Multi-threaded Rolling Median Performance
 
 ====================================
-Python Performance Tests
+Python Performance
 ====================================
 
+Time Performance
+====================================
 
+Here is the performance for Python 3.14 for calling ``insert(value), at(index), remove(value)`` at the beginning,
+middle and end of the SkipList of 1m floats.
 
 .. image::
     plots/images/benchmarks/CPython_3.14.2_test_float_iar_begin_mid_end.png
     :width: 500
     :align: center
-    :alt: Multi-threaded Rolling Median Performance
+    :alt: insert(value), at(index), remove(value) for Python 3.14
 
+The time per operation is about 2x or 3x the C++ time.
+
+----------------------
+By Python Version
+----------------------
+
+For comparison here is the *minimum* recorded time for calling ``insert(value), at(index), remove(value)`` at the
+middle of the SkipList for various Python versions.
 
 .. image::
     plots/images/benchmarks/CPython_test_float_iar_mid_all_pythons.png
     :width: 500
     :align: center
-    :alt: Multi-threaded Rolling Median Performance
+    :alt: insert(value), at(index), remove(value) for various Python versions
 
+The Python version does not seems to have any significant effect on the performance.
 
+Multi-Threaded Python Performance
+=================================
 
-Some informal testing of the Python wrapper around the C++ SkipList was done using
-``timeit`` in *tests/perf/test_perf_cSkipList.py*.
-The SkipList has 1m items. The performance is comparable to the C++ tests.
+Here is the performance for Python 3.14 for calling ``insert(value), has(value), remove(value)`` at the middle of
+SkipList of 1m floats.
+The same *total number* of values are inserted but this is spread across a number of threads.
 
-======================================= =========================== ==============================
-Test                                    Time per operation (ns)     Factor over C++ time
-======================================= =========================== ==============================
-``test_at_integer()``                   217
-``test_at_float()``                     242                         x2.7
-``test_has_integer()``                  234
-``test_has_float()``                    238                         x1.4
-``test_insert_remove_mid_integer()``    1312
-``test_insert_remove_mid_float()``      1497                        x1.4
-``test_index_mid_int()``                400
-``test_index_mid_float()``              356                         x1.9
-======================================= =========================== ==============================
+The benchmark test is in:
 
-It is rather surprising, and satisfying, that the Python overhead is so small considering the boxing/unboxing that is
-going on.
-The test methodology is different in the Python/C++ cases which might skew the figures.
+``tests.benchmarks.test_benchmark_SkipList_threaded.test_ihr_float_threaded()``.
+
+.. image::
+    plots/images/benchmarks/perf_py_threaded_vs_single_py.png
+    :width: 500
+    :align: center
+    :alt: Python 3.14 multi-threaded performance
+
+This shows the gradual overhead of thread contention of doing the same amount of work.
+
+----------------------
+By Python Version
+----------------------
+
+For comparison here is the *minimum* recorded time for calling ``insert(value), has(value), remove(value)`` at the
+middle of the SkipList of 1m floats for various Python versions.
+
+.. image::
+    plots/images/benchmarks/perf_py_threaded_vs_single_py_min_all_pythons.png
+    :width: 500
+    :align: center
+    :alt: insert(value), at(index), remove(value) for various Python versions
+
+The Python version does not seems to have any significant effect on the performance.
