@@ -15,7 +15,7 @@ namespace OrderedStructs {
     namespace SkipList {
 
 /// Forward reference
-template<typename T, typename _Compare>
+template<typename T, typename Compare>
 class Node;
 
 /**
@@ -23,11 +23,11 @@ class Node;
  * next Node.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  */
-template<typename T, typename _Compare=std::less<T> >
+template<typename T, typename Compare=std::less<T> >
 struct NodeRef {
-    Node<T, _Compare> *pNode;
+    Node<T, Compare> *pNode;
     size_t width;
 };
 
@@ -42,9 +42,9 @@ struct NodeRef {
  * It also facilitates swapping references with another SwappableNodeRefStack when inserting or removing a Node.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  */
-template<typename T, typename _Compare>
+template<typename T, typename Compare>
 class SwappableNodeRefStack {
 public:
     /**
@@ -55,9 +55,9 @@ public:
     // Const methods
     // -------------
     // Subscript read/write
-    const NodeRef<T, _Compare> &operator[](size_t level) const;
+    const NodeRef<T, Compare> &operator[](size_t level) const;
 
-    NodeRef<T, _Compare> &operator[](size_t level);
+    NodeRef<T, Compare> &operator[](size_t level);
 
     /// Number of nodes referenced.
     size_t height() const {
@@ -72,16 +72,16 @@ public:
 
     // Returns true if there is no record of p in my data that
     // could lead to circular references
-    bool noNodePointerMatches(const Node<T, _Compare> *p) const;
+    bool noNodePointerMatches(const Node<T, Compare> *p) const;
 
     // Returns true if all pointers in my data are equal to p.
-    bool allNodePointerMatch(const Node<T, _Compare> *p) const;
+    bool allNodePointerMatch(const Node<T, Compare> *p) const;
 
     // Non-const methods
     // -----------------
     /// Add a new reference
-    void push_back(Node<T, _Compare> *p, size_t w) {
-        struct NodeRef<T, _Compare> val = {p, w};
+    void push_back(Node<T, Compare> *p, size_t w) {
+        struct NodeRef<T, Compare> val = {p, w};
         _nodes.push_back(val);
     }
 
@@ -91,7 +91,7 @@ public:
     }
 
     // Swap reference at current swap level with another SwappableNodeRefStack
-    void swap(SwappableNodeRefStack<T, _Compare> &val);
+    void swap(SwappableNodeRefStack<T, Compare> &val);
 
     /// Reset the swap level (for example before starting a remove).
     void resetSwapLevel() { _swapLevel = 0; }
@@ -110,7 +110,7 @@ public:
 
 protected:
     /// Stack of NodeRef node references.
-    std::vector<struct NodeRef<T, _Compare> > _nodes;
+    std::vector<struct NodeRef<T, Compare> > _nodes;
     /// The current swap level.
     size_t _swapLevel;
 
@@ -126,12 +126,12 @@ private:
  * The readable NodeRef at the given level.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param level The level.
  * @return A reference to the Node.
  */
-template<typename T, typename _Compare>
-const NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_t level) const {
+template<typename T, typename Compare>
+const NodeRef<T, Compare> &SwappableNodeRefStack<T, Compare>::operator[](size_t level) const {
     // NOTE: No bounds checking on vector::operator[], so this assert will do
     assert(level < _nodes.size());
     return _nodes[level];
@@ -141,12 +141,12 @@ const NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_
  * The writeable NodeRef at the given level.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param level The level.
  * @return A reference to the Node.
  */
-template<typename T, typename _Compare>
-NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_t level) {
+template<typename T, typename Compare>
+NodeRef<T, Compare> &SwappableNodeRefStack<T, Compare>::operator[](size_t level) {
     // NOTE: No bounds checking on vector::operator[], so this assert will do
     assert(level < _nodes.size());
     return _nodes[level];
@@ -157,12 +157,12 @@ NodeRef<T, _Compare> &SwappableNodeRefStack<T, _Compare>::operator[](size_t leve
  * Should be true after an insert operation.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param p The Node.
  * @return true if all the Node references are swapped (none are referring to the given Node).
  */
-template<typename T, typename _Compare>
-bool SwappableNodeRefStack<T, _Compare>::noNodePointerMatches(const Node<T, _Compare> *p) const {
+template<typename T, typename Compare>
+bool SwappableNodeRefStack<T, Compare>::noNodePointerMatches(const Node<T, Compare> *p) const {
     for (size_t level = height(); level-- > 0;) {
         if (p == _nodes[level].pNode) {
             return false;
@@ -176,12 +176,12 @@ bool SwappableNodeRefStack<T, _Compare>::noNodePointerMatches(const Node<T, _Com
  * Should be true after a remove operation.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param p The Node.
  * @return true if all the Node references are un-swapped (all are referring to the given Node).
  */
-template<typename T, typename _Compare>
-bool SwappableNodeRefStack<T, _Compare>::allNodePointerMatch(const Node<T, _Compare> *p) const {
+template<typename T, typename Compare>
+bool SwappableNodeRefStack<T, Compare>::allNodePointerMatch(const Node<T, Compare> *p) const {
     for (size_t level = height(); level-- > 0;) {
         if (p != _nodes[level].pNode) {
             return false;
@@ -195,13 +195,13 @@ bool SwappableNodeRefStack<T, _Compare>::allNodePointerMatch(const Node<T, _Comp
  * This also increments the swap level.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param val The SwappableNodeRefStack.
  */
-template<typename T, typename _Compare>
-void SwappableNodeRefStack<T, _Compare>::swap(SwappableNodeRefStack<T, _Compare> &val) {
+template<typename T, typename Compare>
+void SwappableNodeRefStack<T, Compare>::swap(SwappableNodeRefStack<T, Compare> &val) {
     assert(_swapLevel < height());
-    NodeRef<T, _Compare> temp = val[_swapLevel];
+    NodeRef<T, Compare> temp = val[_swapLevel];
     val[_swapLevel] = _nodes[_swapLevel];
     _nodes[_swapLevel] = temp;
     ++_swapLevel;
@@ -216,11 +216,11 @@ void SwappableNodeRefStack<T, _Compare>::swap(SwappableNodeRefStack<T, _Compare>
  * - Widths must be weakly increasing with increasing level
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @return An IntegrityCheck enum.
  */
-template<typename T, typename _Compare>
-IntegrityCheck SwappableNodeRefStack<T, _Compare>::lacksIntegrity() const {
+template<typename T, typename Compare>
+IntegrityCheck SwappableNodeRefStack<T, Compare>::lacksIntegrity() const {
     if (height()) {
         if (_nodes[0].width != 1) {
             return NODEREFS_WIDTH_ZERO_NOT_UNITY;
@@ -238,11 +238,11 @@ IntegrityCheck SwappableNodeRefStack<T, _Compare>::lacksIntegrity() const {
  * Returns an estimate of the memory usage of an instance
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @return The memory estimate.
  */
-template<typename T, typename _Compare>
-size_t SwappableNodeRefStack<T, _Compare>::size_of() const {
+template<typename T, typename Compare>
+size_t SwappableNodeRefStack<T, Compare>::size_of() const {
     return sizeof(*this) + _nodes.capacity() * sizeof(struct NodeRef<T>);
 }
 

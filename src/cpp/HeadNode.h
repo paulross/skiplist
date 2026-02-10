@@ -74,9 +74,9 @@ namespace OrderedStructs {
  * Copyright (c) 2015-2023 Paul Ross. All rights reserved.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  */
-template <typename T, typename _Compare=std::less<T>>
+template <typename T, typename Compare=std::less<T>>
 class HeadNode {
 public:
     /**
@@ -84,7 +84,7 @@ public:
      *
      * @param cmp The comparison function for comparing Node values.
      */
-    HeadNode(_Compare cmp=_Compare()) : _count(0), _compare(cmp) {
+    HeadNode(Compare cmp=Compare()) : _count(0), _compare(cmp) {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
         _dot_file_subgraph = 0;
 #endif
@@ -138,8 +138,8 @@ public:
     virtual ~HeadNode();
     
 protected:
-    void _adjRemoveRefs(size_t level, Node<T, _Compare> *pNode);
-    const Node<T, _Compare> *_nodeAt(size_t idx) const;
+    void _adjRemoveRefs(size_t level, Node<T, Compare> *pNode);
+    const Node<T, Compare> *_nodeAt(size_t idx) const;
     
 protected:
     // Standardised way of throwing a ValueError
@@ -154,9 +154,9 @@ protected:
     /// Number of nodes in the list.
     size_t _count;
     /// My node references, the size of this is the largest height in the list
-    SwappableNodeRefStack<T, _Compare> _nodeRefs;
+    SwappableNodeRefStack<T, Compare> _nodeRefs;
     /// Comparison function.
-    _Compare _compare;
+    Compare _compare;
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
     /// Used to count how many sub-graphs have been plotted
     mutable size_t _dot_file_subgraph;
@@ -177,12 +177,12 @@ private:
  * Returns true if the value is present in the skip list.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value Value to check if it is in the Skip List.
  * @return true if in the Skip List.
  */
-template <typename T, typename _Compare>
-bool HeadNode<T, _Compare>::has(const T &value) const {
+template <typename T, typename Compare>
+bool HeadNode<T, Compare>::has(const T &value) const {
     _throwIfValueDoesNotCompare(value);
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
@@ -205,16 +205,16 @@ bool HeadNode<T, _Compare>::has(const T &value) const {
  * See _throw_exceeds_size() that does the throw.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param index The index.
  * @return The value at that index.
  */
-template <typename T, typename _Compare>
-const T &HeadNode<T, _Compare>::at(size_t index) const {
+template <typename T, typename Compare>
+const T &HeadNode<T, Compare>::at(size_t index) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
-    const Node<T, _Compare> *pNode = _nodeAt(index);
+    const Node<T, Compare> *pNode = _nodeAt(index);
     assert(pNode);
     return pNode->value();
 }
@@ -228,19 +228,19 @@ const T &HeadNode<T, _Compare>::at(size_t index) const {
  * values.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param index The index.
  * @param count The number of values to retrieve.
  * @param dest The vector of values
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::at(size_t index, size_t count,
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::at(size_t index, size_t count,
                                std::vector<T> &dest) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
     dest.clear();
-    const Node<T, _Compare> *pNode = _nodeAt(index);
+    const Node<T, Compare> *pNode = _nodeAt(index);
     // _nodeAt will (should) throw an IndexError so this
     // assert should always be true
     assert(pNode);
@@ -260,12 +260,12 @@ void HeadNode<T, _Compare>::at(size_t index, size_t count,
  * Will throw a OrderedStructs::SkipList::FailedComparison if the value is not comparable.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value The value to search for.
  * @return
  */
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::index(const T& value) const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::index(const T& value) const {
     _throwIfValueDoesNotCompare(value);
     size_t idx;
     
@@ -288,16 +288,16 @@ size_t HeadNode<T, _Compare>::index(const T& value) const {
  * Return the number of values in the Skip List.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return The number of values in the Skip List.
  */
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::size() const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::size() const {
     return _count;
 }
 
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::height() const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::height() const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
@@ -311,16 +311,16 @@ size_t HeadNode<T, _Compare>::height() const {
  * Will throw a OrderedStructs::SkipList::IndexError if the index out of range.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param idx The index of the Skip List node.
  * @return The number of linked lists that the node at the index has.
  */
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::height(size_t idx) const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::height(size_t idx) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
-    const Node<T, _Compare> *pNode = _nodeAt(idx);
+    const Node<T, Compare> *pNode = _nodeAt(idx);
     assert(pNode);
     return pNode->height();
 }
@@ -330,18 +330,18 @@ size_t HeadNode<T, _Compare>::height(size_t idx) const {
  * Will throw an IndexError if the index is out of range.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param idx The index.
  * @param level The level.
  * @return Width of Node.
  */
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::width(size_t idx, size_t level) const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::width(size_t idx, size_t level) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
     // Will throw if out of range.
-    const Node<T, _Compare> *pNode = _nodeAt(idx);
+    const Node<T, Compare> *pNode = _nodeAt(idx);
     assert(pNode);
     if (level >= pNode->height()) {
         _throw_exceeds_size(pNode->height());
@@ -354,17 +354,17 @@ size_t HeadNode<T, _Compare>::width(size_t idx, size_t level) const {
  * Will throw an IndexError if the index is out of range.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param idx The index.
  * @return The Node.
  */
-template <typename T, typename _Compare>
-const Node<T, _Compare> *HeadNode<T, _Compare>::_nodeAt(size_t idx) const {
+template <typename T, typename Compare>
+const Node<T, Compare> *HeadNode<T, Compare>::_nodeAt(size_t idx) const {
     if (idx < _count) {
         for (size_t l = _nodeRefs.height(); l-- > 0;) {
             if (_nodeRefs[l].pNode && _nodeRefs[l].width <= idx + 1) {
                 size_t new_index = idx + 1 - _nodeRefs[l].width;
-                const Node<T, _Compare> *pNode = _nodeRefs[l].pNode->at(new_index);
+                const Node<T, Compare> *pNode = _nodeRefs[l].pNode->at(new_index);
                 if (pNode) {
                     return pNode;
                 }
@@ -383,18 +383,18 @@ const Node<T, _Compare> *HeadNode<T, _Compare>::_nodeAt(size_t idx) const {
  * Insert a value.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::insert(const T &value) {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::insert(const T &value) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
     std::cout << "HeadNode insert(" << value << ") thread: " << std::this_thread::get_id() << std::endl;
 #endif
 #endif
-    Node<T, _Compare> *pNode = nullptr;
+    Node<T, Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
     
     _throwIfValueDoesNotCompare(value);
@@ -406,11 +406,11 @@ void HeadNode<T, _Compare>::insert(const T &value) {
         }
     }
     if (! pNode) {
-        pNode = new Node<T, _Compare>(value, _compare);
+        pNode = new Node<T, Compare>(value, _compare);
         level = 0;
     }
     assert(pNode);
-    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->nodeRefs();
+    SwappableNodeRefStack<T, Compare> &thatRefs = pNode->nodeRefs();
     if (thatRefs.canSwap()) {
         // Expand this to that
         while (_nodeRefs.height() < thatRefs.height()) {
@@ -466,15 +466,15 @@ void HeadNode<T, _Compare>::insert(const T &value) {
  * Adjust references >= level for removal of the node pNode.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param level Current level.
  * @param pNode Node to swap references with.
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
-                                           Node<T, _Compare> *pNode) {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::_adjRemoveRefs(size_t level,
+                                           Node<T, Compare> *pNode) {
     assert(pNode);
-    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->nodeRefs();
+    SwappableNodeRefStack<T, Compare> &thatRefs = pNode->nodeRefs();
     
     // Swap all remaining levels
     // This assertion checks that if swapping can take place we must be at the
@@ -507,19 +507,19 @@ void HeadNode<T, _Compare>::_adjRemoveRefs(size_t level,
  * May throw a ValueError if the value is not found.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value The value in the Node to remove.
  * @return The value removed.
  */
-template <typename T, typename _Compare>
-T HeadNode<T, _Compare>::remove(const T &value) {
+template <typename T, typename Compare>
+T HeadNode<T, Compare>::remove(const T &value) {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #ifdef SKIPLIST_THREAD_SUPPORT_TRACE
     std::cout << "HeadNode remove() thread: " << std::this_thread::get_id() << std::endl;
 #endif
 #endif
-    Node<T, _Compare> *pNode = nullptr;
+    Node<T, Compare> *pNode = nullptr;
     size_t level;
 
     _throwIfValueDoesNotCompare(value);
@@ -548,11 +548,11 @@ T HeadNode<T, _Compare>::remove(const T &value) {
  * Throw a ValueError in a consistent fashion.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value The value to put into the ValueError.
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::_throwValueErrorNotFound(const T &value) const {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::_throwValueErrorNotFound(const T &value) const {
 #ifdef INCLUDE_METHODS_THAT_USE_STREAMS
     std::ostringstream oss;
     oss << "Value " << value << " not found.";
@@ -571,11 +571,11 @@ void HeadNode<T, _Compare>::_throwValueErrorNotFound(const T &value) const {
  * The Node class is (should be) not directly accessible by the user so we can just assert(value == value) in Node.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param value
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::_throwIfValueDoesNotCompare(const T &value) const {
     if (value != value) {
         throw FailedComparison(
             "Can not work with something that does not compare equal to itself.");
@@ -587,16 +587,16 @@ void HeadNode<T, _Compare>::_throwIfValueDoesNotCompare(const T &value) const {
  * at that level does not contain a cyclic reference.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
+template <typename T, typename Compare>
+IntegrityCheck HeadNode<T, Compare>::_lacksIntegrityCyclicReferences() const {
     assert(_nodeRefs.height());
     // Check for cyclic references at each level
     for (size_t level = 0; level < _nodeRefs.height(); ++level) {
-        Node<T, _Compare> *p1 = _nodeRefs[level].pNode;
-        Node<T, _Compare> *p2 = _nodeRefs[level].pNode;
+        Node<T, Compare> *p1 = _nodeRefs[level].pNode;
+        Node<T, Compare> *p2 = _nodeRefs[level].pNode;
         while (p1 && p2) {
             p1 = p1->nodeRefs()[level].pNode;
             if (p2->nodeRefs()[level].pNode) {
@@ -617,15 +617,15 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityCyclicReferences() const {
  * as the accumulated node to node widths at level - 1.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
+template <typename T, typename Compare>
+IntegrityCheck HeadNode<T, Compare>::_lacksIntegrityWidthAccumulation() const {
     assert(_nodeRefs.height());
     for (size_t level = 1; level < _nodeRefs.height(); ++level) {
-        const Node<T, _Compare> *pl = _nodeRefs[level].pNode;
-        const Node<T, _Compare> *pl_1 = _nodeRefs[level - 1].pNode;
+        const Node<T, Compare> *pl = _nodeRefs[level].pNode;
+        const Node<T, Compare> *pl_1 = _nodeRefs[level - 1].pNode;
         assert(pl && pl_1); // No nulls allowed in HeadNode
         size_t wl = _nodeRefs[level].width;
         size_t wl_1 = _nodeRefs[level - 1].width;
@@ -654,16 +654,16 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityWidthAccumulation() const {
  * This tests the integrity of each Node.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityNodeReferencesNotInList() const {
+template <typename T, typename Compare>
+IntegrityCheck HeadNode<T, Compare>::_lacksIntegrityNodeReferencesNotInList() const {
     assert(_nodeRefs.height());
 
     IntegrityCheck result;
-    std::set<const Node<T, _Compare>*> nodeSet;
-    const Node<T, _Compare> *pNode = _nodeRefs[0].pNode;
+    std::set<const Node<T, Compare>*> nodeSet;
+    const Node<T, Compare> *pNode = _nodeRefs[0].pNode;
     assert(pNode);
     
     // First gather all nodes, slightly awkward code here is so that
@@ -692,16 +692,16 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityNodeReferencesNotInList() c
  * Node(s) have correctly applied the compare function.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityOrder() const {
+template <typename T, typename Compare>
+IntegrityCheck HeadNode<T, Compare>::_lacksIntegrityOrder() const {
     if (_nodeRefs.height()) {
         // Traverse the lowest level list iteratively deleting as we go
         // Doing this recursivley could be expensive as we are at level 0.
-        const Node<T, _Compare> *node = _nodeRefs[0].pNode;
-        const Node<T, _Compare> *next;
+        const Node<T, Compare> *node = _nodeRefs[0].pNode;
+        const Node<T, Compare> *next;
         while (node) {
             next = node->next();
             if (next && _compare(next->value(), node->value())) {
@@ -718,11 +718,11 @@ IntegrityCheck HeadNode<T, _Compare>::_lacksIntegrityOrder() const {
  * This calls the other integrity check functions.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
+template <typename T, typename Compare>
+IntegrityCheck HeadNode<T, Compare>::lacksIntegrity() const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
@@ -735,7 +735,7 @@ IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
             return HEADNODE_CONTAINS_NULL;
         }
         // Check all nodes for integrity
-        const Node<T, _Compare> *pNode = _nodeRefs[0].pNode;
+        const Node<T, Compare> *pNode = _nodeRefs[0].pNode;
         while (pNode) {
             result = pNode->lacksIntegrity(_nodeRefs.height());
             if (result) {
@@ -777,11 +777,11 @@ IntegrityCheck HeadNode<T, _Compare>::lacksIntegrity() const {
  * Returns an estimate of the memory usage of an instance.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @return The size of the memory estimate.
  */
-template <typename T, typename _Compare>
-size_t HeadNode<T, _Compare>::size_of() const {
+template <typename T, typename Compare>
+size_t HeadNode<T, Compare>::size_of() const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
@@ -789,7 +789,7 @@ size_t HeadNode<T, _Compare>::size_of() const {
     // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
     size_t ret_val = sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs);
     if (_nodeRefs.height()) {
-        const Node<T, _Compare> *node = _nodeRefs[0].pNode;
+        const Node<T, Compare> *node = _nodeRefs[0].pNode;
         while (node) {
             ret_val += node->size_of();
             node = node->next();
@@ -803,10 +803,10 @@ size_t HeadNode<T, _Compare>::size_of() const {
  * This deletes all Nodes.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  */
-template <typename T, typename _Compare>
-HeadNode<T, _Compare>::~HeadNode() {
+template <typename T, typename Compare>
+HeadNode<T, Compare>::~HeadNode() {
     // Hmm could this deadlock?
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
@@ -814,8 +814,8 @@ HeadNode<T, _Compare>::~HeadNode() {
     if (_nodeRefs.height()) {
         // Traverse the lowest level list iteratively deleting as we go
         // Doing this recursivley could be expensive as we are at level 0.
-        const Node<T, _Compare> *node = _nodeRefs[0].pNode;
-        const Node<T, _Compare> *next;
+        const Node<T, Compare> *node = _nodeRefs[0].pNode;
+        const Node<T, Compare> *next;
         while (node) {
             next = node->next();
             delete node;
@@ -832,11 +832,11 @@ HeadNode<T, _Compare>::~HeadNode() {
  * Create a DOT file of the internal representation.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param os Where to write the DOT file.
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::dotFile(std::ostream &os) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif
@@ -883,7 +883,7 @@ void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
     os << std::endl;
     // Now all nodes via level 0, if non-empty
     if (_nodeRefs.height()) {
-        Node<T, _Compare> *pNode = this->_nodeRefs[0].pNode;
+        Node<T, Compare> *pNode = this->_nodeRefs[0].pNode;
         pNode->dotFile(os, _dot_file_subgraph);
     }
     os << std::endl;
@@ -910,11 +910,11 @@ void HeadNode<T, _Compare>::dotFile(std::ostream &os) const {
  * Finalise the DOT file of the internal representation.
  *
  * @tparam T Type of the values in the Skip List.
- * @tparam _Compare Compare function.
+ * @tparam Compare Compare function.
  * @param os Where to write the DOT file.
  */
-template <typename T, typename _Compare>
-void HeadNode<T, _Compare>::dotFileFinalise(std::ostream &os) const {
+template <typename T, typename Compare>
+void HeadNode<T, Compare>::dotFileFinalise(std::ostream &os) const {
 #ifdef SKIPLIST_THREAD_SUPPORT
     std::lock_guard<std::mutex> lock(gSkipListMutex);
 #endif

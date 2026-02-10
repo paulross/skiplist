@@ -54,12 +54,12 @@ namespace OrderedStructs {
  * @brief A single node in a Skip List containing a value and references to other downstream Node objects.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  */
-template <typename T, typename _Compare>
+template <typename T, typename Compare>
 class Node {
 public:
-    Node(const T &value, _Compare _cmp);
+    Node(const T &value, Compare _cmp);
     // Const methods
     //
     /// Returns the node value
@@ -68,28 +68,28 @@ public:
     bool has(const T &value) const;
     // Returns the value at the index in the skip list from this node onwards.
     // Will return nullptr is not found.
-    const Node<T, _Compare> *at(size_t idx) const;
+    const Node<T, Compare> *at(size_t idx) const;
     // Computes index of the first occurrence of a value
     bool index(const T& value, size_t &idx, size_t level) const;
     /// Number of linked lists that this node engages in, minimum 1.
     size_t height() const { return _nodeRefs.height(); }
     // Return the pointer to the next node at level 0
-    const Node<T, _Compare> *next() const;
+    const Node<T, Compare> *next() const;
     // Return the width at given level.
     size_t width(size_t level) const;
     // Return the node pointer at given level, only used for HeadNode
     // integrity checks.
-    const Node<T, _Compare> *pNode(size_t level) const;
+    const Node<T, Compare> *pNode(size_t level) const;
     
     // Non-const methods
     /// Get a reference to the node references
-    SwappableNodeRefStack<T, _Compare> &nodeRefs() { return _nodeRefs; }
+    SwappableNodeRefStack<T, Compare> &nodeRefs() { return _nodeRefs; }
     /// Get a reference to the node references
-    const SwappableNodeRefStack<T, _Compare> &nodeRefs() const { return _nodeRefs; }
+    const SwappableNodeRefStack<T, Compare> &nodeRefs() const { return _nodeRefs; }
     // Insert a node
-    Node<T, _Compare> *insert(const T &value);
+    Node<T, Compare> *insert(const T &value);
     // Remove a node
-    Node<T, _Compare> *remove(size_t call_level, const T &value);
+    Node<T, Compare> *remove(size_t call_level, const T &value);
     // An estimate of the number of bytes used by this node
     size_t size_of() const;
     
@@ -100,16 +100,16 @@ public:
     
     // Integrity checks, returns non-zero on failure
     IntegrityCheck lacksIntegrity(size_t headnode_height) const;
-    IntegrityCheck lacksIntegrityRefsInSet(const std::set<const Node<T, _Compare>*> &nodeSet) const;
+    IntegrityCheck lacksIntegrityRefsInSet(const std::set<const Node<T, Compare>*> &nodeSet) const;
     
 protected:
-    Node<T, _Compare> *_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode);
+    Node<T, Compare> *_adjRemoveRefs(size_t level, Node<T, Compare> *pNode);
     
 protected:
     T _value;
-    SwappableNodeRefStack<T, _Compare> _nodeRefs;
+    SwappableNodeRefStack<T, Compare> _nodeRefs;
     // Comparison function
-    _Compare _compare;
+    Compare _compare;
 private:
     // Prevent cctor and operator=
     Node(const Node &that);
@@ -124,12 +124,12 @@ private:
  * This also creates a SwappableNodeRefStack of random height by tossing a virtual coin.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param value The value of the Node.
  * @param _cmp The comparison function.
  */
-template <typename T, typename _Compare>
-Node<T, _Compare>::Node(const T &value, _Compare _cmp) : \
+template <typename T, typename Compare>
+Node<T, Compare>::Node(const T &value, Compare _cmp) : \
     _value(value), _compare(_cmp) {
     do {
         _nodeRefs.push_back(this, _nodeRefs.height() ? 0 : 1);
@@ -140,12 +140,12 @@ Node<T, _Compare>::Node(const T &value, _Compare _cmp) : \
  * Returns true if the value is present in the skip list from this node onwards.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param value The value to look for.
  * @return true if the value is present in the skip list from this node onwards.
  */
-template <typename T, typename _Compare>
-bool Node<T, _Compare>::has(const T &value) const {
+template <typename T, typename Compare>
+bool Node<T, Compare>::has(const T &value) const {
     assert(_nodeRefs.height());
     assert(value == value); // value can not be NaN for example
     // Effectively: if (value > _value) {
@@ -167,12 +167,12 @@ bool Node<T, _Compare>::has(const T &value) const {
  * Return nullptr if not found at level 0.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param idx The index from hereon. If zero return this.
  * @return Pointer to the Node or nullptr.
  */
-template <typename T, typename _Compare>
-const Node<T, _Compare> *Node<T, _Compare>::at(size_t idx) const {
+template <typename T, typename Compare>
+const Node<T, Compare> *Node<T, Compare>::at(size_t idx) const {
     assert(_nodeRefs.height());
     if (idx == 0) {
         return this;
@@ -189,14 +189,14 @@ const Node<T, _Compare> *Node<T, _Compare>::at(size_t idx) const {
  * Computes index of the first occurrence of a value.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param value The value to find.
  * @param idx The current index, this will be updated.
  * @param level The current level to search from.
  * @return true if found, false otherwise.
  */
-template <typename T, typename _Compare>
-bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
+template <typename T, typename Compare>
+bool Node<T, Compare>::index(const T& value, size_t &idx, size_t level) const {
     assert(_nodeRefs.height());
     assert(value == value); // value can not be NaN for example
     assert(level < _nodeRefs.height());
@@ -235,11 +235,11 @@ bool Node<T, _Compare>::index(const T& value, size_t &idx, size_t level) const {
  * Return the pointer to the next node at level 0.
  * 
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @return The next node at level 0.
  */
-template <typename T, typename _Compare>
-const Node<T, _Compare> *Node<T, _Compare>::next() const {
+template <typename T, typename Compare>
+const Node<T, Compare> *Node<T, Compare>::next() const {
     assert(_nodeRefs.height());
     return _nodeRefs[0].pNode;
 }
@@ -248,12 +248,12 @@ const Node<T, _Compare> *Node<T, _Compare>::next() const {
  * Return the width at given level.
  * 
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param level The requested level.
  * @return The width. 
  */
-template <typename T, typename _Compare>
-size_t Node<T, _Compare>::width(size_t level) const {
+template <typename T, typename Compare>
+size_t Node<T, Compare>::width(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].width;
 }
@@ -262,12 +262,12 @@ size_t Node<T, _Compare>::width(size_t level) const {
  * Return the node pointer at given level, only used for HeadNode integrity checks.
  * 
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param level The requested level. 
  * @return The Node.
  */
-template <typename T, typename _Compare>
-const Node<T, _Compare> *Node<T, _Compare>::pNode(size_t level) const {
+template <typename T, typename Compare>
+const Node<T, Compare> *Node<T, Compare>::pNode(size_t level) const {
     assert(level < _nodeRefs.height());
     return _nodeRefs[level].pNode;
 }
@@ -278,12 +278,12 @@ const Node<T, _Compare> *Node<T, _Compare>::pNode(size_t level) const {
  * This ensures order stability as it mirrors remove().
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param value The value of the Node to insert.
  * @return Pointer to the new Node or nullptr on failure.
  */
-template <typename T, typename _Compare>
-Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
+template <typename T, typename Compare>
+Node<T, Compare> *Node<T, Compare>::insert(const T &value) {
     assert(_nodeRefs.height());
     assert(_nodeRefs.noNodePointerMatches(this));
     assert(! _nodeRefs.canSwap());
@@ -294,7 +294,7 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
         return nullptr;
     }
     // Recursive search for where to put the node
-    Node<T, _Compare> *pNode = nullptr;
+    Node<T, Compare> *pNode = nullptr;
     size_t level = _nodeRefs.height();
     // Effectively: if (value >= _value) {
     if (! _compare(value, _value)) {
@@ -310,12 +310,12 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
     // Effectively: if (! pNode && value >= _value) {
     if (! pNode && !_compare(value, _value)) {
         // Insert new node here
-        pNode = new Node<T, _Compare>(value, _compare);
+        pNode = new Node<T, Compare>(value, _compare);
         level = 0;
     }
     assert(pNode); // Should never get here unless a NaN has slipped through
     // Adjust references by marching up and recursing back.
-    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->_nodeRefs;
+    SwappableNodeRefStack<T, Compare> &thatRefs = pNode->_nodeRefs;
     if (! thatRefs.canSwap()) {
         // Have an existing node or new node that is all swapped.
         // All I need to do is adjust my overshooting nodes and return
@@ -378,15 +378,15 @@ Node<T, _Compare> *Node<T, _Compare>::insert(const T &value) {
  * Adjust the Node references.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param level The level of the caller's node.
  * @param pNode The Node to swap references with.
  * @return The Node with swapped references.
  */
-template <typename T, typename _Compare>
-Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Compare> *pNode) {
+template <typename T, typename Compare>
+Node<T, Compare> *Node<T, Compare>::_adjRemoveRefs(size_t level, Node<T, Compare> *pNode) {
     assert(pNode);
-    SwappableNodeRefStack<T, _Compare> &thatRefs = pNode->_nodeRefs;
+    SwappableNodeRefStack<T, Compare> &thatRefs = pNode->_nodeRefs;
     
     assert(pNode != this);
     if (level < thatRefs.swapLevel()) {
@@ -421,18 +421,18 @@ Node<T, _Compare> *Node<T, _Compare>::_adjRemoveRefs(size_t level, Node<T, _Comp
  * This ensures order stability as it mirrors insert().
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param call_level Level the caller Node is at.
  * @param value Value of the detached Node to remove.
  * @return A pointer to the Node to be free'd or nullptr on failure.
  */
-template <typename T, typename _Compare>
-Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
+template <typename T, typename Compare>
+Node<T, Compare> *Node<T, Compare>::remove(size_t call_level,
                          const T &value) {
     assert(_nodeRefs.height());
     assert(_nodeRefs.noNodePointerMatches(this));
     
-    Node<T, _Compare> *pNode = nullptr;
+    Node<T, Compare> *pNode = nullptr;
     // Effectively: if (value >= _value) {
     if (!_compare(value, _value)) {
         for (size_t level = call_level + 1; level-- > 0;) {
@@ -482,12 +482,12 @@ Node<T, _Compare> *Node<T, _Compare>::remove(size_t call_level,
  * - Node pointers must not be self-referential.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param headnode_height Height of HeadNode.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck Node<T, _Compare>::lacksIntegrity(size_t headnode_height) const {
+template <typename T, typename Compare>
+IntegrityCheck Node<T, Compare>::lacksIntegrity(size_t headnode_height) const {
     IntegrityCheck result = _nodeRefs.lacksIntegrity();
     if (result) {
         return result;
@@ -523,12 +523,12 @@ IntegrityCheck Node<T, _Compare>::lacksIntegrity(size_t headnode_height) const {
  * Checks that this Node is in the set held by the HeadNode.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param nodeSet Set of Nodes held by the HeadNode.
  * @return An IntegrityCheck enum.
  */
-template <typename T, typename _Compare>
-IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const Node<T, _Compare>*> &nodeSet) const {
+template <typename T, typename Compare>
+IntegrityCheck Node<T, Compare>::lacksIntegrityRefsInSet(const std::set<const Node<T, Compare>*> &nodeSet) const {
     size_t level = 0;
     while (level < _nodeRefs.height()) {
         if (nodeSet.count(_nodeRefs[level].pNode) == 0) {
@@ -545,11 +545,11 @@ IntegrityCheck Node<T, _Compare>::lacksIntegrityRefsInSet(const std::set<const N
  * case of, say, strings.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @return The memory estimate of this Node.
  */
-template <typename T, typename _Compare>
-size_t Node<T, _Compare>::size_of() const {
+template <typename T, typename Compare>
+size_t Node<T, Compare>::size_of() const {
     // sizeof(*this) includes the size of _nodeRefs but _nodeRefs.size_of()
     // includes sizeof(_nodeRefs) so we need to subtract to avoid double counting
     return sizeof(*this) + _nodeRefs.size_of() - sizeof(_nodeRefs) + sizeof(T);
@@ -562,12 +562,12 @@ size_t Node<T, _Compare>::size_of() const {
  * Writes out this Node address.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param os Where to write.
  * @param suffix The suffix (node number).
  */
-template <typename T, typename _Compare>
-void Node<T, _Compare>::writeNode(std::ostream &os, size_t suffix) const {
+template <typename T, typename Compare>
+void Node<T, Compare>::writeNode(std::ostream &os, size_t suffix) const {
     os << "\"node";
     os << suffix;
     os << std::hex << this << std::dec << "\"";
@@ -577,12 +577,12 @@ void Node<T, _Compare>::writeNode(std::ostream &os, size_t suffix) const {
  * Writes out a fragment of a DOT file representing this Node.
  *
  * @tparam T The type of the Skip List Node values.
- * @tparam _Compare A comparison function for type T.
+ * @tparam Compare A comparison function for type T.
  * @param os Wheere to write.
  * @param suffix The node number.
  */
-template <typename T, typename _Compare>
-void Node<T, _Compare>::dotFile(std::ostream &os, size_t suffix) const {
+template <typename T, typename Compare>
+void Node<T, Compare>::dotFile(std::ostream &os, size_t suffix) const {
     assert(_nodeRefs.height());
     writeNode(os, suffix);
     os << " [" << std::endl;
