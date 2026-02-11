@@ -71,3 +71,41 @@ def test_B():
     assert sl.size() == 2
     assert str(sl.at(0)) == 'Pan, Alan'
     assert str(sl.at(1)) == 'Pan, Peter'
+
+
+def test_C():
+    """Object with reversed order."""
+    import functools
+
+    import orderedstructs
+
+    @functools.total_ordering
+    class Person:
+        """Simple example of ordering based on last name/first name."""
+
+        def __init__(self, first_name, last_name):
+            self.first_name = first_name
+            self.last_name = last_name
+
+        def __eq__(self, other):
+            try:
+                return self.last_name == other.last_name and self.first_name == other.first_name
+            except AttributeError:
+                return NotImplemented
+
+        def __lt__(self, other):
+            try:
+                return self.last_name < other.last_name or self.first_name < other.first_name
+            except AttributeError:
+                return NotImplemented
+
+        def __str__(self):
+            return '{}, {}'.format(self.last_name, self.first_name)
+
+    sl = orderedstructs.SkipList(object, lambda x, y: y < x)
+
+    sl.insert(Person('Peter', 'Pan'))
+    sl.insert(Person('Alan', 'Pan'))
+    assert sl.size() == 2
+    assert str(sl.at(0)) == 'Pan, Peter'
+    assert str(sl.at(1)) == 'Pan, Alan'

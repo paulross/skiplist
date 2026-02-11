@@ -182,6 +182,10 @@ An example of using a SkipList of always ordered floats:
     # Declare with a type. Supported types are long/float/bytes/object.
     sl = orderedstructs.SkipList(float)
 
+    sl.insert(42.0)
+    sl.insert(21.0)
+    sl.insert(84.0)
+
     sl.has(42.0) # True
     sl.size()    # 3
     sl.at(1)     # 42.0, raises IndexError if index out of range
@@ -231,6 +235,20 @@ In this example the last name of the person takes precedence over the first name
     assert sl.size() == 2
     assert str(sl.at(0)) == 'Pan, Alan' 
     assert str(sl.at(1)) == 'Pan, Peter' 
+
+With objects the SkipList can be reverse ordered by providing a comparison function:
+
+.. code-block:: python
+
+    # As above
+
+    sl = orderedstructs.SkipList(object, lambda x, y: y < x)
+
+    sl.insert(Person('Peter', 'Pan'))
+    sl.insert(Person('Alan', 'Pan'))
+    assert sl.size() == 2
+    assert str(sl.at(0)) == 'Pan, Peter'
+    assert str(sl.at(1)) == 'Pan, Alan'
 
 ======================================
 Testing

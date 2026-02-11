@@ -2,6 +2,7 @@
 
 ## 0.4.4rc0 (TODO)
 
+* Demonstrate reverse ordering with Python objects.
 * TODO.
 
 ## 0.4.3 (2026-02-09)
