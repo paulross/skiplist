@@ -3,6 +3,7 @@
 ## 0.4.4rc0 (TODO)
 
 * Demonstrate reverse ordering with Python objects.
+* Add further performance analysis of rolling median with multiprocessing shared memory.
 * TODO.
 
 ## 0.4.3 (2026-02-09)

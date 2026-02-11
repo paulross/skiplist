@@ -499,7 +499,7 @@ def main() -> int:  # pragma: no cover
     # # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
     # results[16] = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
     # results[1024] = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
-    # results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 4096, 2), 64 * 1024, 16)
+    # results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 2048, 2), 64 * 1024, 16)
     # # dump_results(results)
 
     monitored_by_pymemtrace_process_tree()

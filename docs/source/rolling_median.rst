@@ -507,7 +507,7 @@ Performance
 -----------------------------------------
 
 Mac OS X with 4 cores and hyper-threading.
-The table has 16m entries organised with different (column, row) shapes: 16 x 1m, 1k x 128k, 64k x 4k.
+The table has 134,217,728 floats (1GB of data) and the tests are run with with different shapes.
 The rolling median window is 21.
 
 Columns: 16
@@ -560,9 +560,9 @@ Clearly there is some overhead so it is not really worth doing this for less tha
 Columns: 65536
 ^^^^^^^^^^^^^^
 
-In this test a 65,536 column array is created with up to 4096 rows.
-This is up to 268,435,456 entries at 8 bytes a float this is 2,147,483,648 bytes (2GB) in total.
-Running this on 65,536 column arrays with up to 4096 rows with processes from 1 to 16 gives the following execution times.
+In this test a 65,536 column array is created with up to 2048 rows.
+This is up to 134,217,728 entries at 8 bytes a float this is 1,073,741,824 bytes (1GB) in total.
+Running this on 65,536 column arrays with up to 2048 rows with processes from 1 to 16 gives the following execution times.
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_65536.png
@@ -579,6 +579,43 @@ Comparing the **speed** of execution compared to a single process gives:
     :alt: Rolling Median Relative Performance, 65536 Columns
 
 The overhead, by number of columns is very low.
+
+Comparison By Shape
+^^^^^^^^^^^^^^^^^^^^
+
+Here is the results of the time to compute a rolling median with a single process and different number of columns and
+different array sizes:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_single_process.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance
+
+Here is the results of the time to compute a rolling median with four processes and different number of columns and
+different array sizes:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_all_four_processes.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance
+
+Here is all the data plotted together for comparison:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_all.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance
+
+The rate is, perhaps, more revealing:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_all_rate.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance
 
 Summary
 ^^^^^^^^^^^^
