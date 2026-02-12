@@ -78,18 +78,18 @@ plot "dat/perf_rolling_median_shared_memory_cols_16.dat" using ($1 * 16 / 1e6):2
      "dat/perf_rolling_median_shared_memory_cols_65536.dat" using ($1 * 65536 / 1e6):2 t "65536 Columns, 1 process" with linespoints axes x1y1 lw 2, \
      "dat/perf_rolling_median_shared_memory_cols_65536.dat" using ($1 * 65536 / 1e6):4 t "65536 Columns, 4 processes" with linespoints  axes x1y1 lw 2
 
-# Rate plots
+# Ratio plots
 
-set key right
-set ylabel "Time per Value (ns)"
-set xrange [0.01:]
-set output "images/perf_rolling_median_shared_memory_cols_all_rate.png"   # choose the output device
+set key left
+set ylabel "Ratio 4 process / 1 processes"
 
-plot "dat/perf_rolling_median_shared_memory_cols_16.dat" using ($1 * 16 / 1e6):(1e9 * $2 / ($1 * 16)) t "16 Columns, 1 process" with linespoints axes x1y1 lw 2, \
-     "dat/perf_rolling_median_shared_memory_cols_16.dat" using ($1 * 16 / 1e6):(1e9 * $4 / ($1 * 16)) t "16 Columns, 4 processes" with linespoints  axes x1y1 lw 2, \
-     "dat/perf_rolling_median_shared_memory_cols_1024.dat" using ($1 * 1024 / 1e6):(1e9 * $2 / ($1 * 1024)) t "1024 Columns, 1 process" with linespoints axes x1y1 lw 2, \
-     "dat/perf_rolling_median_shared_memory_cols_1024.dat" using ($1 * 1024 / 1e6):(1e9 * $4 / ($1 * 1024)) t "1024 Columns, 4 processes" with linespoints  axes x1y1 lw 2, \
-     "dat/perf_rolling_median_shared_memory_cols_65536.dat" using ($1 * 65536 / 1e6):(1e9 * $2 / ($1 * 65536)) t "65536 Columns, 1 process" with linespoints axes x1y1 lw 2, \
-     "dat/perf_rolling_median_shared_memory_cols_65536.dat" using ($1 * 65536 / 1e6):(1e9 * $4 / ($1 * 65536)) t "65536 Columns, 4 processes" with linespoints  axes x1y1 lw 2
+unset logscale y
+
+#set xrange [0.01:]
+set output "images/perf_rolling_median_shared_memory_cols_all_ratio.png"   # choose the output device
+
+plot "dat/perf_rolling_median_shared_memory_cols_16.dat" using ($1 * 16 / 1e6):($2 / $4) t "16 Columns" with linespoints axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory_cols_1024.dat" using ($1 * 1024 / 1e6):($2 / $4) t "1024 Columns" with linespoints axes x1y1 lw 2, \
+     "dat/perf_rolling_median_shared_memory_cols_65536.dat" using ($1 * 65536 / 1e6):($2 / $4) t "65536 Columns" with linespoints axes x1y1 lw 2
 
 reset

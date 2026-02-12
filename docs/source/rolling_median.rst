@@ -624,6 +624,8 @@ For different table shapes using four simultaneous processes on a four CPU machi
 The second column shows the number of rows need to get a 3x performance on a four CPU machine.
 The third column ("Best") shows the maximum speedup.
 
+Here is a summary of the performance gain:
+
 .. list-table:: Performance Gain
    :widths: 20 20 20 50
    :header-rows: 1
@@ -644,6 +646,14 @@ The third column ("Best") shows the maximum speedup.
      - 128
      - 3.0x
      -
+
+The *relative* performance improvement between a single process and four processes is very consistent:
+
+.. image::
+    plots/images/perf_rolling_median_shared_memory_cols_all_ratio.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Relative Performance
 
 Memory Usage
 -----------------------------------------
