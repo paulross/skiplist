@@ -459,11 +459,42 @@ def monitored_by_pymemtrace_process_tree():
     )
 
 
-def range_power(minimum, maximum, multiplier):
-    value = minimum
-    while value <= maximum:
-        yield value
-        value *= multiplier
+# def range_power(minimum, maximum, multiplier):
+#     value = minimum
+#     while value <= maximum:
+#         yield value
+#         value *= multiplier
+
+class RangePower:
+    """Returns a range of values where minimum <= value <= maximum and value is
+    multiplied by the multiplier at each iteration.
+
+    For example::
+
+        rp = RangePower(8, 128, 4)
+        assert list(rp) == [8, 32, 128]
+    """
+    def __init__(self, minimum: int, maximum: int, multiplier: int):
+        self.minimum = minimum
+        self.maximum = maximum
+        self.multiplier = multiplier
+        self.current = minimum
+
+    def __str__(self) -> str:
+        return (
+            f'RangePower(minimum={self.minimum}, maximum={self.maximum},'
+                f' multiplier={self.multiplier}, current={self.current})'
+        )
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current > self.maximum:
+            raise StopIteration
+        else:
+            self.current *= self.multiplier
+            return self.current // self.multiplier
 
 
 def dump_results(results):
@@ -494,15 +525,15 @@ def main() -> int:  # pragma: no cover
     print(f'NUMPY_SIZE: {NUMPY_SIZE:,d}')
     print(f'multiprocessing.cpu_count(): {multiprocessing.cpu_count()}')
     # # results is {columns : {rows : {processes : time, ...}, ...}, ...}
-    # results = {}
-    # # Simple test:
-    # # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
-    # results[16] = rm_2d_mp_time_b(range_power(128, 8388608, 4), 16, 16)
-    # results[1024] = rm_2d_mp_time_b(range_power(32, 131072, 4), 1024, 16)
-    # results[64 * 1024] = rm_2d_mp_time_b(range_power(32, 2048, 2), 64 * 1024, 16)
-    # # dump_results(results)
+    results = {}
+    # Simple test:
+    # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
+    results[16] = rm_2d_mp_time_b(RangePower(128, 8388608, 4), 16, 16)
+    results[1024] = rm_2d_mp_time_b(RangePower(32, 131072, 4), 1024, 16)
+    results[64 * 1024] = rm_2d_mp_time_b(RangePower(32, 2048, 2), 64 * 1024, 16)
+    # dump_results(results)
 
-    monitored_by_pymemtrace_process_tree()
+    # monitored_by_pymemtrace_process_tree()
     return 0
 
 
