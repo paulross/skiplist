@@ -1,0 +1,224 @@
+{
+    "machine_info": {
+        "node": "Mac-mini-B.local",
+        "processor": "i386",
+        "machine": "x86_64",
+        "python_compiler": "Clang 13.0.0 (clang-1300.0.29.30)",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.10.11",
+        "python_version": "3.10.11",
+        "python_build": [
+            "v3.10.11:7d4cc5aa85",
+            "Apr  4 2023 19:05:19"
+        ],
+        "release": "22.6.0",
+        "system": "Darwin",
+        "cpu": {
+            "python_version": "3.10.11.final.0 (64 bit)",
+            "cpuinfo_version": [
+                9,
+                0,
+                0
+            ],
+            "cpuinfo_version_string": "9.0.0",
+            "arch": "X86_64",
+            "bits": 64,
+            "count": 8,
+            "arch_string_raw": "x86_64",
+            "brand_raw": "Apple M1",
+            "hz_actual_friendly": "2.4000 GHz",
+            "hz_actual": [
+                2400000000,
+                0
+            ],
+            "family": 6,
+            "flags": [
+                "acpi",
+                "aes",
+                "apic",
+                "clflush",
+                "clfsh",
+                "cmov",
+                "cx16",
+                "cx8",
+                "de",
+                "ds",
+                "dscpl",
+                "dtes64",
+                "dtse64",
+                "est",
+                "fpu",
+                "fxsr",
+                "htt",
+                "lahf_lm",
+                "mca",
+                "mce",
+                "mmx",
+                "mon",
+                "monitor",
+                "msr",
+                "mtrr",
+                "pae",
+                "pat",
+                "pbe",
+                "pclmulqdq",
+                "pdcm",
+                "pge",
+                "pni",
+                "popcnt",
+                "pse",
+                "pse36",
+                "seglim64",
+                "sep",
+                "ss",
+                "sse",
+                "sse2",
+                "sse3",
+                "sse4.1",
+                "sse4.2",
+                "sse4_1",
+                "sse4_2",
+                "ssse3",
+                "tm",
+                "tm2",
+                "tpr",
+                "tsc",
+                "vme",
+                "vmx"
+            ],
+            "vendor_id_raw": "GenuineIntel",
+            "hz_advertised_friendly": "2.5000 GHz",
+            "hz_advertised": [
+                2500000000,
+                0
+            ],
+            "l2_cache_size": 65536,
+            "l2_cache_line_size": 8192,
+            "l2_cache_associativity": 8,
+            "model": 44
+        }
+    },
+    "commit_info": {
+        "id": "3bbc0507384caca4207b9d249db6b16306d2825c",
+        "time": "2026-02-13T10:57:08+00:00",
+        "author_time": "2026-02-13T10:57:08+00:00",
+        "dirty": true,
+        "project": "skiplist",
+        "branch": "develop"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_rolling_median_sh_mem_8388608_16[4]",
+            "fullname": "tests/benchmarks/test_benchmark_SkipList_rolling_median_sh_mem.py::test_rolling_median_sh_mem_8388608_16[4]",
+            "params": {
+                "processes": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 46.74000379117206,
+                "max": 53.50859708432108,
+                "mean": 49.76822860008106,
+                "stddev": 2.488651141367051,
+                "rounds": 5,
+                "median": 49.63629483291879,
+                "iqr": 2.9593189172446728,
+                "q1": 48.16000838531181,
+                "q3": 51.119327302556485,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 46.74000379117206,
+                "hd15iqr": 53.50859708432108,
+                "ops": 0.020093140305145828,
+                "total": 248.84114300040528,
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_rolling_median_sh_mem_131072_1024[4]",
+            "fullname": "tests/benchmarks/test_benchmark_SkipList_rolling_median_sh_mem.py::test_rolling_median_sh_mem_131072_1024[4]",
+            "params": {
+                "processes": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 132.4776282501407,
+                "max": 175.20764795830473,
+                "mean": 151.1799886252731,
+                "stddev": 21.56750340975573,
+                "rounds": 5,
+                "median": 139.7612057090737,
+                "iqr": 40.39175045827869,
+                "q1": 133.93483225023374,
+                "q3": 174.32658270851243,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 132.4776282501407,
+                "hd15iqr": 175.20764795830473,
+                "ops": 0.006614632062704281,
+                "total": 755.8999431263655,
+                "iterations": 1
+            }
+        },
+        {
+            "group": null,
+            "name": "test_rolling_median_sh_mem_2048_65536[4]",
+            "fullname": "tests/benchmarks/test_benchmark_SkipList_rolling_median_sh_mem.py::test_rolling_median_sh_mem_2048_65536[4]",
+            "params": {
+                "processes": 4
+            },
+            "param": "4",
+            "extra_info": {},
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": false
+            },
+            "stats": {
+                "min": 220.56935370760038,
+                "max": 253.2003524173051,
+                "mean": 234.16584723358974,
+                "stddev": 12.554968021125273,
+                "rounds": 5,
+                "median": 234.3999775000848,
+                "iqr": 16.851957896258682,
+                "q1": 224.29256652109325,
+                "q3": 241.14452441735193,
+                "iqr_outliers": 0,
+                "stddev_outliers": 2,
+                "outliers": "2;0",
+                "ld15iqr": 220.56935370760038,
+                "hd15iqr": 253.2003524173051,
+                "ops": 0.004270477577383265,
+                "total": 1170.8292361679487,
+                "iterations": 1
+            }
+        }
+    ],
+    "datetime": "2026-02-13T11:02:23.897819",
+    "version": "4.0.0"
+}

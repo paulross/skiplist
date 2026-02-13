@@ -30,7 +30,7 @@ def test_rolling_median_sh_mem_8388608_16(benchmark, processes):
     # 134217728 values, 1073741824 bytes (1GB)
     assert rows * columns == 2048 * 65536
     read_array = np.random.random((rows, columns))
-    benchmark(_test_rolling_median_float, read_array, processes)
+    benchmark(_test_rolling_median_float, read_array, processes, rounds=5)
 
 
 @pytest.mark.veryslow
@@ -45,7 +45,7 @@ def test_rolling_median_sh_mem_131072_1024(benchmark, processes):
     # 134217728 values, 1073741824 bytes (1GB)
     assert rows * columns == 2048 * 65536
     read_array = np.random.random((rows, columns))
-    benchmark(_test_rolling_median_float, read_array, processes)
+    benchmark(_test_rolling_median_float, read_array, processes, rounds=5)
 
 
 @pytest.mark.veryslow
@@ -60,4 +60,4 @@ def test_rolling_median_sh_mem_2048_65536(benchmark, processes):
     # 134217728 values, 1073741824 bytes (1GB)
     assert rows * columns == 2048 * 65536
     read_array = np.random.random((rows, columns))
-    benchmark(_test_rolling_median_float, read_array, processes)
+    benchmark(_test_rolling_median_float, read_array, processes, rounds=5)
