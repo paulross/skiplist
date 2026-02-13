@@ -98,7 +98,7 @@ NUMPY_SIZE = 10 * 1024 ** 2 * 16
     )
 )
 def test_rm_2d_mp_time_b(min_size, max_size, multiplier, columns, max_processes):
-    range_power = RangePower(min_size, max_size, multiplier)
+    range_power = roll_med_sh_mem.RangePower(min_size, max_size, multiplier)
     rm_2d_mp_time_b(range_power, columns, max_processes)
     assert 0
 
@@ -265,9 +265,9 @@ def main() -> int:  # pragma: no cover
     # Simple test:
     # results[16] = rm_2d_mp_time_b(range_power(128, 8388608 // 256, 4), 16, 16)
     results[16] = rm_2d_mp_time_b(roll_med_sh_mem.RangePower(128, 8388608, 4), 16, 16)
-    results[1024] = rm_2d_mp_time_b(roll_med_sh_mem.RangePower(32, 131072, 4), 1024, 16)
-    results[64 * 1024] = rm_2d_mp_time_b(roll_med_sh_mem.RangePower(32, 2048, 2), 64 * 1024, 16)
-    # dump_results(results)
+    # results[1024] = rm_2d_mp_time_b(roll_med_sh_mem.RangePower(32, 131072, 4), 1024, 16)
+    # results[64 * 1024] = rm_2d_mp_time_b(roll_med_sh_mem.RangePower(32, 2048, 2), 64 * 1024, 16)
+    dump_results(results)
 
     # monitored_by_pymemtrace_process_tree()
     return 0

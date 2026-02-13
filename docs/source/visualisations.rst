@@ -135,6 +135,8 @@ Produces this image, note how the shape of the skip list nodes changes with repe
 
     [Continued on the next page]
 
+    \pagebreak
+
 .. image:: visualisations/doc_insert_remove_repeat.png
     :width: 500
 

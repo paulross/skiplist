@@ -225,6 +225,12 @@ As expected C++ is around 2x faster.
 
 But Python has another trick up its sleeve that can make it outperform C++ decisively; multiprocessing with shared memory.
 
+.. raw:: latex
+
+    [Continued on the next page]
+
+    \pagebreak
+
 .. _rolling-median-mp-shared-memory-label:
 
 ----------------------------------------------------------------
@@ -272,7 +278,22 @@ Pictorially:
 Code
 -----------------------------------------
 
-These are the essential imports:
+The exemplar code is in ``tests/benchmarks/roll_med_sh_mem.py``
+
+.. note::
+
+    The reason for the odd code location is the way that the ``orderedstructs`` package is,
+    for historical reasons, constructed entirely in C.
+    See ``PyInit_orderedstructs()`` in ``src/cpy/cOrderedStructs.cpp``.
+
+    This means that it is not possible to combine pure Python and C code in the ``orderedstructs`` package.
+    Specifically ``orderedstructs`` does not have a ``__path__`` attribute that allows it to import pure Python modules
+    from that path.
+
+    In future this might change to be more like, say, ``pymemtrace`` that is able to mix C and pure Python code
+    in the same package.
+
+These are the essential imports and a utility function:
 
 .. code-block:: python
 
@@ -285,43 +306,69 @@ These are the essential imports:
 
     import orderedstructs
 
-Firstly, as a reminder here is our rolling median function that will be used by the child processes, it works on a
-specific column of a numpy array:
+    def np_data_pointer(a: np.ndarray) -> int:
+        """The address of the actual data. 'data pointer' in np.info()."""
+        return a.__array_interface__["data"][0]
+
+Firstly here is the rolling median function that will be used by the child processes, it works on a
+specific column of a numpy array.
+Error handling and logging are omitted for clarity:
 
 .. code-block:: python
 
-    def rolling_median_of_column(read_array: np.ndarray, window_length: int,
-                                 column_index: int,
-                                 write_array: np.ndarray) -> int:
-        """Computes a rolling median of given column and writes out the results to
-        the write array.
-        Called by a child process."""
-        assert read_array.ndim == 2
-        assert write_array.ndim == 2
-        assert read_array.shape == write_array.shape
+    def rolling_median_of_column(read_array: np.ndarray,
+                                 window_length: int, column_index: int,
+                                 write_array: np.ndarray) -> None:
+        """Computes a rolling median of given column and writes out the
+        results to the write array.
+
+        This is called by a child process.
+
+        This fills the initial column values with NaN where there is
+        not enough data for a rolling median of window_length.
+        """
         skip_list = orderedstructs.SkipList(float)
-        write_count = 0
         for i in range(len(read_array)):
             value = read_array[i, column_index]
             skip_list.insert(value)
             if i >= window_length:
                 median = skip_list.at(window_length // 2)
                 skip_list.remove(read_array[i - window_length, column_index])
-                write_count += 1
             else:
                 median = np.nan
             write_array[i, column_index] = median
-        return write_count
 
-Then let's write some code that wraps the low level ``shared_memory.SharedMemory`` class that can be
+.. raw:: latex
+
+    [Continued on the next page]
+
+    \pagebreak
+
+Now some code that wraps the low level ``multiprocessing.shared_memory.SharedMemory`` class that can be
 used by the parent process.
-This is a ``NamedTuple`` that records essential information about the array and includes the ``SharedMemory`` object
+This is a ``dataclass`` that records essential information about the array and includes the ``SharedMemory`` object
 itself.
-We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just a named tuple:
+We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just a dataclass
+(some unimportant functions omitted here):
 
 .. code-block:: python
 
-    class SharedMemoryArraySpecification(typing.NamedTuple):
+    from multiprocessing import shared_memory
+
+    @dataclasses.dataclass
+    class SharedMemoryArraySpecification:
+        """A PoD class that contains the data needed for
+        managing a shared_memory.SharedMemory.
+
+        Typical usage, given ``arr: np.ndarray``::
+
+            from multiprocessing import shared_memory
+
+            shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
+            array_spec = SharedMemoryArraySpecification(
+                arr.shape, arr.dtype, arr.nbytes, shm,
+            )
+        """
         shape: typing.Tuple[int, ...]
         dtype: np.dtype
         nbytes: int
@@ -331,170 +378,174 @@ We will call it an ``SharedMemoryArraySpecification``, it is pretty simple, just
         def name(self) -> str:
             return self.shm.name
 
-        def __str__(self):
-            return (
-                f'<SharedMemoryArraySpecification shape {self.shape}'
-                f' dtype {self.dtype} name "{self.name}"'
-                f' nbytes {self.nbytes} buffer id 0x{id(self.shm)}>'
-            )
-
         def close(self) -> None:
+            """Close the file descriptor/handle to the shared memory
+            from this instance."""
             self.shm.close()
 
         def close_and_unlink(self) -> None:
+            """Delete the underlying shared memory block.
+            This should be called only once per shared memory block
+            regardless of the number of handles to it, even in other
+            processes."""
             self.close()
             self.shm.unlink()
 
 
-Now create a function that takes a numpy array, copies it into the input ``shared_memory.SharedMemory``.
-This returns an ``SharedMemoryArraySpecification``.
-We write this as a context manager:
+.. raw:: latex
+
+    [Continued on the next page]
+
+    \pagebreak
+
+Now a function that takes a numpy array and uses ``shared_memory.SharedMemory`` to return
+a ``SharedMemoryArraySpecification``.
+Optionally this copies the numpy array into the shared memory for the read array.
+We write this as a context manager.
+Error handling and logging are omitted for clarity:
 
 .. code-block:: python
 
     @contextlib.contextmanager
-    def create_read_shared_memory_array_spec_close_unlink(
-            arr: np.ndarray
-        ) -> SharedMemoryArraySpecification:
-        """Context manager that creates a Shared Memory instance and copies the
-        numpy array into it.
+    def create_shared_memory_array_spec_close_unlink(
+            arr: np.ndarray,
+            copy_array: bool,
+    ) -> SharedMemoryArraySpecification:
+        """Context manager that creates a Shared Memory instance and,
+        optionally, copies the numpy array into it.
         The Shared Memory instance is closed and unlinked on exit."""
         shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
         array_spec = SharedMemoryArraySpecification(
             arr.shape, arr.dtype, arr.nbytes, shm
         )
-        logger.info('Created shared memory %s ', array_spec)
         try:
-            # Copy the numpy array into shared memory.
-            array_view = np.ndarray(
-                array_spec.shape, dtype=array_spec.dtype, buffer=array_spec.shm.buf
-            )
-            array_view[:] = arr[:]
+            if copy_array:
+                # Copy the numpy array into shared memory.
+                array_view = np.ndarray(
+                    array_spec.shape,
+                    dtype=array_spec.dtype, buffer=array_spec.shm.buf
+                )
+                array_view[:] = arr[:]
             yield array_spec
         finally:
             array_spec.close_and_unlink()
 
-And another context manager that creates the output ``shared_memory.SharedMemory``:
-
-.. code-block:: python
-
-    @contextlib.contextmanager
-    def create_write_shared_memory_array_spec_close_unlink(
-            arr: np.ndarray
-        ) -> SharedMemoryArraySpecification:
-        """Context manager that creates a Shared Memory instance for writing
-        to a numpy array.
-        The numpy array can be recovered with copy_shared_memory_into_new_numpy_array().
-        The Shared Memory instance is closed and unlinked on exit."""
-        shm = shared_memory.SharedMemory(create=True, size=arr.nbytes)
-        array_spec = SharedMemoryArraySpecification(
-            arr.shape, arr.dtype, arr.nbytes, shm
-        )
-        logger.info('Created shared memory %s ', array_spec)
-        try:
-            yield array_spec
-        finally:
-            array_spec.close_and_unlink()
-
-Now create a context manager that will wrap a numpy array around a ``SharedMemoryArraySpecification``
-On exit this automatically releases the reference to the shared memory from the child process.
+Next is a context manager that will wrap a numpy array around a ``SharedMemoryArraySpecification``
+On exit this automatically releases the reference to the shared memory from the child process
+(but does not unlink that memory):
 
 .. code-block:: python
 
     @contextlib.contextmanager
     def recover_array_from_shared_memory_and_close(
-            array_spec: SharedMemoryArraySpecification
-        ) -> np.ndarray:
+            array_spec: SharedMemoryArraySpecification,
+    ) -> np.ndarray:
+        """A context manager as a wrapper around a SharedMemoryArraySpecification.
+        This yields a view on the numpy input or output array and ensures that the
+        shared memory is closed on __exit__."""
         array_shm = shared_memory.SharedMemory(name=array_spec.name)
-        array_view = np.ndarray(array_spec.shape, array_spec.dtype, buffer=array_shm.buf)
+        array_view = np.ndarray(
+            array_spec.shape, array_spec.dtype, buffer=array_shm.buf
+        )
         try:
             yield array_view
         finally:
             array_shm.close()
 
-
-And use it in the child process, once for reading and once for writing:
+And use it in the child process, once for reading and once for writing.
+Error handling and logging are omitted for clarity:
 
 .. code-block:: python
 
     def compute_rolling_median_2d_from_index(
-            read_array_spec: SharedMemoryArraySpecification,
+            read_spec: SharedMemoryArraySpecification,
             window_length: int, column_index: int,
-            write_array_spec: SharedMemoryArraySpecification) -> int:
-        """Computes a rolling median of the 2D read array and window length
-        and writes it to the 2D write array.
-        This is invoked by a child process."""
-        with recover_array_from_shared_memory_and_close(read_array_spec) as read_array:
-            with recover_array_from_shared_memory_and_close(write_array_spec) \
-                    as write_array:
+            write_spec: SharedMemoryArraySpecification,
+    ) -> int:
+        """Computes a rolling median of the 2D read array and
+        window length and writes it to the 2D write array.
+
+        This function is passed to multiprocessing to be invoked
+        by the child process.
+        """
+        with recover_array_from_shared_memory_and_close(read_spec) as read_arr:
+            with recover_array_from_shared_memory_and_close(write_spec) as write_arr:
                 write_count = rolling_median_of_column(
-                    read_array, window_length, column_index, write_array
+                    read_arr, window_length, column_index, write_arr
                 )
-                return write_count
+        return write_count
 
 Finally a function to copy the output shared memory to a new numpy array:
 
 .. code-block:: python
 
     def copy_shared_memory_into_new_numpy_array(
-            write_array_spec: SharedMemoryArraySpecification
-        ) -> np.ndarray:
-        """With the output SharedMemoryArraySpecification this creates a new
-        numpy array and copies the shared memory into it."""
+            write_array_spec: SharedMemoryArraySpecification,
+    ) -> np.ndarray:
+        """With the output SharedMemoryArraySpecification
+        this creates a new numpy array and copies the shared memory into it."""
         temp_write = np.ndarray(
             write_array_spec.shape,
             dtype=write_array_spec.dtype,
             buffer=write_array_spec.shm.buf
         )
         write_array = np.empty(
-            write_array_spec.shape, dtype=write_array_spec.dtype
+            write_array_spec.shape,
+            dtype=write_array_spec.dtype,
         )
         write_array[:] = temp_write[:]
         return write_array
 
-Finally here is the code for the parent process that puts this all together:
+.. raw:: latex
+
+    [Continued on the next page]
+
+    \pagebreak
+
+Finally here is the code for the parent process that puts this all together.
+Error handling and logging are omitted for clarity:
 
 .. code-block:: python
 
     def compute_rolling_median_2d_mp(
-            read_array: np.ndarray, window_length: int, num_processes: int
-        ) -> np.ndarray:
-        """Compute a rolling median of a numpy 2D array using multiprocessing
-        and shared memory.
-        This is run as the parent process."""
-        if read_array.ndim != 2:
-            raise ValueError(f'Array  must be 2D not {read_array.shape}')
+            read_array: np.ndarray,
+            window_length: int, num_processes: int,
+    ) -> np.ndarray:
+        """Compute a rolling median of a numpy 2D array using
+        multiprocessing and shared memory.
+        This is the top level call and is run within the parent process.
+
+        This returns a np.ndarray of the same shape as the input with the
+        rolling medians.
+        Rows of this up to the window_length will be NaN.
+        """
         # Limit number of processes if the number of columns is small.
         if read_array.shape[1] < num_processes:
             num_processes = read_array.shape[1]
-        # Create the read and write shared memory context managers
-        with create_read_shared_memory_array_spec_close_unlink(read_array) \
-                as read_array_spec:
-            with create_write_shared_memory_array_spec_close_unlink(read_array) \
-                    as write_array_spec:
-                # Set up the multiprocessing pool.
-                mp_pool = multiprocessing.Pool(processes=num_processes)
+        with create_shared_memory_array_spec_close_unlink(
+                read_array, copy_array=True,
+        ) as read_array_spec:
+            with create_shared_memory_array_spec_close_unlink(
+                    read_array, copy_array=False,
+            ) as write_array_spec:
+                # Create the tasks.
                 tasks = []
                 for column_index in range(read_array.shape[1]):
                     tasks.append(
-                        (
-                            read_array_spec,
-                            window_length,
-                            column_index,
-                            write_array_spec,
-                        )
+                        (read_array_spec, window_length, column_index, write_array_spec)
                     )
-                # Run compute_rolling_median_2d_from_index() on the pool
+                # Create the pool and apply the tasks.
+                mp_pool = multiprocessing.Pool(processes=num_processes)
                 pool_apply = [
-                    mp_pool.apply_async(compute_rolling_median_2d_from_index, t) \
-                        for t in tasks
+                    mp_pool.apply_async(
+                        compute_rolling_median_2d_from_index, t
+                    ) for t in tasks
                 ]
-                results = [r.get() for r in pool_apply]
-                # Extract the result as a numpy array.
+                _write_counts = [r.get() for r in pool_apply]
                 write_array = copy_shared_memory_into_new_numpy_array(write_array_spec)
         return write_array
 
-This is function that we are going to time so it includes:
+This is the function that we are going to time so it includes:
 
 - Copying the numpy array to shared memory.
 - Creating the output shared memory.
@@ -531,7 +582,7 @@ Comparing the **speed** of execution compared to a single process gives:
     :align: center
     :alt: Rolling Median Relative Performance, 16 Columns
 
-Clearly there is some overhead so it is not really worth doing this for less that 10,000 rows.
+Clearly there is some overhead so it is not really worth doing this for less that 100,000 rows.
 The number of processes equal to the number of CPUs is optimum, twice that *might* give a *small* advantage.
 
 Columns: 1024
@@ -584,7 +635,7 @@ Comparison By Shape
 ^^^^^^^^^^^^^^^^^^^^
 
 Here is the results of the time to compute a rolling median with a single process and different number of columns and
-different array sizes:
+different array shapes by array size (number of rows):
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_single_process.png
@@ -593,7 +644,7 @@ different array sizes:
     :alt: Rolling Median Relative Performance
 
 Here is the results of the time to compute a rolling median with four processes and different number of columns and
-different array sizes:
+different array shapes by array size (number of rows):
 
 .. image::
     plots/images/perf_rolling_median_shared_memory_cols_all_four_processes.png
