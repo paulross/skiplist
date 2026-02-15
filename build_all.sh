@@ -94,15 +94,13 @@ create_and_test_bdist_wheel() {
 #    MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py develop
     python setup.py develop
     echo "---> Running tests:"
-#    # Fail fast with -x
-#    echo "---$ pytest tests -x"
-#    pytest tests -x
+    # Fail fast with -x
+    echo "---$ pytest tests -x"
+    pytest tests -x
     # Run all tests (slow).
     echo "---$ pytest tests --runslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram"
     pytest tests --runslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram
-#    # --runveryslow takes about 6 hours per Python version.
-#    echo "---$ pytest tests --longrunning --runveryslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram"
-#    pytest tests --runslow --longrunning --benchmark-sort=name --benchmark-autosave --benchmark-histogram
+    # NOTE: tests/benchmarks/test_benchmark_SkipList_rolling_median_sh_mem.py is always skipped as it is very slow.
     echo "---> Running setup for bdist_wheel:"
     python setup.py bdist_wheel
   done
