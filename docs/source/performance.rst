@@ -71,7 +71,7 @@ The candlesticks are calculated thus:
 - The lowest point is the minimum value of several repeats (typically 10).
   This is the mose relevant time as it represents the time free of CPU contention.
 - The lowest box value is the mean value *minus* the standard deviation of several repeats (typically 10).
-- The lowest box value is the mean value *plus* the standard deviation of several repeats (typically 10).
+- The highest box value is the mean value *plus* the standard deviation of several repeats (typically 10).
 - The highest point is the maximum value of several repeats (typically 10).
 
 The test functions are in ``src/cpp/test/test_performance.cpp``:
@@ -210,7 +210,7 @@ In summary:
      - 160
      - 15
 
-Here is the performance of all three operations combined:
+Here is the performance of all three operations shown together:
 
 .. image::
     plots/images/perf_test_double_at_has_index.png

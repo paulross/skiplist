@@ -569,7 +569,9 @@ The test code is in ``tests/benchmarks/test_benchmark_SkipList_rolling_median_sh
     plots/images/benchmarks/perf_rolling_median_shared_memory_benchmark_time.png
     :width: 500
     :align: center
-    :alt: Rolling Median Performance, 16 Columns
+    :alt: Rolling Median Time with Shared Memory
+
+For reference 100 seconds is 745 nanoseconds per operation.
 
 Here is comparison of different shapes for different number of processes compared with a single process.
 
@@ -577,11 +579,11 @@ Here is comparison of different shapes for different number of processes compare
     plots/images/benchmarks/perf_rolling_median_shared_memory_benchmark_rate.png
     :width: 500
     :align: center
-    :alt: Rolling Median Performance, 16 Columns
+    :alt: Rolling Median with Shared Memory Relative Performance by Number of Processes
 
 That is for the full 1GB array, but how much data is needed for shared memory to be an effective technique?
 
-These results from from the code in ``tests/unit/_test_rolling_median_shared_memory.py``.
+The following results are from the code in ``tests/unit/_test_rolling_median_shared_memory.py``.
 
 Columns: 16
 ^^^^^^^^^^^^
@@ -730,6 +732,30 @@ The *relative* performance improvement between a single process and four process
 
 So, in summary, setting up shared memory really comes into its own with data sets of 1m+.
 It is not advised for less than 100,000 data points.
+
+Here is a typical comparison between C++ and Python working on large data sets on a four CPU machine:
+
+.. list-table:: Python and C++
+   :widths: 50 20 50
+   :header-rows: 1
+
+   * - Environment
+     - Time/op (ns)
+     - Notes
+   * - C++, single process
+     - 500
+     -
+   * - Python, single process
+     - 900
+     -
+   * - Python, shared memory, processes=1
+     - 1000
+     -
+   * - Python, shared memory, processes=4
+     - 350
+     -
+
+So Python can beat C++!
 
 Memory Usage
 -----------------------------------------
@@ -964,6 +990,12 @@ Values are in Mb.
     If the array is changed to *16m* rows, 2 columns (260Mb) the residual memory is 35Mb, typical for a minimal
     Python process.
 
+
+.. raw:: latex
+
+    [Continued on the next page]
+
+    \pagebreak
 
 -----------------------------------------
 Handling NaNs
