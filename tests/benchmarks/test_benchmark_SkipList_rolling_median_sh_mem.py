@@ -18,7 +18,7 @@ def _test_rolling_median_float(read_array: np.array, processes: int) -> np.array
     return write_array
 
 
-@pytest.mark.veryslow
+@pytest.mark.skip(reason="Very long running tests.")
 @pytest.mark.parametrize(
     'processes',
     ( 1, 2, 4, 8, 16,)
@@ -33,7 +33,7 @@ def test_rolling_median_sh_mem_8388608_16(benchmark, processes):
     benchmark(_test_rolling_median_float, read_array, processes)
 
 
-@pytest.mark.veryslow
+@pytest.mark.skip(reason="Very long running tests.")
 @pytest.mark.parametrize(
     'processes',
     ( 1, 2, 4, 8, 16,)
@@ -48,7 +48,7 @@ def test_rolling_median_sh_mem_131072_1024(benchmark, processes):
     benchmark(_test_rolling_median_float, read_array, processes)
 
 
-@pytest.mark.veryslow
+@pytest.mark.skip(reason="Very long running tests.")
 @pytest.mark.parametrize(
     'processes',
     ( 1, 2, 4, 8, 16,)

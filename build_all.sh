@@ -13,8 +13,8 @@ set -o pipefail # don't hide errors within pipes
 
 # Takes up to 20 minutes per Python version.
 # See: https://devguide.python.org/versions/
-#PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14')
-PYTHON_VERSIONS=('3.14')
+PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14')
+#PYTHON_VERSIONS=('3.14')
 # Used for venvs
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
 PROJECT_NAME="SkipList"
@@ -97,12 +97,12 @@ create_and_test_bdist_wheel() {
 #    # Fail fast with -x
 #    echo "---$ pytest tests -x"
 #    pytest tests -x
-#    # Run all tests (slow).
-#    echo "---$ pytest tests --runslow--benchmark-sort=name --benchmark-autosave --benchmark-histogram"
-#    pytest tests --runslow--benchmark-sort=name --benchmark-autosave --benchmark-histogram
-    # --runveryslow takes about 6 hours per Python version.
-    echo "---$ pytest tests --runslow --runveryslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram"
-    pytest tests --runslow --runveryslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram
+    # Run all tests (slow).
+    echo "---$ pytest tests --runslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram"
+    pytest tests --runslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram
+#    # --runveryslow takes about 6 hours per Python version.
+#    echo "---$ pytest tests --longrunning --runveryslow --benchmark-sort=name --benchmark-autosave --benchmark-histogram"
+#    pytest tests --runslow --longrunning --benchmark-sort=name --benchmark-autosave --benchmark-histogram
     echo "---> Running setup for bdist_wheel:"
     python setup.py bdist_wheel
   done
@@ -168,10 +168,10 @@ show_results_of_dist() {
 
 echo "build_all.sh PID:"
 echo $$
-#echo "===> Clean and build C++ code"
-#build_cpp
-#echo "===> Running C++ tests"
-#run_cpp_tests
+echo "===> Clean and build C++ code"
+build_cpp
+echo "===> Running C++ tests"
+run_cpp_tests
 echo "===> Removing build/ and dist/"
 rm -rf -- "build" "dist"
 echo "===> Removing virtual environments"

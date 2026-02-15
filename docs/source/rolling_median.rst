@@ -557,9 +557,31 @@ This is the function that we are going to time so it includes:
 Performance
 -----------------------------------------
 
-Mac OS X with 4 cores and hyper-threading.
 The table has 134,217,728 floats (1GB of data) and the tests are run with with different shapes.
 The rolling median window is 21.
+The platform was Mac OS X with 4 cores and hyper-threading.
+
+Here is the total time to create the rolling median with this amount of data of different shapes for different number of processes.
+
+The test code is in ``tests/benchmarks/test_benchmark_SkipList_rolling_median_sh_mem.py`` and is normally skipped as it can take up to six hours per Python version.
+
+.. image::
+    plots/images/benchmarks/perf_rolling_median_shared_memory_benchmark_time.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 16 Columns
+
+Here is comparison of different shapes for different number of processes compared with a single process.
+
+.. image::
+    plots/images/benchmarks/perf_rolling_median_shared_memory_benchmark_rate.png
+    :width: 500
+    :align: center
+    :alt: Rolling Median Performance, 16 Columns
+
+That is for the full 1GB array, but how much data is needed for shared memory to be an effective technique?
+
+These results from from the code in ``tests/unit/_test_rolling_median_shared_memory.py``.
 
 Columns: 16
 ^^^^^^^^^^^^
@@ -705,6 +727,9 @@ The *relative* performance improvement between a single process and four process
     :width: 500
     :align: center
     :alt: Rolling Median Relative Performance
+
+So, in summary, setting up shared memory really comes into its own with data sets of 1m+.
+It is not advised for less than 100,000 data points.
 
 Memory Usage
 -----------------------------------------
