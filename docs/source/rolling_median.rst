@@ -7,6 +7,10 @@
 .. toctree::
     :maxdepth: 2
 
+.. index::
+    single: Rolling Median
+    single: Rolling Percentile
+
 .. _skiplist-rolling-median-label:
 
 ===============================================
@@ -16,6 +20,12 @@ Computing a Rolling Median
 This describes how to code up a rolling median using a SkipList in both C++ and Python.
 A rolling median operation means, for a SkipList, an ``insert(new_value)`` then ``at(middle)`` then ``remove(old_value)``.
 The number of operations to calculate a rolling median is the data length minus the window length.
+
+The same approach can be used for a rolling percentile.
+
+
+.. index::
+    pair: Rolling Median; C++
 
 -----------------------------------------
 Rolling Median in C++
@@ -116,6 +126,9 @@ This is useful for, say, strings that can not be averaged.
 
 .. _rolling_median_cpp_performance-label:
 
+.. index::
+    pair: Rolling Median; C++ Performance
+
 C++ Performance
 -----------------------------------------
 
@@ -134,6 +147,8 @@ A window size of 1000 and 1m values (the size of the SkipList) takes around 750 
 
 The test function is ``perf_roll_med_by_win_size()`` in ``src/cpp/test/test_performance.cpp``.
 
+.. index::
+    pair: Rolling Median; Python
 
 -----------------------------------------
 Rolling Median in Python
@@ -190,6 +205,8 @@ And the result will be:
 
 Of course this Python code could be made much faster by using a Python C Extension.
 
+.. index::
+    pair: Rolling Median; Python Performance
 
 .. _rolling_median_python_performance-label:
 
@@ -230,6 +247,9 @@ But Python has another trick up its sleeve that can make it outperform C++ decis
     [Continued on the next page]
 
     \pagebreak
+
+.. index::
+    pair: Rolling Median; Python with Shared Memory
 
 .. _rolling-median-mp-shared-memory-label:
 
@@ -553,6 +573,8 @@ This is the function that we are going to time so it includes:
 - Copying the output shared memory to a new numpy array.
 - Disposing of any temporaries.
 
+.. index::
+    pair: Rolling Median; Python with Shared Memory Performance
 
 Performance
 -----------------------------------------
@@ -996,6 +1018,9 @@ Values are in Mb.
     [Continued on the next page]
 
     \pagebreak
+
+.. index::
+    pair: Rolling Median; Python, handling NaNs
 
 -----------------------------------------
 Handling NaNs
