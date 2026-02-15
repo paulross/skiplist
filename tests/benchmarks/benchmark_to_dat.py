@@ -137,6 +137,25 @@ class Benchmarks:
     benchmarks: typing.List[Benchmark]
 
 
+def benchmark_relative(bm: Benchmark, datum: Benchmark) -> Benchmark:
+    """Return a Benchmark relative to another one."""
+    ret = Benchmark(
+        bm.name,
+        bm.scale,
+        bm.min / datum.min,
+        bm.max / datum.max,
+        bm.mean / datum.mean,
+        bm.stddev / datum.stddev,
+    )
+    return ret
+
+
+def benchmarks_relative(bms: Benchmarks) -> Benchmarks:
+    """Return a set of Benchmarks relative to the first one."""
+    rel_bms = [benchmark_relative(bm, bms.benchmarks[0]) for bm in bms.benchmarks]
+    return Benchmarks(bms.environment, rel_bms)
+
+
 def benchmarks_from_json(j: typing.Dict[str, typing.Any]) -> Benchmarks:
     ret = Benchmarks(environment_from_json(j), [])
     for benchmark_dict in j['benchmarks']:
