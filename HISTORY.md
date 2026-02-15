@@ -4,7 +4,6 @@
 
 * Demonstrate reverse ordering with Python objects.
 * Add further performance analysis of rolling median with multiprocessing shared memory.
-  This introduces the `pytest --runveryslow` option.
 * Identify an issue with mixing pure Python code and C code in the `orderedstructs` package.
   Fixing this is known but would mean an API change.
 * TODO. 
