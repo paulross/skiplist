@@ -1,19 +1,19 @@
 # $1      $2           $3           $4           $5          $6
 # Scale   Min          Mean         StdDev       Max         Name
-1         0.158663416  0.163932633  0.004067366  0.169921750 test_rolling_median_bytes_by_window_length
-2         0.173655833  0.175420233  0.003278722  0.181269750 test_rolling_median_bytes_by_window_length
-4         0.184001125  0.188298950  0.004465352  0.194503667 test_rolling_median_bytes_by_window_length
-8         0.191174000  0.195272967  0.004539876  0.201915834 test_rolling_median_bytes_by_window_length
-16        0.195604291  0.200604733  0.003422340  0.204066208 test_rolling_median_bytes_by_window_length
-32        0.200765958  0.207428325  0.005114099  0.213809166 test_rolling_median_bytes_by_window_length
-64        0.211757291  0.217833566  0.006131527  0.225758208 test_rolling_median_bytes_by_window_length
-128       0.216612500  0.222716808  0.006084391  0.232278417 test_rolling_median_bytes_by_window_length
-256       0.223181500  0.228107792  0.003001059  0.230304208 test_rolling_median_bytes_by_window_length
-512       0.234513500  0.240288500  0.004566683  0.245516166 test_rolling_median_bytes_by_window_length
-1024      0.240355708  0.242915633  0.001883800  0.245369625 test_rolling_median_bytes_by_window_length
-2048      0.252237250  0.255783375  0.004066996  0.262771791 test_rolling_median_bytes_by_window_length
-4096      0.270480541  0.275592492  0.003940057  0.281171666 test_rolling_median_bytes_by_window_length
-8192      0.277037333  0.285396559  0.010817499  0.301345875 test_rolling_median_bytes_by_window_length
-16384     0.290727500  0.301885358  0.006937548  0.309588167 test_rolling_median_bytes_by_window_length
-32768     0.292882958  0.306211508  0.009538597  0.318494417 test_rolling_median_bytes_by_window_length
-65536     0.260546375  0.275409600  0.009603323  0.286363333 test_rolling_median_bytes_by_window_length
+1         0.165198041  0.167712225  0.002861453  0.171712250 test_rolling_median_bytes_by_window_length
+2         0.180479584  0.184084817  0.002867362  0.187970083 test_rolling_median_bytes_by_window_length
+4         0.187190416  0.191038692  0.003696008  0.195893125 test_rolling_median_bytes_by_window_length
+8         0.196729834  0.200229667  0.003124073  0.203785167 test_rolling_median_bytes_by_window_length
+16        0.203123542  0.208187075  0.004701608  0.214047459 test_rolling_median_bytes_by_window_length
+32        0.210570209  0.212824359  0.002289164  0.216597209 test_rolling_median_bytes_by_window_length
+64        0.220255667  0.221189967  0.001041337  0.222910666 test_rolling_median_bytes_by_window_length
+128       0.223723250  0.225208517  0.000841465  0.225782584 test_rolling_median_bytes_by_window_length
+256       0.235074250  0.239495541  0.004051629  0.244212166 test_rolling_median_bytes_by_window_length
+512       0.245842625  0.247722016  0.001743337  0.250507208 test_rolling_median_bytes_by_window_length
+1024      0.261146167  0.262896375  0.001091012  0.264124458 test_rolling_median_bytes_by_window_length
+2048      0.272416375  0.278162717  0.009772224  0.295271083 test_rolling_median_bytes_by_window_length
+4096      0.286941041  0.294755733  0.006607287  0.301728209 test_rolling_median_bytes_by_window_length
+8192      0.296739000  0.301178300  0.003778121  0.305714458 test_rolling_median_bytes_by_window_length
+16384     0.308048791  0.318403975  0.009313032  0.330490833 test_rolling_median_bytes_by_window_length
+32768     0.310830917  0.323089025  0.016716413  0.351450250 test_rolling_median_bytes_by_window_length
+65536     0.269483625  0.282367916  0.014076614  0.304858000 test_rolling_median_bytes_by_window_length

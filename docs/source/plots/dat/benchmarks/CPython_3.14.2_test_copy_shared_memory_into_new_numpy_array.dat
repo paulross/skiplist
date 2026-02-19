@@ -1,0 +1,12 @@
+# $1      $2           $3           $4           $5          $6
+# Scale   Min          Mean         StdDev       Max         Name
+1048576   0.000292083  0.000298758  0.000005928  0.000320209 test_copy_shared_memory_into_new_numpy_array
+2097152   0.000787708  0.000805307  0.000018616  0.000876667 test_copy_shared_memory_into_new_numpy_array
+4194304   0.001712417  0.001752612  0.000017947  0.001820625 test_copy_shared_memory_into_new_numpy_array
+8388608   0.003446416  0.003554697  0.000217365  0.004867125 test_copy_shared_memory_into_new_numpy_array
+16777216  0.006870000  0.007013658  0.000210195  0.007755042 test_copy_shared_memory_into_new_numpy_array
+33554432  0.070246292  0.071352090  0.002129807  0.078328833 test_copy_shared_memory_into_new_numpy_array
+67108864  0.144326167  0.146583059  0.004363284  0.156363209 test_copy_shared_memory_into_new_numpy_array
+134217728  0.282537625  0.289974750  0.013731930  0.314364708 test_copy_shared_memory_into_new_numpy_array
+268435456  0.577361000  0.590857400  0.014050436  0.614742291 test_copy_shared_memory_into_new_numpy_array
+536870912  2.749270583  3.037002375  0.263446285  3.362536417 test_copy_shared_memory_into_new_numpy_array
