@@ -5,6 +5,7 @@ import dataclasses
 import glob
 import json
 import logging
+import math
 import os.path
 import re
 import sys
@@ -113,7 +114,15 @@ RE_NAME_AND_SCALE = re.compile(r'(\S+)\[(.+)]')
 def split_name_and_scale(name: str) -> typing.Tuple[str, int]:
     m = RE_NAME_AND_SCALE.match(name)
     if m:
-        return m.group(1), int(m.group(2))
+        try:
+            return m.group(1), int(m.group(2))
+        except ValueError:  # invalid literal for int() with base 10: '1048576-16'
+            try:
+                ints = [int(v) for v in m.group(2).split('-')]
+                product = math.prod(ints)
+                return m.group(1), product
+            except ValueError:
+                pass
     raise ValueError(f'Can not parse name "{name}"')
 
 

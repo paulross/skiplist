@@ -1,5 +1,9 @@
 # History
 
+## 0.4.5rc0 (TODO)
+
+* Performance of low level shared memory operations.
+
 ## 0.4.4 (2026-02-15)
 
 * Demonstrate reverse ordering with Python objects.

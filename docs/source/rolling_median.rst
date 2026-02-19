@@ -579,6 +579,34 @@ This is the function that we are going to time so it includes:
 Performance
 -----------------------------------------
 
+Low Level Shared Memory Performance
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+First some low level performance benchmarks for ``multiprocessing.shared_memory``.
+Here is the cost of creating an ``SharedMemory`` object with (for reading) and without (for writing) copying from a numpy array.
+
+.. image::
+    plots/images/benchmarks/CPython_3.14.2_perf_shared_memory_initialisation.png
+    :width: 500
+    :align: center
+    :alt: Shared Memory Initialisation
+
+The non-copy cost is negligible.
+The copy cost is around 1,600 MB/s for 64bit floats.
+
+And here is the cost of creating a new numpy array from the SharedMemory object:
+
+.. image::
+    plots/images/benchmarks/CPython_3.14.2_perf_shared_memory_into_new_numpy_array.png
+    :width: 500
+    :align: center
+    :alt: Shared Memory Copy To numpy
+
+The copy cost is around 1,600 MB/s for 64bit floats.
+
+Performance on a Table of Floats
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The table has 134,217,728 floats (1GB of data) and the tests are run with with different shapes.
 The rolling median window is 21.
 The platform was Mac OS X with 4 cores and hyper-threading.
