@@ -77,7 +77,7 @@ test_requirements = [
 
 setup(
     name='orderedstructs',
-    version='0.4.5rc0',
+    version='0.4.5',
     ext_modules=[orderedstructs, ],
     description="Contains a variety of ordered structures, in particular a SkipList.",
     long_description=readme + '\n\n' + history,
@@ -101,6 +101,7 @@ setup(
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: 3.14',
+        'Programming Language :: Python :: 3.15',
     ],
     test_suite='tests',
     tests_require=test_requirements,

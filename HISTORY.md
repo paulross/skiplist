@@ -1,8 +1,11 @@
 # History
 
-## 0.4.5rc0 (TODO)
+## 0.4.5 (2026-04-20)
 
 * Performance of low level shared memory operations.
+* Add support for Python 3.15
+* Support for Python 3.10, 3.11, 3.12, 3.13, 3.14, 3.15.
+* Development Status :: 5 - Production/Stable
 
 ## 0.4.4 (2026-02-15)
 

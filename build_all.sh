@@ -13,8 +13,8 @@ set -o pipefail # don't hide errors within pipes
 
 # Takes up to 20 minutes per Python version.
 # See: https://devguide.python.org/versions/
-PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14')
-#PYTHON_VERSIONS=('3.14')
+PYTHON_VERSIONS=('3.10' '3.11' '3.12' '3.13' '3.14' '3.15')
+#PYTHON_VERSIONS=('3.15')
 # Used for venvs
 PYTHON_VENV_ROOT="${HOME}/pyenvs"
 PROJECT_NAME="SkipList"
