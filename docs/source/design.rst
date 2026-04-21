@@ -37,7 +37,7 @@ The illustration below shows a well formed skip list with a head node (``HED``) 
 ``A`` to ``G``::
 
     | 5 E |------------------------------------->| 3 0 |------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
@@ -95,7 +95,7 @@ Insertion Algorithm
 To understand how the skip list is maintained, consider insertion.
 Before inserting node ``E`` the skip list would look like this::
  
-    | 1 A |->| 2 C |---------->| 3 G |------------------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 3 G |------------------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  F  |  |  G  |
 
@@ -111,7 +111,7 @@ Inserting ``E`` means:
 After inserting node E the skip list looks like this::
 
     | 5 E |------------------------------------->| 3 0 |------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
@@ -157,13 +157,13 @@ Removal Algorithm
 This is essentially the insertion algorithm in reverse. Before removing node E the skip list looks like this::
 
     | 5 E |------------------------------------->| 3 0 |------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
 After removing ``E`` the skip list looks like this::
  
-    | 1 A |->| 2 C |---------->| 3 G |------------------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 3 G |------------------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  F  |  |  G  |
 
@@ -326,14 +326,14 @@ Worst Case Behaviour
 It is possible that the skip list can get mal-formed with an unfortunate set of coin tosses (or a knowledgeable and adversarial user). In which case the search time complexity can become O(n) rather than O(log(n)). Here is a well-formed skip list::
 
     | 5 E |------------------------------------->| 3 0 |------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
 The same frequency of coin tosses but in worst case order might produce this::
 
     | 5 E |--| 8 0 |------------------------------------------------------->| NULL |
-    | 1 A |->| 1 B |--| 1 C |->| 1 D |->| 5 0 |---------------------------->| NULL |
+    | 1 A |->| 1 B |--| 1 C |->| 1 D |->| 4 0 |---------------------------->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 

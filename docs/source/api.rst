@@ -20,7 +20,7 @@ C++ API
 This describes the C++ API to a skip list with some algorithmic details of their implementation. Here is a visualisation of a skip list::
 
     | 5 E |------------------------------------->| 3 0 |------------------->| NULL |
-    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 2 0 |->| NULL |
+    | 1 A |->| 2 C |---------->| 2 E |---------->| 2 G |---------->| 1 0 |->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
 
