@@ -23,12 +23,21 @@ CPP_EXECUTABLE="SkipList"
 #printf "%-8s %8s %10s %10s %12s\n" "Ext" "Files" "Lines" "Words" "Bytes"
 
 build_cpp() {
+  echo "---> Cleaning and building debug version"
+  cmake --build cmake-build-debug --target clean -- -j 6
+  cmake --build cmake-build-debug --target ${CPP_EXECUTABLE} -- -j 6
+  echo "---> Cleaning and building release version"
   cmake --build cmake-build-release --target clean -- -j 6
   cmake --build cmake-build-release --target ${CPP_EXECUTABLE} -- -j 6
+  echo "---> Cleaning and building DONE"
 }
 
 run_cpp_tests() {
+  echo "---> Running C++ debug tests"
+  cmake-build-debug/${CPP_EXECUTABLE}
+  echo "---> Running C++ release tests"
   cmake-build-release/${CPP_EXECUTABLE}
+  echo "---> Running C++ tests DONE"
 }
 
 deactivate_virtual_environment() {
