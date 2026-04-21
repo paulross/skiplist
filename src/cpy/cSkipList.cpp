@@ -286,6 +286,7 @@ decref_all_contents(SkipList *self) {
     assert(self && self->pSl_void);
     assert(self->_data_type == TYPE_OBJECT);
 
+    AcquireLock _lock(self);
     for (size_t i = 0; i < self->pSl_object->size(); ++i) {
         Py_DECREF(self->pSl_object->at(i));
     }
@@ -305,7 +306,6 @@ SkipList_dealloc(SkipList *self) {
                 delete self->pSl_bytes;
                 break;
             case TYPE_OBJECT: {
-                AcquireLock _lock(self);
                 decref_all_contents(self);
                 delete self->pSl_object;
             }

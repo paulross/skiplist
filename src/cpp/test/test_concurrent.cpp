@@ -443,8 +443,6 @@ static int test_perf_sim_rolling_median_multi_thread() {
     return -1; // N/A
 }
 
-#endif
-
 static int test_perf_sim_rolling_median_multi_thread_multi_no_thread(
         size_t test_count, size_t repeat, TestResultS &test_results
 ) {
@@ -476,6 +474,8 @@ static int test_perf_sim_rolling_median_multi_thread_multi_no_thread(
     test_results.push_back(test_result);
     return result;
 }
+
+#endif
 
 // These tests accumulate statistics in a TestResultS object
 #ifndef DEBUG
