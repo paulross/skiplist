@@ -1,5 +1,9 @@
 # History
 
+## 0.4.6rc0 (TODO)
+
+* Minor documentation fixes.
+
 ## 0.4.5 (2026-04-20)
 
 * Performance of low level shared memory operations.
