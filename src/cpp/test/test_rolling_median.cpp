@@ -70,14 +70,16 @@ int test_roll_med_even_win() {
         src[i] = 2.0 * i;
     }
     // Set
-    result |= OrderedStructs::RollingMedian::odd_index(src, 1, COUNT,
+    result |= OrderedStructs::RollingMedian::even_index(src, 1, COUNT,
                                                WIN_LENGTH, dest, DEST_STRIDE);
     // Test
     for (size_t i = 0;
          i < OrderedStructs::RollingMedian::dest_size(COUNT, WIN_LENGTH, DEST_STRIDE);
          i += DEST_STRIDE) {
         //        std::cout << i << " " << dest[i] << std::endl;
-        result |= dest[i] != 4. + 2.0 * i;
+        double v_expected = 3.0 + 2.0 * i;
+        double v_actual = dest[i];
+        result |= v_actual != v_expected;
     }
     delete [] dest;
     return result;
