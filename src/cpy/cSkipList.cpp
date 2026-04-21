@@ -553,7 +553,7 @@ SkipList_at(SkipList *self, PyObject *arg) {
             AcquireLock _lock(self);
             ret_val = self->pSl_object->at(index);
             Py_INCREF(ret_val);
-        }
+        } // _lock is released.
             break;
         default:
             PyErr_BadInternalCall();
@@ -748,7 +748,7 @@ SkipList_at_sequence(SkipList *self, PyObject *args, PyObject *kwargs) {
             if (!ret) {
                 goto except;
             }
-        }
+        } // _lock is released.
             break;
         default:
             PyErr_BadInternalCall();
@@ -994,7 +994,7 @@ SkipList_insert(SkipList *self, PyObject *arg) {
                     }
                     return NULL;
                 }
-            }
+            } // _lock is released.
             break;
         default:
             PyErr_BadInternalCall();
