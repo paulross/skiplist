@@ -332,7 +332,7 @@ It is possible that the skip list can get mal-formed with an unfortunate set of 
 
 The same frequency of coin tosses but in worst case order might produce this::
 
-    | 5 E |--| 8 0 |------------------------------------------------------->| NULL |
+    | 5 E |--| 7 0 |------------------------------------------------------->| NULL |
     | 1 A |->| 1 B |--| 1 C |->| 1 D |->| 4 0 |---------------------------->| NULL |
     | 1 A |->| 1 B |->| 1 C |->| 1 D |->| 1 E |->| 1 F |->| 1 G |->| 1 0 |->| NULL |
     | HED |  |  A  |  |  B  |  |  C  |  |  D  |  |  E  |  |  F  |  |  G  |
