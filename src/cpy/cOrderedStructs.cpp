@@ -147,8 +147,6 @@ initorderedstructs(void)
 #endif // ! PY_MAJOR_VERSION >= 3
 {
     PyObject * module = NULL;
-    PyObject * class_dict = NULL;
-    PyObject * thread_safe = NULL;
 
 #ifdef WITH_THREAD
 // From Python 3.7 onwards Py_Initialise() sets up the threads.
@@ -179,17 +177,16 @@ initorderedstructs(void)
         goto except;
     }
     // Set read only class attribute with threading support.
-    class_dict = SkipListType.tp_dict;
+    // PyDict_SetItemString will incref the value.
 #ifdef WITH_THREAD
-    thread_safe = Py_True;
-#else
-    thread_safe = Py_False;
-#endif
-    // PyDict_SetItemString will incref the value
-    if (thread_safe == NULL
-        || PyDict_SetItemString(class_dict, "thread_safe", thread_safe) < 0) {
+    if (PyDict_SetItemString(SkipListType.tp_dict, "thread_safe", Py_True) < 0) {
         return NULL;
     }
+#else
+    if (PyDict_SetItemString(SkipListType.tp_dict, "thread_safe", Py_False) < 0) {
+        return NULL;
+    }
+#endif
 
     /* Adds version and build information to the module. */
     if (PyModule_AddStringConstant(module, "__version__", MODULE_VERSION)) {
