@@ -53,7 +53,7 @@ const int FUNCTION_WIDTH = 50;
  */
 int print_result(const char *fn_name, int result) {
     std::cout << std::setw(FUNCTION_WIDTH) << fn_name << "():";
-    if (result > 1) {
+    if (result > 0) {
         std::cout << " FAIL";
     } else if (result < 0) {
         std::cout << " N/A";
