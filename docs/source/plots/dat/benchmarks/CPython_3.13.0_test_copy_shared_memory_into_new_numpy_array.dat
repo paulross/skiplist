@@ -1,12 +1,12 @@
 # $1      $2           $3           $4           $5          $6
 # Scale   Min          Mean         StdDev       Max         Name
-1048576   0.000290750  0.000299310  0.000046671  0.002658709 test_copy_shared_memory_into_new_numpy_array
-2097152   0.000777458  0.000791330  0.000017226  0.000900542 test_copy_shared_memory_into_new_numpy_array
-4194304   0.001686084  0.001745700  0.000015179  0.001804250 test_copy_shared_memory_into_new_numpy_array
-8388608   0.003444000  0.003513458  0.000145434  0.004325417 test_copy_shared_memory_into_new_numpy_array
-16777216  0.006867459  0.007021376  0.000502587  0.009694125 test_copy_shared_memory_into_new_numpy_array
-33554432  0.069482833  0.070343660  0.002405707  0.078328333 test_copy_shared_memory_into_new_numpy_array
-67108864  0.136457833  0.140953434  0.006878416  0.155750167 test_copy_shared_memory_into_new_numpy_array
-134217728  0.279216792  0.287570825  0.016221710  0.316560750 test_copy_shared_memory_into_new_numpy_array
-268435456  0.566735584  0.580064408  0.027701274  0.629586375 test_copy_shared_memory_into_new_numpy_array
-536870912  1.149725708  1.320661567  0.314778101  1.882594792 test_copy_shared_memory_into_new_numpy_array
+1048576   0.000283542  0.000307622  0.000176287  0.003502875 test_copy_shared_memory_into_new_numpy_array
+2097152   0.000766334  0.000775901  0.000010946  0.000824417 test_copy_shared_memory_into_new_numpy_array
+4194304   0.001676708  0.001735593  0.000012280  0.001783791 test_copy_shared_memory_into_new_numpy_array
+8388608   0.003421208  0.003460181  0.000027217  0.003566000 test_copy_shared_memory_into_new_numpy_array
+16777216  0.006847583  0.006956540  0.000237085  0.007870417 test_copy_shared_memory_into_new_numpy_array
+33554432  0.069172333  0.070037232  0.000553670  0.071145083 test_copy_shared_memory_into_new_numpy_array
+67108864  0.138776375  0.142147589  0.004456781  0.151888500 test_copy_shared_memory_into_new_numpy_array
+134217728  0.279157709  0.285499700  0.010776316  0.304655250 test_copy_shared_memory_into_new_numpy_array
+268435456  0.561973541  0.571324133  0.013758126  0.595399833 test_copy_shared_memory_into_new_numpy_array
+536870912  2.411988084  2.637057400  0.179337547  2.894430417 test_copy_shared_memory_into_new_numpy_array

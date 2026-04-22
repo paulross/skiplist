@@ -70,6 +70,7 @@ plot "dat/benchmarks/CPython_3.10.11_test_float_iar_mid.dat" using 1:($2 * 1e9) 
      "dat/benchmarks/CPython_3.11.9_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.11.9" with linespoints lw 2, \
      "dat/benchmarks/CPython_3.12.7_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.12.7" with linespoints lw 2, \
      "dat/benchmarks/CPython_3.13.0_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.13.0" with linespoints lw 2, \
-     "dat/benchmarks/CPython_3.14.2_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.14.2" with linespoints lw 2
+     "dat/benchmarks/CPython_3.14.2_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.14.2" with linespoints lw 2, \
+     "dat/benchmarks/CPython_3.15.0a8_test_float_iar_mid.dat" using 1:($2 * 1e9) t "Python 3.15.0a8" with linespoints lw 2
 
 reset
