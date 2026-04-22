@@ -31,7 +31,7 @@ The same approach can be used for a rolling percentile.
 Rolling Median in C++
 -----------------------------------------
 
-Here is a reasonable C++ attempt at doing that with the arguments:
+Here is a basic C++ example, it has these arguments:
 
 * ``data`` - A vector of data of type ``T`` of length ``L``.
 * ``win_length`` - a 'window' size. The median is computed over this number of values.
@@ -46,24 +46,14 @@ Here is a reasonable C++ attempt at doing that with the arguments:
     RollingMedianResult rolling_median(const std::vector<T> data,
                                        size_t win_length,
                                        std::vector<T> &result) {
-        if (win_length == 0) {
-            return ROLLING_MEDIAN_WIN_LENGTH;
-        }
+        assert(win_length > 0);
         OrderedStructs::SkipList::HeadNode<T> sl;
 
         result.clear();
-        std::vector<T> buffer;
         for (size_t i = 0; i < data.size(); ++i) {
             sl.insert(data[i]);
             if (i >= win_length) {
-                if (win_length % 2 == 1) {
-                    result.push_back(sl.at(win_length / 2));
-                } else {
-                    /* Even length so average */
-                    sl.at((win_length - 1) / 2, 2, buffer);
-                    assert(buffer.size() == 2);
-                    result.push_back(buffer[0] / 2 + buffer[1] / 2);
-                }
+                result.push_back(sl.at(win_length / 2));
                 sl.remove(data[i - win_length]);
             }
         }
@@ -71,6 +61,57 @@ Here is a reasonable C++ attempt at doing that with the arguments:
     }
 
 A full example is the ``RollingMedian::rolling_median_lower_bound`` function in ``RollingMedian.h``.
+
+Here is a more complete example that has these features:
+
+- It is specialised for type ``double``.
+- If the window length is even then a pair of values is averaged.
+- It provides a flag, ``pad_with_nan`` which, if non-zero, puts ``NAN`` values at the
+  beginning of the result making the length of the result the same as the length of
+  the input.
+
+.. code-block:: cpp
+
+    RollingMedianResult rolling_median_double(
+            const std::vector<double> data,
+            size_t win_length,
+            std::vector<double> &result,
+            int pad_with_nan) {
+        if (win_length == 0) {
+            return ROLLING_MEDIAN_WIN_LENGTH;
+        }
+
+        result.clear();
+        OrderedStructs::SkipList::HeadNode<double> sl;
+        // Used for averaging two values when the window length is even.
+        std::vector<double> buffer;
+        for (size_t i = 0; i < data.size(); ++i) {
+            sl.insert(data[i]);
+            if (i >= win_length) {
+                if (win_length % 2 == 1) {
+                    /* Odd window length */
+                    result.push_back(sl.at(win_length / 2));
+                } else {
+                    /* Even window length */
+                    sl.at((win_length - 1) / 2, 2, buffer);
+                    assert(buffer.size() == 2);
+                    result.push_back((buffer[0] + buffer[1]) / 2);
+                }
+                sl.remove(data[i - win_length]);
+            } else if (pad_with_nan) {
+                result.push_back((double) NAN);
+            }
+        }
+        return ROLLING_MEDIAN_SUCCESS;
+    }
+
+If the window length is even then this code calls the ``OrderedStructs::SkipList::HeadNode``
+method ``void at(size_t index, size_t count, std::vector<T> &dest) const;``.
+This is an optimisation which searches for the first node,
+once that is found then subsequent nodes values are discovered, cheaply, by iteration.
+
+A More C like Approach
+----------------------
 
 If you are working with C arrays (such as Numpy arrays) then this C'ish approach might be better, again error
 checking omitted:
@@ -100,17 +141,78 @@ checking omitted:
 Multidimensional Numpy arrays have a stride value which is omitted in the above code but is simple to add.
 See *RollingMedian.h* and *test/test_rolling_median.cpp* for further examples.
 
+Rolling Percentiles
+-----------------------------------------
+
 Rolling percentiles require a argument that says what fraction of the window the required value lies.
-Again, this is easy to add.
+This is easy to implement:
+
+.. code-block:: cpp
+
+    template<typename T>
+    RollingMedianResult rolling_median_lower_bound_percentile(
+            const std::vector<T> data,
+            size_t win_length,
+            double percentile,
+            std::vector<T> &result) {
+        if (win_length == 0) {
+            return ROLLING_MEDIAN_WIN_LENGTH;
+        }
+        assert(percentile >= 0.0 && percentile < 1.0);
+
+        result.clear();
+        OrderedStructs::SkipList::HeadNode<T> sl;
+        /* Compute the fixed index into the SkipList. */
+        auto index = static_cast<size_t>(win_length * percentile);
+        for (size_t i = 0; i < data.size(); ++i) {
+            sl.insert(data[i]);
+            if (i >= win_length) {
+                result.push_back(sl.at(index));
+                sl.remove(data[i - win_length]);
+            }
+        }
+        return ROLLING_MEDIAN_SUCCESS;
+    }
 
 Even Window Length
 -----------------------------------------
 
-The above code assumes that if the window length is even that the median is at ``(window length - 1) / 2``.
-A more plausible median for even sized window lengths is the mean of ``(window length - 1) / 2`` and
-``window length / 2``.
+If you are using a template function and an even window length then you might write code like this:
 
-This requires that the mean of two types is meaningful which it will not be for strings.
+.. code-block:: cpp
+
+    #include "SkipList.h"
+
+    template<typename T>
+    RollingMedianResult rolling_median(const std::vector<T> data,
+                                       size_t win_length,
+                                       std::vector<T> &result) {
+        if (win_length == 0) {
+            return ROLLING_MEDIAN_WIN_LENGTH;
+        }
+        OrderedStructs::SkipList::HeadNode<T> sl;
+
+        result.clear();
+        std::vector<T> buffer;
+        for (size_t i = 0; i < data.size(); ++i) {
+            sl.insert(data[i]);
+            if (i >= win_length) {
+                if (win_length % 2 == 1) {
+                    result.push_back(sl.at(win_length / 2));
+                } else {
+                    /* Even length so average */
+                    sl.at((win_length - 1) / 2, 2, buffer);
+                    assert(buffer.size() == 2);
+                    result.push_back(buffer[0] / 2 + buffer[1] / 2);
+                }
+                sl.remove(data[i - win_length]);
+            }
+        }
+        return ROLLING_MEDIAN_SUCCESS;
+    }
+
+The calculation ``buffer[0] / 2 + buffer[1] / 2`` requires that division by 2 on the type is meaningful
+which it will not be for strings.
 In that case you will get this compilation error:
 
 .. code-block:: text

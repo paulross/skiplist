@@ -52,8 +52,11 @@ namespace OrderedStructs {
  */
         enum RollingMedianResult {
             ROLLING_MEDIAN_SUCCESS = 0,
+            /// Source stride is zero so no progress can be made.
             ROLLING_MEDIAN_SOURCE_STRIDE,
+            /// Destination stride is zero so no progress can be made.
             ROLLING_MEDIAN_DESTINATION_STRIDE,
+            /// Window length is zero.
             ROLLING_MEDIAN_WIN_LENGTH,
         };
 
@@ -97,6 +100,11 @@ namespace OrderedStructs {
             return ROLLING_MEDIAN_SUCCESS;
         }
 
+        RollingMedianResult rolling_median_double(
+                std::vector<double> data,
+                size_t win_length,
+                std::vector<double> &result,
+                int pad_with_nan);
 /**
  * Vector based rolling median.
  * This always uses the lower bound so works correctly for odd sized window lengths.
@@ -113,20 +121,44 @@ namespace OrderedStructs {
  */
         template<typename T>
         RollingMedianResult rolling_median_lower_bound(const std::vector<T> data,
-                                           size_t win_length,
-                                           std::vector<T> &result) {
+                                                       size_t win_length,
+                                                       std::vector<T> &result) {
             if (win_length == 0) {
                 return ROLLING_MEDIAN_WIN_LENGTH;
             }
             OrderedStructs::SkipList::HeadNode<T> sl;
 
             result.clear();
-            std::vector<T> buffer;
             for (size_t i = 0; i < data.size(); ++i) {
                 sl.insert(data[i]);
                 if (i >= win_length) {
                     /* Choose the lower bound rather than averaging. */
                     result.push_back(sl.at(win_length / 2));
+                    sl.remove(data[i - win_length]);
+                }
+            }
+            return ROLLING_MEDIAN_SUCCESS;
+        }
+
+        template<typename T>
+        RollingMedianResult rolling_median_lower_bound_percentile(
+                const std::vector<T> data,
+                size_t win_length,
+                double percentile,
+                std::vector<T> &result) {
+            if (win_length == 0) {
+                return ROLLING_MEDIAN_WIN_LENGTH;
+            }
+            assert(percentile >= 0.0 && percentile < 1.0);
+
+            result.clear();
+            OrderedStructs::SkipList::HeadNode<T> sl;
+            /* Compute the fixed index into the SkipList. */
+            auto index = static_cast<size_t>(win_length * percentile);
+            for (size_t i = 0; i < data.size(); ++i) {
+                sl.insert(data[i]);
+                if (i >= win_length) {
+                    result.push_back(sl.at(index));
                     sl.remove(data[i - win_length]);
                 }
             }

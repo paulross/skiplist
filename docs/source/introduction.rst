@@ -32,7 +32,7 @@ requirements or both.
 This project contains a SkipList implementation in C++, with Python bindings, which has these characteristics:
 
 * No capacity restrictions apart from available memory.
-* Works with any C++ type <T> that has meaningful comparison operators.
+* Works with any C++ type <T> that has meaningful comparison operators (``std::less<T>`` exists).
 * The C++ SkipList can be compiled as thread safe.
 * The Python SkipList is thread safe.
 * The SkipList has exhaustive internal integrity checks.
